@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Feedback</title>
+</head>
+
+<body>
+
+<h2>We're sorry to hear that</h2>
+
+<textarea id="message" placeholder="Tell us what went wrong"></textarea>
+
+<br><br>
+
+<button onclick="send()">Send Feedback</button>
+
+<script>
+
+async function send() {
+
+const message = document.getElementById("message").value
+
+await fetch("/feedback", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+business: "emmas-salon",
+message: message
+})
+})
+
+window.location.href = "/thanks.html"
+
+}
+
+</script>
+
+</body>
+</html>
