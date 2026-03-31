@@ -1,32 +1,196 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Feedback</title>
-<link rel="stylesheet" href="/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Feedback</title>
+
+  <style>
+
+    body{
+      font-family: Arial, sans-serif;
+      text-align:center;
+      padding-top:100px;
+      background:#f5f5f5;
+    }
+
+    .container{
+      background:white;
+      width:90%;
+max-width:400px;
+      margin:auto;
+      padding:40px;
+      border-radius:10px;
+      box-shadow:0px 5px 20px rgba(0,0,0,0.1);
+    }
+
+    button{
+      padding:12px 25px;
+      font-size:16px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      margin:10px;
+    }
+
+    .yes{
+      background:#2ecc71;
+      color:white;
+    }
+
+    .no{
+      background:#e74c3c;
+      color:white;
+    }
+
+    textarea{
+      width:100%;
+      height:100px;
+      margin-top:10px;
+      padding:10px;
+    }
+
+    #feedbackBox{
+      display:none;
+    }
+
+  </style>
+
 </head>
 
 <body>
 
-<h1>Did you enjoy your experience?</h1>
+<div class="container">
 
-<button onclick="good()">👍 Yes</button>
-<button onclick="bad()">👎 No</button>
+<h2 id="businessTitle"></h2>
+<p>Did you enjoy your visit today?</p>
+
+<button class="yes" onclick="positive()">Yes</button>
+<button class="no" onclick="showFeedback()">No</button>
+
+<div id="reviewSection" style="display:none">
+
+<h3>⭐ Thank you!</h3>
+
+<p>Would you mind leaving us a quick Google review?</p>
+
+<button onclick="leaveReview()">Leave a Google Review</button>
+
+</div>
+
+
+<div id="feedbackBox">
+
+<h3>We're sorry to hear that</h3>
+
+<p>Please tell us what went wrong so we can improve.</p>
+
+<textarea id="message"></textarea>
+
+<br><br>
+
+<button onclick="sendFeedback()">Send Feedback</button>
+
+
+
+</div>
+
+<p style="margin-top:40px;font-size:12px;">
+<a href="/for-business.html">Powered by ReviewBoost</a>
+</p>
+
+</div>
+
 
 <script>
 
-function good() {
+/* -------------------------
+   GET BUSINESS SLUG
+-------------------------- */
 
-window.location.href = "https://g.page/r/REVIEW_LINK/review"
+const slug = window.location.pathname.replace("/","")
+
+
+/* -------------------------
+   CUSTOMER HAPPY
+-------------------------- */
+
+function positive(){
+
+fetch("/positive",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({slug})
+})
+
+document.getElementById("reviewSection").style.display="block"
+
+setTimeout(()=>{
+ leaveReview()
+},2000)
 
 }
 
-function bad() {
 
-window.location.href = "/bad.html"
+/* -------------------------
+   CUSTOMER UNHAPPY
+-------------------------- */
+
+function showFeedback(){
+
+document.getElementById("feedbackBox").style.display="block"
 
 }
+
+
+/* -------------------------
+   SEND FEEDBACK
+-------------------------- */
+
+function sendFeedback(){
+
+const message = document.getElementById("message").value
+
+fetch("/feedback",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+business:slug,
+message
+})
+})
+
+alert("Thank you for your feedback")
+
+}
+
+
+/* -------------------------
+   LEAVE REVIEW
+-------------------------- */
+
+function leaveReview(){
+
+fetch("/review-click",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({slug})
+})
+
+window.location.href = "/review/" + slug
+
+}
+
+document.getElementById("businessTitle").innerText = window.businessName
 
 </script>
 
 </body>
+
 </html>

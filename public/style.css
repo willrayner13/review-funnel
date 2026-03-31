@@ -15,3 +15,9 @@ textarea {
 width: 300px;
 height: 120px;
 }
+
+.container{
+ width:90%;
+ max-width:400px;
+ margin:auto;
+}
