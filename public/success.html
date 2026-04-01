@@ -20,7 +20,10 @@
 
   <script>
     // Get the business slug from sessionStorage
-    const slug = sessionStorage.getItem("currentSlug");
+
+    // success.html
+const params = new URLSearchParams(window.location.search);
+const slug = params.get("slug") || sessionStorage.getItem("currentSlug");
 
     if (!slug) {
       document.getElementById("status").innerText = "No business info found. Redirecting...";

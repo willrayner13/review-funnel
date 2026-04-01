@@ -36,6 +36,42 @@ const openai = new OpenAI({
 });
 
 
+app.post("/stripe-webhook", express.raw({type:'application/json'}), async (req,res)=>{
+
+const sig = req.headers["stripe-signature"]
+
+let event
+
+try{
+
+event = stripe.webhooks.constructEvent(
+req.body,
+sig,
+process.env.STRIPE_WEBHOOK_SECRET
+)
+
+}catch(err){
+
+console.log("Webhook error:",err.message)
+return res.status(400).send("Webhook error")
+
+}
+
+if(event.type === "checkout.session.completed"){
+
+const session = event.data.object
+const slug = session.metadata.slug
+
+await supabase
+.from("businesses")
+.update({subscription_active:true, plan_type: session.metadata.plan})
+.eq("slug",slug)
+}
+
+res.json({received:true})
+
+})
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -379,7 +415,7 @@ app.post("/create-checkout", async(req,res)=>{
     payment_method_types:["card"],
     line_items:[{price:priceId, quantity:1}],
     mode:"subscription",
-    success_url:`${process.env.BASE_URL}/success`,
+    success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
     cancel_url:`${process.env.BASE_URL}/cancel`,
     metadata:{
 slug: slug,
@@ -393,41 +429,7 @@ plan: plan
 /* ------------------------
 STRIPE WEBHOOK
 ------------------------ */
-app.post("/stripe-webhook", express.raw({type:'application/json'}), async (req,res)=>{
 
-const sig = req.headers["stripe-signature"]
-
-let event
-
-try{
-
-event = stripe.webhooks.constructEvent(
-req.body,
-sig,
-process.env.STRIPE_WEBHOOK_SECRET
-)
-
-}catch(err){
-
-console.log("Webhook error:",err.message)
-return res.status(400).send("Webhook error")
-
-}
-
-if(event.type === "checkout.session.completed"){
-
-const session = event.data.object
-const slug = session.metadata.slug
-
-await supabase
-.from("businesses")
-.update({subscription_active:true, plan_type: session.metadata.plan})
-.eq("slug",slug)
-}
-
-res.json({received:true})
-
-})
 
 const serverless = require("serverless-http");
 module.exports = app;
