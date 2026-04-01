@@ -1,166 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <title>Business Dashboard</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-
-body{font-family:Arial;text-align:center;background:#f5f5f5;padding:40px;}
-
-.container{
-background:white;
-padding:30px;
-max-width:700px;
-margin:auto;
-border-radius:10px;
-}
-
-input,textarea{
-width:80%;
-padding:10px;
-margin:10px;
-}
-
-button{
-padding:10px 20px;
-border:none;
-border-radius:6px;
-background:#3498db;
-color:white;
-cursor:pointer;
-margin:5px;
-}
-
-ul{text-align:left}
-
-#qr{
-width:150px;
-height:150px;
-margin-bottom:10px;
-}
-
-</style>
-
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="container">
-
 <h3 id="bizName"></h3>
 
 <h4>Metrics</h4>
-
 <p>Visits: <span id="visits"></span></p>
 <p>Positive: <span id="positive"></span></p>
 <p>Negative: <span id="negative"></span></p>
 <p>Review Clicks: <span id="reviews"></span></p>
 
 <h4>Rating Distribution</h4>
-
 <canvas id="ratingChart"></canvas>
 
 <h4>Your Review Link</h4>
-
 <input id="reviewLink" readonly>
-
-<br>
-
 <button onclick="copyLink()">Copy</button>
 
 <h4>QR Code</h4>
-
 <img id="qr">
-
 <br>
-
 <a id="qrDownload">Download QR</a>
 
 <h3>Send SMS Review Request</h3>
-
 <input id="customerPhone" placeholder="Customer phone">
-
 <button onclick="sendSMS()">Send SMS</button>
 
 <h4>Customer Feedback</h4>
-
 <ul id="negativeList"></ul>
-
 </div>
 
 <script>
-
-const slug=sessionStorage.getItem("currentSlug")
-
-if(!slug){
-
-alert("Login again")
-
-window.location="/admin.html"
-
-}
+const slug=sessionStorage.getItem("currentSlug");
+if(!slug){alert("Login again"); window.location="/admin.html";}
 
 async function load(){
+  const res=await fetch("/stats/"+slug);
+  const stats=await res.json();
+  document.getElementById("bizName").innerText=slug;
+  document.getElementById("visits").innerText=stats.visits;
+  document.getElementById("positive").innerText=stats.positive;
+  document.getElementById("negative").innerText=stats.negative;
+  document.getElementById("reviews").innerText=stats.reviews;
+  const reviewLink=window.location.origin+"/r/"+slug;
+  document.getElementById("reviewLink").value=reviewLink;
+  const qrUrl="/qr-download/"+slug;
+  document.getElementById("qr").src=qrUrl;
+  document.getElementById("qrDownload").href=qrUrl;
 
-const res=await fetch("/stats/"+slug)
-
-const stats=await res.json()
-
-document.getElementById("bizName").innerText=slug
-
-document.getElementById("visits").innerText=stats.visits
-document.getElementById("positive").innerText=stats.positive
-document.getElementById("negative").innerText=stats.negative
-document.getElementById("reviews").innerText=stats.reviews
-
-const reviewLink=window.location.origin+"/r/"+slug
-
-document.getElementById("reviewLink").value=reviewLink
-
-const qrUrl="/qr-download/"+slug
-
-document.getElementById("qr").src=qrUrl
-document.getElementById("qrDownload").href=qrUrl
-
+  // Chart
+  const ctx=document.getElementById('ratingChart').getContext('2d');
+  new Chart(ctx,{type:'bar',data:{labels:['1','2','3','4','5'],datasets:[{label:'Ratings',data:[stats.rating_distribution[1],stats.rating_distribution[2],stats.rating_distribution[3],stats.rating_distribution[4],stats.rating_distribution[5]],backgroundColor:'#EAE7DC'}]},options:{scales:{y:{beginAtZero:true}}}});
 }
 
 function copyLink(){
-
-const link=document.getElementById("reviewLink")
-
-link.select()
-
-navigator.clipboard.writeText(link.value)
-
-alert("Copied")
-
+  const link=document.getElementById("reviewLink");
+  link.select();
+  navigator.clipboard.writeText(link.value);
+  alert("Copied");
 }
 
 async function sendSMS(){
-
-const phone=document.getElementById("customerPhone").value
-
-const res=await fetch("/send-sms",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({phone,slug})
-})
-
-const data=await res.json()
-
-if(data.success) alert("SMS sent")
-
+  const phone=document.getElementById("customerPhone").value;
+  const res=await fetch("/send-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone,slug})});
+  const data=await res.json();
+  if(data.success) alert("SMS sent");
 }
 
-load()
-
+load();
 </script>
 
 </body>
-
 </html>

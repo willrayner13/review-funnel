@@ -1,105 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Create Business</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{font-family:Arial;background:#f5f5f5;text-align:center;padding:40px;}
-.container{background:white;padding:30px;max-width:500px;margin:auto;border-radius:10px;}
-input{width:80%;padding:10px;margin:10px;}
-button{padding:10px 20px;background:#3498db;color:white;border:none;border-radius:6px;}
-.plan{border:1px solid #ddd;padding:20px;border-radius:10px;margin:10px;}
-</style>
+<title>Create Business</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="container">
+  <h2>Create Your Business</h2>
 
-<h2>Create Your Business</h2>
+  <input id="name" placeholder="Business name">
+  <input id="email" placeholder="Business email">
+  <input id="review" placeholder="Google review link">
+  <input id="password" placeholder="Dashboard password">
 
-<input id="name" placeholder="Business name">
-<input id="email" placeholder="Business email">
-<input id="review" placeholder="Google review link">
-<input id="password" placeholder="Dashboard password">
+  <button onclick="createBusiness()">Create Business</button>
+  <p id="result"></p>
 
-<button onclick="createBusiness()">Create Business</button>
-
-<p id="result"></p>
-
-<div id="plans" style="display:none">
-
-<h3>Select Plan</h3>
-
-<div class="plan">
-<h4>Starter</h4>
-<p>$19 / month</p>
-<button onclick="subscribe('starter')">Select</button>
-</div>
-
-<div class="plan">
-<h4>Pro</h4>
-<p>$49 / month</p>
-<button onclick="subscribe('pro')">Select</button>
-</div>
-
-</div>
-
+  <div id="plans" style="display:none">
+    <h3>Select Plan</h3>
+    <div class="plan">
+      <h4>Starter</h4>
+      <p>$19 / month - Basic features</p>
+      <button onclick="subscribe('starter')">Select</button>
+    </div>
+    <div class="plan">
+      <h4>Pro</h4>
+      <p>$49 / month - Premium features + analytics + SMS automation</p>
+      <button onclick="subscribe('pro')">Select</button>
+    </div>
+  </div>
 </div>
 
 <script>
-
-let currentSlug=""
+let currentSlug = "";
 
 async function createBusiness(){
+  const name=document.getElementById("name").value;
+  const email=document.getElementById("email").value;
+  const review=document.getElementById("review").value;
+  const password=document.getElementById("password").value;
 
-const name=document.getElementById("name").value
-const email=document.getElementById("email").value
-const review=document.getElementById("review").value
-const password=document.getElementById("password").value
-
-const res=await fetch("/create-business",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({name,email,review,password})
-})
-
-const data=await res.json()
-
-if(data.success){
-
-currentSlug=data.slug
-sessionStorage.setItem("currentSlug",currentSlug)
-
-document.getElementById("plans").style.display="block"
-document.getElementById("result").innerText="Business created!"
-
-}else{
-
-document.getElementById("result").innerText="Error creating business"
-
-}
-
+  const res = await fetch("/create-business",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({name,email,review,password})
+  });
+  const data = await res.json();
+  if(data.success){
+    currentSlug=data.slug;
+    sessionStorage.setItem("currentSlug",currentSlug);
+    document.getElementById("plans").style.display="block";
+    document.getElementById("result").innerText="Business created!";
+  } else{
+    document.getElementById("result").innerText="Error creating business";
+  }
 }
 
 async function subscribe(plan){
-
-const res=await fetch("/create-checkout",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-slug:currentSlug,
-plan:plan
-})
-})
-
-const data=await res.json()
-
-window.location=data.url
-
+  const res = await fetch("/create-checkout",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({slug:currentSlug,plan})
+  });
+  const data = await res.json();
+  window.location=data.url;
 }
-
 </script>
 
 </body>

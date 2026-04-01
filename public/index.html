@@ -1,67 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Feedback</title>
-
-  <style>
-
-    body{
-      font-family: Arial, sans-serif;
-      text-align:center;
-      padding-top:100px;
-      background:#f5f5f5;
-    }
-
-    .container{
-      background:white;
-      width:90%;
-max-width:400px;
-      margin:auto;
-      padding:40px;
-      border-radius:10px;
-      box-shadow:0px 5px 20px rgba(0,0,0,0.1);
-    }
-
-    button{
-      padding:12px 25px;
-      font-size:16px;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-      margin:10px;
-    }
-
-    .yes{
-      background:#2ecc71;
-      color:white;
-    }
-
-    .no{
-      background:#e74c3c;
-      color:white;
-    }
-
-    textarea{
-      width:100%;
-      height:100px;
-      margin-top:10px;
-      padding:10px;
-    }
-
-    #feedbackBox{
-      display:none;
-    }
-
-  </style>
-
+<title>Customer Feedback</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
 <div class="container">
-
 <h2 id="businessTitle"></h2>
 <p>Did you enjoy your visit today?</p>
 
@@ -69,173 +14,66 @@ max-width:400px;
 <button class="no" onclick="showFeedback()">No</button>
 
 <div id="ratingSection" style="display:none">
-
-<h3>How would you rate your experience?</h3>
-
-<p style="color:#666;font-size:14px;">
-Your feedback helps us improve ❤️
-</p>
-
-<div id="stars">
-
-<span onclick="rate(1)">⭐</span>
-<span onclick="rate(2)">⭐</span>
-<span onclick="rate(3)">⭐</span>
-<span onclick="rate(4)">⭐</span>
-<span onclick="rate(5)">⭐</span>
-
-</div>
-
+  <h3>Rate your experience</h3>
+  <div id="stars">
+    <span onclick="rate(1)">⭐</span>
+    <span onclick="rate(2)">⭐</span>
+    <span onclick="rate(3)">⭐</span>
+    <span onclick="rate(4)">⭐</span>
+    <span onclick="rate(5)">⭐</span>
+  </div>
 </div>
 
 <div id="reviewSection" style="display:none">
-
-<h3>⭐ Thank you!</h3>
-
-<p>Would you mind leaving us a quick Google review?</p>
-
-<button onclick="leaveReview()">Leave a Google Review</button>
-
+  <h3>⭐ Thank you!</h3>
+  <p>Would you like to leave a quick Google review?</p>
+  <button onclick="leaveReview()">Leave Review</button>
 </div>
 
-
-<div id="feedbackBox">
-
-<h3>We're sorry to hear that</h3>
-
-<p>Please tell us what went wrong so we can improve.</p>
-
-<textarea id="message"></textarea>
-
-<br><br>
-
-<button onclick="sendFeedback()">Send Feedback</button>
-
-
-
+<div id="feedbackBox" style="display:none">
+  <h3>We're sorry to hear that</h3>
+  <textarea id="message" placeholder="Tell us what went wrong"></textarea>
+  <button onclick="sendFeedback()">Send Feedback</button>
 </div>
 
-<p style="margin-top:40px;font-size:12px;">
-<a href="/for-business.html">Powered by ReviewBoost</a>
-</p>
-
+<p class="small-text"><a href="/for-business.html">Powered by ReviewBoost</a></p>
 </div>
-
 
 <script>
-
-/* -------------------------
-   GET BUSINESS SLUG
--------------------------- */
-
-const slug = window.slug
-
-
-/* -------------------------
-   CUSTOMER HAPPY
--------------------------- */
+const slug = window.slug;
 
 function positive(){
-
-fetch("/positive",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({slug})
-})
-
-document.getElementById("ratingSection").style.display="block"
-
-
-
+  fetch("/positive",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
+  document.getElementById("ratingSection").style.display="block";
 }
-
-
-/* -------------------------
-   CUSTOMER UNHAPPY
--------------------------- */
 
 function showFeedback(){
-
-document.getElementById("feedbackBox").style.display="block"
-
+  document.getElementById("feedbackBox").style.display="block";
 }
-
-
-/* -------------------------
-   SEND FEEDBACK
--------------------------- */
 
 function sendFeedback(){
-
-const message = document.getElementById("message").value
-
-fetch("/feedback",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-business:slug,
-message
-})
-})
-
-alert("Thank you for your feedback")
-
+  const message=document.getElementById("message").value;
+  fetch("/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({business:slug,message})});
+  alert("Thank you for your feedback!");
 }
-
-
-/* -------------------------
-   LEAVE REVIEW
--------------------------- */
 
 function leaveReview(){
-
-fetch("/review-click",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({slug})
-})
-
-window.location.href = window.reviewLink
-
+  fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
+  window.location.href = window.reviewLink;
 }
-
-document.getElementById("businessTitle").innerText = window.businessName
-
 
 function rate(stars){
-
-fetch("/rating",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-slug:slug,
-rating:stars
-})
-})
-
-if(stars >= 4){
-
-document.getElementById("ratingSection").style.display="none"
-document.getElementById("reviewSection").style.display="block"
-
-}else{
-
-document.getElementById("ratingSection").style.display="none"
-document.getElementById("feedbackBox").style.display="block"
-
+  fetch("/rating",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,rating:stars})});
+  if(stars>=4){
+    document.getElementById("ratingSection").style.display="none";
+    document.getElementById("reviewSection").style.display="block";
+  } else{
+    document.getElementById("ratingSection").style.display="none";
+    document.getElementById("feedbackBox").style.display="block";
+  }
 }
 
-}
+document.getElementById("businessTitle").innerText=window.businessName;
 </script>
-
 </body>
-
 </html>

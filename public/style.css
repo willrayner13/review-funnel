@@ -1,34 +1,131 @@
+/* Global styles */
 body {
-font-family: Arial;
-text-align: center;
-margin-top: 100px;
+  font-family: 'Inter', sans-serif;
+  background-color: #2C2C2A;
+  color: #EAE7DC;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
+a {
+  color: #EAE7DC;
+  text-decoration: none;
+}
+
+/* Container */
+.container {
+  background-color: #3A3A38;
+  padding: 40px;
+  margin: 40px auto;
+  border-radius: 12px;
+  max-width: 700px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+
+/* Inputs */
+input, textarea {
+  width: 80%;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: none;
+  background-color: #5A5A57;
+  color: #EAE7DC;
+}
+
+input:focus, textarea:focus {
+  outline: 2px solid #EAE7DC;
+}
+
+/* Buttons */
 button {
-font-size: 20px;
-padding: 15px;
-margin: 10px;
-cursor: pointer;
+  padding: 12px 25px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #EAE7DC;
+  color: #2C2C2A;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-textarea {
-width: 300px;
-height: 120px;
+button:hover {
+  background-color: #D6D3C9;
+  transform: translateY(-2px);
 }
 
-.container{
- width:90%;
- max-width:400px;
- margin:auto;
+/* Plans */
+.plan {
+  border: 1px solid #EAE7DC;
+  padding: 25px;
+  border-radius: 12px;
+  margin: 15px;
+  background-color: #3A3A38;
+  transition: all 0.2s ease-in-out;
 }
 
-#stars span{
-font-size:40px;
-cursor:pointer;
-margin:5px;
-transition:0.2s;
+.plan:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 25px rgba(0,0,0,0.7);
 }
 
-#stars span:hover{
-transform:scale(1.2);
+/* Stars rating */
+#stars span {
+  font-size: 40px;
+  cursor: pointer;
+  margin: 5px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+#stars span:hover, #stars span.selected {
+  transform: scale(1.4);
+  color: #FFD700;
+}
+
+/* QR */
+#qr {
+  width: 200px;
+  height: 200px;
+  margin: 20px 0;
+  border: 4px solid #EAE7DC;
+  border-radius: 12px;
+}
+
+/* Feedback list */
+ul {
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0 20px;
+}
+
+ul li {
+  background-color: #5A5A57;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Small text */
+.small-text {
+  font-size: 12px;
+  color: #C0C0B0;
+}
+
+/* Loader */
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #EAE7DC;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
