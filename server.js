@@ -68,25 +68,7 @@ htmlPages.forEach(page => {
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-app.get("/r/:slug", (req, res) => {
 
-  const slug = req.params.slug
-
-  const filePath = path.join(__dirname, "public", "index.html")
-
-  let html = fs.readFileSync(filePath, "utf8")
-
-  html = html.replace(
-    "</body>",
-    `<script>
-      window.businessSlug="${slug}"
-    </script>
-    </body>`
-  )
-
-  res.send(html)
-
-})
 
 /* ------------------------
 VISIT PAGE
@@ -438,9 +420,8 @@ const slug = session.metadata.slug
 
 await supabase
 .from("businesses")
-.update({subscription_status:"active"})
+.update({subscription_active:true})
 .eq("slug",slug)
-
 }
 
 res.json({received:true})
