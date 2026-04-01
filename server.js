@@ -47,30 +47,6 @@ app.get("/admin", (req, res) => {
   res.sendFile(__dirname + "/public/admin.html")
 })
 
-app.get("/bad", (req, res) => {
-  res.sendFile(__dirname + "/public/bad.html")
-})
-
-app.get("/cancel", (req, res) => {
-  res.sendFile(__dirname + "/public/cancel.html")
-})
-
-app.get("/for-business", (req, res) => {
-  res.sendFile(__dirname + "/public/for-business.html")
-})
-
-app.get("/index", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html")
-})
-
-app.get("/success", (req, res) => {
-  res.sendFile(__dirname + "/public/success.html")
-})
-
-app.get("/thanks", (req, res) => {
-  res.sendFile(__dirname + "/public/thanks.html")
-})
-
 /* ------------------------
 VISIT PAGE
 ------------------------ */
