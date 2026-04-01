@@ -382,7 +382,8 @@ app.post("/create-checkout", async(req,res)=>{
     success_url:`${process.env.BASE_URL}/success`,
     cancel_url:`${process.env.BASE_URL}/cancel`,
     metadata:{
-slug: slug
+slug: slug,
+plan: plan
 }
   });
 
@@ -420,7 +421,7 @@ const slug = session.metadata.slug
 
 await supabase
 .from("businesses")
-.update({subscription_active:true})
+.update({subscription_active:true, plan_type: session.metadata.plan})
 .eq("slug",slug)
 }
 
