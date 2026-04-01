@@ -29,6 +29,23 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+// List of HTML pages for pretty URLs
+const htmlPages = [
+  "admin",
+  "for-business",
+  "success",
+  "cancel",
+  "thanks",
+  "bad"
+];
+
+// Create a route for each page
+htmlPages.forEach(page => {
+  app.get(`/${page}`, (req, res) => {
+    res.sendFile(path.join(__dirname, "public", `${page}.html`));
+  });
+});
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -43,9 +60,7 @@ app.use(session({
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-app.get("/admin", (req, res) => {
-  res.sendFile(__dirname + "/public/admin.html")
-})
+
 
 /* ------------------------
 VISIT PAGE
