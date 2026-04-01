@@ -1,29 +1,166 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+<title>Business Dashboard</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leave a Review</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{font-family:Arial;text-align:center;background:#f5f5f5;padding:40px;}
+
+.container{
+background:white;
+padding:30px;
+max-width:700px;
+margin:auto;
+border-radius:10px;
+}
+
+input,textarea{
+width:80%;
+padding:10px;
+margin:10px;
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:6px;
+background:#3498db;
+color:white;
+cursor:pointer;
+margin:5px;
+}
+
+ul{text-align:left}
+
+#qr{
+width:150px;
+height:150px;
+margin-bottom:10px;
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h2>Leave a Review</h2>
+<div class="container">
 
-<textarea id="message" placeholder="Write your review here"></textarea>
-<br><br>
-<button onclick="send()">Submit Review</button>
+<h3 id="bizName"></h3>
+
+<h4>Metrics</h4>
+
+<p>Visits: <span id="visits"></span></p>
+<p>Positive: <span id="positive"></span></p>
+<p>Negative: <span id="negative"></span></p>
+<p>Review Clicks: <span id="reviews"></span></p>
+
+<h4>Rating Distribution</h4>
+
+<canvas id="ratingChart"></canvas>
+
+<h4>Your Review Link</h4>
+
+<input id="reviewLink" readonly>
+
+<br>
+
+<button onclick="copyLink()">Copy</button>
+
+<h4>QR Code</h4>
+
+<img id="qr">
+
+<br>
+
+<a id="qrDownload">Download QR</a>
+
+<h3>Send SMS Review Request</h3>
+
+<input id="customerPhone" placeholder="Customer phone">
+
+<button onclick="sendSMS()">Send SMS</button>
+
+<h4>Customer Feedback</h4>
+
+<ul id="negativeList"></ul>
+
+</div>
 
 <script>
-async function send() {
-  const message = document.getElementById("message").value;
-  const slug = window.location.pathname.split("/r/")[1]; // URL contains /r/:slug
-  await fetch("/feedback", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ business: slug, message })
-  });
-  window.location.href = "/thanks.html";
+
+const slug=sessionStorage.getItem("currentSlug")
+
+if(!slug){
+
+alert("Login again")
+
+window.location="/admin.html"
+
 }
+
+async function load(){
+
+const res=await fetch("/stats/"+slug)
+
+const stats=await res.json()
+
+document.getElementById("bizName").innerText=slug
+
+document.getElementById("visits").innerText=stats.visits
+document.getElementById("positive").innerText=stats.positive
+document.getElementById("negative").innerText=stats.negative
+document.getElementById("reviews").innerText=stats.reviews
+
+const reviewLink=window.location.origin+"/r/"+slug
+
+document.getElementById("reviewLink").value=reviewLink
+
+const qrUrl="/qr-download/"+slug
+
+document.getElementById("qr").src=qrUrl
+document.getElementById("qrDownload").href=qrUrl
+
+}
+
+function copyLink(){
+
+const link=document.getElementById("reviewLink")
+
+link.select()
+
+navigator.clipboard.writeText(link.value)
+
+alert("Copied")
+
+}
+
+async function sendSMS(){
+
+const phone=document.getElementById("customerPhone").value
+
+const res=await fetch("/send-sms",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({phone,slug})
+})
+
+const data=await res.json()
+
+if(data.success) alert("SMS sent")
+
+}
+
+load()
+
 </script>
 
 </body>
+
 </html>

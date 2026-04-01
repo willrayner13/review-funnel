@@ -12,6 +12,12 @@ const session = require("express-session");
 const twilio = require("twilio");
 const OpenAI = require("openai");
 const Stripe = require("stripe");
+const rateLimit = require("express-rate-limit")
+
+const smsLimiter = rateLimit({
+windowMs:60*1000,
+max:5
+})
 
 let stripe;
 if (process.env.STRIPE_SECRET) {
@@ -62,7 +68,25 @@ htmlPages.forEach(page => {
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+app.get("/r/:slug", (req, res) => {
 
+  const slug = req.params.slug
+
+  const filePath = path.join(__dirname, "public", "index.html")
+
+  let html = fs.readFileSync(filePath, "utf8")
+
+  html = html.replace(
+    "</body>",
+    `<script>
+      window.businessSlug="${slug}"
+    </script>
+    </body>`
+  )
+
+  res.send(html)
+
+})
 
 /* ------------------------
 VISIT PAGE
@@ -164,16 +188,25 @@ app.post("/feedback", async (req, res) => {
 });
 
 /* ------------------------
-ANALYTICS WITH RATING
+ANALYTICS WITH RATING + SUBSCRIPTION STATUS
 ------------------------ */
 app.get("/stats/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
+
+  // Fetch business info (subscription status)
+  const { data: businessData } = await supabase
+    .from("businesses")
+    .select("subscription_active, plan_type")
+    .eq("slug", req.params.slug)
+    .single();
+
+  if (!businessData) return res.status(404).json({ error: "Business not found" });
 
   const { data } = await supabase.from("events")
     .select("event_type, rating")
     .eq("business_slug", req.params.slug);
 
-  const stats = { visits: 0, positive: 0, negative: 0, reviews: 0, rating_avg: 0, rating_count: 0, rating_distribution: {} };
+  const stats = { visits: 0, positive: 0, negative: 0, reviews: 0, rating_avg: 0, rating_count: 0, rating_distribution: {}, subscription_active: businessData.subscription_active, plan_type: businessData.plan_type };
 
   let ratingTotal = 0;
   const ratingDist = {1:0,2:0,3:0,4:0,5:0};
@@ -332,7 +365,7 @@ app.get("/qr-download/:slug", async(req,res)=>{
 /* ------------------------
 SEND SMS
 ------------------------ */
-app.post("/send-sms", async(req,res)=>{
+app.post("/send-sms", smsLimiter, async(req,res)=>{
   const { phone, slug } = req.body;
   try{
     const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single();
@@ -364,9 +397,11 @@ app.post("/create-checkout", async(req,res)=>{
     payment_method_types:["card"],
     line_items:[{price:priceId, quantity:1}],
     mode:"subscription",
-    success_url:`${process.env.BASE_URL}/success.html`,
-    cancel_url:`${process.env.BASE_URL}/cancel.html`,
-    metadata:{slug, plan:plan||'starter'}
+    success_url:`${process.env.BASE_URL}/success`,
+    cancel_url:`${process.env.BASE_URL}/cancel`,
+    metadata:{
+slug: slug
+}
   });
 
   res.json({url:session.url});
@@ -375,21 +410,42 @@ app.post("/create-checkout", async(req,res)=>{
 /* ------------------------
 STRIPE WEBHOOK
 ------------------------ */
-app.post("/stripe-webhook", express.raw({type:"application/json"}), async(req,res)=>{
-   const sig = req.headers["stripe-signature"];
-   let event;
-   try{
-     event = stripe.webhooks.constructEvent(req.body,sig,process.env.STRIPE_WEBHOOK_SECRET);
-   }catch(err){return res.status(400).send("Webhook error");}
+app.post("/stripe-webhook", express.raw({type:'application/json'}), async (req,res)=>{
 
-   if(event.type==="checkout.session.completed"){
-     const session = event.data.object;
-     const slug = session.metadata.slug;
-     const plan = session.metadata.plan;
-     await supabase.from("businesses").update({subscription_active:true, plan_type:plan}).eq("slug",slug);
-   }
-   res.json({received:true});
-});
+const sig = req.headers["stripe-signature"]
+
+let event
+
+try{
+
+event = stripe.webhooks.constructEvent(
+req.body,
+sig,
+process.env.STRIPE_WEBHOOK_SECRET
+)
+
+}catch(err){
+
+console.log("Webhook error:",err.message)
+return res.status(400).send("Webhook error")
+
+}
+
+if(event.type === "checkout.session.completed"){
+
+const session = event.data.object
+const slug = session.metadata.slug
+
+await supabase
+.from("businesses")
+.update({subscription_status:"active"})
+.eq("slug",slug)
+
+}
+
+res.json({received:true})
+
+})
 
 const serverless = require("serverless-http");
 module.exports = app;

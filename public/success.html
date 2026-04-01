@@ -1,3 +1,54 @@
-<h2>Subscription successful 🎉</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscription Success</title>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f5f5f5; padding: 50px; }
+    .container { background: white; padding: 30px; max-width: 500px; margin: auto; border-radius: 10px; }
+    .loader { border: 6px solid #f3f3f3; border-top: 6px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Thank you for subscribing!</h2>
+    <p>We are confirming your subscription. Please wait...</p>
+    <div class="loader"></div>
+    <p id="status"></p>
+  </div>
 
-<a href="/for-business.html">Return to Dashboard</a>
+  <script>
+    // Get the business slug from sessionStorage
+    const slug = sessionStorage.getItem("currentSlug");
+
+    if (!slug) {
+      document.getElementById("status").innerText = "No business info found. Redirecting...";
+      setTimeout(() => { window.location.href = "/"; }, 3000);
+    } else {
+      // Poll subscription status
+      async function checkSubscription() {
+        try {
+          const res = await fetch("/stats/" + slug);
+          const data = await res.json();
+
+          if (data.subscription_active) {
+            // Redirect to dashboard once active
+window.location.href="/for-business"
+          } else {
+            // Wait 2 seconds and poll again
+            document.getElementById("status").innerText = "Subscription not active yet. Checking again...";
+            setTimeout(checkSubscription, 2000);
+          }
+        } catch (err) {
+          console.error(err);
+          document.getElementById("status").innerText = "Error checking subscription. Retrying...";
+          setTimeout(checkSubscription, 5000);
+        }
+      }
+
+      checkSubscription();
+    }
+  </script>
+</body>
+</html>
