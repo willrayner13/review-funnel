@@ -68,6 +68,26 @@ max-width:400px;
 <button class="yes" onclick="positive()">Yes</button>
 <button class="no" onclick="showFeedback()">No</button>
 
+<div id="ratingSection" style="display:none">
+
+<h3>How would you rate your experience?</h3>
+
+<p style="color:#666;font-size:14px;">
+Your feedback helps us improve ❤️
+</p>
+
+<div id="stars">
+
+<span onclick="rate(1)">⭐</span>
+<span onclick="rate(2)">⭐</span>
+<span onclick="rate(3)">⭐</span>
+<span onclick="rate(4)">⭐</span>
+<span onclick="rate(5)">⭐</span>
+
+</div>
+
+</div>
+
 <div id="reviewSection" style="display:none">
 
 <h3>⭐ Thank you!</h3>
@@ -125,7 +145,7 @@ headers:{
 body:JSON.stringify({slug})
 })
 
-document.getElementById("reviewSection").style.display="block"
+document.getElementById("ratingSection").style.display="block"
 
 
 
@@ -187,6 +207,33 @@ window.location.href = window.reviewLink
 
 document.getElementById("businessTitle").innerText = window.businessName
 
+
+function rate(stars){
+
+fetch("/rating",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+slug:slug,
+rating:stars
+})
+})
+
+if(stars >= 4){
+
+document.getElementById("ratingSection").style.display="none"
+document.getElementById("reviewSection").style.display="block"
+
+}else{
+
+document.getElementById("ratingSection").style.display="none"
+document.getElementById("feedbackBox").style.display="block"
+
+}
+
+}
 </script>
 
 </body>

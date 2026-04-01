@@ -75,6 +75,10 @@ text-align:left;
 <p>Conversion Rate: <span id="conversion"></span>%</p>
 <p>Negative Rate: <span id="negRate"></span>%</p>
 
+<h4>Rating Distribution</h4>
+<canvas id="ratingChart"></canvas>
+<p>Average Rating: <span id="ratingAvg">0</span></p>
+
 <canvas id="funnelChart"></canvas>
 
 <h4>Your Review Link</h4>
@@ -180,6 +184,21 @@ async function loadDashboard(slug){
  document.getElementById("qrDownload").href = qrUrl
 
  loadChart(stats)
+
+// inside loadDashboard(slug) after loadChart(stats)
+const ctx2 = document.getElementById("ratingChart");
+new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels: ['1⭐','2⭐','3⭐','4⭐','5⭐'],
+    datasets: [{
+      label:'Ratings',
+      data: [stats.rating_distribution[1], stats.rating_distribution[2], stats.rating_distribution[3], stats.rating_distribution[4], stats.rating_distribution[5]],
+      backgroundColor:'#f1c40f'
+    }]
+  }
+});
+document.getElementById("ratingAvg").innerText = stats.rating_avg;
 
  const feedbackRes = await fetch("/feedback-messages/"+slug)
  const messages = await feedbackRes.json()
