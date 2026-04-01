@@ -1,0 +1,8 @@
+# Ignore node_modules because Vercel rebuilds it
+node_modules/
+
+# Ignore local environment variables
+.env
+
+# Ignore any local logs or temp files
+*.log

@@ -29,6 +29,18 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static("public"));
+app.use(session({
+  secret: "supersecretkey",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
+
 // List of HTML pages for pretty URLs
 const htmlPages = [
   "admin",
@@ -42,20 +54,10 @@ const htmlPages = [
 // Create a route for each page
 htmlPages.forEach(page => {
   app.get(`/${page}`, (req, res) => {
-    res.sendFile(path.join(__dirname, "public", `${page}.html`));
+    res.sendFile(path.resolve("public", `${page}.html`));
   });
 });
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static("public"));
-app.use(session({
-  secret: "supersecretkey",
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-}));
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -368,4 +370,6 @@ app.post("/stripe-webhook", express.raw({type:"application/json"}), async(req,re
    res.json({received:true});
 });
 
-app.listen(3000,()=>{console.log("Server running on port 3000")});
+const serverless = require("serverless-http");
+module.exports = app;
+module.exports.handler = serverless(app);
