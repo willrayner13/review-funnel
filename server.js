@@ -43,6 +43,10 @@ app.use(session({
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+app.get("/admin", (req, res) => {
+  res.sendFile(__dirname + "/public/admin.html")
+})
+
 /* ------------------------
 VISIT PAGE
 ------------------------ */
