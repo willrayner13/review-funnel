@@ -48,6 +48,8 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 /* ------------------------
 VISIT PAGE
 ------------------------ */
+
+const path = require("path")
 app.get("/r/:business", async (req, res) => {
 
   const slug = req.params.business
@@ -65,7 +67,11 @@ app.get("/r/:business", async (req, res) => {
     event_type: "visit"
   })
 
-  const page = fs.readFileSync("./public/index.html", "utf8")
+
+const page = fs.readFileSync(
+  path.join(process.cwd(), "public", "index.html"),
+  "utf8"
+)
 
   res.send(`
   <html>
