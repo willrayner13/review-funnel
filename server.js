@@ -43,21 +43,32 @@ app.use(session({
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const path = require("path") // make sure this is at the top of your file
+app.get("/admin", (req, res) => {
+  res.sendFile(__dirname + "/public/admin.html")
+})
 
-const htmlPages = [
-  "admin",
-  "for-business",
-  "success",
-  "cancel",
-  "thanks",
-  "bad"
-]
+app.get("/bad", (req, res) => {
+  res.sendFile(__dirname + "/public/bad.html")
+})
 
-htmlPages.forEach(page => {
-  app.get(`/${page}`, (req, res) => {
-    res.sendFile(path.join(__dirname, "public", `${page}.html`))
-  })
+app.get("/cancel", (req, res) => {
+  res.sendFile(__dirname + "/public/cancel.html")
+})
+
+app.get("/for-business", (req, res) => {
+  res.sendFile(__dirname + "/public/for-business.html")
+})
+
+app.get("/index", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html")
+})
+
+app.get("/success", (req, res) => {
+  res.sendFile(__dirname + "/public/success.html")
+})
+
+app.get("/thanks", (req, res) => {
+  res.sendFile(__dirname + "/public/thanks.html")
 })
 
 /* ------------------------
