@@ -264,17 +264,38 @@ app.post("/generate-reply", async(req,res)=>{
 CREATE BUSINESS
 ------------------------ */
 app.post("/create-business", async(req,res)=>{
-  const { name,email,review,password } = req.body;
-  if(!password || password.length<4) return res.status(400).json({error:"Password required (min 4 characters)"});
-  const slug = name.toLowerCase().replace(/[^a-z0-9]/g,"-");
-  const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    const { name,email,review,password } = req.body;
 
-  const { error } = await supabase.from("businesses").insert({
-    name,email,review_link:review,slug,password:hashedPassword, plan_type:'starter', subscription_active:false
-  });
+    if(!password || password.length<4)
+      return res.status(400).json({error:"Password required (min 4 characters)"});
 
-  if(error) return res.status(500).json(error);
-  res.json({ success:true, slug });
+    const slug = name.toLowerCase().replace(/[^a-z0-9]/g,"-") + "-" + Math.floor(Math.random()*10000);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const { error } = await supabase.from("businesses").insert({
+      name,
+      email,
+      review_link:review,
+      slug,
+      password:hashedPassword,
+      plan_type:'starter',
+      subscription_active:false
+    });
+
+    if(error){
+      console.log("Supabase error:", error);
+      return res.status(500).json(error);
+    }
+
+    // ✅ Set session immediately
+    req.session.slug = slug;
+
+    res.json({ success:true, slug });
+  } catch(err) {
+    console.log("Server error:", err);
+    res.status(500).json({error: err.message});
+  }
 });
 
 /* ------------------------
