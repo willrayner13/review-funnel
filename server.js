@@ -13,7 +13,13 @@ const twilio = require("twilio")
 const OpenAI = require("openai")
 const Stripe = require("stripe")
 
-const stripe = new Stripe(process.env.STRIPE_SECRET)
+let stripe
+
+if (process.env.STRIPE_SECRET) {
+  stripe = new Stripe(process.env.STRIPE_SECRET)
+} else {
+  console.log("Stripe key missing - skipping Stripe init")
+}
 
 
 const twilioClient = twilio(
