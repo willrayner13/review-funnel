@@ -1,91 +1,190 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
-<title>Admin</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-
-body{
-font-family:Arial;
-background:#f5f5f5;
-text-align:center;
-padding:40px;
-}
-
-.container{
-background:white;
-padding:30px;
-max-width:500px;
-margin:auto;
-border-radius:10px;
-}
-
-input{
-width:80%;
-padding:10px;
-margin:10px;
-}
-
-button{
-padding:10px 20px;
-background:#3498db;
-color:white;
-border:none;
-border-radius:6px;
-}
-
-</style>
-
+  <title>Business Dashboard Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f5f5f5; padding: 40px; }
+    .container { background: white; padding: 30px; max-width: 700px; margin: auto; border-radius: 10px; }
+    input, textarea { width: 80%; padding: 10px; margin: 10px; }
+    button { padding: 10px 20px; border: none; border-radius: 6px; background: #3498db; color: white; cursor: pointer; margin: 5px; }
+    ul { text-align: left; }
+    #dashboard { margin-top: 40px; display: none; }
+    #qr { width: 150px; height: 150px; margin-bottom: 10px; }
+  </style>
 </head>
-
 <body>
 
 <div class="container">
 
-<h2>Create Business</h2>
+  <!-- Step 1: Create Business -->
+  <div id="signup">
+    <h2>Create Your Business</h2>
+    <input id="name" placeholder="Business name">
+    <input id="email" placeholder="Business email">
+    <input id="review" placeholder="Google review link">
+    <input id="password" placeholder="Dashboard password">
+    <button onclick="createBusiness()">Create Business</button>
+    <p id="signupResult"></p>
+  </div>
 
-<input id="name" placeholder="Business name">
+  <!-- Step 2: Subscription -->
+  <div id="subscribeSection" style="display:none;">
+    <h2>Subscribe to Enable Dashboard</h2>
+    <p>Complete subscription to start using your dashboard.</p>
+    <button onclick="subscribe()">Subscribe</button>
+  </div>
 
-<input id="email" placeholder="Business email">
+  <!-- Step 3: Dashboard -->
+  <div id="dashboard">
+    <h3 id="bizName"></h3>
 
-<input id="review" placeholder="Google review link">
+    <h4>Metrics</h4>
+    <p>Visits: <span id="visits"></span></p>
+    <p>Positive: <span id="positive"></span></p>
+    <p>Negative: <span id="negative"></span></p>
+    <p>Review Clicks: <span id="reviews"></span></p>
+    <p>Conversion Rate: <span id="conversion"></span>%</p>
+    <p>Negative Rate: <span id="negRate"></span>%</p>
 
-<input id="password" placeholder="Dashboard password">
+    <h4>Rating Distribution</h4>
+    <canvas id="ratingChart"></canvas>
+    <p>Average Rating: <span id="ratingAvg">0</span></p>
 
-<button onclick="create()">Create</button>
+    <canvas id="funnelChart" style="margin-top:20px;"></canvas>
 
-<p id="result"></p>
+    <h4>Your Review Link</h4>
+    <input id="reviewLink" readonly>
+    <br>
+    <button onclick="copyLink()">Copy Link</button>
+    <button onclick="openLink()">Open Link</button>
+
+    <h4>QR Code</h4>
+    <img id="qr">
+    <br>
+    <a id="qrDownload">Download QR</a>
+
+    <h3>Send SMS Review Request</h3>
+    <input id="customerPhone" placeholder="Customer phone number">
+    <button onclick="sendSMS()">Send SMS</button>
+
+    <h4>Customer Feedback</h4>
+    <ul id="negativeList"></ul>
+
+    <h4>AI Feedback Insights</h4>
+    <button onclick="loadAI()">Generate Summary</button>
+    <p id="aiSummary"></p>
+
+    <h3>AI Review Reply</h3>
+    <textarea id="reviewText" placeholder="Paste review"></textarea>
+    <button onclick="generateReply()">Generate Reply</button>
+    <textarea id="replyOutput"></textarea>
+    <button onclick="copyReply()">Copy Reply</button>
+  </div>
 
 </div>
 
 <script>
+let currentSlug = "";
 
-async function create(){
+async function createBusiness() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const review = document.getElementById("review").value;
+  const password = document.getElementById("password").value;
 
- const name=document.getElementById("name").value
- const email=document.getElementById("email").value
- const review=document.getElementById("review").value
- const password=document.getElementById("password").value
+  const res = await fetch("/create-business", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, review, password })
+  });
+  const data = await res.json();
 
- const res=await fetch("/create-business",{
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({name,email,review,password})
- })
-
- const data=await res.json()
-
- document.getElementById("result").innerText=
- `Business created! Slug: ${data.slug}`
-
+  if(data.success){
+    currentSlug = data.slug;
+    document.getElementById("signup").style.display = "none";
+    document.getElementById("subscribeSection").style.display = "block";
+  } else {
+    document.getElementById("signupResult").innerText = "Error: " + data.error;
+  }
 }
 
+async function subscribe() {
+  const res = await fetch("/create-checkout", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({slug: currentSlug})
+  });
+  const data = await res.json();
+  window.location = data.url;
+}
+
+async function loadDashboard() {
+  document.getElementById("subscribeSection").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+
+  const res = await fetch("/stats/"+currentSlug);
+  const stats = await res.json();
+
+  document.getElementById("bizName").innerText = currentSlug.replace(/-/g," ").toUpperCase();
+  document.getElementById("visits").innerText = stats.visits;
+  document.getElementById("positive").innerText = stats.positive;
+  document.getElementById("negative").innerText = stats.negative;
+  document.getElementById("reviews").innerText = stats.reviews;
+  document.getElementById("conversion").innerText = stats.conversion_rate;
+  document.getElementById("negRate").innerText = stats.negative_rate;
+
+  const reviewLink = window.location.origin + "/r/" + currentSlug;
+  document.getElementById("reviewLink").value = reviewLink;
+
+  const qrUrl = "/qr-download/" + currentSlug;
+  document.getElementById("qr").src = qrUrl;
+  document.getElementById("qrDownload").href = qrUrl;
+
+  // Funnel chart
+  new Chart(document.getElementById("funnelChart"), {
+    type:"bar",
+    data:{
+      labels:["Visits","Positive","Negative","Review Clicks"],
+      datasets:[{label:"Review Funnel",data:[stats.visits,stats.positive,stats.negative,stats.reviews]}]
+    }
+  });
+
+  // Rating chart
+  new Chart(document.getElementById("ratingChart"), {
+    type:'bar',
+    data:{
+      labels:['1⭐','2⭐','3⭐','4⭐','5⭐'],
+      datasets:[{
+        label:'Ratings',
+        data:[stats.rating_distribution[1],stats.rating_distribution[2],stats.rating_distribution[3],stats.rating_distribution[4],stats.rating_distribution[5]],
+        backgroundColor:'#f1c40f'
+      }]
+    }
+  });
+  document.getElementById("ratingAvg").innerText = stats.rating_avg;
+
+  // Load feedback messages
+  const feedbackRes = await fetch("/feedback-messages/"+currentSlug);
+  const messages = await feedbackRes.json();
+  const list = document.getElementById("negativeList");
+  list.innerHTML="";
+  messages.forEach(m=>{
+    const li = document.createElement("li");
+    li.innerText = `[${new Date(m.created_at).toLocaleString()}] ${m.message}`;
+    list.appendChild(li);
+  });
+}
+
+// Utility functions
+function copyLink(){const link=document.getElementById("reviewLink");link.select();navigator.clipboard.writeText(link.value);alert("Link copied");}
+function openLink(){window.open(document.getElementById("reviewLink").value,"_blank");}
+async function sendSMS(){const phone=document.getElementById("customerPhone").value;const res=await fetch("/send-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone, slug:currentSlug})});const data=await res.json();if(data.success)alert("SMS sent!");else alert("Error: "+data.error);}
+async function loadAI(){const res=await fetch("/ai-feedback/"+currentSlug);const data=await res.json();document.getElementById("aiSummary").innerText=data.summary;}
+async function generateReply(){const review=document.getElementById("reviewText").value;const res=await fetch("/generate-reply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({review})});const data=await res.json();document.getElementById("replyOutput").value=data.reply;}
+function copyReply(){const text=document.getElementById("replyOutput");text.select();navigator.clipboard.writeText(text.value);alert("Reply copied!");}
+
 </script>
-
 </body>
-
 </html>
