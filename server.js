@@ -54,11 +54,12 @@ app.get("/r/:business", async (req, res) => {
 
   if (!data) return res.send("Business not found")
 
-  // Track visit
   await supabase.from("events").insert({
     business_slug: slug,
     event_type: "visit"
   })
+
+  const page = fs.readFileSync("./public/index.html", "utf8")
 
   res.send(`
   <html>
@@ -69,7 +70,7 @@ app.get("/r/:business", async (req, res) => {
     window.reviewLink="${data.review_link}"
   </script>
 
-  ${fs.readFileSync(__dirname + "/public/index.html")}
+  ${page}
 
   </html>
   `)
