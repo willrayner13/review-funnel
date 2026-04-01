@@ -67,7 +67,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 // ---------- MIDDLEWARE ----------
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
     secret: "supersecretkey",
