@@ -316,7 +316,7 @@ app.post("/send-sms", async(req,res)=>{
     const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single()
     if(!data) return res.status(404).json({error:"Business not found"})
 
-    const message = `Hi! Thanks for visiting ${data.name} today. If you had a great experience, we’d really appreciate a review: ${process.env.BASE_URL}/${slug}`
+    const message = `Hi! Thanks for visiting ${data.name} today. If you had a great experience, we’d really appreciate a review: ${process.env.BASE_URL}/r/${slug}`
 
     await twilioClient.messages.create({
       from: process.env.TWILIO_PHONE,
