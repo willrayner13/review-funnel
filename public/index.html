@@ -108,7 +108,7 @@ max-width:400px;
    GET BUSINESS SLUG
 -------------------------- */
 
-const slug = window.location.pathname.replace("/","")
+const slug = window.slug
 
 
 /* -------------------------
@@ -127,9 +127,7 @@ body:JSON.stringify({slug})
 
 document.getElementById("reviewSection").style.display="block"
 
-setTimeout(()=>{
- leaveReview()
-},2000)
+
 
 }
 
@@ -183,7 +181,7 @@ headers:{
 body:JSON.stringify({slug})
 })
 
-window.location.href = "/review/" + slug
+window.location.href = window.reviewLink
 
 }
 

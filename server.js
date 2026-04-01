@@ -43,29 +43,37 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 VISIT PAGE
 ------------------------ */
 app.get("/r/:business", async (req, res) => {
-  try {
-    const slug = req.params.business
-    const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single()
-    if (!data) return res.send("Business not found")
 
-    await supabase.from("events").insert({ business_slug: slug, location_id: selectedLocation, event_type: "visit" })
+  const slug = req.params.business
 
-    res.send(`
-      <html>
-      <head><title>${data.name} Feedback</title></head>
-      <body>
-        <script>
-          window.businessName="${data.name}"
-          window.slug="${slug}"
-        </script>
-        ${fs.readFileSync(__dirname + "/public/index.html")}
-      </body>
-      </html>
-    `)
-  } catch (err) {
-    console.log(err)
-    res.status(500).send("Server error")
-  }
+  const { data } = await supabase
+    .from("businesses")
+    .select("*")
+    .eq("slug", slug)
+    .single()
+
+  if (!data) return res.send("Business not found")
+
+  // Track visit
+  await supabase.from("events").insert({
+    business_slug: slug,
+    event_type: "visit"
+  })
+
+  res.send(`
+  <html>
+
+  <script>
+    window.businessName="${data.name}"
+    window.slug="${slug}"
+    window.reviewLink="${data.review_link}"
+  </script>
+
+  ${fs.readFileSync(__dirname + "/public/index.html")}
+
+  </html>
+  `)
+
 })
 
 /* ------------------------
@@ -81,61 +89,81 @@ app.get("/review/:slug", async (req, res) => {
 POSITIVE
 ------------------------ */
 app.post("/positive", async (req, res) => {
+
+  console.log("Positive endpoint hit")
+  console.log(req.body)
+
   const { slug } = req.body
-  await supabase.from("events").insert({ business_slug: slug, location_id: selectedLocation, event_type: "positive" })
+
+  const { error } = await supabase
+    .from("events")
+    .insert({
+      business_slug: slug,
+      event_type: "positive"
+    })
+
+  if(error){
+    console.log("SUPABASE ERROR:", error)
+    return res.status(500).json(error)
+  }
+
   res.json({ success: true })
+
 })
 
 /* ------------------------
 REVIEW CLICK
 ------------------------ */
 app.post("/review-click", async (req, res) => {
+
+  console.log("Review click endpoint hit")
+  console.log(req.body)
+
   const { slug } = req.body
-  await supabase.from("events").insert({ business_slug: slug, location_id: selectedLocation, event_type: "review_click" })
+
+  const { error } = await supabase
+    .from("events")
+    .insert({
+      business_slug: slug,
+      event_type: "review_click"
+    })
+
+  if(error){
+    console.log("SUPABASE ERROR:", error)
+    return res.status(500).json(error)
+  }
+
   res.json({ success: true })
+
 })
 
 /* ------------------------
 NEGATIVE FEEDBACK
 ------------------------ */
 app.post("/feedback", async (req, res) => {
+
+  console.log("Feedback endpoint hit")
+  console.log(req.body)
+
   const { business, message } = req.body
-  const { data } = await supabase.from("businesses").select("*").eq("slug", business).single()
 
-  // store negative feedback with message
-  await supabase.from("events").insert({ business_slug: business, location_id: selectedLocation, event_type: "negative", message })
+  const { data, error } = await supabase
+    .from("events")
+    .insert({
+      business_slug: business,
+      event_type: "negative",
+      message: message
+    })
 
-  // send email to business
-await resend.emails.send({
-  from: "feedback@yourdomain.com",
-  to: data.email,
-  subject: "New Customer Feedback",
-  html: `
-  <h2>New Customer Feedback</h2>
+  if (error) {
+    console.log("SUPABASE ERROR:", error)
+    return res.status(500).json(error)
+  }
 
-  <p><strong>Business:</strong> ${data.name}</p>
-
-  <p><strong>Message:</strong></p>
-
-  <div style="
-    background:#f5f5f5;
-    padding:15px;
-    border-radius:6px;
-    font-size:16px;
-  ">
-    ${message}
-  </div>
-
-  <p style="margin-top:20px">
-    View your dashboard:<br>
-    <a href="${process.env.BASE_URL}/for-business.html">
-      Open Dashboard
-    </a>
-  </p>
-  `
-})
+  console.log("Feedback saved:", data)
 
   res.json({ success: true })
+
 })
 
 /* ------------------------
