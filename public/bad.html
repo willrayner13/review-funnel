@@ -1,48 +1,43 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Feedback</title>
-<link rel="stylesheet" href="/style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback — ReviewBoost</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .container { max-width: 480px; text-align: left; }
+    .icon { font-size: 2.8rem; display: block; margin-bottom: 20px; }
+    h2 { margin-bottom: 8px; }
+    p { color: var(--cream-dim); margin-bottom: 24px; }
+    textarea { min-height: 130px; }
+  </style>
 </head>
-
 <body>
-
-<h2>We're sorry to hear that</h2>
-
-<textarea id="message" placeholder="Tell us what went wrong"></textarea>
-
-<br><br>
-
-<button onclick="send()">Send Feedback</button>
+  <div class="container">
+    <span class="icon">💬</span>
+    <h2>We're sorry to hear that</h2>
+    <p>Tell us what happened and we'll do our best to make it right. Your feedback is private.</p>
+    <textarea id="message" placeholder="What could we have done better?"></textarea>
+    <button class="btn-full" onclick="send()">Send Feedback</button>
+  </div>
 
 <script>
-
-const slug=window.slug
+const slug = window.slug;
 
 async function send(){
+  const message = document.getElementById("message").value;
+  const btn = document.querySelector('button[onclick="send()"]');
+  btn.disabled = true; btn.textContent = 'Sending...';
 
-const message=document.getElementById("message").value
-
-await fetch("/feedback",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-business:slug,
-message
-})
-})
-
-window.location="/thanks"
-
+  await fetch("/feedback",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ business:slug, message })
+  });
+  window.location = "/thanks";
 }
-
 </script>
-
 </body>
-
 </html>

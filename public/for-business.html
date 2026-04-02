@@ -1,187 +1,348 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Business Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — ReviewBoost</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { min-height: 100vh; padding: 0; background-color: var(--bg); }
+
+    /* Top nav */
+    .topnav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(30,30,28,0.85);
+      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 8px; }
+    .nav-logo-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-right button { font-size: 0.8rem; padding: 9px 16px; }
+    .nav-biz {
+      font-size: 0.8rem; color: var(--cream-dim);
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 12px;
+    }
+
+    /* Page body */
+    .dash-body { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* Section */
+    .dash-section { margin-bottom: 48px; }
+    .dash-section-title {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.4px;
+      color: var(--accent); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .dash-section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* Metrics */
+    .metrics-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .metric-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .metric-card:hover { border-color: var(--border-hover); }
+    .metric-value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .metric-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cream-dim); }
+
+    /* Card panel */
+    .panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      margin-bottom: 16px;
+    }
+    .panel h3 { font-size: 0.95rem; margin-bottom: 18px; color: var(--cream-dim); font-family: 'Syne', sans-serif; font-weight: 600; }
+
+    /* Input + button row */
+    .input-row { display: flex; gap: 10px; margin-bottom: 0; }
+    .input-row input { flex: 1; margin-bottom: 0; }
+    .input-row button { flex-shrink: 0; padding: 13px 18px; font-size: 0.85rem; }
+
+    /* QR */
+    .qr-area { display: flex; align-items: flex-start; gap: 24px; }
+    #qr { width: 130px; height: 130px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-3); flex-shrink: 0; }
+    .qr-info h4 { font-size: 0.85rem; color: var(--cream); margin-bottom: 6px; }
+    .qr-info p { font-size: 0.8rem; color: var(--cream-dim); margin-bottom: 12px; }
+    #qrDownload {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.82rem; padding: 9px 16px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--cream); font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    #qrDownload:hover { border-color: var(--border-hover); background: var(--surface-3); }
+
+    /* Embed code */
+    #embedCode { font-family: 'Courier New', monospace; font-size: 0.8rem; background: var(--surface-3); color: #8EC9A8; min-height: 56px; }
+
+    /* Feedback list */
+    #negativeList { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
+    #negativeList li {
+      background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--danger);
+      border-radius: var(--radius-sm); padding: 12px 16px; font-size: 0.875rem; color: var(--cream-dim);
+    }
+    #negativeList::-webkit-scrollbar { width: 4px; }
+    #negativeList::-webkit-scrollbar-track { background: transparent; }
+    #negativeList::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
+
+    /* AI reply */
+    #reviewText { min-height: 90px; }
+    #aiReply { min-height: 90px; background: rgba(200,169,110,0.05); border-color: rgba(200,169,110,0.2); }
+
+    /* Chart */
+    .chart-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    canvas { max-height: 200px; }
+
+    /* Flash */
+    .flash { font-size: 0.75rem; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity 0.3s; }
+    .flash.show { opacity: 1; }
+
+    @media (max-width: 700px) {
+      .topnav { padding: 16px 20px; }
+      .metrics-grid { grid-template-columns: repeat(2,1fr); }
+      .qr-area { flex-direction: column; }
+      .dash-body { padding: 28px 16px 60px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-<h3 id="bizName"></h3>
+<!-- Top Navigation -->
+<nav class="topnav">
+  <div class="nav-logo"><span class="nav-logo-dot"></span>ReviewBoost</div>
+  <div class="nav-right">
+    <span class="nav-biz" id="bizName">Loading...</span>
+    <button class="btn-secondary" onclick="billing()">Billing</button>
+    <button class="btn-ghost" onclick="logout()">Sign out</button>
+  </div>
+</nav>
 
-<h4>Metrics</h4>
-<p>Visits: <span id="visits"></span></p>
-<p>Positive: <span id="positive"></span></p>
-<p>Negative: <span id="negative"></span></p>
-<p>Review Clicks: <span id="reviews"></span></p>
+<div class="dash-body">
 
-<h4>Rating Distribution</h4>
-<canvas id="ratingChart"></canvas>
+  <!-- Metrics -->
+  <div class="dash-section">
+    <div class="dash-section-title">Overview</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" id="visits">—</div>
+        <div class="metric-label">Total Visits</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="positive" style="color:#8EC9A8">—</div>
+        <div class="metric-label">Positive</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="negative" style="color:#D4897C">—</div>
+        <div class="metric-label">Negative</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="reviews" style="color:var(--accent)">—</div>
+        <div class="metric-label">Review Clicks</div>
+      </div>
+    </div>
+  </div>
 
-<h4>Your Review Link</h4>
-<input id="reviewLink" readonly>
-<button onclick="copyLink()">Copy</button>
+  <!-- Rating Chart -->
+  <div class="dash-section">
+    <div class="dash-section-title">Rating Distribution</div>
+    <div class="chart-panel">
+      <canvas id="ratingChart"></canvas>
+    </div>
+  </div>
 
-<h4>Embed Review Button</h4>
-<textarea id="embedCode" readonly style="width:100%;height:70px"></textarea>
+  <!-- Review link & QR -->
+  <div class="dash-section">
+    <div class="dash-section-title">Share Your Funnel</div>
+    <div class="panel">
+      <h3>Review link</h3>
+      <div class="input-row">
+        <input id="reviewLink" readonly>
+        <button onclick="copyLink()">Copy <span class="flash" id="copyFlash">✓</span></button>
+      </div>
+    </div>
 
-<h4>QR Code</h4>
-<img id="qr">
-<br>
-<a id="qrDownload">Download QR</a>
+    <div class="panel">
+      <h3>QR Code</h3>
+      <div class="qr-area">
+        <img id="qr" alt="QR Code">
+        <div class="qr-info">
+          <h4>Print-ready QR code</h4>
+          <p>Place it on tables, receipts, or posters so customers can scan and leave a review instantly.</p>
+          <a id="qrDownload" download>⬇ Download QR Code</a>
+        </div>
+      </div>
+    </div>
 
-<h3>Send SMS Review Request</h3>
-<input id="customerPhone" placeholder="Customer phone">
-<button onclick="sendSMS()">Send SMS</button>
+    <div class="panel">
+      <h3>Embed button</h3>
+      <textarea id="embedCode" readonly></textarea>
+    </div>
+  </div>
 
-<h3>Send Email Review Request</h3>
+  <!-- Messaging -->
+  <div class="dash-section">
+    <div class="dash-section-title">Request Reviews</div>
 
-<input id="customerEmail" placeholder="Customer email">
+    <div class="panel">
+      <h3>Send SMS</h3>
+      <div class="input-row">
+        <input id="customerPhone" type="tel" placeholder="Customer phone number">
+        <button onclick="sendSMS()">Send SMS</button>
+      </div>
+    </div>
 
-<button onclick="sendEmail()">Send Email</button>
+    <div class="panel">
+      <h3>Send Email</h3>
+      <div class="input-row">
+        <input id="customerEmail" type="email" placeholder="Customer email address">
+        <button onclick="sendEmail()">Send Email</button>
+      </div>
+    </div>
+  </div>
 
-<h4>Customer Feedback</h4>
-<ul id="negativeList"></ul>
+  <!-- AI Reply -->
+  <div class="dash-section">
+    <div class="dash-section-title">AI Review Replies</div>
+    <div class="panel">
+      <h3>Paste a customer review to generate a reply</h3>
+      <textarea id="reviewText" placeholder="e.g. Food was amazing but the wait was a bit long..."></textarea>
+      <button onclick="generateReply()" style="margin-top:4px;">Generate Reply</button>
+      <div style="height:14px;"></div>
+      <textarea id="aiReply" placeholder="Your AI-generated reply will appear here..." readonly></textarea>
+    </div>
+  </div>
+
+  <!-- Private Feedback -->
+  <div class="dash-section">
+    <div class="dash-section-title">Private Feedback</div>
+    <div class="panel" style="padding-bottom:8px;">
+      <h3>Customer feedback captured privately</h3>
+      <ul id="negativeList"><li style="color:rgba(234,231,220,0.25);border-left-color:var(--border);">No feedback yet</li></ul>
+    </div>
+  </div>
+
 </div>
-
-<button onclick="logout()">Logout</button>
-
-<button onclick="billing()">Manage Subscription</button>
-
-<h3>AI Review Reply Generator</h3>
-
-<textarea id="reviewText" placeholder="Paste customer review here"></textarea>
-
-<button onclick="generateReply()">Generate Reply</button>
-
-<textarea id="aiReply" placeholder="AI reply will appear here"></textarea>
 
 <script>
 let slug;
 
 async function checkSession(){
-
-const res = await fetch("/session")
-const data = await res.json()
-
-if(!data.loggedIn){
-
-window.location="/login"
-return
-
+  const res = await fetch("/session");
+  const data = await res.json();
+  if(!data.loggedIn){ window.location="/login"; return; }
+  slug = data.slug;
+  load();
 }
-
-slug = data.slug
-
-load()
-
-}
-
-checkSession()
+checkSession();
 
 async function load(){
-  const res=await fetch("/stats/"+slug);
-  const stats=await res.json();
-  document.getElementById("bizName").innerText=slug;
-  document.getElementById("visits").innerText=stats.visits;
-  document.getElementById("positive").innerText=stats.positive;
-  document.getElementById("negative").innerText=stats.negative;
-  document.getElementById("reviews").innerText=stats.reviews;
-  const reviewLink=window.location.origin+"/r/"+slug;
-  document.getElementById("reviewLink").value=reviewLink;
-  document.getElementById("embedCode").value =
-`<a href="${reviewLink}" target="_blank">Leave us a review</a>`
-  const qrUrl="/qr-download/"+slug;
-  document.getElementById("qr").src=qrUrl;
-  document.getElementById("qrDownload").href=qrUrl;
+  const res = await fetch("/stats/"+slug);
+  const stats = await res.json();
 
-const list = document.getElementById("negativeList")
-list.innerHTML = ""
+  document.getElementById("bizName").innerText = slug;
+  document.getElementById("visits").innerText = stats.visits ?? 0;
+  document.getElementById("positive").innerText = stats.positive ?? 0;
+  document.getElementById("negative").innerText = stats.negative ?? 0;
+  document.getElementById("reviews").innerText = stats.reviews ?? 0;
 
-stats.feedback.forEach(f => {
+  const reviewLink = window.location.origin+"/r/"+slug;
+  document.getElementById("reviewLink").value = reviewLink;
+  document.getElementById("embedCode").value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`;
 
-  const li = document.createElement("li")
-  li.innerText = f
+  const qrUrl = "/qr-download/"+slug;
+  document.getElementById("qr").src = qrUrl;
+  document.getElementById("qrDownload").href = qrUrl;
 
-  list.appendChild(li)
-
-})
+  const list = document.getElementById("negativeList");
+  if(stats.feedback && stats.feedback.length > 0){
+    list.innerHTML = "";
+    stats.feedback.forEach(f => {
+      const li = document.createElement("li");
+      li.innerText = f;
+      list.appendChild(li);
+    });
+  }
 
   // Chart
-  const ctx=document.getElementById('ratingChart').getContext('2d');
-  new Chart(ctx,{type:'bar',data:{labels:['1','2','3','4','5'],datasets:[{label:'Ratings',data:[stats.rating_distribution[1],stats.rating_distribution[2],stats.rating_distribution[3],stats.rating_distribution[4],stats.rating_distribution[5]],backgroundColor:'#EAE7DC'}]},options:{scales:{y:{beginAtZero:true}}}});
+  const ctx = document.getElementById('ratingChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['1★','2★','3★','4★','5★'],
+      datasets:[{
+        label: 'Ratings',
+        data: [
+          stats.rating_distribution?.[1]||0,
+          stats.rating_distribution?.[2]||0,
+          stats.rating_distribution?.[3]||0,
+          stats.rating_distribution?.[4]||0,
+          stats.rating_distribution?.[5]||0
+        ],
+        backgroundColor: ['#C0675A','#C07A5A','#C0A05A','#8BAC6A','#6A9E7F'],
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(234,231,220,0.06)' }, ticks: { color: 'rgba(234,231,220,0.4)', font: { size: 11 } } },
+        x: { grid: { display: false }, ticks: { color: 'rgba(234,231,220,0.5)', font: { size: 12 } } }
+      }
+    }
+  });
 }
 
 function copyLink(){
-  const link=document.getElementById("reviewLink");
+  const link = document.getElementById("reviewLink");
   link.select();
   navigator.clipboard.writeText(link.value);
-  alert("Link copied!");
+  const flash = document.getElementById("copyFlash");
+  flash.classList.add("show");
+  setTimeout(() => flash.classList.remove("show"), 2000);
 }
 
 async function sendSMS(){
-  const phone=document.getElementById("customerPhone").value;
-  const res=await fetch("/send-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone,slug})});
-  const data=await res.json();
-  if(data.success) alert("SMS sent");
-}
-
-function logout(){
-window.location="/logout"
-}
-
-async function billing(){
-
-const res=await fetch("/billing-portal",{method:"POST"})
-const data=await res.json()
-
-window.location=data.url
-
-}
-
-async function generateReply(){
-
-const review=document.getElementById("reviewText").value
-
-const res=await fetch("/generate-reply",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({review})
-})
-
-const data=await res.json()
-
-if(data.error){
-alert(data.error)
-return
-}
-
-document.getElementById("aiReply").value=data.reply
-
+  const phone = document.getElementById("customerPhone").value;
+  const res = await fetch("/send-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone,slug})});
+  const data = await res.json();
+  if(data.success){ document.getElementById("customerPhone").value=""; alert("SMS sent successfully."); }
 }
 
 async function sendEmail(){
-
-const email=document.getElementById("customerEmail").value
-
-const res=await fetch("/send-email",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({email})
-})
-
-const data=await res.json()
-
-if(data.success){
-alert("Email sent")
+  const email = document.getElementById("customerEmail").value;
+  const res = await fetch("/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})});
+  const data = await res.json();
+  if(data.success){ document.getElementById("customerEmail").value=""; alert("Email sent successfully."); }
 }
 
+async function generateReply(){
+  const review = document.getElementById("reviewText").value;
+  const btn = document.querySelector('button[onclick="generateReply()"]');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  const res = await fetch("/generate-reply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({review})});
+  const data = await res.json();
+  if(data.error){ alert(data.error); }
+  else { document.getElementById("aiReply").value = data.reply; }
+  btn.disabled = false; btn.textContent = 'Generate Reply';
 }
 
+function logout(){ window.location="/logout"; }
 
+async function billing(){
+  const res = await fetch("/billing-portal",{method:"POST"});
+  const data = await res.json();
+  window.location = data.url;
+}
 </script>
-
 </body>
 </html>

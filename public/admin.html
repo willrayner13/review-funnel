@@ -1,48 +1,210 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create Business</title>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Your Account — ReviewBoost</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 16px 64px; }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--cream);
+      margin-bottom: 40px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+
+    .container { max-width: 520px; width: 100%; }
+
+    .page-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--cream-dim);
+      display: block;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+    .form-group input { margin-bottom: 0; }
+
+    .helper-text {
+      font-size: 0.75rem;
+      color: rgba(234,231,220,0.3);
+      margin-top: 5px;
+    }
+
+    .login-link {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      margin-top: 20px;
+    }
+    .login-link a { color: var(--accent); font-weight: 500; }
+    .login-link a:hover { text-decoration: underline; }
+
+    /* Plans */
+    #plans { display: none; }
+    #plans .section-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--cream-dim);
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .plan {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .plan:hover {
+      border-color: rgba(234,231,220,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .plan.featured { border-color: var(--accent); background: linear-gradient(135deg, var(--surface-2) 0%, rgba(200,169,110,0.07) 100%); }
+    .plan.featured::after {
+      content: 'POPULAR';
+      position: absolute; top: 12px; right: -24px;
+      background: var(--accent); color: #1E1E1C;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 1px;
+      padding: 3px 30px; transform: rotate(35deg);
+    }
+
+    .plan-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .plan-price { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin: 8px 0 2px; }
+    .plan-price sup { font-size: 1rem; vertical-align: top; margin-top: 5px; }
+    .plan-price span { font-size: 0.85rem; font-weight: 400; color: var(--cream-dim); }
+    .plan-tagline { font-size: 0.78rem; color: var(--cream-dim); margin-bottom: 18px; line-height: 1.4; }
+
+    .plan-features { list-style: none; margin-bottom: 20px; }
+    .plan-features li {
+      font-size: 0.78rem; color: var(--cream-dim);
+      padding: 3px 0; display: flex; align-items: center; gap: 7px;
+    }
+    .plan-features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+    .plan button { width: 100%; justify-content: center; font-size: 0.85rem; padding: 11px 16px; }
+
+    @media (max-width: 500px) { .plans-grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>Create Your Business</h2>
+  <div class="logo">
+    <span class="logo-dot"></span>
+    ReviewBoost
+  </div>
 
-  <input id="name" placeholder="Business name">
-  <input id="email" placeholder="Business email">
-  <input id="review" placeholder="Google review link">
-  <input id="password" placeholder="Dashboard password">
+  <div class="container">
+    <p class="page-eyebrow">Get started</p>
+    <h2>Create your account</h2>
+    <p style="margin-bottom:32px;">Start collecting more reviews and capturing feedback privately.</p>
 
-  <button onclick="createBusiness()">Create Business</button>
-  <p id="result"></p>
-
-<p>Already have an account? <a href="/login">Login here</a></p>
-
-  <div id="plans" style="display:none">
-    <h3>Select Plan</h3>
-    <div class="plan">
-      <h4>Starter</h4>
-      <p>$19 / month - Basic features</p>
-      <button onclick="subscribe('starter')">Select</button>
+    <div class="form-group">
+      <label for="name">Business name</label>
+      <input id="name" type="text" placeholder="e.g. The Coffee House">
     </div>
-    <div class="plan">
-      <h4>Pro</h4>
-      <p>$49 / month - Premium features + analytics + SMS automation</p>
-      <button onclick="subscribe('pro')">Select</button>
+
+    <div class="form-group">
+      <label for="email">Business email</label>
+      <input id="email" type="email" placeholder="you@yourbusiness.com">
+    </div>
+
+    <div class="form-group">
+      <label for="review">Google review link</label>
+      <input id="review" type="url" placeholder="https://g.page/your-business/review">
+      <p class="helper-text">Paste your Google Maps review URL here</p>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Dashboard password</label>
+      <input id="password" type="password" placeholder="Choose a secure password">
+    </div>
+
+    <button class="btn-full" onclick="createBusiness()" style="margin-top:8px;">
+      Create Account →
+    </button>
+
+    <p id="result"></p>
+
+    <div class="login-link">
+      Already have an account? <a href="/login">Sign in</a>
+    </div>
+
+    <!-- Plan selection (shown after account creation) -->
+    <div id="plans">
+      <div style="height:1px;background:var(--border);margin:36px 0;"></div>
+      <span class="section-label">Choose your plan</span>
+
+      <div class="plans-grid">
+        <div class="plan">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price"><sup>$</sup>19<span>/mo</span></div>
+          <div class="plan-tagline">Everything you need to start collecting reviews.</div>
+          <ul class="plan-features">
+            <li>Review funnel page</li>
+            <li>Analytics dashboard</li>
+            <li>QR code generation</li>
+            <li>Private feedback capture</li>
+          </ul>
+          <button onclick="subscribe('starter')">Get Started</button>
+        </div>
+
+        <div class="plan featured">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price"><sup>$</sup>49<span>/mo</span></div>
+          <div class="plan-tagline">Automation, AI, and advanced tools.</div>
+          <ul class="plan-features">
+            <li>Everything in Starter</li>
+            <li>AI review reply generator</li>
+            <li>SMS automation</li>
+            <li>Email campaigns</li>
+            <li>Advanced analytics</li>
+          </ul>
+          <button onclick="subscribe('pro')" style="background:var(--accent);color:#1E1E1C;border-color:var(--accent);">Upgrade to Pro</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
 <script>
 let currentSlug = "";
 
 async function createBusiness(){
-  const name=document.getElementById("name").value;
-  const email=document.getElementById("email").value;
-  const review=document.getElementById("review").value;
-  const password=document.getElementById("password").value;
+  const btn = document.querySelector('button[onclick="createBusiness()"]');
+  btn.disabled = true;
+  btn.textContent = 'Creating account...';
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const review = document.getElementById("review").value;
+  const password = document.getElementById("password").value;
 
   const res = await fetch("/create-business",{
     method:"POST",
@@ -50,14 +212,19 @@ async function createBusiness(){
     body:JSON.stringify({name,email,review,password})
   });
   const data = await res.json();
+
   if(data.success){
-    currentSlug=data.slug;
-    sessionStorage.setItem("currentSlug",currentSlug);
-    document.getElementById("plans").style.display="block";
-document.getElementById("result").innerText="Business created! Redirecting..."
-window.location="/for-business"
-  } else{
-    document.getElementById("result").innerText="Error creating business";
+    currentSlug = data.slug;
+    sessionStorage.setItem("currentSlug", currentSlug);
+    document.getElementById("result").innerText = "✓ Account created! Choose a plan below.";
+    document.getElementById("result").style.color = "#8EC9A8";
+    document.getElementById("plans").style.display = "block";
+    btn.textContent = '✓ Account Created';
+  } else {
+    document.getElementById("result").innerText = "Something went wrong. Please try again.";
+    document.getElementById("result").style.color = "#D4897C";
+    btn.disabled = false;
+    btn.textContent = 'Create Account →';
   }
 }
 
@@ -65,10 +232,10 @@ async function subscribe(plan){
   const res = await fetch("/create-checkout",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({slug:currentSlug,plan})
+    body:JSON.stringify({slug:currentSlug, plan})
   });
   const data = await res.json();
-  window.location=data.url;
+  window.location = data.url;
 }
 </script>
 

@@ -1,53 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Business Login</title>
-<link rel="stylesheet" href="/style.css">
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — ReviewBoost</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
 
+    .logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
+      color: var(--cream); margin-bottom: 48px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+
+    .container { max-width: 440px; width: 100%; padding: 44px 40px; }
+
+    .page-eyebrow {
+      font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--accent); margin-bottom: 10px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { font-size: 0.8rem; font-weight: 500; color: var(--cream-dim); display: block; margin-bottom: 6px; }
+    .form-group input { margin-bottom: 0; }
+
+    .signup-link { text-align: center; font-size: 0.85rem; color: var(--cream-dim); margin-top: 20px; }
+    .signup-link a { color: var(--accent); font-weight: 500; }
+    .signup-link a:hover { text-decoration: underline; }
+
+    #result { text-align: center; min-height: 20px; font-size: 0.875rem; color: #D4897C; }
+  </style>
+</head>
 <body>
 
-<div class="container">
+  <div class="logo"><span class="logo-dot"></span>ReviewBoost</div>
 
-<h2>Business Dashboard Login</h2>
+  <div class="container">
+    <p class="page-eyebrow">Welcome back</p>
+    <h2>Sign in to your dashboard</h2>
+    <p style="margin-bottom:32px;">Manage your reviews, feedback, and analytics.</p>
 
-<input id="email" placeholder="Business email">
-<input id="password" placeholder="Password" type="password">
+    <div class="form-group">
+      <label for="email">Business email</label>
+      <input id="email" type="email" placeholder="you@yourbusiness.com">
+    </div>
 
-<button onclick="login()">Login</button>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="Your dashboard password">
+    </div>
 
-<p id="result"></p>
+    <button class="btn-full" onclick="login()" style="margin-top:8px;">Sign In →</button>
 
-</div>
+    <p id="result"></p>
+
+    <div class="signup-link">
+      Don't have an account? <a href="/admin">Create one free</a>
+    </div>
+  </div>
 
 <script>
-
 async function login(){
+  const btn = document.querySelector('button[onclick="login()"]');
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
 
-const email=document.getElementById("email").value
-const password=document.getElementById("password").value
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-const res=await fetch("/verify-login",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({email,password})
-})
+  const res = await fetch("/verify-login",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email,password})
+  });
+  const data = await res.json();
 
-const data=await res.json()
-
-if(data.success){
-
-window.location="/for-business"
-
-}else{
-
-document.getElementById("result").innerText="Login failed"
-
+  if(data.success){
+    window.location = "/for-business";
+  } else {
+    document.getElementById("result").innerText = "Incorrect email or password.";
+    btn.disabled = false;
+    btn.textContent = 'Sign In →';
+  }
 }
 
-}
-
+// Allow Enter key to submit
+document.addEventListener("keydown", e => {
+  if(e.key === "Enter") login();
+});
 </script>
 
 </body>

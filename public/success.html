@@ -1,31 +1,51 @@
-<!-- Example: success.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subscription Success</title>
-<link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscription Confirmed — ReviewBoost</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .container { max-width: 460px; text-align: center; }
+    .icon { font-size: 3rem; display: block; margin-bottom: 20px; animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both; }
+    @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    h2 { margin-bottom: 8px; }
+    p { color: var(--cream-dim); margin-bottom: 4px; }
+    #status { color: var(--accent); font-size: 0.85rem; margin-top: 8px; }
+    .loader-wrap { display: flex; justify-content: center; margin: 24px 0 8px; }
+    .loader { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
-<div class="container">
-<h2>Thank you for subscribing!</h2>
-<p>We are confirming your subscription...</p>
-<div class="loader"></div>
-<p id="status"></p>
-</div>
+  <div class="container">
+    <span class="icon">🎉</span>
+    <h2>Thank you for subscribing!</h2>
+    <p>We're confirming your subscription — this only takes a moment.</p>
+    <div class="loader-wrap"><div class="loader"></div></div>
+    <p id="status">Verifying payment...</p>
+  </div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug") || sessionStorage.getItem("currentSlug");
-if (!slug) { document.getElementById("status").innerText="No business info."; setTimeout(()=>window.location.href="/",3000);}
-else{
-async function checkSubscription(){
-  const res=await fetch("/stats/"+slug);
-  const data=await res.json();
-  if(data.subscription_active) window.location.href="/for-business";
-  else{document.getElementById("status").innerText="Checking subscription..."; setTimeout(checkSubscription,2000);}
-}
-checkSubscription();
+
+if(!slug){
+  document.getElementById("status").innerText = "No account info found.";
+  setTimeout(() => window.location.href = "/", 3000);
+} else {
+  async function checkSubscription(){
+    const res = await fetch("/stats/"+slug);
+    const data = await res.json();
+    if(data.subscription_active){
+      window.location.href = "/for-business";
+    } else {
+      document.getElementById("status").innerText = "Still confirming...";
+      setTimeout(checkSubscription, 2000);
+    }
+  }
+  checkSubscription();
 }
 </script>
 </body>
