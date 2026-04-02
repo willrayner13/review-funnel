@@ -79,11 +79,19 @@ app.use(
 );
 
 // ---------- HTML ROUTES ----------
-const htmlPages = ["admin","login","for-business","success","cancel","thanks","bad"];
+const htmlPages = ["admin","login","for-business","success","cancel","thanks","bad", "landing", "demo"];
 htmlPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.sendFile(path.resolve("public", `${page}.html`));
   });
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve("public", "landing.html"));
+});
+
+app.get("/demo/:slug", (req, res) => {
+  res.sendFile(path.resolve("public", "demo.html"));
 });
 
 // ---------- BUSINESS PAGES ----------

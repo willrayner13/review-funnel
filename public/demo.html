@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReviewBoost Demo</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+
+    .demo-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--accent);
+      color: #1A1A18;
+      text-align: center;
+      padding: 10px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+    }
+    .demo-banner a {
+      background: #1A1A18; color: var(--accent);
+      padding: 5px 14px; border-radius: 6px; font-size: 0.75rem;
+      font-weight: 700; transition: opacity 0.2s; white-space: nowrap;
+    }
+    .demo-banner a:hover { opacity: 0.85; }
+
+    .funnel-wrap { width: 100%; max-width: 480px; margin-top: 52px; }
+
+    #businessTitle {
+      font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 600;
+      color: var(--accent); margin-bottom: 6px;
+      display: block; text-align: center;
+    }
+
+    .funnel-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 44px 40px;
+      box-shadow: var(--shadow-lg);
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .funnel-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(234,231,220,0.18), transparent);
+    }
+
+    .funnel-options {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; margin: 28px 0 8px;
+    }
+    .funnel-btn {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px 16px; cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; color: var(--cream);
+    }
+    .funnel-btn .funnel-icon { font-size: 2.4rem; }
+    .funnel-btn.positive:hover { transform: translateY(-3px); border-color: var(--success); background: rgba(106,158,127,0.1); box-shadow: 0 6px 24px rgba(0,0,0,0.4); }
+    .funnel-btn.negative:hover { transform: translateY(-3px); border-color: rgba(192,103,90,0.6); background: rgba(192,103,90,0.07); box-shadow: 0 6px 24px rgba(0,0,0,0.4); }
+
+    /* Rating */
+    .stars-row { display: flex; justify-content: center; gap: 4px; margin: 20px 0 8px; }
+    #stars span { font-size: 38px; cursor: pointer; transition: transform 0.15s ease, filter 0.15s ease; filter: grayscale(1) brightness(0.45); display: inline-block; line-height: 1; }
+    #stars span:hover, #stars span.selected { transform: scale(1.3); filter: grayscale(0) brightness(1.1); }
+
+    /* Positive outcome */
+    #reviewSection .review-prompt {
+      background: rgba(106,158,127,0.08); border: 1px solid rgba(106,158,127,0.25);
+      border-radius: var(--radius); padding: 24px; margin: 20px 0;
+    }
+    #reviewSection .review-prompt p { color: #8EC9A8; font-size: 0.95rem; margin-bottom: 16px; }
+
+    /* Negative outcome */
+    #feedbackBox textarea { margin: 18px 0 14px; min-height: 110px; }
+
+    /* Demo upsell shown after interaction */
+    .demo-cta-card {
+      margin-top: 24px;
+      background: linear-gradient(135deg, var(--surface-2), rgba(200,169,110,0.06));
+      border: 1px solid rgba(200,169,110,0.3);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+    .demo-cta-card p { font-size: 0.85rem; color: var(--cream-dim); margin-bottom: 16px; }
+    .demo-cta-card .cta-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--cream); margin-bottom: 6px; }
+    .demo-cta-card a {
+      display: inline-block;
+      background: var(--accent); color: #1A1A18;
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.9rem;
+      padding: 12px 28px; border-radius: 8px; transition: all 0.2s;
+    }
+    .demo-cta-card a:hover { background: #D4B87A; transform: translateY(-1px); }
+
+    .powered-by { text-align: center; margin-top: 24px; font-size: 0.72rem; color: rgba(234,231,220,0.22); }
+    .powered-by a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<!-- Demo banner at top -->
+<div class="demo-banner">
+  <span>👆 This is a live demo — this is what your customers would see</span>
+  <a href="/admin">Get this for my business →</a>
+</div>
+
+<div class="funnel-wrap">
+  <span id="businessTitle"></span>
+
+  <div class="funnel-card">
+
+    <!-- Step 1 -->
+    <div id="mainQuestion">
+      <h2>How was your experience?</h2>
+      <p style="color:var(--cream-dim);font-size:0.95rem;">Your feedback helps us improve.</p>
+      <div class="funnel-options">
+        <button class="funnel-btn positive" onclick="positive()">
+          <span class="funnel-icon">😊</span>
+          Great!
+        </button>
+        <button class="funnel-btn negative" onclick="showFeedback()">
+          <span class="funnel-icon">😕</span>
+          Could be better
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Stars -->
+    <div id="ratingSection" style="display:none">
+      <h2>Rate your experience</h2>
+      <p style="color:var(--cream-dim);">How many stars would you give us?</p>
+      <div class="stars-row">
+        <div id="stars">
+          <span onclick="rate(1)">⭐</span>
+          <span onclick="rate(2)">⭐</span>
+          <span onclick="rate(3)">⭐</span>
+          <span onclick="rate(4)">⭐</span>
+          <span onclick="rate(5)">⭐</span>
+        </div>
+      </div>
+      <p style="font-size:0.8rem;color:var(--cream-dim);margin-top:6px;">Tap a star to rate</p>
+    </div>
+
+    <!-- Step 3: Leave review prompt -->
+    <div id="reviewSection" style="display:none">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🌟</div>
+      <h2>Thank you!</h2>
+      <div class="review-prompt">
+        <p>We'd love it if you shared your experience online — it only takes a moment.</p>
+        <button class="btn-full" onclick="showDemoCta()" style="background:var(--accent);color:#1A1A18;width:100%;justify-content:center;">
+          Leave a Review
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: Negative feedback -->
+    <div id="feedbackBox" style="display:none">
+      <div style="font-size:2.5rem;margin-bottom:12px;">💬</div>
+      <h2>We're sorry to hear that</h2>
+      <p style="color:var(--cream-dim);">Tell us what happened — your feedback is private and only visible to the business.</p>
+      <textarea id="message" placeholder="What could we have done better?"></textarea>
+      <button class="btn-full" onclick="sendFeedbackDemo()">Send Feedback</button>
+    </div>
+
+  </div>
+
+  <!-- Demo CTA — shown after any interaction -->
+  <div class="demo-cta-card" id="demoCta" style="display:none">
+    <div class="cta-title">Want this for your business?</div>
+    <p>Set up your own review funnel in under 2 minutes. Collect more 5-star reviews and keep complaints private.</p>
+    <a href="/admin">Get ReviewBoost free →</a>
+  </div>
+
+  <p class="powered-by"><a href="/">Powered by ReviewBoost</a></p>
+</div>
+
+<script>
+  // Read business name from URL
+  const params = new URLSearchParams(window.location.search);
+  const bizName = params.get('name') || 'Your Business';
+  document.getElementById('businessTitle').innerText = bizName;
+  document.title = bizName + ' — Review';
+
+  function positive(){
+    document.getElementById("mainQuestion").style.display="none";
+    document.getElementById("ratingSection").style.display="block";
+  }
+
+  function showFeedback(){
+    document.getElementById("mainQuestion").style.display="none";
+    document.getElementById("feedbackBox").style.display="block";
+  }
+
+  function rate(stars){
+    if(stars>=4){
+      document.getElementById("ratingSection").style.display="none";
+      document.getElementById("reviewSection").style.display="block";
+    } else {
+      document.getElementById("ratingSection").style.display="none";
+      document.getElementById("feedbackBox").style.display="block";
+    }
+  }
+
+  function showDemoCta(){
+    // In demo mode — don't redirect to a real review link
+    document.getElementById("reviewSection").innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:12px;">✅</div>
+      <h2>In your live funnel...</h2>
+      <p style="color:var(--cream-dim);margin-top:8px;">Your customer would now be redirected to your Google review page to leave a public 5-star review.</p>
+    `;
+    document.getElementById("demoCta").style.display="block";
+  }
+
+  function sendFeedbackDemo(){
+    document.getElementById("feedbackBox").innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔒</div>
+      <h2>Feedback captured privately</h2>
+      <p style="color:var(--cream-dim);margin-top:8px;">In your live funnel, this message would appear only in your dashboard — never on Google.</p>
+    `;
+    document.getElementById("demoCta").style.display="block";
+  }
+</script>
+</body>
+</html>
