@@ -18,6 +18,8 @@
   <button onclick="createBusiness()">Create Business</button>
   <p id="result"></p>
 
+<p>Already have an account? <a href="/login">Login here</a></p>
+
   <div id="plans" style="display:none">
     <h3>Select Plan</h3>
     <div class="plan">
@@ -52,7 +54,8 @@ async function createBusiness(){
     currentSlug=data.slug;
     sessionStorage.setItem("currentSlug",currentSlug);
     document.getElementById("plans").style.display="block";
-    document.getElementById("result").innerText="Business created!";
+document.getElementById("result").innerText="Business created! Redirecting..."
+window.location="/for-business"
   } else{
     document.getElementById("result").innerText="Error creating business";
   }

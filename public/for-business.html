@@ -24,6 +24,9 @@
 <input id="reviewLink" readonly>
 <button onclick="copyLink()">Copy</button>
 
+<h4>Embed Review Button</h4>
+<textarea id="embedCode" readonly style="width:100%;height:70px"></textarea>
+
 <h4>QR Code</h4>
 <img id="qr">
 <br>
@@ -33,13 +36,50 @@
 <input id="customerPhone" placeholder="Customer phone">
 <button onclick="sendSMS()">Send SMS</button>
 
+<h3>Send Email Review Request</h3>
+
+<input id="customerEmail" placeholder="Customer email">
+
+<button onclick="sendEmail()">Send Email</button>
+
 <h4>Customer Feedback</h4>
 <ul id="negativeList"></ul>
 </div>
 
+<button onclick="logout()">Logout</button>
+
+<button onclick="billing()">Manage Subscription</button>
+
+<h3>AI Review Reply Generator</h3>
+
+<textarea id="reviewText" placeholder="Paste customer review here"></textarea>
+
+<button onclick="generateReply()">Generate Reply</button>
+
+<textarea id="aiReply" placeholder="AI reply will appear here"></textarea>
+
 <script>
-const slug=sessionStorage.getItem("currentSlug");
-if(!slug){alert("Login again"); window.location="/admin.html";}
+let slug;
+
+async function checkSession(){
+
+const res = await fetch("/session")
+const data = await res.json()
+
+if(!data.loggedIn){
+
+window.location="/login"
+return
+
+}
+
+slug = data.slug
+
+load()
+
+}
+
+checkSession()
 
 async function load(){
   const res=await fetch("/stats/"+slug);
@@ -51,9 +91,23 @@ async function load(){
   document.getElementById("reviews").innerText=stats.reviews;
   const reviewLink=window.location.origin+"/r/"+slug;
   document.getElementById("reviewLink").value=reviewLink;
+  document.getElementById("embedCode").value =
+`<a href="${reviewLink}" target="_blank">Leave us a review</a>`
   const qrUrl="/qr-download/"+slug;
   document.getElementById("qr").src=qrUrl;
   document.getElementById("qrDownload").href=qrUrl;
+
+const list = document.getElementById("negativeList")
+list.innerHTML = ""
+
+stats.feedback.forEach(f => {
+
+  const li = document.createElement("li")
+  li.innerText = f
+
+  list.appendChild(li)
+
+})
 
   // Chart
   const ctx=document.getElementById('ratingChart').getContext('2d');
@@ -64,7 +118,7 @@ function copyLink(){
   const link=document.getElementById("reviewLink");
   link.select();
   navigator.clipboard.writeText(link.value);
-  alert("Copied");
+  alert("Link copied!");
 }
 
 async function sendSMS(){
@@ -74,7 +128,59 @@ async function sendSMS(){
   if(data.success) alert("SMS sent");
 }
 
-load();
+function logout(){
+window.location="/logout"
+}
+
+async function billing(){
+
+const res=await fetch("/billing-portal",{method:"POST"})
+const data=await res.json()
+
+window.location=data.url
+
+}
+
+async function generateReply(){
+
+const review=document.getElementById("reviewText").value
+
+const res=await fetch("/generate-reply",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({review})
+})
+
+const data=await res.json()
+
+if(data.error){
+alert(data.error)
+return
+}
+
+document.getElementById("aiReply").value=data.reply
+
+}
+
+async function sendEmail(){
+
+const email=document.getElementById("customerEmail").value
+
+const res=await fetch("/send-email",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email})
+})
+
+const data=await res.json()
+
+if(data.success){
+alert("Email sent")
+}
+
+}
+
+
 </script>
 
 </body>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Login</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Business Dashboard Login</h2>
+
+<input id="email" placeholder="Business email">
+<input id="password" placeholder="Password" type="password">
+
+<button onclick="login()">Login</button>
+
+<p id="result"></p>
+
+</div>
+
+<script>
+
+async function login(){
+
+const email=document.getElementById("email").value
+const password=document.getElementById("password").value
+
+const res=await fetch("/verify-login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email,password})
+})
+
+const data=await res.json()
+
+if(data.success){
+
+window.location="/for-business"
+
+}else{
+
+document.getElementById("result").innerText="Login failed"
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
