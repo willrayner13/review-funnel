@@ -9,184 +9,418 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <style>
+    /* ── Variables ───────────────────────────────────────── */
     :root {
-      --bg:#1A1A18; --surface:#242422; --surface-2:#2E2E2B; --surface-3:#383835;
-      --border:rgba(234,231,220,0.09); --border-hi:rgba(234,231,220,0.20);
-      --cream:#EAE7DC; --cream-dim:rgba(234,231,220,0.52); --cream-faint:rgba(234,231,220,0.07);
-      --accent:#C8A96E; --accent-dim:rgba(200,169,110,0.15);
-      --success:#6A9E7F; --danger:#C0675A;
-      --r:12px; --r-lg:20px;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
-    a{color:inherit;text-decoration:none;}
-
-    /* NAV */
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(26,26,24,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
-    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;letter-spacing:-0.3px;}
-    .nav-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;flex-shrink:0;}
-    .nav-links{display:flex;align-items:center;gap:32px;}
-    .nav-links a{font-size:0.875rem;color:var(--cream-dim);transition:color .2s;}
-    .nav-links a:hover{color:var(--cream);}
-    .nav-cta{display:flex;align-items:center;gap:10px;}
-    .btn-nav-login{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;color:var(--cream-dim);padding:8px 16px;border:1px solid var(--border);border-radius:8px;transition:all .2s;cursor:pointer;background:transparent;}
-    .btn-nav-login:hover{border-color:var(--border-hi);color:var(--cream);}
-    .btn-nav-start{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:var(--cream);color:#1A1A18;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;}
-    .btn-nav-start:hover{background:#F5F2EB;transform:translateY(-1px);}
-
-    section{position:relative;z-index:1;}
-
-    /* HERO — two column */
-    .hero{
-      min-height:100vh;
-      display:flex;align-items:center;
-      padding:100px 48px 80px;
-      background:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(200,169,110,0.11) 0%,transparent 65%),
-                 radial-gradient(ellipse 40% 30% at 80% 80%,rgba(200,169,110,0.05) 0%,transparent 60%);
-    }
-    .hero-inner{
-      max-width:1100px;margin:0 auto;width:100%;
-      display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+      --bg:        #1A1A18;
+      --surface:   #242422;
+      --surface-2: #2E2E2B;
+      --surface-3: #383835;
+      --border:    rgba(234,231,220,0.09);
+      --border-hi: rgba(234,231,220,0.20);
+      --cream:     #EAE7DC;
+      --cream-dim: rgba(234,231,220,0.52);
+      --cream-faint: rgba(234,231,220,0.07);
+      --accent:    #C8A96E;
+      --accent-dim: rgba(200,169,110,0.15);
+      --success:   #6A9E7F;
+      --danger:    #C0675A;
+      --r:         12px;
+      --r-lg:      20px;
     }
 
-    /* Hero left */
-    .hero-left{}
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,169,110,0.25);border-radius:100px;padding:6px 16px;margin-bottom:28px;animation:fadeUp .6s ease both;}
-    .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:800;line-height:1.06;letter-spacing:-1.5px;animation:fadeUp .6s .1s ease both;}
-    .hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent) 0%,#E8C98A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .hero-sub{margin-top:20px;font-size:1rem;color:var(--cream-dim);line-height:1.7;animation:fadeUp .6s .2s ease both;}
-    .hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:32px;animation:fadeUp .6s .3s ease both;}
-    .btn-primary{font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;background:var(--cream);color:#1A1A18;padding:14px 28px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
-    .btn-primary:hover{background:#F5F2EB;transform:translateY(-2px);box-shadow:0 6px 24px rgba(234,231,220,0.15);}
-    .btn-secondary-hero{font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.95rem;background:transparent;color:var(--cream-dim);padding:14px 22px;border-radius:10px;border:1px solid var(--border-hi);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
-    .btn-secondary-hero:hover{color:var(--cream);background:var(--cream-faint);}
-    .hero-note{margin-top:16px;font-size:0.75rem;color:rgba(234,231,220,0.28);animation:fadeUp .6s .4s ease both;}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
-    /* Hero right — demo card */
-    .demo-card{
-      background:var(--surface);border:1px solid var(--border-hi);
-      border-radius:var(--r-lg);padding:32px;
-      animation:fadeUp .8s .3s ease both;
-      box-shadow:0 24px 64px rgba(0,0,0,0.5);
-      position:relative;overflow:hidden;
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    .demo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(234,231,220,0.18),transparent);}
-    .demo-card-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:6px;}
-    .demo-card-sub{font-size:0.82rem;color:var(--cream-dim);margin-bottom:20px;line-height:1.5;}
-    .demo-input{width:100%;padding:13px 16px;background:var(--surface-3);border:1px solid var(--border);border-radius:8px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.95rem;transition:border-color .2s;display:block;margin-bottom:12px;}
-    .demo-input:focus{outline:none;border-color:rgba(234,231,220,0.3);}
-    .demo-input::placeholder{color:rgba(234,231,220,0.28);}
-    .demo-link-output{background:var(--surface-3);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:0.75rem;color:var(--accent);font-family:'Courier New',monospace;word-break:break-all;min-height:42px;text-align:left;margin-bottom:12px;transition:all .2s;}
-    .demo-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-    .demo-btn{font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.85rem;padding:12px;border-radius:8px;cursor:pointer;text-align:center;transition:all .2s;display:block;}
-    .demo-btn-copy{background:var(--cream);color:#1A1A18;border:none;}
-    .demo-btn-copy:hover{background:#F5F2EB;transform:translateY(-1px);}
-    .demo-btn-open{background:transparent;color:var(--cream-dim);border:1px solid var(--border-hi);}
-    .demo-btn-open:hover{color:var(--cream);background:var(--cream-faint);}
-    .demo-note{font-size:0.7rem;color:rgba(234,231,220,0.25);text-align:center;margin-top:10px;}
 
-    /* Mini funnel preview inside card */
-    .funnel-preview{
-      background:var(--surface-2);border:1px solid var(--border);
-      border-radius:12px;padding:20px;margin-bottom:20px;text-align:center;
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Noise overlay ───────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.4;
     }
-    .fp-title{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:600;margin-bottom:4px;}
-    .fp-q{font-size:0.78rem;color:var(--cream-dim);margin-bottom:14px;}
-    .fp-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-    .fp-btn{background:var(--surface-3);border:1px solid var(--border);border-radius:10px;padding:14px 8px;font-size:0.8rem;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--cream);}
-    .fp-btn.fp-good{border-color:rgba(106,158,127,0.35);background:rgba(106,158,127,0.07);}
-    .fp-btn.fp-bad{border-color:rgba(192,103,90,0.3);background:rgba(192,103,90,0.05);}
-    .fp-icon{font-size:1.4rem;}
-    .fp-arrow{display:flex;gap:4px;justify-content:center;margin-top:10px;}
-    .fp-dest{font-size:0.68rem;padding:4px 10px;border-radius:4px;font-weight:500;}
-    .fp-dest.google{background:rgba(106,158,127,0.15);color:#8EC9A8;border:1px solid rgba(106,158,127,0.25);}
-    .fp-dest.private{background:rgba(192,103,90,0.1);color:#D4897C;border:1px solid rgba(192,103,90,0.2);}
 
-    /* PROOF BAR */
-    .proof-bar{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 48px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
-    .proof-item{display:flex;align-items:center;gap:10px;}
-    .proof-icon{font-size:1.4rem;}
-    .proof-text{font-size:0.82rem;color:var(--cream-dim);line-height:1.4;}
-    .proof-text strong{color:var(--cream);display:block;font-size:1rem;}
-
-    /* HOW IT WORKS */
-    .section-wrap{max-width:1000px;margin:0 auto;padding:100px 24px;}
-    .section-tag{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-    .section-tag::after{content:'';flex:1;max-width:60px;height:1px;background:var(--accent);opacity:.4;}
-    .section-heading{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.8px;line-height:1.1;max-width:560px;margin-bottom:16px;}
-    .section-sub{font-size:1rem;color:var(--cream-dim);max-width:480px;line-height:1.7;margin-bottom:60px;}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-    .step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px 28px;transition:all .2s;position:relative;overflow:hidden;}
-    .step:hover{border-color:var(--border-hi);transform:translateY(-4px);}
-    .step::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(234,231,220,0.12),transparent);}
-    .step-num{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:rgba(200,169,110,0.18);line-height:1;margin-bottom:20px;}
-    .step-icon{font-size:1.8rem;margin-bottom:14px;display:block;}
-    .step h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:10px;}
-    .step p{font-size:0.875rem;color:var(--cream-dim);line-height:1.65;}
-
-    /* FEATURES */
-    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-    .feature{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:all .2s;}
-    .feature:hover{border-color:var(--border-hi);}
-    .feature-icon{font-size:1.6rem;margin-bottom:14px;display:block;}
-    .feature h4{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:8px;}
-    .feature p{font-size:0.825rem;color:var(--cream-dim);line-height:1.6;}
-    .feature-tag{display:inline-block;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;background:var(--accent-dim);color:var(--accent);border-radius:4px;padding:2px 7px;margin-top:10px;}
-
-    /* PRICING */
-    .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:680px;margin:0 auto;}
-    .price-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:36px 32px;transition:all .2s;position:relative;overflow:hidden;}
-    .price-card:hover{border-color:var(--border-hi);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
-    .price-card.highlighted{border-color:var(--accent);background:linear-gradient(145deg,var(--surface) 0%,rgba(200,169,110,.06) 100%);}
-    .price-badge{position:absolute;top:16px;right:-26px;background:var(--accent);color:#1A1A18;font-size:.58rem;font-weight:700;letter-spacing:1px;padding:4px 32px;transform:rotate(35deg);}
-    .price-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:8px;}
-    .price-amount{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;line-height:1;margin:14px 0 4px;}
-    .price-amount sup{font-size:1.2rem;vertical-align:top;margin-top:8px;}
-    .price-amount span{font-size:1rem;font-weight:400;color:var(--cream-dim);}
-    .price-desc{font-size:.82rem;color:var(--cream-dim);margin-bottom:28px;line-height:1.5;}
-    .price-features{list-style:none;margin-bottom:32px;display:flex;flex-direction:column;gap:10px;}
-    .price-features li{font-size:.85rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;}
-    .price-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
-    .price-cta{width:100%;padding:14px;border-radius:10px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.95rem;transition:all .2s;text-align:center;display:block;}
-    .price-cta.dark{background:var(--cream);color:#1A1A18;}
-    .price-cta.dark:hover{background:#F5F2EB;transform:translateY(-1px);}
-    .price-cta.gold{background:var(--accent);color:#1A1A18;}
-    .price-cta.gold:hover{background:#D4B87A;transform:translateY(-1px);}
-    .pricing-note{text-align:center;margin-top:24px;font-size:.8rem;color:rgba(234,231,220,.28);}
-
-    footer{border-top:1px solid var(--border);padding:40px 48px;position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-    .footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;}
-    .footer-links{display:flex;gap:28px;}
-    .footer-links a{font-size:.82rem;color:var(--cream-dim);transition:color .2s;}
-    .footer-links a:hover{color:var(--cream);}
-    .footer-copy{font-size:.78rem;color:rgba(234,231,220,.22);}
-
-    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-    .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
-    .reveal.visible{opacity:1;transform:none;}
-
-    @media(max-width:900px){
-      .hero{padding:100px 24px 60px;}
-      .hero-inner{grid-template-columns:1fr;gap:40px;}
-      .hero h1{font-size:2.4rem;}
-      nav{padding:0 20px;}
-      .nav-links{display:none;}
-      .steps{grid-template-columns:1fr;}
-      .features-grid{grid-template-columns:1fr 1fr;}
-      .pricing-grid{grid-template-columns:1fr;max-width:400px;}
-      .proof-bar{gap:28px;padding:28px 24px;}
-      footer{flex-direction:column;align-items:flex-start;padding:32px 24px;}
+    /* ── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      background: rgba(26,26,24,0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
-    @media(max-width:500px){
-      .features-grid{grid-template-columns:1fr;}
-      .hero h1{font-size:2rem;}
-      .demo-btn-row{grid-template-columns:1fr;}
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+      display: flex; align-items: center; gap: 8px; letter-spacing: -0.3px;
+    }
+    .nav-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      font-size: 0.875rem; color: var(--cream-dim);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+
+    .nav-cta {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .btn-nav-login {
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500;
+      color: var(--cream-dim); padding: 8px 16px;
+      border: 1px solid var(--border); border-radius: 8px;
+      transition: all 0.2s; cursor: pointer; background: transparent;
+    }
+    .btn-nav-login:hover { border-color: var(--border-hi); color: var(--cream); }
+    .btn-nav-start {
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+      background: var(--cream); color: #1A1A18; padding: 9px 20px;
+      border-radius: 8px; border: none; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-nav-start:hover { background: #F5F2EB; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(234,231,220,0.12); }
+
+    /* ── SECTIONS ────────────────────────────────────────── */
+    section { position: relative; z-index: 1; }
+
+    /* ── HERO ────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+      background:
+        radial-gradient(ellipse 70% 55% at 50% 0%, rgba(200,169,110,0.11) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(200,169,110,0.05) 0%, transparent 60%);
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--accent);
+      background: var(--accent-dim); border: 1px solid rgba(200,169,110,0.25);
+      border-radius: 100px; padding: 6px 16px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-weight: 800; line-height: 1.06;
+      letter-spacing: -1.5px; max-width: 820px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, #E8C98A 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 24px; max-width: 540px;
+      font-size: 1.1rem; color: var(--cream-dim); line-height: 1.7;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      justify-content: center; margin-top: 40px;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 1rem;
+      background: var(--cream); color: #1A1A18;
+      padding: 15px 32px; border-radius: 10px; border: none; cursor: pointer;
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { background: #F5F2EB; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(234,231,220,0.15); }
+
+    .btn-secondary {
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.95rem;
+      background: transparent; color: var(--cream-dim);
+      padding: 15px 28px; border-radius: 10px;
+      border: 1px solid var(--border-hi); cursor: pointer;
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { color: var(--cream); background: var(--cream-faint); }
+
+    .hero-note {
+      margin-top: 18px; font-size: 0.78rem; color: rgba(234,231,220,0.28);
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    /* ── HERO DEMO MOCKUP ────────────────────────────────── */
+    .hero-mockup {
+      margin-top: 72px; width: 100%; max-width: 900px;
+      animation: fadeUp 0.8s 0.5s ease both;
+    }
+
+    .mockup-label {
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.2px;
+      color: rgba(234,231,220,0.25); margin-bottom: 16px;
+    }
+
+    .mockup-browser {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(234,231,220,0.05);
+    }
+
+    .browser-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 20px; background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .bd-red { background: #FF5F57; }
+    .bd-yellow { background: #FEBC2E; }
+    .bd-green { background: #28C840; }
+    .browser-url {
+      flex: 1; background: var(--surface-3); border-radius: 6px;
+      padding: 5px 12px; font-size: 0.75rem; color: var(--cream-dim);
+      text-align: center; margin: 0 12px;
+    }
+
+    /* Mini funnel inside mockup */
+    .mockup-content {
+      padding: 40px 24px; display: flex; flex-direction: column; align-items: center; gap: 20px;
+    }
+    .mockup-biz { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--accent); }
+    .mockup-question { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; }
+    .mockup-sub { font-size: 0.82rem; color: var(--cream-dim); margin-top: -12px; }
+    .mockup-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; }
+    .mockup-btn {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 22px 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      font-size: 0.9rem; font-weight: 500;
+    }
+    .mockup-btn.good { border-color: rgba(106,158,127,0.4); background: rgba(106,158,127,0.07); }
+    .mockup-btn.bad { border-color: rgba(192,103,90,0.3); background: rgba(192,103,90,0.05); }
+    .mockup-btn .micon { font-size: 1.8rem; }
+
+    /* Flow arrows */
+    .flow-diagram {
+      display: flex; align-items: flex-start; justify-content: center;
+      gap: 0; padding: 0 24px 40px; width: 100%; max-width: 680px;
+    }
+    .flow-col { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+    .flow-arrow { font-size: 1.2rem; color: var(--cream-dim); margin: 0 8px; margin-top: 14px; }
+    .flow-node {
+      padding: 10px 14px; border-radius: 8px; font-size: 0.75rem; text-align: center;
+      font-weight: 500; width: 100%;
+    }
+    .flow-node.start { background: var(--surface-3); border: 1px solid var(--border); color: var(--cream-dim); }
+    .flow-node.good-node { background: rgba(106,158,127,0.12); border: 1px solid rgba(106,158,127,0.3); color: #8EC9A8; }
+    .flow-node.bad-node { background: rgba(192,103,90,0.1); border: 1px solid rgba(192,103,90,0.25); color: #D4897C; }
+    .flow-label { font-size: 0.65rem; color: var(--cream-dim); letter-spacing: 0.5px; }
+
+    /* ── SOCIAL PROOF BAR ────────────────────────────────── */
+    .proof-bar {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex; align-items: center; justify-content: center; gap: 48px;
+      flex-wrap: wrap;
+    }
+    .proof-item { display: flex; align-items: center; gap: 10px; }
+    .proof-icon { font-size: 1.4rem; }
+    .proof-text { font-size: 0.82rem; color: var(--cream-dim); line-height: 1.4; }
+    .proof-text strong { color: var(--cream); display: block; font-size: 1rem; }
+
+    /* ── HOW IT WORKS ────────────────────────────────────── */
+    .section-wrap { max-width: 1000px; margin: 0 auto; padding: 100px 24px; }
+
+    .section-tag {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.4px; color: var(--accent);
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    }
+    .section-tag::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--accent); opacity: 0.4; }
+
+    .section-heading {
+      font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800; letter-spacing: -0.8px; line-height: 1.1;
+      max-width: 560px; margin-bottom: 16px;
+    }
+    .section-sub { font-size: 1rem; color: var(--cream-dim); max-width: 480px; line-height: 1.7; margin-bottom: 60px; }
+
+    /* Steps */
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .step {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 32px 28px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .step:hover { border-color: var(--border-hi); transform: translateY(-4px); }
+    .step::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(234,231,220,0.12), transparent);
+    }
+    .step-num {
+      font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800;
+      color: rgba(200,169,110,0.18); line-height: 1; margin-bottom: 20px;
+    }
+    .step-icon { font-size: 1.8rem; margin-bottom: 14px; display: block; }
+    .step h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+    .step p { font-size: 0.875rem; color: var(--cream-dim); line-height: 1.65; }
+
+    /* ── DEMO CTA ─────────────────────────────────────────── */
+    .demo-section {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(200,169,110,0.04) 100%);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .demo-inner { max-width: 900px; margin: 0 auto; padding: 80px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .demo-text .section-sub { margin-bottom: 32px; }
+    .demo-card {
+      background: var(--surface-2); border: 1px solid var(--border-hi);
+      border-radius: var(--r-lg); padding: 32px; text-align: center;
+    }
+    .demo-card h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; margin-bottom: 8px; }
+    .demo-card p { font-size: 0.82rem; color: var(--cream-dim); margin-bottom: 24px; line-height: 1.6; }
+    .demo-input-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .demo-input {
+      width: 100%; padding: 12px 16px;
+      background: var(--surface-3); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--cream);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    .demo-input:focus { outline: none; border-color: rgba(234,231,220,0.3); }
+    .demo-input::placeholder { color: rgba(234,231,220,0.28); }
+    .demo-link-output {
+      background: var(--surface-3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 14px;
+      font-size: 0.78rem; color: var(--accent);
+      font-family: 'Courier New', monospace; word-break: break-all;
+      min-height: 42px; text-align: left; transition: all 0.2s;
+    }
+    .demo-card .btn-full {
+      width: 100%; background: var(--cream); color: #1A1A18;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem;
+      padding: 13px; border: none; border-radius: 8px; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .demo-card .btn-full:hover { background: #F5F2EB; transform: translateY(-1px); }
+    .demo-note { font-size: 0.72rem; color: rgba(234,231,220,0.25); margin-top: 10px; }
+
+    /* ── FEATURES ────────────────────────────────────────── */
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .feature {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 28px 24px; transition: all 0.2s;
+    }
+    .feature:hover { border-color: var(--border-hi); }
+    .feature-icon { font-size: 1.6rem; margin-bottom: 14px; display: block; }
+    .feature h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .feature p { font-size: 0.825rem; color: var(--cream-dim); line-height: 1.6; }
+    .feature-tag {
+      display: inline-block; font-size: 0.6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      background: var(--accent-dim); color: var(--accent);
+      border-radius: 4px; padding: 2px 7px; margin-top: 10px;
+    }
+
+    /* ── PRICING ─────────────────────────────────────────── */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 680px; margin: 0 auto; }
+    .price-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 36px 32px;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .price-card:hover { border-color: var(--border-hi); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+    .price-card.highlighted {
+      border-color: var(--accent);
+      background: linear-gradient(145deg, var(--surface) 0%, rgba(200,169,110,0.06) 100%);
+    }
+    .price-badge {
+      position: absolute; top: 16px; right: -26px;
+      background: var(--accent); color: #1A1A18;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 1px;
+      padding: 4px 32px; transform: rotate(35deg);
+    }
+    .price-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .price-amount {
+      font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800;
+      line-height: 1; margin: 14px 0 4px;
+    }
+    .price-amount sup { font-size: 1.2rem; vertical-align: top; margin-top: 8px; }
+    .price-amount span { font-size: 1rem; font-weight: 400; color: var(--cream-dim); }
+    .price-desc { font-size: 0.82rem; color: var(--cream-dim); margin-bottom: 28px; line-height: 1.5; }
+    .price-features { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 10px; }
+    .price-features li { font-size: 0.85rem; color: var(--cream-dim); display: flex; align-items: center; gap: 10px; }
+    .price-features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+    .price-cta {
+      width: 100%; padding: 14px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.95rem;
+      transition: all 0.2s; text-align: center; display: block;
+    }
+    .price-cta.dark { background: var(--cream); color: #1A1A18; }
+    .price-cta.dark:hover { background: #F5F2EB; transform: translateY(-1px); }
+    .price-cta.gold { background: var(--accent); color: #1A1A18; }
+    .price-cta.gold:hover { background: #D4B87A; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,169,110,0.25); }
+    .pricing-note { text-align: center; margin-top: 24px; font-size: 0.8rem; color: rgba(234,231,220,0.28); }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px; position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a { font-size: 0.82rem; color: var(--cream-dim); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-copy { font-size: 0.78rem; color: rgba(234,231,220,0.22); }
+
+    /* ── Animations ──────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .demo-inner { grid-template-columns: 1fr; gap: 40px; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .proof-bar { gap: 28px; padding: 28px 24px; }
+      footer { flex-direction: column; align-items: flex-start; padding: 32px 24px; }
+    }
+    @media (max-width: 500px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.2rem; }
     }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="nav-logo"><span class="nav-dot"></span>ReviewBoost</div>
   <div class="nav-links">
@@ -202,59 +436,76 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
+  <div class="hero-badge">⭐ Reputation management for local businesses</div>
 
-    <!-- Left: copy -->
-    <div class="hero-left">
-      <div class="hero-badge">⭐ Reputation management for local businesses</div>
-      <h1>Turn happy customers into <em>5-star reviews</em></h1>
-      <p class="hero-sub">ReviewBoost quietly intercepts unhappy customers before they reach Google — and sends satisfied ones straight to your review page. Set up in 2 minutes.</p>
-      <div class="hero-actions">
-        <a href="/admin"><button class="btn-primary">Start free trial →</button></a>
-        <a href="#pricing"><button class="btn-secondary-hero">View pricing</button></a>
+  <h1>Turn happy customers into<br><em>5-star reviews</em></h1>
+
+  <p class="hero-sub">
+    ReviewBoost quietly intercepts unhappy customers before they reach Google — and sends satisfied ones straight to your review page. Set up in 2 minutes.
+  </p>
+
+  <div class="hero-actions">
+    <a href="/admin"><button class="btn-primary">Start free trial →</button></a>
+    <a href="#demo-section"><button class="btn-secondary">See live demo ↓</button></a>
+  </div>
+
+  <p class="hero-note">14-day free trial · No credit card required · Cancel anytime</p>
+
+  <!-- Mini mockup -->
+  <div class="hero-mockup">
+    <p class="mockup-label">What your customers see</p>
+    <div class="mockup-browser">
+      <div class="browser-bar">
+        <div class="browser-dot bd-red"></div>
+        <div class="browser-dot bd-yellow"></div>
+        <div class="browser-dot bd-green"></div>
+        <div class="browser-url">reviewboost.com/r/your-business</div>
       </div>
-      <p class="hero-note">14-day free trial · No credit card required · Cancel anytime</p>
-    </div>
-
-    <!-- Right: demo generator + funnel preview -->
-    <div>
-      <div class="demo-card">
-        <!-- Mini funnel preview -->
-        <div class="funnel-preview">
-          <div class="fp-title" id="previewBizName">Your Business Name</div>
-          <div class="fp-q">How was your experience today?</div>
-          <div class="fp-btns">
-            <div class="fp-btn fp-good"><span class="fp-icon">😊</span>Great!</div>
-            <div class="fp-btn fp-bad"><span class="fp-icon">😕</span>Could be better</div>
-          </div>
-          <div class="fp-arrow">
-            <span class="fp-dest google">→ Google Review</span>
-            <span class="fp-dest private">→ Private Feedback</span>
-          </div>
+      <div class="mockup-content">
+        <div class="mockup-biz">Your Business Name</div>
+        <div class="mockup-question">How was your experience today?</div>
+        <div class="mockup-sub">Your feedback helps us improve.</div>
+        <div class="mockup-btns">
+          <div class="mockup-btn good"><span class="micon">😊</span> Great!</div>
+          <div class="mockup-btn bad"><span class="micon">😕</span> Could be better</div>
         </div>
 
-        <!-- Generator -->
-        <div class="demo-card-title">Try a personalised demo</div>
-        <div class="demo-card-sub">Enter any business name to generate a demo link — perfect for cold outreach.</div>
-        <input class="demo-input" id="demoName" placeholder="e.g. Joe's Barbershop" oninput="updateDemo()">
-        <div class="demo-link-output" id="demoOut">Your personalised link will appear here...</div>
-        <div class="demo-btn-row">
-          <button class="demo-btn demo-btn-copy" onclick="copyDemo()"><span id="copyTxt">Copy link</span></button>
-          <a id="openDemo" href="#" target="_blank" class="demo-btn demo-btn-open">Open demo →</a>
+        <div class="flow-diagram">
+          <div class="flow-col">
+            <div class="flow-node good-node">😊 Positive</div>
+            <div class="flow-label">→ Sent to Google</div>
+            <div class="flow-node good-node" style="margin-top:6px;font-size:0.68rem;">⭐ Public Review</div>
+          </div>
+          <div class="flow-arrow">vs</div>
+          <div class="flow-col">
+            <div class="flow-node bad-node">😕 Negative</div>
+            <div class="flow-label">→ Captured privately</div>
+            <div class="flow-node bad-node" style="margin-top:6px;font-size:0.68rem;">🔒 Your Dashboard</div>
+          </div>
         </div>
-        <p class="demo-note">Instant · No account needed · Works on any device</p>
       </div>
     </div>
-
   </div>
 </section>
 
 <!-- PROOF BAR -->
 <div class="proof-bar reveal">
-  <div class="proof-item"><span class="proof-icon">⭐</span><div class="proof-text"><strong>More 5-star reviews</strong>Positive customers go straight to Google</div></div>
-  <div class="proof-item"><span class="proof-icon">🔒</span><div class="proof-text"><strong>Complaints stay private</strong>Never reach public review sites</div></div>
-  <div class="proof-item"><span class="proof-icon">⚡</span><div class="proof-text"><strong>2-minute setup</strong>QR code ready to print instantly</div></div>
-  <div class="proof-item"><span class="proof-icon">📊</span><div class="proof-text"><strong>Full analytics</strong>Track every visit, rating & review</div></div>
+  <div class="proof-item">
+    <span class="proof-icon">⭐</span>
+    <div class="proof-text"><strong>More 5-star reviews</strong>Positive customers directed straight to Google</div>
+  </div>
+  <div class="proof-item">
+    <span class="proof-icon">🔒</span>
+    <div class="proof-text"><strong>Complaints stay private</strong>Negative feedback never reaches the public</div>
+  </div>
+  <div class="proof-item">
+    <span class="proof-icon">⚡</span>
+    <div class="proof-text"><strong>2-minute setup</strong>QR code ready to print immediately</div>
+  </div>
+  <div class="proof-item">
+    <span class="proof-icon">📊</span>
+    <div class="proof-text"><strong>Full analytics</strong>Track every visit, rating, and piece of feedback</div>
+  </div>
 </div>
 
 <!-- HOW IT WORKS -->
@@ -263,54 +514,139 @@
     <div class="section-tag reveal">How it works</div>
     <h2 class="section-heading reveal">Simple. Smart. Effective.</h2>
     <p class="section-sub reveal">Your review funnel does the heavy lifting — separating happy and unhappy customers automatically, every single time.</p>
+
     <div class="steps">
-      <div class="step reveal"><div class="step-num">01</div><span class="step-icon">🏪</span><h3>Create your funnel</h3><p>Sign up, add your Google review link, and instantly get a unique funnel page and a printable QR code.</p></div>
-      <div class="step reveal" style="transition-delay:.1s"><div class="step-num">02</div><span class="step-icon">📲</span><h3>Customers scan your QR</h3><p>Place the QR on tables, receipts, or your counter. Customers scan it and answer one simple question.</p></div>
-      <div class="step reveal" style="transition-delay:.2s"><div class="step-num">03</div><span class="step-icon">✨</span><h3>The funnel does the work</h3><p>Happy customers → Google. Unhappy customers → private feedback only you see.</p></div>
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <span class="step-icon">🏪</span>
+        <h3>Create your funnel</h3>
+        <p>Sign up, add your Google review link, and you instantly get a unique review page and a printable QR code for your business.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:0.1s">
+        <div class="step-num">02</div>
+        <span class="step-icon">📲</span>
+        <h3>Customers scan your QR</h3>
+        <p>Place the QR on tables, receipts, or your counter. Customers scan it after their visit and answer one simple question.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:0.2s">
+        <div class="step-num">03</div>
+        <span class="step-icon">✨</span>
+        <h3>The funnel does the work</h3>
+        <p>Happy customers are sent to Google to leave a review. Unhappy customers submit private feedback — only you see it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO / PERSONALISED LINK GENERATOR -->
+<section class="demo-section" id="demo-section">
+  <div class="demo-inner">
+    <div class="demo-text reveal">
+      <div class="section-tag">Live demo</div>
+      <h2 class="section-heading">See it in action — <em style="font-style:normal;color:var(--accent)">personalised</em> for any business</h2>
+      <p class="section-sub">Generate a demo link with any business name. Share it in a cold email or print the QR code. They'll feel exactly what their customers would feel.</p>
+      <p style="font-size:0.82rem;color:var(--cream-dim);line-height:1.7;">
+        This is how we recommend you prospect — send a personalised demo link to a local business and they'll understand the product in 10 seconds without you explaining anything.
+      </p>
+    </div>
+
+    <div class="demo-card reveal" style="transition-delay:0.15s">
+      <h3>Generate a demo link</h3>
+      <p>Enter a business name to create a personalised demo funnel</p>
+      <div class="demo-input-wrap">
+        <input class="demo-input" id="demoName" placeholder="e.g. The Coffee House" oninput="updateDemoLink()">
+      </div>
+      <div class="demo-link-output" id="demoLinkOutput">Your link will appear here...</div>
+      <br>
+      <button class="btn-full" onclick="copyDemoLink()" style="background:var(--cream);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;padding:13px;border:none;border-radius:8px;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;" onmouseover="this.style.background='#F5F2EB'" onmouseout="this.style.background='var(--cream)'">
+        <span id="copyBtnText">Copy demo link</span>
+      </button>
+      <a id="openDemoBtn" href="#" target="_blank" style="display:none;margin-top:10px;width:100%;background:transparent;color:var(--cream-dim);font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.85rem;padding:11px;border:1px solid var(--border-hi);border-radius:8px;cursor:pointer;text-align:center;transition:all 0.2s;display:none;align-items:center;justify-content:center;">
+        Open demo →
+      </a>
+      <p class="demo-note">Demo links work instantly — no account needed</p>
     </div>
   </div>
 </section>
 
 <!-- FEATURES -->
-<section id="features" style="background:linear-gradient(180deg,transparent 0%,rgba(200,169,110,0.02) 100%);">
-  <div class="section-wrap" style="padding-top:60px;">
+<section id="features">
+  <div class="section-wrap">
     <div class="section-tag reveal">Features</div>
     <h2 class="section-heading reveal">Everything a local business needs</h2>
-    <p class="section-sub reveal">No bloated dashboards. No confusing setup. Just tools that move the needle.</p>
+    <p class="section-sub reveal">No bloated dashboards. No confusing setup. Just the tools that move the needle on your reputation.</p>
+
     <div class="features-grid">
-      <div class="feature reveal"><span class="feature-icon">🔀</span><h4>Smart review funnel</h4><p>Routes happy customers to Google and captures complaints privately before they go public.</p></div>
-      <div class="feature reveal" style="transition-delay:.05s"><span class="feature-icon">📊</span><h4>Analytics dashboard</h4><p>Track visits, positive rates, review clicks, and star rating distribution in one clean view.</p></div>
-      <div class="feature reveal" style="transition-delay:.1s"><span class="feature-icon">📱</span><h4>QR code generator</h4><p>Instantly download a print-ready QR code for your counter, tables, or receipts.</p></div>
-      <div class="feature reveal" style="transition-delay:.15s"><span class="feature-icon">💬</span><h4>SMS & email requests</h4><p>Send review requests directly to customers via SMS or email from your dashboard.</p><span class="feature-tag">Pro</span></div>
-      <div class="feature reveal" style="transition-delay:.2s"><span class="feature-icon">🤖</span><h4>AI review replies</h4><p>Paste any customer review and generate a polished, professional reply in seconds.</p><span class="feature-tag">Pro</span></div>
-      <div class="feature reveal" style="transition-delay:.25s"><span class="feature-icon">🔒</span><h4>Private feedback capture</h4><p>Unhappy customers submit feedback only you see. Resolve issues internally.</p></div>
+      <div class="feature reveal">
+        <span class="feature-icon">🔀</span>
+        <h4>Smart review funnel</h4>
+        <p>Your unique funnel page routes happy customers to Google and captures complaints privately before they go public.</p>
+      </div>
+      <div class="feature reveal" style="transition-delay:0.05s">
+        <span class="feature-icon">📊</span>
+        <h4>Analytics dashboard</h4>
+        <p>Track visits, positive and negative rates, review clicks, and star rating distribution — all in one clean view.</p>
+      </div>
+      <div class="feature reveal" style="transition-delay:0.1s">
+        <span class="feature-icon">📱</span>
+        <h4>QR code generator</h4>
+        <p>Instantly download a print-ready QR code for your counter, tables, or receipts. Customers scan — done.</p>
+      </div>
+      <div class="feature reveal" style="transition-delay:0.15s">
+        <span class="feature-icon">💬</span>
+        <h4>SMS & email requests</h4>
+        <p>Send review requests directly to customers via SMS or email with a single click from your dashboard.</p>
+        <span class="feature-tag">Pro</span>
+      </div>
+      <div class="feature reveal" style="transition-delay:0.2s">
+        <span class="feature-icon">🤖</span>
+        <h4>AI review replies</h4>
+        <p>Paste any customer review and generate a polished, professional reply in seconds using GPT-4.</p>
+        <span class="feature-tag">Pro</span>
+      </div>
+      <div class="feature reveal" style="transition-delay:0.25s">
+        <span class="feature-icon">🔒</span>
+        <h4>Private feedback capture</h4>
+        <p>Unhappy customers submit feedback only you can see. Resolve issues internally and protect your public rating.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- PRICING -->
-<section id="pricing">
+<section id="pricing" style="background: linear-gradient(180deg, transparent 0%, rgba(200,169,110,0.03) 100%);">
   <div class="section-wrap">
     <div class="section-tag reveal" style="justify-content:center;">Pricing</div>
     <h2 class="section-heading reveal" style="text-align:center;max-width:100%;margin-bottom:12px;">Simple, honest pricing</h2>
     <p class="section-sub reveal" style="text-align:center;max-width:100%;margin-bottom:48px;">No contracts. No hidden fees. Cancel any time.</p>
+
     <div class="pricing-grid reveal">
       <div class="price-card">
         <div class="price-name">Starter</div>
-        <div class="price-amount"><sup>£</sup>15<span>/mo</span></div>
+        <div class="price-amount"><sup>$</sup>19<span>/mo</span></div>
         <p class="price-desc">Everything you need to start collecting more reviews and capturing feedback privately.</p>
         <ul class="price-features">
-          <li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li>
+          <li>Smart review funnel page</li>
+          <li>Analytics dashboard</li>
+          <li>QR code generator</li>
+          <li>Private feedback capture</li>
+          <li>Review link embedding</li>
         </ul>
         <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
       </div>
+
       <div class="price-card highlighted">
         <div class="price-badge">POPULAR</div>
         <div class="price-name">Pro</div>
-        <div class="price-amount"><sup>£</sup>39<span>/mo</span></div>
+        <div class="price-amount"><sup>$</sup>49<span>/mo</span></div>
         <p class="price-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</p>
         <ul class="price-features">
-          <li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li>
+          <li>Everything in Starter</li>
+          <li>AI review reply generator</li>
+          <li>SMS review requests</li>
+          <li>Email review campaigns</li>
+          <li>Advanced analytics</li>
+          <li>Feedback AI summaries</li>
         </ul>
         <a href="/admin"><button class="price-cta gold">Start free trial</button></a>
       </div>
@@ -319,46 +655,60 @@
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="footer-logo"><span class="nav-dot"></span>ReviewBoost</div>
   <div class="footer-links">
-    <a href="#how-it-works">How it works</a><a href="#features">Features</a>
-    <a href="#pricing">Pricing</a><a href="/login">Login</a><a href="/admin">Sign up</a>
+    <a href="#how-it-works">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/login">Login</a>
+    <a href="/admin">Sign up</a>
   </div>
   <div class="footer-copy">© 2025 ReviewBoost. All rights reserved.</div>
 </footer>
 
 <script>
-function slugify(s){ return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
-
-function updateDemo(){
-  const name = document.getElementById('demoName').value.trim();
-  const out   = document.getElementById('demoOut');
-  const open  = document.getElementById('openDemo');
-  const prev  = document.getElementById('previewBizName');
-
-  if(!name){
-    out.textContent = 'Your personalised link will appear here...';
-    out.style.color = 'var(--cream-dim)';
-    open.href = '#'; return;
+  /* ── Demo link generator ─────────────────────────────── */
+  function slugify(str){
+    return str.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   }
-  prev.textContent = name; // Update the mini preview in real-time
-  const url = window.location.origin+'/demo/'+slugify(name)+'?name='+encodeURIComponent(name);
-  out.textContent = url; out.style.color = 'var(--accent)';
-  open.href = url;
-}
 
-function copyDemo(){
-  const name = document.getElementById('demoName').value.trim();
-  if(!name){ document.getElementById('demoName').focus(); return; }
-  const url = window.location.origin+'/demo/'+slugify(name)+'?name='+encodeURIComponent(name);
-  navigator.clipboard.writeText(url);
-  const t = document.getElementById('copyTxt');
-  t.textContent = '✓ Copied!'; setTimeout(()=>t.textContent='Copy link', 2000);
-}
+  function updateDemoLink(){
+    const name = document.getElementById('demoName').value.trim();
+    const output = document.getElementById('demoLinkOutput');
+    const openBtn = document.getElementById('openDemoBtn');
+    if(!name){
+      output.textContent = 'Your link will appear here...';
+      output.style.color = 'var(--cream-dim)';
+      openBtn.style.display = 'none';
+      return;
+    }
+    const slug = slugify(name);
+    const url = window.location.origin + '/demo/' + slug + '?name=' + encodeURIComponent(name);
+    output.textContent = url;
+    output.style.color = 'var(--accent)';
+    openBtn.href = url;
+    openBtn.style.display = 'flex';
+  }
 
-const observer = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }); },{threshold:.1,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  function copyDemoLink(){
+    const name = document.getElementById('demoName').value.trim();
+    if(!name){ document.getElementById('demoName').focus(); return; }
+    const slug = slugify(name);
+    const url = window.location.origin + '/demo/' + slug + '?name=' + encodeURIComponent(name);
+    navigator.clipboard.writeText(url);
+    const btn = document.getElementById('copyBtnText');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = 'Copy demo link', 2000);
+  }
+
+  /* ── Scroll reveal ───────────────────────────────────── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
