@@ -6,111 +6,102 @@
   <title>How was your experience?</title>
   <link rel="stylesheet" href="/style.css">
   <style>
-    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    html, body { height: 100%; }
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
 
-    .funnel-wrap { width: 100%; max-width: 480px; }
-
-    .funnel-header { text-align: center; margin-bottom: 8px; }
-    .funnel-header h2 { font-size: 1.5rem; margin-bottom: 6px; }
-    .funnel-header p { font-size: 0.95rem; color: var(--cream-dim); }
+    .funnel-wrap { width: 100%; max-width: 440px; }
 
     #businessTitle {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 4px;
-      display: block;
-      text-align: center;
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600;
+      color: var(--accent); display: block; text-align: center; margin-bottom: 8px;
+      min-height: 1.4rem;
     }
 
     .funnel-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 44px 40px;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      overflow: hidden;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 40px 32px;
+      box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
       text-align: center;
     }
     .funnel-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(234,231,220,0.18), transparent);
     }
 
+    .funnel-card h2 { font-size: 1.4rem; margin-bottom: 6px; }
+    .funnel-card > div > p { color: var(--cream-dim); font-size: 0.9rem; }
+
+    /* THE CRITICAL FIX: equal-height, equal-width buttons using CSS grid */
     .funnel-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin: 28px 0 8px;
+      gap: 12px;
+      margin: 24px 0 4px;
+      width: 100%;
     }
 
+    /* Override default button styles entirely for funnel buttons */
     .funnel-btn {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 16px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      all: unset; /* clear ALL inherited button styles */
+      box-sizing: border-box;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--cream);
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 12px;
+      /* Fixed aspect: makes both buttons always the same height */
+      min-height: 120px;
+      width: 100%;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; color: var(--cream);
+      transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+      /* Proper touch targets */
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
     }
-    .funnel-btn .funnel-icon { font-size: 2.4rem; }
+    .funnel-btn .funnel-icon { font-size: 2.2rem; line-height: 1; }
+    .funnel-btn.positive:hover, .funnel-btn.positive:active {
+      border-color: var(--success); background: rgba(106,158,127,0.1);
+      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .funnel-btn.negative:hover, .funnel-btn.negative:active {
+      border-color: rgba(192,103,90,0.6); background: rgba(192,103,90,0.07);
+      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
 
-    .funnel-btn.positive:hover {
-      transform: translateY(-3px);
-      border-color: var(--success);
-      background: rgba(106,158,127,0.1);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
-    }
-    .funnel-btn.negative:hover {
-      transform: translateY(-3px);
-      border-color: rgba(192,103,90,0.6);
-      background: rgba(192,103,90,0.07);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
-    }
-
-    /* Rating section */
-    #ratingSection { padding-top: 8px; }
-    .stars-row { display: flex; justify-content: center; gap: 4px; margin: 20px 0 8px; }
-    #stars span {
-      font-size: 38px; cursor: pointer;
-      transition: transform 0.15s ease, filter 0.15s ease;
-      filter: grayscale(1) brightness(0.45);
-      display: inline-block; line-height: 1;
-    }
-    #stars span:hover, #stars span.selected {
-      transform: scale(1.3); filter: grayscale(0) brightness(1.1);
-    }
-    .stars-hint { font-size: 0.8rem; color: var(--cream-dim); margin-top: 6px; }
+    /* Stars */
+    .stars-hint { font-size: 0.78rem; color: var(--cream-dim); margin-top: 6px; }
 
     /* Review prompt */
-    #reviewSection .review-prompt {
-      background: rgba(106,158,127,0.08);
-      border: 1px solid rgba(106,158,127,0.25);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin: 20px 0;
+    .review-prompt {
+      background: rgba(106,158,127,0.08); border: 1px solid rgba(106,158,127,0.25);
+      border-radius: var(--radius); padding: 22px; margin: 16px 0;
     }
-    #reviewSection .review-prompt p { color: #8EC9A8; font-size: 0.95rem; margin-bottom: 16px; }
-
-    /* Feedback box */
-    #feedbackBox textarea {
-      margin: 18px 0 14px;
-      min-height: 110px;
+    .review-prompt p { color: #8EC9A8; font-size: 0.9rem; margin-bottom: 14px; }
+    .review-prompt button {
+      width: 100%; justify-content: center;
+      background: var(--accent); color: #1E1E1C; border-color: var(--accent);
     }
+    .review-prompt button:hover { background: #D4B87A; }
 
-    .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
+    /* Feedback textarea */
+    #feedbackBox textarea { margin: 16px 0 12px; min-height: 110px; }
+    #feedbackBox button { width: 100%; justify-content: center; }
+
+    .powered-by { text-align: center; margin-top: 20px; font-size: 0.7rem; color: rgba(234,231,220,0.2); }
+    .powered-by a { transition: color 0.2s; }
+    .powered-by a:hover { color: var(--accent); }
+
+    @media (max-width: 380px) {
+      .funnel-card { padding: 32px 20px; }
+      .funnel-btn { min-height: 100px; font-size: 0.9rem; }
+      .funnel-btn .funnel-icon { font-size: 1.9rem; }
+    }
   </style>
 </head>
 <body>
@@ -124,7 +115,6 @@
     <div id="mainQuestion">
       <h2>How was your experience?</h2>
       <p>Your feedback helps us improve.</p>
-
       <div class="funnel-options">
         <button class="funnel-btn positive" onclick="positive()">
           <span class="funnel-icon">😊</span>
@@ -137,7 +127,7 @@
       </div>
     </div>
 
-    <!-- Step 2: Star rating (positive flow) -->
+    <!-- Step 2: Star rating -->
     <div id="ratingSection" style="display:none">
       <h2>Rate your experience</h2>
       <p>How many stars would you give us?</p>
@@ -153,30 +143,28 @@
       <p class="stars-hint">Tap a star to rate</p>
     </div>
 
-    <!-- Step 3: Leave review prompt -->
+    <!-- Step 3: Leave review -->
     <div id="reviewSection" style="display:none">
-      <div style="font-size:2.5rem;margin-bottom:12px;">🌟</div>
+      <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
       <h2>Thank you!</h2>
       <div class="review-prompt">
-        <p>We'd love it if you shared your experience online — it only takes a moment.</p>
-        <button class="btn-accent btn-full" onclick="leaveReview()" style="background:var(--accent);color:#1E1E1C;">
-          Leave a Review
-        </button>
+        <p>Would you share your experience online? It only takes a moment.</p>
+        <button onclick="leaveReview()">Leave a Review →</button>
       </div>
     </div>
 
-    <!-- Step 4: Negative feedback form -->
+    <!-- Step 4: Negative feedback -->
     <div id="feedbackBox" style="display:none">
-      <div style="font-size:2.5rem;margin-bottom:12px;">💬</div>
+      <div style="font-size:2.4rem;margin-bottom:12px;">💬</div>
       <h2>We're sorry to hear that</h2>
-      <p>Tell us what happened and we'll do our best to make it right.</p>
+      <p style="color:var(--cream-dim);">Your feedback is private — only the business sees it.</p>
       <textarea id="message" placeholder="What could we have done better?"></textarea>
-      <button class="btn-full" onclick="sendFeedback()">Send Feedback</button>
+      <button onclick="sendFeedback()">Send Feedback</button>
     </div>
 
   </div>
 
-  <p class="powered-by"><a href="/for-business">Powered by ReviewBoost</a></p>
+  <p class="powered-by"><a href="/">Powered by ReviewBoost</a></p>
 </div>
 
 <script>
@@ -184,42 +172,36 @@ const slug = window.slug;
 
 function positive(){
   fetch("/positive",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
-  document.getElementById("mainQuestion").style.display="none";
-  document.getElementById("ratingSection").style.display="block";
+  show("ratingSection");
 }
-
-function showFeedback(){
-  document.getElementById("mainQuestion").style.display="none";
-  document.getElementById("feedbackBox").style.display="block";
-}
+function showFeedback(){ show("feedbackBox"); }
 
 function sendFeedback(){
-  const message=document.getElementById("message").value;
+  const message = document.getElementById("message").value;
   fetch("/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({business:slug,message})});
   document.getElementById("feedbackBox").innerHTML = `
-    <div style="font-size:2.5rem;margin-bottom:12px;">✅</div>
+    <div style="font-size:2.4rem;margin-bottom:12px;">✅</div>
     <h2>Feedback received</h2>
-    <p>Thank you — we appreciate you taking the time to let us know.</p>
+    <p style="color:var(--cream-dim);">Thank you — we appreciate you taking the time.</p>
   `;
 }
-
 function leaveReview(){
   fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
   window.location.href = window.reviewLink;
 }
-
 function rate(stars){
   fetch("/rating",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,rating:stars})});
-  if(stars>=4){
-    document.getElementById("ratingSection").style.display="none";
-    document.getElementById("reviewSection").style.display="block";
-  } else {
-    document.getElementById("ratingSection").style.display="none";
-    document.getElementById("feedbackBox").style.display="block";
-  }
+  if(stars>=4){ show("reviewSection"); }
+  else { show("feedbackBox"); }
+}
+function show(id){
+  ["mainQuestion","ratingSection","reviewSection","feedbackBox"].forEach(s=>{
+    document.getElementById(s).style.display = s===id ? "block" : "none";
+  });
 }
 
-document.getElementById("businessTitle").innerText = window.businessName || "";
+const t = document.getElementById("businessTitle");
+if(t && window.businessName) t.innerText = window.businessName;
 </script>
 </body>
 </html>

@@ -701,3 +701,307 @@ ul.feedback-list::-webkit-scrollbar-thumb { background: var(--surface-3); border
   .metrics-grid { grid-template-columns: 1fr; }
   .funnel-options { grid-template-columns: 1fr; }
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+/* ── CSS Variables ─────────────────────────────────────── */
+:root {
+  --bg:        #1E1E1C;
+  --surface:   #2A2A28;
+  --surface-2: #333331;
+  --surface-3: #3D3D3A;
+  --border:    rgba(234,231,220,0.10);
+  --border-hover: rgba(234,231,220,0.22);
+  --cream:     #EAE7DC;
+  --cream-dim: rgba(234,231,220,0.55);
+  --cream-faint: rgba(234,231,220,0.08);
+  --accent:    #C8A96E;
+  --accent-dim: rgba(200,169,110,0.18);
+  --danger:    #C0675A;
+  --success:   #6A9E7F;
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 20px;
+  --shadow:    0 2px 8px rgba(0,0,0,0.35), 0 8px 32px rgba(0,0,0,0.25);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.45), 0 16px 64px rgba(0,0,0,0.35);
+  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,169,110,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 90% 90%, rgba(200,169,110,0.04) 0%, transparent 60%);
+  color: var(--cream);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cream); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--accent); }
+
+/* ── Container ──────────────────────────────────────────── */
+.container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 44px 40px;
+  width: 100%;
+  max-width: 680px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+.container::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(234,231,220,0.18), transparent);
+}
+
+/* ── Typography ─────────────────────────────────────────── */
+h1, h2, h3, h4, h5 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; line-height: 1.2; letter-spacing: -0.3px;
+}
+h1 { font-size: 2.4rem; }
+h2 { font-size: 1.75rem; margin-bottom: 8px; }
+h3 { font-size: 1.25rem; margin-bottom: 8px; }
+h4 {
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--accent); margin-bottom: 14px; margin-top: 36px;
+}
+p { color: var(--cream-dim); font-size: 0.95rem; margin-bottom: 8px; }
+
+/* ── Form Inputs ────────────────────────────────────────── */
+input, textarea {
+  width: 100%; padding: 14px 16px;
+  background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--cream);
+  font-family: 'DM Sans', sans-serif; font-size: 1rem;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+  display: block; margin-bottom: 14px;
+  /* IMPORTANT: prevent iOS zoom on focus (font-size must be >= 16px) */
+  -webkit-appearance: none; appearance: none;
+}
+input::placeholder, textarea::placeholder { color: rgba(234,231,220,0.28); }
+input:focus, textarea:focus {
+  outline: none; border-color: rgba(234,231,220,0.4);
+  background: var(--surface-2); box-shadow: 0 0 0 3px rgba(234,231,220,0.06);
+}
+textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+input[readonly] { cursor: default; color: var(--cream-dim); }
+
+/* ── Buttons ────────────────────────────────────────────── */
+button, .btn {
+  font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 1rem;
+  padding: 14px 24px; border: 1px solid transparent;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: all var(--transition);
+  display: inline-flex; align-items: center; gap: 8px;
+  white-space: nowrap; text-decoration: none;
+  /* Good touch targets for mobile */
+  min-height: 48px;
+  -webkit-tap-highlight-color: transparent;
+}
+button { background: var(--cream); color: #1E1E1C; border-color: var(--cream); }
+button:hover { background: #F5F2EB; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(234,231,220,0.15); }
+button:active { transform: translateY(0); }
+button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  background: transparent; color: var(--cream); border-color: var(--border-hover);
+}
+.btn-secondary:hover { background: var(--cream-faint); border-color: rgba(234,231,220,0.3); }
+
+.btn-ghost {
+  background: transparent; color: var(--cream-dim);
+  border-color: transparent; padding: 10px 16px; min-height: 44px;
+}
+.btn-ghost:hover { color: var(--cream); background: var(--cream-faint); }
+
+.btn-full { width: 100%; justify-content: center; }
+
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.btn-row button { flex: 1; min-width: 120px; justify-content: center; }
+
+/* ── Funnel Page (index.html) ───────────────────────────── */
+/* Equal-size, properly touch-friendly buttons — critical on mobile */
+.funnel-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 28px 0 8px;
+  width: 100%;
+}
+
+.funnel-btn {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; color: var(--cream);
+  /* Fixed height so both buttons are always identical size */
+  min-height: 120px;
+  padding: 20px 12px;
+  width: 100%;
+  /* Remove default button styles */
+  border-radius: 14px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.funnel-btn .funnel-icon { font-size: 2.4rem; line-height: 1; }
+.funnel-btn.positive:hover, .funnel-btn.positive:focus {
+  border-color: var(--success); background: rgba(106,158,127,0.1);
+  transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+.funnel-btn.negative:hover, .funnel-btn.negative:focus {
+  border-color: rgba(192,103,90,0.6); background: rgba(192,103,90,0.07);
+  transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+
+/* Stars */
+.stars-row { display: flex; justify-content: center; gap: 6px; margin: 16px 0; }
+#stars { display: flex; gap: 4px; }
+#stars span {
+  font-size: 36px; cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  filter: grayscale(1) brightness(0.45); display: inline-block; line-height: 1;
+  /* Large touch target */
+  padding: 4px; -webkit-tap-highlight-color: transparent;
+}
+#stars span:hover, #stars span.selected {
+  transform: scale(1.3); filter: grayscale(0) brightness(1.1);
+}
+
+/* ── Metrics Grid ───────────────────────────────────────── */
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px;
+}
+.metric-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 16px; transition: border-color var(--transition);
+}
+.metric-card:hover { border-color: var(--border-hover); }
+.metric-value { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cream-dim); }
+
+/* ── Plans ──────────────────────────────────────────────── */
+.plan {
+  border: 1px solid var(--border); padding: 25px; border-radius: var(--radius);
+  margin: 15px; background-color: var(--surface-2);
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.plan:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+
+/* ── Input + action row ─────────────────────────────────── */
+.input-action-row { display: flex; gap: 10px; align-items: stretch; margin-bottom: 14px; }
+.input-action-row input { flex: 1; margin-bottom: 0; }
+.input-action-row button { flex-shrink: 0; padding: 0 18px; font-size: 0.9rem; min-height: 0; height: 52px; }
+
+/* ── Feedback List ──────────────────────────────────────── */
+ul.feedback-list, #negativeList {
+  list-style: none; padding: 0;
+  max-height: 220px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 8px;
+}
+ul.feedback-list li, #negativeList li {
+  background: var(--surface-3); border: 1px solid var(--border);
+  border-left: 3px solid var(--danger);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  font-size: 0.875rem; color: var(--cream-dim); line-height: 1.5;
+}
+ul.feedback-list::-webkit-scrollbar, #negativeList::-webkit-scrollbar { width: 4px; }
+ul.feedback-list::-webkit-scrollbar-track, #negativeList::-webkit-scrollbar-track { background: var(--surface-2); }
+ul.feedback-list::-webkit-scrollbar-thumb, #negativeList::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
+
+/* ── Chart ──────────────────────────────────────────────── */
+.chart-wrap {
+  background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px; margin: 8px 0 24px;
+  position: relative; height: 220px;
+}
+
+/* ── QR ─────────────────────────────────────────────────── */
+#qr {
+  width: 130px; height: 130px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--surface-3); display: block;
+}
+
+/* ── Loader ─────────────────────────────────────────────── */
+.loader-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 0; }
+.loader {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Status/result text ─────────────────────────────────── */
+#result, #status { font-size: 0.875rem; margin-top: 10px; min-height: 20px; color: var(--cream-dim); }
+
+/* ── Small / utility ────────────────────────────────────── */
+.small-text { font-size: 0.75rem; color: rgba(234,231,220,0.3); margin-top: 4px; }
+.powered-by { text-align: center; margin-top: 24px; font-size: 0.72rem; color: rgba(234,231,220,0.22); letter-spacing: 0.5px; }
+.powered-by a:hover { color: var(--accent); }
+.divider { height: 1px; background: var(--border); margin: 28px 0; }
+.flash { font-size: 0.75rem; color: var(--success); margin-left: 6px; opacity: 0; transition: opacity 0.3s; }
+.flash.show { opacity: 1; }
+
+/* ── Dashboard section titles ───────────────────────────── */
+.dash-section { margin-bottom: 44px; }
+.dash-section-title {
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.dash-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Panel cards (dashboard) ────────────────────────────── */
+.panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 14px;
+}
+.panel h3 { font-size: 0.9rem; color: var(--cream-dim); font-family: 'Syne', sans-serif; font-weight: 600; margin-bottom: 16px; }
+
+/* ── Responsive — Tablet ────────────────────────────────── */
+@media (max-width: 768px) {
+  .container { padding: 32px 24px; }
+  h2 { font-size: 1.5rem; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── Responsive — Mobile ────────────────────────────────── */
+@media (max-width: 480px) {
+  .container { padding: 28px 20px; border-radius: 16px; }
+  h2 { font-size: 1.4rem; }
+  /* Funnel buttons: keep side by side but ensure equal height */
+  .funnel-options { gap: 10px; }
+  .funnel-btn { min-height: 110px; font-size: 0.95rem; }
+  .funnel-btn .funnel-icon { font-size: 2rem; }
+  /* Stack input+button rows on mobile */
+  .input-action-row { flex-direction: column; }
+  .input-action-row button { height: 52px; width: 100%; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .metric-value { font-size: 1.6rem; }
+  #stars span { font-size: 30px; }
+  button { font-size: 0.95rem; }
+  /* Nav on mobile */
+  .topnav { padding: 14px 16px !important; }
+  .nav-right .btn-secondary { display: none; }
+}
+
+/* ── iOS Safari specific fixes ──────────────────────────── */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, button {
+    /* Prevent iOS from rounding borders differently */
+    -webkit-border-radius: var(--radius-sm);
+  }
+  /* Prevent double-tap zoom on buttons */
+  button { touch-action: manipulation; }
+}
