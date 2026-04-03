@@ -435,54 +435,39 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">⭐ Reputation management for local businesses</div>
-
-  <h1>Turn happy customers into<br><em>5-star reviews</em></h1>
-
-  <p class="hero-sub">
-    ReviewBoost quietly intercepts unhappy customers before they reach Google — and sends satisfied ones straight to your review page. Set up in 2 minutes.
-  </p>
-
-  <div class="hero-actions">
-    <a href="/admin"><button class="btn-primary">Start free trial →</button></a>
-    <a href="#demo-section"><button class="btn-secondary">See live demo ↓</button></a>
-  </div>
-
-  <p class="hero-note">14-day free trial · No credit card required · Cancel anytime</p>
-
-  <!-- Mini mockup -->
-  <div class="hero-mockup">
-    <p class="mockup-label">What your customers see</p>
-    <div class="mockup-browser">
-      <div class="browser-bar">
-        <div class="browser-dot bd-red"></div>
-        <div class="browser-dot bd-yellow"></div>
-        <div class="browser-dot bd-green"></div>
-        <div class="browser-url">reviewboost.com/r/your-business</div>
+<section class="hero-split">
+  <div class="hero-container">
+    <!-- Left side: text content -->
+    <div class="hero-left">
+      <div class="hero-badge">⭐ Reputation management for local businesses</div>
+      <h1>Turn happy customers into<br><em>5-star reviews</em></h1>
+      <p class="hero-sub">
+        ReviewBoost quietly intercepts unhappy customers before they reach Google — and sends satisfied ones straight to your review page. Set up in 2 minutes.
+      </p>
+      <div class="hero-actions">
+        <a href="/admin"><button class="btn-primary">Start free trial →</button></a>
+        <a href="#demo-section"><button class="btn-secondary">See live demo ↓</button></a>
       </div>
-      <div class="mockup-content">
-        <div class="mockup-biz">Your Business Name</div>
-        <div class="mockup-question">How was your experience today?</div>
-        <div class="mockup-sub">Your feedback helps us improve.</div>
-        <div class="mockup-btns">
-          <div class="mockup-btn good"><span class="micon">😊</span> Great!</div>
-          <div class="mockup-btn bad"><span class="micon">😕</span> Could be better</div>
-        </div>
+      <p class="hero-note">14-day free trial · No credit card required · Cancel anytime</p>
+    </div>
 
-        <div class="flow-diagram">
-          <div class="flow-col">
-            <div class="flow-node good-node">😊 Positive</div>
-            <div class="flow-label">→ Sent to Google</div>
-            <div class="flow-node good-node" style="margin-top:6px;font-size:0.68rem;">⭐ Public Review</div>
-          </div>
-          <div class="flow-arrow">vs</div>
-          <div class="flow-col">
-            <div class="flow-node bad-node">😕 Negative</div>
-            <div class="flow-label">→ Captured privately</div>
-            <div class="flow-node bad-node" style="margin-top:6px;font-size:0.68rem;">🔒 Your Dashboard</div>
-          </div>
+    <!-- Right side: personalised demo generator (from original demo section) -->
+    <div class="hero-right">
+      <div class="demo-card-hero">
+        <div class="demo-badge">✨ Live demo</div>
+        <h3>Personalise a demo</h3>
+        <p>Enter any business name — see exactly what their customers would see. Great for cold outreach or sharing with prospects.</p>
+        <div class="demo-input-wrap">
+          <input class="demo-input" id="demoNameHero" placeholder="e.g. The Coffee House" oninput="updateDemoLinkHero()">
         </div>
+        <div class="demo-link-output" id="demoLinkOutputHero">Your link will appear here...</div>
+        <button class="btn-full-demo" onclick="copyDemoLinkHero()">
+          <span id="copyBtnTextHero">📋 Copy demo link</span>
+        </button>
+        <div class="open-demo-link" id="openDemoLinkHero" style="display: none;">
+          <a href="#" target="_blank" id="openDemoAnchorHero">🔗 Open live demo →</a>
+        </div>
+        <p class="demo-note">Demo works instantly — no account needed. Customers feel the real funnel.</p>
       </div>
     </div>
   </div>
