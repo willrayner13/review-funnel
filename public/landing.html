@@ -452,38 +452,31 @@
   <p class="hero-note">14-day free trial · No credit card required · Cancel anytime</p>
 
   <!-- Mini mockup -->
-  <div class="hero-mockup">
-    <p class="mockup-label">What your customers see</p>
-    <div class="mockup-browser">
-      <div class="browser-bar">
-        <div class="browser-dot bd-red"></div>
-        <div class="browser-dot bd-yellow"></div>
-        <div class="browser-dot bd-green"></div>
-        <div class="browser-url">reviewboost.com/r/your-business</div>
-      </div>
-      <div class="mockup-content">
-        <div class="mockup-biz">Your Business Name</div>
-        <div class="mockup-question">How was your experience today?</div>
-        <div class="mockup-sub">Your feedback helps us improve.</div>
-        <div class="mockup-btns">
-          <div class="mockup-btn good"><span class="micon">😊</span> Great!</div>
-          <div class="mockup-btn bad"><span class="micon">😕</span> Could be better</div>
-        </div>
+ <div class="demo-inner">
+    <div class="demo-text reveal">
+      <div class="section-tag">Live demo</div>
+      <h2 class="section-heading">See it in action — <em style="font-style:normal;color:var(--accent)">personalised</em> for any business</h2>
+      <p class="section-sub">Generate a demo link with any business name. Share it in a cold email or print the QR code. They'll feel exactly what their customers would feel.</p>
+      <p style="font-size:0.82rem;color:var(--cream-dim);line-height:1.7;">
+        This is how we recommend you prospect — send a personalised demo link to a local business and they'll understand the product in 10 seconds without you explaining anything.
+      </p>
+    </div>
 
-        <div class="flow-diagram">
-          <div class="flow-col">
-            <div class="flow-node good-node">😊 Positive</div>
-            <div class="flow-label">→ Sent to Google</div>
-            <div class="flow-node good-node" style="margin-top:6px;font-size:0.68rem;">⭐ Public Review</div>
-          </div>
-          <div class="flow-arrow">vs</div>
-          <div class="flow-col">
-            <div class="flow-node bad-node">😕 Negative</div>
-            <div class="flow-label">→ Captured privately</div>
-            <div class="flow-node bad-node" style="margin-top:6px;font-size:0.68rem;">🔒 Your Dashboard</div>
-          </div>
-        </div>
+    <div class="demo-card reveal" style="transition-delay:0.15s">
+      <h3>Generate a demo link</h3>
+      <p>Enter a business name to create a personalised demo funnel</p>
+      <div class="demo-input-wrap">
+        <input class="demo-input" id="demoName" placeholder="e.g. The Coffee House" oninput="updateDemoLink()">
       </div>
+      <div class="demo-link-output" id="demoLinkOutput">Your link will appear here...</div>
+      <br>
+      <button class="btn-full" onclick="copyDemoLink()" style="background:var(--cream);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;padding:13px;border:none;border-radius:8px;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;" onmouseover="this.style.background='#F5F2EB'" onmouseout="this.style.background='var(--cream)'">
+        <span id="copyBtnText">Copy demo link</span>
+      </button>
+      <a id="openDemoBtn" href="#" target="_blank" style="display:none;margin-top:10px;width:100%;background:transparent;color:var(--cream-dim);font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.85rem;padding:11px;border:1px solid var(--border-hi);border-radius:8px;cursor:pointer;text-align:center;transition:all 0.2s;display:none;align-items:center;justify-content:center;">
+        Open demo →
+      </a>
+      <p class="demo-note">Demo links work instantly — no account needed</p>
     </div>
   </div>
 </section>
