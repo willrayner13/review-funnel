@@ -506,46 +506,51 @@
 
     <div class="reveal">
       <div class="section-tag">Live demo</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;letter-spacing:-.5px;line-height:1.1;margin-bottom:14px;">
-      Send them a demo that feels built for them
-    </h2>
-    <p class="ds-sub">
-      ReviewBoost creates a private review funnel for your business — happy customers go to Google, unhappy ones send private feedback only you see. But the fastest way to make a prospect understand this is to let them experience it as a customer would. Type their business name, copy the link, and drop it in your cold email with one line.
-    </p>
- 
-    <div class="ds-steps">
-      <div class="ds-step">
-        <div class="ds-num">1</div>
-        <div>
-          <strong>Type their business name into the box</strong>
-          <span>The funnel preview on the right updates live — they see their exact business name on the page.</span>
-        </div>
-      </div>
-      <div class="ds-step">
-        <div class="ds-num">2</div>
-        <div>
-          <strong>Copy the personalised link</strong>
-          <span>Every link is unique to that business. It takes 5 seconds and requires no account or setup.</span>
-        </div>
-      </div>
-      <div class="ds-step">
-        <div class="ds-num">3</div>
-        <div>
-          <strong>Paste it in the email: "Here's what your customers would see"</strong>
-          <span>That's your entire pitch. They click, they land on their own-named funnel, they feel the product immediately.</span>
-        </div>
-      </div>
-      <div class="ds-step">
-        <div class="ds-num">4</div>
-        <div>
-          <strong>They try it, they understand it, they sign up</strong>
-          <span>No sales call. No explanation. The product is so intuitive it sells itself — especially when it has their name on it.</span>
-        </div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;letter-spacing:-.5px;line-height:1.1;margin-bottom:14px;">The smartest line in any cold email</h2>
+      <p class="ds-sub">Don't explain what ReviewBoost does — show them. Type a business name, copy the personalised link, and drop it in a cold email. They click, they experience the product in 10 seconds, they understand.</p>
+
+      <div class="ds-steps">
+        <div class="ds-step"><div class="ds-num">1</div><div><strong>Type their business name</strong><span>Takes 5 seconds. Updates live on the right.</span></div></div>
+        <div class="ds-step"><div class="ds-num">2</div><div><strong>Copy the personalised link</strong><span>Their name appears on the funnel page.</span></div></div>
+        <div class="ds-step"><div class="ds-num">3</div><div><strong>"Here's what your customers would see"</strong><span>One line in the email. That's your pitch.</span></div></div>
+        <div class="ds-step"><div class="ds-num">4</div><div><strong>They click, they get it, they sign up</strong><span>The product sells itself.</span></div></div>
       </div>
     </div>
- 
 
+    <!-- DEMO CARD — spacious, no trial CTA inside -->
+    <div class="spotlight-card reveal" style="transition-delay:.15s">
+      <div class="sc-header">
+        <span class="sc-header-label">👇 Type any business name</span>
+        <span class="sc-live"><span class="sc-pulse"></span>Live</span>
+      </div>
 
+      <div class="sc-preview">
+        <div class="sc-biz" id="scBizName">Your Business Name</div>
+        <div class="sc-q">How was your experience?</div>
+        <div class="sc-btns">
+          <div class="sc-btn good"><span class="sc-btn-icon">😊</span>Great!</div>
+          <div class="sc-btn bad"><span class="sc-btn-icon">😕</span>Could be better</div>
+        </div>
+        <div class="sc-flow">
+          <div class="sc-dest google">→ Sent to Google Review</div>
+          <div class="sc-dest private">→ Captured privately</div>
+        </div>
+      </div>
+
+      <div class="sc-gen">
+        <div class="sc-gen-title">Generate personalised demo link</div>
+        <div class="sc-gen-sub">Enter a prospect's business name — the funnel preview updates live above, and you get a copyable link to send them.</div>
+        <input class="sc-input" id="scInput" placeholder="e.g. Joe's Barbershop, The Coffee House..." oninput="updateDemo()">
+        <div class="sc-link-out" id="scLinkOut">Type a business name to generate their link...</div>
+        <div class="sc-btn-row">
+          <button class="sc-copy-btn" onclick="copyDemo()"><span id="scCopyTxt">📋 Copy demo link</span></button>
+          <a id="scOpenBtn" href="#" target="_blank" class="sc-open-btn">Open demo →</a>
+        </div>
+        <p class="sc-footnote">No login needed · Works on any device · Instant</p>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 <!-- HOW IT WORKS -->
