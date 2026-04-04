@@ -27,16 +27,23 @@ if (process.env.STRIPE_SECRET) {
 }
 
 const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
-
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const app = express();
 
-// ⚠️ Stripe webhook must be BEFORE bodyParser.json()
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function isTrialActive(business) {
+  if (!business.trial_ends_at) return false;
+  return new Date() < new Date(business.trial_ends_at);
+}
+function hasProAccess(business) {
+  return business.subscription_active || business.plan_type === "pro" || isTrialActive(business);
+}
+
+// ─── STRIPE WEBHOOK — must come before bodyParser.json() ──────────────────────
 app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
-
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
@@ -44,103 +51,118 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     return res.status(400).send("Webhook error");
   }
 
-  if (event.type === "customer.subscription.trial_will_end") {
-    // Optional: send a reminder email 3 days before trial ends
-    const subscription = event.data.object;
-    console.log(`Trial ending soon for customer: ${subscription.customer}`);
-  }
- 
-  if (event.type === "customer.subscription.deleted") {
-    // Subscription cancelled or payment failed — revoke access
-    const subscription = event.data.object;
-    const customer = subscription.customer;
-    await supabase
-      .from("businesses")
-      .update({ subscription_active: false, plan_type: "starter" })
-      .eq("stripe_customer", customer);
-    console.log(`Subscription cancelled for customer: ${customer}`);
-  }
- 
-  if (event.type === "invoice.payment_failed") {
-    // Payment failed after trial — revoke access
-    const invoice = event.data.object;
-    await supabase
-      .from("businesses")
-      .update({ subscription_active: false })
-      .eq("stripe_customer", invoice.customer);
-    console.log(`Payment failed for customer: ${invoice.customer}`);
-  }
-
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    const slug = session.metadata.slug;
-    const plan = session.metadata.plan;
-    const customer = session.customer;
-
-    // Update subscription status in Supabase
+    const sess = event.data.object;
+    const slug = sess.metadata.slug;
+    const plan = sess.metadata.plan;
+    const customer = sess.customer;
     try {
+      // Set subscription_active: true immediately on checkout completion
+      // (trial starts here — they have full access from day 1)
       await supabase
         .from("businesses")
-        .update({ subscription_active: true, plan_type: plan, stripe_customer:customer })
+        .update({ subscription_active: true, plan_type: plan, stripe_customer: customer })
         .eq("slug", slug);
-      console.log(`Subscription updated for ${slug} to plan ${plan}`);
+      console.log(`Checkout complete for ${slug}, plan: ${plan}`);
     } catch (err) {
       console.log("Supabase update error:", err.message);
     }
   }
 
+  if (event.type === "customer.subscription.trial_will_end") {
+    console.log(`Trial ending soon: ${event.data.object.customer}`);
+    // Add reminder email logic here if desired
+  }
+
+  if (event.type === "customer.subscription.deleted") {
+    const customer = event.data.object.customer;
+    await supabase
+      .from("businesses")
+      .update({ subscription_active: false, plan_type: "starter" })
+      .eq("stripe_customer", customer);
+    console.log(`Subscription deleted: ${customer}`);
+  }
+
+  if (event.type === "invoice.payment_failed") {
+    const customer = event.data.object.customer;
+    await supabase
+      .from("businesses")
+      .update({ subscription_active: false })
+      .eq("stripe_customer", customer);
+    console.log(`Payment failed: ${customer}`);
+  }
+
   res.json({ received: true });
 });
 
-// ---------- MIDDLEWARE ----------
+// ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    secret: "supersecretkey",
+    secret: process.env.SESSION_SECRET || "supersecretkey-change-this",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
+    cookie: {
+      secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days — survives Stripe redirects
+    },
   })
 );
 
-// ---------- HTML ROUTES ----------
-const htmlPages = ["admin","login","for-business","success","cancel","thanks","bad", "landing", "demo"];
+// ─── HTML ROUTES ──────────────────────────────────────────────────────────────
+const htmlPages = ["admin", "login", "for-business", "success", "cancel", "thanks", "bad", "landing", "demo"];
 htmlPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.sendFile(path.resolve("public", `${page}.html`));
   });
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve("public", "landing.html"));
+app.get("/", (req, res) => res.sendFile(path.resolve("public", "landing.html")));
+app.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.html")));
+
+// ─── PUBLIC: subscription status — used by success.html, no session required ──
+app.get("/subscription-status/:slug", async (req, res) => {
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("subscription_active, plan_type, trial_ends_at")
+    .eq("slug", req.params.slug)
+    .single();
+  if (error || !data) return res.status(404).json({ error: "Not found" });
+  res.json({ subscription_active: data.subscription_active, plan_type: data.plan_type, trial_ends_at: data.trial_ends_at });
 });
 
-app.get("/demo/:slug", (req, res) => {
-  res.sendFile(path.resolve("public", "demo.html"));
+// ─── SESSION RESTORE — called by success.html after Stripe redirect ────────────
+// Stripe kills the session on redirect back. This re-establishes it using the
+// slug in the URL (safe because we verify it exists in DB with active sub).
+app.post("/restore-session/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("slug, subscription_active")
+    .eq("slug", slug)
+    .single();
+  if (error || !data) return res.status(404).json({ error: "Not found" });
+  if (data.subscription_active) {
+    req.session.slug = slug;
+    req.session.save((err) => {
+      if (err) return res.status(500).json({ error: "Session save failed" });
+      res.json({ success: true });
+    });
+  } else {
+    res.json({ success: false, reason: "Not yet active" });
+  }
 });
 
-// ---------- BUSINESS PAGES ----------
+// ─── BUSINESS FUNNEL PAGE ──────────────────────────────────────────────────────
 app.get("/r/:business", async (req, res) => {
   const slug = req.params.business;
-
-  const { data, error } = await supabase
-.from("businesses")
-.select("*")
-.eq("slug", slug)
-.single()
-
-if(error || !data){
-return res.status(404).send("Business not found")
-}
-
-
+  const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
+  if (error || !data) return res.status(404).send("Business not found");
   await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
-
   const pagePath = path.join(__dirname, "public", "index.html");
   const page = fs.readFileSync(pagePath, "utf8");
-
   res.send(`
     <html>
       <script>
@@ -153,7 +175,7 @@ return res.status(404).send("Business not found")
   `);
 });
 
-// ---------- EVENTS ----------
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
 app.post("/positive", async (req, res) => {
   const { slug } = req.body;
   const { error } = await supabase.from("events").insert({ business_slug: slug, event_type: "positive" });
@@ -182,63 +204,54 @@ app.post("/feedback", async (req, res) => {
   res.json({ success: true });
 });
 
-// ---------- STATS ----------
+// ─── STATS ────────────────────────────────────────────────────────────────────
 app.get("/stats/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
 
-  const { data: businessData } = await supabase.from("businesses").select("subscription_active, plan_type").eq("slug", req.params.slug).single();
+  const { data: businessData } = await supabase
+    .from("businesses")
+    .select("subscription_active, plan_type, trial_ends_at")
+    .eq("slug", req.params.slug)
+    .single();
   if (!businessData) return res.status(404).json({ error: "Business not found" });
 
-const { data } = await supabase
-.from("events")
-.select("event_type, rating, message")
-.eq("business_slug", req.params.slug)
+  const { data } = await supabase
+    .from("events")
+    .select("event_type, rating, message")
+    .eq("business_slug", req.params.slug);
 
-const stats = {
-  visits: 0,
-  positive: 0,
-  negative: 0,
-  reviews: 0,
-  rating_avg: 0,
-  rating_count: 0,
-  rating_distribution: {},
-  feedback: [], // ADD THIS LINE
-  subscription_active: businessData.subscription_active,
-  plan_type: businessData.plan_type,
-};
+  const stats = {
+    visits: 0, positive: 0, negative: 0, reviews: 0,
+    rating_avg: 0, rating_count: 0, rating_distribution: {}, feedback: [],
+    subscription_active: businessData.subscription_active,
+    plan_type: businessData.plan_type,
+    trial_ends_at: businessData.trial_ends_at,
+  };
 
   let ratingTotal = 0;
   const ratingDist = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
-data.forEach((e) => {
-
-  if (e.event_type === "visit") stats.visits++;
-  if (e.event_type === "positive") stats.positive++;
-  if (e.event_type === "negative") stats.negative++;
-  if (e.event_type === "review_click") stats.reviews++;
-
-  if (e.event_type === "rating" && e.rating) {
-    ratingTotal += e.rating;
-    stats.rating_count++;
-    ratingDist[e.rating] = (ratingDist[e.rating] || 0) + 1;
-  }
-
-  // ADD THIS BLOCK
-  if (e.event_type === "negative" && e.message) {
-    stats.feedback.push(e.message);
-  }
-
-});
+  (data || []).forEach((e) => {
+    if (e.event_type === "visit") stats.visits++;
+    if (e.event_type === "positive") stats.positive++;
+    if (e.event_type === "negative") stats.negative++;
+    if (e.event_type === "review_click") stats.reviews++;
+    if (e.event_type === "rating" && e.rating) {
+      ratingTotal += e.rating;
+      stats.rating_count++;
+      ratingDist[e.rating] = (ratingDist[e.rating] || 0) + 1;
+    }
+    if (e.event_type === "negative" && e.message) stats.feedback.push(e.message);
+  });
 
   stats.rating_avg = stats.rating_count ? (ratingTotal / stats.rating_count).toFixed(2) : 0;
   stats.rating_distribution = ratingDist;
   stats.conversion_rate = stats.visits ? ((stats.positive / stats.visits) * 100).toFixed(1) : 0;
   stats.negative_rate = stats.visits ? ((stats.negative / stats.visits) * 100).toFixed(1) : 0;
-
   res.json(stats);
 });
 
-// ---------- CREATE BUSINESS ----------
+// ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
 app.post("/create-business", async (req, res) => {
   try {
     const { name, email, review, password } = req.body;
@@ -247,15 +260,12 @@ app.post("/create-business", async (req, res) => {
     const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const { data:existing } = await supabase
-.from("businesses")
-.select("email")
-.eq("email", email)
-.single()
+    const { data: existing } = await supabase.from("businesses").select("email").eq("email", email).single();
+    if (existing) return res.status(400).json({ error: "Email already exists" });
 
-if(existing){
-return res.status(400).json({error:"Email already exists"})
-}
+    // FIXED: trial_ends_at is now set on every new account
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 14);
 
     const { error } = await supabase.from("businesses").insert({
       name,
@@ -265,11 +275,13 @@ return res.status(400).json({error:"Email already exists"})
       password: hashedPassword,
       plan_type: "starter",
       subscription_active: false,
+      trial_ends_at: trialEnd.toISOString(),
     });
 
     if (error) return res.status(500).json(error);
 
     req.session.slug = slug;
+    req.session.save();
     res.json({ success: true, slug });
   } catch (err) {
     console.log("Server error:", err);
@@ -277,48 +289,36 @@ return res.status(400).json({error:"Email already exists"})
   }
 });
 
-// ---------- VERIFY LOGIN ----------
+// ─── VERIFY LOGIN ─────────────────────────────────────────────────────────────
 app.post("/verify-login", async (req, res) => {
-
   const { email, password } = req.body;
-
-  const { data } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("email", email)
-    .single();
-
-  if (!data) return res.json({ success:false });
+  const { data } = await supabase.from("businesses").select("*").eq("email", email).single();
+  if (!data) return res.json({ success: false });
 
   const valid = await bcrypt.compare(password, data.password);
-
-  if (!valid) return res.json({ success:false });
+  if (!valid) return res.json({ success: false });
 
   req.session.slug = data.slug;
+  req.session.save();
 
+  // FIXED: return subscription status so login page can redirect to /admin if no sub
   res.json({
-    success:true,
-    slug:data.slug
+    success: true,
+    slug: data.slug,
+    subscription_active: data.subscription_active,
   });
-
 });
 
-app.get("/session", (req,res)=>{
+app.get("/session", (req, res) => {
+  if (!req.session.slug) return res.json({ loggedIn: false });
+  res.json({ loggedIn: true, slug: req.session.slug });
+});
 
-if(!req.session.slug){
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => { res.redirect("/login"); });
+});
 
-return res.json({loggedIn:false})
-
-}
-
-res.json({
-loggedIn:true,
-slug:req.session.slug
-})
-
-})
-
-// ---------- QR DOWNLOAD ----------
+// ─── QR DOWNLOAD ──────────────────────────────────────────────────────────────
 app.get("/qr-download/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
   const url = `${process.env.BASE_URL}/r/${req.params.slug}`;
@@ -328,428 +328,171 @@ app.get("/qr-download/:slug", async (req, res) => {
   res.send(qr);
 });
 
-// ---------- SEND SMS ----------
+// ─── SEND SMS ─────────────────────────────────────────────────────────────────
+// NOTE: To SMS UK numbers (+44), you MUST use a UK Twilio number.
+// Buy one at console.twilio.com → Phone Numbers → Buy → United Kingdom
+// Then set TWILIO_PHONE=+447700xxxxxx in your Vercel env vars.
+// US numbers (+1) cannot send to UK numbers — that is the cause of your error.
 app.post("/send-sms", smsLimiter, async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  const { phone } = req.body;
+  const slug = req.session.slug;
+  try {
+    const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single();
+    const message = `Hi! Thanks for visiting ${data.name}. Please leave a review: ${process.env.BASE_URL}/r/${slug}`;
+    await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: phone, body: message });
+    res.json({ success: true });
+  } catch (err) {
+    console.log("Twilio error:", err.code, err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
 
-if(!req.session.slug){
-return res.status(401).json({error:"Not authorised"})
-}
-
-const { phone } = req.body
-const slug = req.session.slug
-
-try{
-
-const { data } = await supabase
-.from("businesses")
-.select("*")
-.eq("slug", slug)
-.single()
-
-const message = `Hi! Thanks for visiting ${data.name}. Please leave a review: ${process.env.BASE_URL}/r/${slug}`
-
-await twilioClient.messages.create({
-from:process.env.TWILIO_PHONE,
-to:phone,
-body:message
-})
-
-res.json({success:true})
-
-}catch(err){
-
-console.log(err)
-res.status(500).json({error:err.message})
-
-}
-
-})
-
-// ---------- STRIPE CHECKOUT ----------
+// ─── STRIPE CHECKOUT ──────────────────────────────────────────────────────────
 app.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
   const priceId = plan === "pro" ? process.env.PRICE_PRO : process.env.PRICE_STARTER;
- 
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [{ price: priceId, quantity: 1 }],
     mode: "subscription",
-    subscription_data: {
-      trial_period_days: 14,   // ← THIS IS THE ONLY NEW LINE
-    },
+    subscription_data: { trial_period_days: 14 },
+    // FIXED: cancel goes back to /admin (plan selection), not /cancel page
     success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
-    cancel_url: `${process.env.BASE_URL}/cancel`,
+    cancel_url: `${process.env.BASE_URL}/admin`,
     metadata: { slug, plan },
   });
- 
+
   res.json({ url: session.url });
 });
 
-app.get("/logout",(req,res)=>{
-
-req.session.destroy(()=>{
-res.redirect("/login")
-})
-
-})
-
+// ─── CANCEL SUBSCRIPTION ──────────────────────────────────────────────────────
 app.post("/cancel-subscription", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
- 
   try {
-    const { data } = await supabase
-      .from("businesses")
-      .select("stripe_customer")
-      .eq("slug", req.session.slug)
-      .single();
- 
-    if (!data || !data.stripe_customer) {
-      return res.status(400).json({ error: "No active subscription found." });
-    }
- 
-    // List subscriptions for this customer
-    const subscriptions = await stripe.subscriptions.list({
-      customer: data.stripe_customer,
-      status: "active",
-      limit: 1,
-    });
- 
-    // Also check trialing subscriptions
-    const trialingSubscriptions = await stripe.subscriptions.list({
-      customer: data.stripe_customer,
-      status: "trialing",
-      limit: 1,
-    });
- 
-    const sub = subscriptions.data[0] || trialingSubscriptions.data[0];
- 
-    if (!sub) {
-      return res.status(400).json({ error: "No active subscription found." });
-    }
- 
-    // Cancel at period end (they keep access until the current period ends)
-    // Change cancel_at_period_end to false and pass an empty object to cancel immediately
-    await stripe.subscriptions.update(sub.id, {
-      cancel_at_period_end: true,
-    });
- 
-    // Update database to reflect cancellation pending
-    await supabase
-      .from("businesses")
-      .update({ subscription_active: false })
-      .eq("slug", req.session.slug);
- 
-    res.json({ success: true, message: "Subscription cancelled. You'll retain access until the end of your billing period." });
- 
+    const { data } = await supabase.from("businesses").select("stripe_customer").eq("slug", req.session.slug).single();
+    if (!data || !data.stripe_customer) return res.status(400).json({ error: "No active subscription found." });
+
+    const [activeSubs, trialSubs] = await Promise.all([
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
+    ]);
+    const sub = activeSubs.data[0] || trialSubs.data[0];
+    if (!sub) return res.status(400).json({ error: "No active subscription found." });
+
+    await stripe.subscriptions.update(sub.id, { cancel_at_period_end: true });
+    await supabase.from("businesses").update({ subscription_active: false }).eq("slug", req.session.slug);
+    res.json({ success: true, message: "Subscription cancelled. Access continues until end of billing period." });
   } catch (err) {
-    console.log("Cancel subscription error:", err.message);
+    console.log("Cancel error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
- 
- 
 
-// ---------- SEND EMAIL ----------
-// ---------- SEND EMAIL ----------
+// ─── SEND EMAIL (Pro only) ────────────────────────────────────────────────────
 app.post("/send-email", async (req, res) => {
-
-if(!req.session.slug){
-return res.status(401).json({error:"Not authorised"})
-}
-
-const { email } = req.body
-const slug = req.session.slug
-
-try{
-
-// Get business info
-const { data:business, error } = await supabase
-.from("businesses")
-.select("*")
-.eq("slug", slug)
-.single()
-
-if(error || !business){
-return res.status(404).json({error:"Business not found"})
-}
-
-// PRO PLAN CHECK
-if(business.plan_type !== "pro"){
-return res.status(403).json({error:"Pro plan required"})
-}
-
-const reviewUrl = `${process.env.BASE_URL}/r/${slug}`
-
-// Send email
-await resend.emails.send({
-from: "Reviews <reviews@yourdomain.com>",
-to: email,
-subject: `Thanks for visiting ${business.name}`,
-html: `
-<p>Hi!</p>
-
-<p>Thanks for visiting <b>${business.name}</b> today.</p>
-
-<p>If you have a moment, we would really appreciate a quick review.</p>
-
-<p><a href="${reviewUrl}">Leave a review</a></p>
-
-<p>Thank you!</p>
-`
-})
-
-res.json({success:true})
-
-}catch(err){
-
-console.log(err)
-res.status(500).json({error:err.message})
-
-}
-
-})
-
-// ---------- AI REVIEW REPLY ----------
-// ---------- AI REVIEW REPLY ----------
-app.post("/generate-reply", async (req,res)=>{
-
-if(!req.session.slug){
-return res.status(401).json({error:"Not authorised"})
-}
-
-const { review } = req.body
-const slug = req.session.slug
-
-try{
-
-// Get business
-const { data:business, error } = await supabase
-.from("businesses")
-.select("plan_type")
-.eq("slug", slug)
-.single()
-
-if(error || !business){
-return res.status(404).json({error:"Business not found"})
-}
-
-// PRO PLAN CHECK
-if(business.plan_type !== "pro"){
-return res.status(403).json({error:"Pro plan required"})
-}
-
-// Generate AI response
-const completion = await openai.chat.completions.create({
-model:"gpt-4o-mini",
-messages:[
-{
-role:"system",
-content:"You are a friendly professional business owner replying to customer reviews. Write a polite and helpful reply."
-},
-{
-role:"user",
-content:`Write a reply to this customer review:\n\n${review}`
-}
-]
-})
-
-const reply = completion.choices[0].message.content
-
-res.json({reply})
-
-}catch(err){
-
-console.log(err)
-res.status(500).json({error:err.message})
-
-}
-
-})
-
-app.post("/billing-portal", async (req,res)=>{
-
-if(!req.session.slug) return res.status(401).json({error:"Not logged in"})
-
-const { data } = await supabase
-.from("businesses")
-.select("stripe_customer")
-.eq("slug", req.session.slug)
-.single()
-
-const portal = await stripe.billingPortal.sessions.create({
-customer:data.stripe_customer,
-return_url:process.env.BASE_URL+"/for-business"
-})
-
-res.json({url:portal.url})
-
-})
-
-app.get("/review-growth/:slug", async (req,res)=>{
-
-if(req.session.slug!==req.params.slug){
-return res.status(401).json({error:"Not authorised"})
-}
-
-const { data } = await supabase
-.from("events")
-.select("created_at")
-.eq("business_slug",req.params.slug)
-.eq("event_type","review_click")
-
-const months={}
-
-data.forEach(e=>{
-
-const month=new Date(e.created_at).toISOString().slice(0,7)
-
-months[month]=(months[month]||0)+1
-
-})
-
-res.json(months)
-
-})
-
-app.post("/feedback-summary", async (req,res)=>{
-
-if(!req.session.slug){
-return res.status(401).json({error:"Not authorised"})
-}
-
-const slug=req.session.slug
-
-const { data } = await supabase
-.from("events")
-.select("message")
-.eq("business_slug",slug)
-.eq("event_type","negative")
-
-const feedback=data.map(f=>f.message).join("\n")
-
-const completion=await openai.chat.completions.create({
-model:"gpt-4o-mini",
-messages:[
-{
-role:"system",
-content:"Summarize the most common complaints from this customer feedback"
-},
-{
-role:"user",
-content:feedback
-}
-]
-})
-
-res.json({
-summary:completion.choices[0].message.content
-})
-
-})
-
-app.post("/auto-review", async (req,res)=>{
-
-const { phone, slug } = req.body
-
-const { data } = await supabase
-.from("businesses")
-.select("*")
-.eq("slug", slug)
-.single()
-
-if(!data){
-return res.status(404).json({error:"Business not found"})
-}
-
-const message = `Thanks for visiting ${data.name}! Please leave a quick review: ${process.env.BASE_URL}/r/${slug}`
-
-await twilioClient.messages.create({
-from: process.env.TWILIO_PHONE,
-to: phone,
-body: message
-})
-
-res.json({success:true})
-
-})
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PASTE THESE ROUTES INTO server.js  (alongside your existing routes)
-// ─────────────────────────────────────────────────────────────────────────────
-
-// 1. Public subscription status — used by success.html (no session needed)
-app.get("/subscription-status/:slug", async (req, res) => {
-  const { data, error } = await supabase
-    .from("businesses")
-    .select("subscription_active, plan_type")
-    .eq("slug", req.params.slug)
-    .single();
-  if(error || !data) return res.status(404).json({ error: "Not found" });
-  res.json({ subscription_active: data.subscription_active, plan_type: data.plan_type });
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  const { email } = req.body;
+  const slug = req.session.slug;
+  try {
+    const { data: business, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
+    if (error || !business) return res.status(404).json({ error: "Business not found" });
+    if (!hasProAccess(business)) return res.status(403).json({ error: "Pro plan required" });
+
+    const reviewUrl = `${process.env.BASE_URL}/r/${slug}`;
+    await resend.emails.send({
+      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "yourdomain.com"}>`,
+      to: email,
+      subject: `Thanks for visiting ${business.name}`,
+      html: `<p>Hi!</p><p>Thanks for visiting <b>${business.name}</b> today.</p><p>If you have a moment, we'd really appreciate a quick review.</p><p><a href="${reviewUrl}">Leave a review</a></p><p>Thank you!</p>`,
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// 2. Landing page
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve("public", "landing.html"));
+// ─── AI REVIEW REPLY (Pro only) ───────────────────────────────────────────────
+app.post("/generate-reply", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  const { review } = req.body;
+  const slug = req.session.slug;
+  try {
+    const { data: business, error } = await supabase.from("businesses").select("plan_type, trial_ends_at, subscription_active").eq("slug", slug).single();
+    if (error || !business) return res.status(404).json({ error: "Business not found" });
+    if (!hasProAccess(business)) return res.status(403).json({ error: "Pro plan required" });
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are a friendly professional business owner replying to customer reviews. Write a polite and helpful reply." },
+        { role: "user", content: `Write a reply to this customer review:\n\n${review}` },
+      ],
+    });
+    res.json({ reply: completion.choices[0].message.content });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// 3. Personalised demo funnel (no DB, no session)
-app.get("/demo/:slug", (req, res) => {
-  res.sendFile(path.resolve("public", "demo.html"));
+// ─── BILLING PORTAL ───────────────────────────────────────────────────────────
+app.post("/billing-portal", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
+  try {
+    const { data } = await supabase.from("businesses").select("stripe_customer").eq("slug", req.session.slug).single();
+    if (!data || !data.stripe_customer) return res.status(400).json({ error: "No billing account found. Please subscribe first." });
+    const portal = await stripe.billingPortal.sessions.create({
+      customer: data.stripe_customer,
+      return_url: process.env.BASE_URL + "/for-business",
+    });
+    res.json({ url: portal.url });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SUPABASE SCHEMA CHANGE — run this SQL in Supabase SQL Editor
-// ─────────────────────────────────────────────────────────────────────────────
-//
-//   ALTER TABLE businesses ADD COLUMN trial_ends_at timestamptz;
-//
-// ─────────────────────────────────────────────────────────────────────────────
-// UPDATE /create-business INSERT to include trial end date:
-// ─────────────────────────────────────────────────────────────────────────────
-//
-//   const trialEnd = new Date();
-//   trialEnd.setDate(trialEnd.getDate() + 14);
-//
-//   await supabase.from("businesses").insert({
-//     name, email, review_link: review, slug,
-//     password: hashedPassword,
-//     plan_type: "starter",
-//     subscription_active: false,
-//     trial_ends_at: trialEnd.toISOString()   // <-- ADD THIS LINE
-//   });
-//
-// ─────────────────────────────────────────────────────────────────────────────
-// ADD this helper function near the top of server.js (after your consts):
-// ─────────────────────────────────────────────────────────────────────────────
-//
-//   function isTrialActive(business) {
-//     if(!business.trial_ends_at) return false;
-//     return new Date() < new Date(business.trial_ends_at);
-//   }
-//
-// ─────────────────────────────────────────────────────────────────────────────
-// UPDATE your Pro-gated routes to also allow trial users:
-// In /generate-reply and /send-email, replace:
-//   if(business.plan_type !== "pro")
-// With:
-//   if(business.plan_type !== "pro" && !isTrialActive(business))
-//
-// ─────────────────────────────────────────────────────────────────────────────
-// SMS 500 FIX — check your .env has all three of these:
-// ─────────────────────────────────────────────────────────────────────────────
-//
-//   TWILIO_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-//   TWILIO_TOKEN=your_auth_token_here
-//   TWILIO_PHONE=+441234567890   ← E.164 format, include country code
-//
-// On a Twilio TRIAL account, you can only SMS verified numbers.
-// Verify recipients at: https://console.twilio.com/us1/verified-caller-ids
-// Or upgrade your Twilio account to remove this restriction.
-//
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── REVIEW GROWTH ────────────────────────────────────────────────────────────
+app.get("/review-growth/:slug", async (req, res) => {
+  if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
+  const { data } = await supabase.from("events").select("created_at").eq("business_slug", req.params.slug).eq("event_type", "review_click");
+  const months = {};
+  (data || []).forEach((e) => {
+    const month = new Date(e.created_at).toISOString().slice(0, 7);
+    months[month] = (months[month] || 0) + 1;
+  });
+  res.json(months);
+});
 
-// ---------- EXPORT ----------
+// ─── FEEDBACK SUMMARY ─────────────────────────────────────────────────────────
+app.post("/feedback-summary", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  const slug = req.session.slug;
+  const { data } = await supabase.from("events").select("message").eq("business_slug", slug).eq("event_type", "negative");
+  const feedback = data.map((f) => f.message).join("\n");
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: "Summarize the most common complaints from this customer feedback" },
+      { role: "user", content: feedback },
+    ],
+  });
+  res.json({ summary: completion.choices[0].message.content });
+});
+
+// ─── AUTO REVIEW SMS ──────────────────────────────────────────────────────────
+app.post("/auto-review", async (req, res) => {
+  const { phone, slug } = req.body;
+  const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single();
+  if (!data) return res.status(404).json({ error: "Business not found" });
+  const message = `Thanks for visiting ${data.name}! Please leave a quick review: ${process.env.BASE_URL}/r/${slug}`;
+  await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: phone, body: message });
+  res.json({ success: true });
+});
+
+// ─── EXPORT ───────────────────────────────────────────────────────────────────
 const serverless = require("serverless-http");
 module.exports = app;
 module.exports.handler = serverless(app);

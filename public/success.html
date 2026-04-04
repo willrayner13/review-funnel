@@ -3,34 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subscription Confirmed — ReviewBoost</title>
+  <title>Trial Started — ReviewBoost</title>
   <link rel="stylesheet" href="/style.css">
   <style>
     body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
-    .container { max-width: 460px; text-align: center; }
+    .container { max-width: 480px; text-align: center; }
     .icon { font-size: 3rem; display: block; margin-bottom: 20px; animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both; }
     @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     h2 { margin-bottom: 8px; }
-    p { color: var(--cream-dim); margin-bottom: 4px; }
-    #status { color: var(--accent); font-size: 0.85rem; margin-top: 8px; min-height: 20px; }
-    .loader-wrap { display: flex; justify-content: center; margin: 24px 0 8px; }
+    .sub-text { color: var(--cream-dim); margin-bottom: 4px; font-size: 0.95rem; }
+    #status { color: var(--accent); font-size: 0.85rem; margin-top: 12px; min-height: 20px; }
+    .loader-wrap { display: flex; justify-content: center; margin: 20px 0 4px; }
     .loader { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .manual-link { margin-top: 28px; }
-    .manual-link a { font-size: 0.85rem; color: var(--accent); border: 1px solid rgba(200,169,110,0.3); padding: 10px 20px; border-radius: 8px; display: inline-block; transition: all 0.2s; }
-    .manual-link a:hover { background: rgba(200,169,110,0.08); }
+
+    /* Manual link is hidden until we're sure polling has failed */
+    .manual-link { margin-top: 24px; display: none; }
+    .manual-link a {
+      font-size: 0.9rem; color: var(--cream); background: var(--accent);
+      padding: 12px 28px; border-radius: 8px; display: inline-block;
+      transition: all 0.2s; font-family: 'DM Sans', sans-serif; font-weight: 600;
+    }
+    .manual-link a:hover { background: #D4B87A; transform: translateY(-1px); }
+
+    .trial-info {
+      background: var(--surface-2); border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 12px; padding: 20px 24px; margin: 24px 0;
+      font-size: 0.82rem; color: var(--cream-dim); line-height: 1.7;
+      text-align: left;
+    }
+    .trial-info strong { color: var(--cream); }
   </style>
 </head>
 <body>
   <div class="container">
     <span class="icon">🎉</span>
-    <h2>You're all set!</h2>
-    <p>We're confirming your subscription — just a moment.</p>
-    <div class="loader-wrap"><div class="loader"></div></div>
-    <p id="status">Verifying payment...</p>
+    <h2>Your trial has started!</h2>
+    <p class="sub-text">Setting up your dashboard — just a moment.</p>
 
-    <!-- Fallback if polling takes too long -->
-    <div class="manual-link" id="manualLink" style="display:none">
+    <div class="trial-info">
+      <strong>What happens next:</strong><br>
+      Your 14-day free trial starts today. No charge until day 15. You can cancel any time from your dashboard before the trial ends and you won't pay a penny.
+    </div>
+
+    <div class="loader-wrap"><div class="loader" id="spinner"></div></div>
+    <p id="status">Activating your account...</p>
+
+    <!-- Only shown after all polling attempts fail -->
+    <div class="manual-link" id="manualLink">
       <a href="/for-business">Go to my dashboard →</a>
     </div>
   </div>
@@ -39,46 +59,58 @@
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("slug") || sessionStorage.getItem("currentSlug");
 
-  // Show manual link after 10 seconds regardless — catches session issues
-  setTimeout(() => {
-    document.getElementById("manualLink").style.display = "block";
-    document.getElementById("status").innerText = "Taking a moment — click below to continue.";
-  }, 10000);
-
-  if(!slug){
-    document.getElementById("status").innerText = "No account info found.";
-    document.getElementById("manualLink").style.display = "block";
+  if (!slug) {
+    document.getElementById("status").innerText = "Something went wrong — please sign in.";
+    document.getElementById("spinner").style.display = "none";
+    const ml = document.getElementById("manualLink");
+    ml.style.display = "block";
+    ml.querySelector("a").href = "/login";
+    ml.querySelector("a").textContent = "Sign in to your dashboard →";
   } else {
-    // Also restore session from slug in URL so dashboard works
-    // The server needs the session — we re-verify by hitting a lightweight endpoint
     let attempts = 0;
-    async function checkSubscription(){
+
+    async function tryActivate() {
       attempts++;
       try {
-        // Try stats endpoint — if session is valid it returns data
-        const res = await fetch("/subscription-status/" + slug);
-        const data = await res.json();
-        if(data.subscription_active){
-          document.getElementById("status").innerText = "✓ Confirmed! Redirecting to your dashboard...";
-          document.querySelector(".loader").style.display = "none";
-          setTimeout(() => window.location.href = "/for-business", 1200);
-        } else if(attempts < 10) {
-          document.getElementById("status").innerText = "Still confirming" + ".".repeat(attempts % 4);
-          setTimeout(checkSubscription, 2500);
+        // Step 1: Check if subscription is active in DB
+        const statusRes = await fetch("/subscription-status/" + slug);
+        const statusData = await statusRes.json();
+
+        if (statusData.subscription_active) {
+          // Step 2: Restore session (Stripe killed it on redirect)
+          try {
+            await fetch("/restore-session/" + slug, { method: "POST" });
+          } catch(e) {
+            // Best-effort — session restore failing is non-fatal
+          }
+
+          document.getElementById("status").innerText = "✓ Account activated! Redirecting...";
+          document.getElementById("spinner").style.display = "none";
+          setTimeout(() => { window.location.href = "/for-business"; }, 1200);
+
+        } else if (attempts < 12) {
+          // Webhook may not have fired yet — keep polling
+          const dots = ".".repeat((attempts % 3) + 1);
+          document.getElementById("status").innerText = "Confirming with Stripe" + dots;
+          setTimeout(tryActivate, 2500);
+
         } else {
-          document.getElementById("status").innerText = "Stripe confirmed — click below to continue.";
+          // Give up polling — show manual link
+          document.getElementById("status").innerText = "Stripe has confirmed your payment.";
+          document.getElementById("spinner").style.display = "none";
           document.getElementById("manualLink").style.display = "block";
-          document.querySelector(".loader").style.display = "none";
         }
-      } catch(e) {
-        if(attempts < 10) setTimeout(checkSubscription, 2500);
-        else {
+      } catch (e) {
+        if (attempts < 12) {
+          setTimeout(tryActivate, 2500);
+        } else {
+          document.getElementById("spinner").style.display = "none";
           document.getElementById("manualLink").style.display = "block";
-          document.querySelector(".loader").style.display = "none";
         }
       }
     }
-    checkSubscription();
+
+    tryActivate();
   }
 </script>
 </body>
