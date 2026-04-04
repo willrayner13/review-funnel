@@ -212,6 +212,24 @@
     </div>
   </div>
 
+
+  <div class="dash-section">
+  <div class="dash-section-title">Subscription</div>
+ 
+  <div class="panel" id="subscriptionPanel">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <h3 style="margin-bottom:4px;">Manage your subscription</h3>
+        <p style="font-size:0.82rem;color:var(--cream-dim);margin:0;">Update payment details, change plan, or cancel — all from Stripe's secure portal.</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button onclick="billing()" style="background:var(--surface-2);color:var(--cream);border:1px solid var(--border-hover);padding:10px 18px;font-size:0.85rem;min-height:0;">Manage billing →</button>
+        <button onclick="confirmCancel()" id="cancelBtn" style="background:transparent;color:#D4897C;border:1px solid rgba(192,103,90,0.3);padding:10px 18px;font-size:0.85rem;min-height:0;">Cancel subscription</button>
+      </div>
+    </div>
+    <div id="cancelResult" style="font-size:0.82rem;margin-top:12px;min-height:0;"></div>
+  </div>
+</div>
 </div>
 
 <script>
@@ -352,6 +370,41 @@ async function billing(){
   const data = await res.json();
   if(data.url) window.location=data.url;
   else { alert("Billing portal unavailable. Make sure you have an active subscription."); btn.disabled=false; btn.textContent="Billing"; }
+}
+
+async function confirmCancel(){
+  const confirmed = confirm(
+    "Are you sure you want to cancel your subscription?\n\n" +
+    "You'll keep access until the end of your current billing period, then your account will revert to read-only.\n\n" +
+    "You can resubscribe at any time."
+  );
+  if(!confirmed) return;
+ 
+  const btn = document.getElementById('cancelBtn');
+  btn.disabled = true;
+  btn.textContent = 'Cancelling...';
+ 
+  try {
+    const res = await fetch("/cancel-subscription", { method: "POST" });
+    const data = await res.json();
+    const result = document.getElementById('cancelResult');
+ 
+    if(data.success){
+      result.style.color = '#8EC9A8';
+      result.textContent = '✓ Subscription cancelled. You\'ll retain access until the end of your billing period.';
+      btn.style.display = 'none';
+    } else {
+      result.style.color = '#D4897C';
+      result.textContent = 'Could not cancel: ' + (data.error || 'Please try again or use the billing portal.');
+      btn.disabled = false;
+      btn.textContent = 'Cancel subscription';
+    }
+  } catch(e) {
+    document.getElementById('cancelResult').textContent = 'Something went wrong. Please try using the billing portal instead.';
+    document.getElementById('cancelResult').style.color = '#D4897C';
+    btn.disabled = false;
+    btn.textContent = 'Cancel subscription';
+  }
 }
 </script>
 </body>

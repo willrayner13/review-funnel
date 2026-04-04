@@ -82,6 +82,7 @@
     .plan-features{list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:8px;}
     .plan-features li{font-size:0.8rem;color:var(--cream-dim);display:flex;align-items:center;gap:8px;}
     .plan-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
+    .plan-trial-note{font-size:0.7rem;color:rgba(234,231,220,0.3);margin-bottom:16px;line-height:1.5;padding:10px 12px;background:rgba(200,169,110,0.06);border-radius:6px;border:1px solid rgba(200,169,110,0.15);}
     .plan button{width:100%;justify-content:center;padding:13px;font-size:0.9rem;}
     .plan.featured button{background:var(--accent);color:#1E1E1C;border-color:var(--accent);}
     .plan.featured button:hover{background:#D4B87A;}
@@ -120,8 +121,9 @@
       <input id="password" type="password" placeholder="Choose a secure password">
     </div>
 
-    <button class="btn-full" id="createBtn" onclick="createBusiness()" style="margin-top:8px;">Create Account →</button>
+    <button class="btn-full" id="createBtn" onclick="createBusiness()" style="margin-top:8px;">Continue to plan selection →</button>
     <p id="result"></p>
+ 
     <div class="login-link" style="margin-top:20px;">Already have an account? <a href="/login">Sign in</a></div>
   </div>
 
@@ -138,6 +140,7 @@
         <div class="plan-price"><sup>£</sup>15<span>/mo</span></div>
         <div class="plan-desc">Everything you need to start collecting more reviews and capturing feedback privately.</div>
         <ul class="plan-features"><li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li></ul>
+                <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £15/mo. Cancel before day 14 to pay nothing.</div>
         <button onclick="subscribe('starter')">Start free trial</button>
       </div>
       <div class="plan featured">
@@ -145,6 +148,7 @@
         <div class="plan-price"><sup>£</sup>39<span>/mo</span></div>
         <div class="plan-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</div>
         <ul class="plan-features"><li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li></ul>
+                <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £15/mo. Cancel before day 14 to pay nothing.</div>
         <button onclick="subscribe('pro')">Start free trial</button>
       </div>
     </div>
@@ -217,7 +221,7 @@ async function createBusiness(){
   if(!name||!email||!password){
     document.getElementById("result").innerText="Please fill in all required fields.";
     document.getElementById("result").style.color="#D4897C";
-    btn.disabled=false;btn.textContent='Create Account →';return;
+    btn.disabled=false;btn.textContent='Continue to plan selection →';return;
   }
   const res=await fetch("/create-business",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,review,password})});
   const data=await res.json();
@@ -231,7 +235,7 @@ async function createBusiness(){
     const msg=data.error||"";
     document.getElementById("result").innerText=msg.includes("already")?"That email is already registered. Try signing in.":"Something went wrong. Please try again.";
     document.getElementById("result").style.color="#D4897C";
-    btn.disabled=false;btn.textContent='Create Account →';
+    btn.disabled=false;btn.textContent='Continue to plan selection →';
   }
 }
 

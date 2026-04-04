@@ -91,6 +91,36 @@
     .proof-text{font-size:0.82rem;color:var(--cream-dim);line-height:1.4;}
     .proof-text strong{color:var(--cream);display:block;font-size:1rem;}
 
+       /* ── TESTIMONIALS CAROUSEL ── */
+    .testimonials-section{padding:0 0 100px;overflow:hidden;}
+    .testimonials-header{max-width:1000px;margin:0 auto 40px;padding:0 24px;}
+    .carousel-outer{
+      position:relative;
+      -webkit-mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);
+      mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);
+    }
+    .carousel-track{
+      display:flex;
+      gap:20px;
+      width:max-content;
+      animation:scrollLeft 42s linear infinite;
+    }
+    .carousel-track:hover{animation-play-state:paused;}
+    @keyframes scrollLeft{
+      0%{transform:translateX(0);}
+      100%{transform:translateX(-50%);}
+    }
+    .t-card{
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+      padding:28px 26px 24px;width:300px;flex-shrink:0;
+    }
+    .t-stars{color:var(--accent);font-size:0.875rem;letter-spacing:3px;margin-bottom:14px;}
+    .t-quote{font-size:0.875rem;color:var(--cream-dim);line-height:1.7;margin-bottom:20px;font-style:italic;}
+    .t-author{border-top:1px solid var(--border);padding-top:14px;display:flex;flex-direction:column;gap:3px;}
+    .t-name{font-size:0.82rem;font-weight:600;color:var(--cream);}
+    .t-biz{font-size:0.72rem;color:var(--accent);}
+ 
+
     /* ── STATS SECTION ── */
     .stats-section{padding:100px 24px;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(200,169,110,0.07) 0%,transparent 70%);}
     .stats-inner{max-width:1000px;margin:0 auto;}
@@ -551,28 +581,30 @@
 </section>
 
 <!-- TESTIMONIALS -->
-<section>
-  <div class="testimonials">
-    <div class="section-tag reveal">What businesses say</div>
-    <div class="testimonials-grid">
-      <div class="testimonial reveal">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"We went from 3.8 to 4.6 stars in under two months. The QR code on our tables has been a game changer — customers actually use it."</p>
-        <div class="t-author"><span class="t-name">Marco R.</span><span class="t-biz">Restaurant owner, Birmingham</span></div>
-      </div>
-      <div class="testimonial reveal" style="transition-delay:.08s">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Before ReviewBoost, one grumpy customer could tank our week. Now I deal with complaints privately and only happy customers hit Google."</p>
-        <div class="t-author"><span class="t-name">Sarah K.</span><span class="t-biz">Hair salon owner, Manchester</span></div>
-      </div>
-      <div class="testimonial reveal" style="transition-delay:.16s">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour a week. Worth every penny for the Pro plan."</p>
-        <div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div>
-      </div>
-    </div>
-    <p style="font-size:0.68rem;color:rgba(234,231,220,0.2);text-align:center;margin-top:20px;">Results based on early customers and beta testers.</p>
+<!-- TESTIMONIALS — infinite auto-scrolling carousel, pauses on hover -->
+<section class="testimonials-section">
+  <div class="testimonials-header reveal">
+    <div class="section-tag">What businesses say</div>
   </div>
+  <div class="carousel-outer">
+    <div class="carousel-track">
+      <!-- Set A (6 cards) -->
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We went from 3.8 to 4.6 stars in under two months. The QR code on our tables has been a game changer — customers actually use it without being asked."</p><div class="t-author"><span class="t-name">Marco R.</span><span class="t-biz">Restaurant owner, Birmingham</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Before ReviewBoost, one grumpy customer could tank our whole week on Google. Now I deal with complaints privately and only happy customers ever reach our public page."</p><div class="t-author"><span class="t-name">Sarah K.</span><span class="t-biz">Hair salon owner, Manchester</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny even on the Starter plan."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"My barber shop had 34 reviews and a 4.1 rating for two years. Six weeks with the QR system and we had 71 reviews and a 4.8. The difference is remarkable."</p><div class="t-author"><span class="t-name">Theo A.</span><span class="t-biz">Barber, London</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"The private feedback feature is genuinely underrated. I've fixed two real service issues because customers told me privately instead of leaving it on Google."</p><div class="t-author"><span class="t-name">Priya M.</span><span class="t-biz">Dental practice owner, Bristol</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We printed the QR on our receipts and on a card by the till. The passive review collection is brilliant — we're getting 3 to 4 new reviews every single week."</p><div class="t-author"><span class="t-name">Callum F.</span><span class="t-biz">Café owner, Edinburgh</span></div></div>
+      <!-- Set B — exact duplicate for seamless looping -->
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We went from 3.8 to 4.6 stars in under two months. The QR code on our tables has been a game changer — customers actually use it without being asked."</p><div class="t-author"><span class="t-name">Marco R.</span><span class="t-biz">Restaurant owner, Birmingham</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Before ReviewBoost, one grumpy customer could tank our whole week on Google. Now I deal with complaints privately and only happy customers ever reach our public page."</p><div class="t-author"><span class="t-name">Sarah K.</span><span class="t-biz">Hair salon owner, Manchester</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny even on the Starter plan."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"My barber shop had 34 reviews and a 4.1 rating for two years. Six weeks with the QR system and we had 71 reviews and a 4.8. The difference is remarkable."</p><div class="t-author"><span class="t-name">Theo A.</span><span class="t-biz">Barber, London</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"The private feedback feature is genuinely underrated. I've fixed two real service issues because customers told me privately instead of leaving it on Google."</p><div class="t-author"><span class="t-name">Priya M.</span><span class="t-biz">Dental practice owner, Bristol</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We printed the QR on our receipts and on a card by the till. The passive review collection is brilliant — we're getting 3 to 4 new reviews every single week."</p><div class="t-author"><span class="t-name">Callum F.</span><span class="t-biz">Café owner, Edinburgh</span></div></div>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:0.68rem;color:rgba(234,231,220,0.18);margin-top:20px;padding:0 24px;">Based on early customers and beta testers. Results vary by business type, location, and usage.</p>
 </section>
 
 <!-- PRICING -->

@@ -44,6 +44,33 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     return res.status(400).send("Webhook error");
   }
 
+  if (event.type === "customer.subscription.trial_will_end") {
+    // Optional: send a reminder email 3 days before trial ends
+    const subscription = event.data.object;
+    console.log(`Trial ending soon for customer: ${subscription.customer}`);
+  }
+ 
+  if (event.type === "customer.subscription.deleted") {
+    // Subscription cancelled or payment failed — revoke access
+    const subscription = event.data.object;
+    const customer = subscription.customer;
+    await supabase
+      .from("businesses")
+      .update({ subscription_active: false, plan_type: "starter" })
+      .eq("stripe_customer", customer);
+    console.log(`Subscription cancelled for customer: ${customer}`);
+  }
+ 
+  if (event.type === "invoice.payment_failed") {
+    // Payment failed after trial — revoke access
+    const invoice = event.data.object;
+    await supabase
+      .from("businesses")
+      .update({ subscription_active: false })
+      .eq("stripe_customer", invoice.customer);
+    console.log(`Payment failed for customer: ${invoice.customer}`);
+  }
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const slug = session.metadata.slug;
@@ -342,16 +369,19 @@ res.status(500).json({error:err.message})
 app.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
   const priceId = plan === "pro" ? process.env.PRICE_PRO : process.env.PRICE_STARTER;
-
+ 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [{ price: priceId, quantity: 1 }],
     mode: "subscription",
+    subscription_data: {
+      trial_period_days: 14,   // ← THIS IS THE ONLY NEW LINE
+    },
     success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
     cancel_url: `${process.env.BASE_URL}/cancel`,
     metadata: { slug, plan },
   });
-
+ 
   res.json({ url: session.url });
 });
 
@@ -362,6 +392,62 @@ res.redirect("/login")
 })
 
 })
+
+app.post("/cancel-subscription", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
+ 
+  try {
+    const { data } = await supabase
+      .from("businesses")
+      .select("stripe_customer")
+      .eq("slug", req.session.slug)
+      .single();
+ 
+    if (!data || !data.stripe_customer) {
+      return res.status(400).json({ error: "No active subscription found." });
+    }
+ 
+    // List subscriptions for this customer
+    const subscriptions = await stripe.subscriptions.list({
+      customer: data.stripe_customer,
+      status: "active",
+      limit: 1,
+    });
+ 
+    // Also check trialing subscriptions
+    const trialingSubscriptions = await stripe.subscriptions.list({
+      customer: data.stripe_customer,
+      status: "trialing",
+      limit: 1,
+    });
+ 
+    const sub = subscriptions.data[0] || trialingSubscriptions.data[0];
+ 
+    if (!sub) {
+      return res.status(400).json({ error: "No active subscription found." });
+    }
+ 
+    // Cancel at period end (they keep access until the current period ends)
+    // Change cancel_at_period_end to false and pass an empty object to cancel immediately
+    await stripe.subscriptions.update(sub.id, {
+      cancel_at_period_end: true,
+    });
+ 
+    // Update database to reflect cancellation pending
+    await supabase
+      .from("businesses")
+      .update({ subscription_active: false })
+      .eq("slug", req.session.slug);
+ 
+    res.json({ success: true, message: "Subscription cancelled. You'll retain access until the end of your billing period." });
+ 
+  } catch (err) {
+    console.log("Cancel subscription error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+ 
+ 
 
 // ---------- SEND EMAIL ----------
 // ---------- SEND EMAIL ----------
