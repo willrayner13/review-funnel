@@ -21,7 +21,6 @@
     .nav-biz { font-size: 0.8rem; color: var(--cream-dim); background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
     .nav-right button { font-size: 0.8rem; padding: 9px 16px; min-height: 38px; }
 
-    /* Trial badge */
     .trial-badge {
       display: inline-flex; align-items: center; gap: 6px;
       background: var(--accent-dim); border: 1px solid rgba(200,169,110,0.3);
@@ -39,26 +38,21 @@
     }
     .dash-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    /* Metrics */
     .metrics-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
     .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; transition: border-color 0.2s; }
     .metric-card:hover { border-color: var(--border-hover); }
     .metric-value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 6px; }
     .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cream-dim); }
 
-    /* Panel */
     .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 14px; }
     .panel h3 { font-size: 0.9rem; color: var(--cream-dim); font-family: 'Syne', sans-serif; font-weight: 600; margin-bottom: 16px; }
 
-    /* Input row */
     .input-row { display: flex; gap: 10px; }
     .input-row input { flex: 1; margin-bottom: 0; }
     .input-row button { flex-shrink: 0; padding: 0 18px; height: 52px; font-size: 0.85rem; min-height: 0; }
 
-    /* Chart — fixed height container is essential for Chart.js */
     .chart-container { position: relative; height: 200px; width: 100%; }
 
-    /* QR */
     .qr-area { display: flex; align-items: flex-start; gap: 24px; }
     #qr { width: 130px; height: 130px; border: 1px solid var(--border); border-radius: var(--radius-sm); flex-shrink: 0; }
     .qr-info h4 { font-size: 0.85rem; color: var(--cream); font-family: 'Syne', sans-serif; font-weight: 600; margin-bottom: 6px; }
@@ -71,30 +65,80 @@
     }
     #qrDownload:hover { border-color: var(--border-hover); }
 
-    /* Embed code */
     #embedCode { font-family: 'Courier New', monospace; font-size: 0.8rem; background: var(--surface-3); color: #8EC9A8; min-height: 56px; }
 
-    /* Feedback list */
     #negativeList { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
     #negativeList li { background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--danger); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 0.875rem; color: var(--cream-dim); }
     #negativeList::-webkit-scrollbar { width: 4px; }
     #negativeList::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
 
-    /* AI areas */
     #reviewText { min-height: 90px; }
     #aiReply { min-height: 90px; background: rgba(200,169,110,0.05); border-color: rgba(200,169,110,0.2); }
 
-    /* Pro lock notice */
-    .pro-notice {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 0.78rem; color: var(--accent);
-      background: var(--accent-dim); border: 1px solid rgba(200,169,110,0.2);
-      border-radius: 6px; padding: 6px 12px; margin-bottom: 14px;
+    /* Pro lock — shown when feature is not available */
+    .pro-lock-panel {
+      background: var(--surface-2);
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 14px;
     }
+    .pro-lock-panel .lock-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+    .pro-lock-panel h4 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--cream); margin-bottom: 8px; }
+    .pro-lock-panel p { font-size: 0.82rem; color: var(--cream-dim); margin-bottom: 16px; line-height: 1.6; }
+    .pro-lock-panel a {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent); color: #1A1A18;
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.875rem;
+      padding: 11px 24px; border-radius: 8px; transition: all 0.2s;
+    }
+    .pro-lock-panel a:hover { background: #D4B87A; transform: translateY(-1px); }
 
-    /* Flash */
     .flash { font-size: 0.72rem; color: var(--success); margin-left: 6px; opacity: 0; transition: opacity 0.3s; }
     .flash.show { opacity: 1; }
+
+    /* ── MODAL (cancel, toast notifications) ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px); z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border-hover);
+      border-radius: var(--radius-lg); padding: 36px 32px;
+      max-width: 480px; width: 100%; position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+      transform: translateY(16px); transition: transform 0.25s;
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+    .modal-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(234,231,220,0.2), transparent); }
+    .modal-close { position: absolute; top: 14px; right: 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--cream-dim); font-size: 1rem; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+    .modal-close:hover { background: var(--surface-3); color: var(--cream); }
+    .modal-icon { font-size: 2.5rem; display: block; margin-bottom: 16px; }
+    .modal-box h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+    .modal-box p { font-size: 0.875rem; color: var(--cream-dim); line-height: 1.7; margin-bottom: 8px; }
+    .modal-box .modal-btns { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+    .modal-box .modal-btns button { flex: 1; min-width: 120px; justify-content: center; }
+    .btn-danger-solid { background: var(--danger) !important; color: #fff !important; border-color: var(--danger) !important; }
+    .btn-danger-solid:hover { background: #a85548 !important; }
+
+    /* ── Toast notification ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--surface); border: 1px solid var(--border-hover);
+      border-radius: 10px; padding: 14px 24px;
+      font-size: 0.875rem; color: var(--cream); font-family: 'DM Sans', sans-serif;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity: 0; z-index: 600; white-space: nowrap;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { border-color: rgba(106,158,127,0.4); }
+    .toast.error { border-color: rgba(192,103,90,0.4); }
 
     @media (max-width: 700px) {
       .topnav { padding: 14px 16px; }
@@ -103,19 +147,20 @@
       .dash-body { padding: 24px 16px 60px; }
       .input-row { flex-direction: column; }
       .input-row button { height: 52px; width: 100%; padding: 0; }
-      .nav-right .btn-secondary { display: none; }
     }
   </style>
 </head>
 <body>
 
+<!-- Top Nav -->
 <nav class="topnav">
   <div class="nav-logo"><span class="nav-dot"></span>ReviewBoost</div>
   <div class="nav-right">
     <span class="nav-biz" id="bizName">Loading...</span>
     <span class="trial-badge" id="planBadge" style="display:none">⭐ Trial</span>
-    <button class="btn-secondary" onclick="billing()" style="background:transparent;color:var(--cream);border-color:var(--border-hover);">Billing</button>
-    <button class="btn-ghost" onclick="logout()" style="background:transparent;color:var(--cream-dim);border:none;min-height:38px;">Sign out</button>
+    <a href="/billing"><button style="background:transparent;color:var(--cream);border:1px solid var(--border-hover);font-size:0.8rem;padding:9px 16px;min-height:38px;">Billing</button></a>
+    <a href="/settings"><button style="background:transparent;color:var(--cream-dim);border:none;font-size:0.8rem;padding:9px 14px;min-height:38px;">⚙ Settings</button></a>
+    <button onclick="logout()" style="background:transparent;color:var(--cream-dim);border:none;min-height:38px;font-size:0.8rem;padding:9px 14px;">Sign out</button>
   </div>
 </nav>
 
@@ -132,13 +177,11 @@
     </div>
   </div>
 
-  <!-- Rating Chart -->
+  <!-- Chart -->
   <div class="dash-section">
     <div class="dash-section-title">Rating Distribution</div>
     <div class="panel" style="padding:20px;">
-      <div class="chart-container">
-        <canvas id="ratingChart"></canvas>
-      </div>
+      <div class="chart-container"><canvas id="ratingChart"></canvas></div>
     </div>
   </div>
 
@@ -180,30 +223,46 @@
       </div>
       <p style="font-size:0.75rem;color:rgba(234,231,220,0.3);margin-top:4px;">Include country code. UK numbers: +44...</p>
     </div>
-    <div class="panel">
-      <h3>Send email request</h3>
-      <div id="emailProNote" class="pro-notice" style="display:none">⭐ Pro feature — <a href="/admin" style="color:var(--accent);text-decoration:underline;">upgrade to send emails</a></div>
-      <div class="input-row">
-        <input id="customerEmail" type="email" placeholder="Customer email address">
-        <button onclick="sendEmail()">Send Email</button>
+
+    <!-- Email — Pro lock if not pro -->
+    <div id="emailSection">
+      <div class="panel" id="emailUnlocked" style="display:none">
+        <h3>Send email request</h3>
+        <div class="input-row">
+          <input id="customerEmail" type="email" placeholder="Customer email address">
+          <button onclick="sendEmail()">Send Email</button>
+        </div>
+      </div>
+      <div class="pro-lock-panel" id="emailLocked" style="display:none">
+        <span class="lock-icon">📧</span>
+        <h4>Email review requests</h4>
+        <p>Send personalised review request emails directly to customers. Upgrade to Pro to unlock this feature.</p>
+        <a href="/billing">⭐ Upgrade to Pro</a>
       </div>
     </div>
   </div>
 
-  <!-- AI Replies -->
+  <!-- AI Replies — Pro lock if not pro -->
   <div class="dash-section">
     <div class="dash-section-title">AI Review Replies</div>
-    <div class="panel">
-      <div id="aiProNote" class="pro-notice" style="display:none">⭐ Pro feature — <a href="/admin" style="color:var(--accent);text-decoration:underline;">upgrade to use AI replies</a></div>
-      <h3>Paste a customer review to generate a reply</h3>
-      <textarea id="reviewText" placeholder="e.g. Great food but the wait was a bit long..."></textarea>
-      <button onclick="generateReply()" id="aiBtn" style="margin-top:4px;">Generate Reply</button>
-      <div style="height:14px;"></div>
-      <textarea id="aiReply" placeholder="Your AI-generated reply will appear here..." readonly></textarea>
+    <div id="aiUnlocked" style="display:none">
+      <div class="panel">
+        <h3>Paste a customer review to generate a reply</h3>
+        <textarea id="reviewText" placeholder="e.g. Great food but the wait was a bit long..."></textarea>
+        <button onclick="generateReply()" id="aiBtn" style="margin-top:4px;">Generate Reply</button>
+        <div style="height:14px;"></div>
+        <textarea id="aiReply" placeholder="Your AI-generated reply will appear here..." readonly></textarea>
+      </div>
+    </div>
+    <div class="pro-lock-panel" id="aiLocked" style="display:none">
+      <span class="lock-icon">🤖</span>
+      <h4>AI Review Reply Generator</h4>
+      <p>Paste any customer review and get a polished, professional reply in seconds using GPT-4. Saves hours every week. Upgrade to Pro to unlock.</p>
+      <a href="/billing">⭐ Upgrade to Pro</a>
     </div>
   </div>
 
-  <!-- Feedback -->
+  <!-- Private Feedback -->
   <div class="dash-section">
     <div class="dash-section-title">Private Feedback</div>
     <div class="panel">
@@ -212,30 +271,38 @@
     </div>
   </div>
 
+</div>
 
-  <div class="dash-section">
-  <div class="dash-section-title">Subscription</div>
- 
-  <div class="panel" id="subscriptionPanel">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-      <div>
-        <h3 style="margin-bottom:4px;">Manage your subscription</h3>
-        <p style="font-size:0.82rem;color:var(--cream-dim);margin:0;">Update payment details, change plan, or cancel — all from Stripe's secure portal.</p>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button onclick="billing()" style="background:var(--surface-2);color:var(--cream);border:1px solid var(--border-hover);padding:10px 18px;font-size:0.85rem;min-height:0;">Manage billing →</button>
-        <button onclick="confirmCancel()" id="cancelBtn" style="background:transparent;color:#D4897C;border:1px solid rgba(192,103,90,0.3);padding:10px 18px;font-size:0.85rem;min-height:0;">Cancel subscription</button>
-      </div>
+<!-- Cancel subscription modal -->
+<div class="modal-overlay" id="cancelModal" onclick="handleModalOverlay(event, 'cancelModal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('cancelModal')">✕</button>
+    <span class="modal-icon">⚠️</span>
+    <h3>Are you sure you want to cancel?</h3>
+    <p>Before you go — here's what you'll lose access to:</p>
+    <ul style="font-size:0.82rem;color:var(--cream-dim);line-height:1.8;padding-left:20px;margin-bottom:8px;">
+      <li>Your review funnel page (customers won't be able to leave feedback)</li>
+      <li>All analytics and rating data</li>
+      <li>QR code and review links</li>
+      <li>AI reply generator and SMS tools (Pro)</li>
+      <li>Private feedback capture</li>
+    </ul>
+    <p style="color:rgba(234,231,220,0.4);font-size:0.78rem;">You'll retain access until the end of your current billing period. You can resubscribe at any time.</p>
+    <div class="modal-btns">
+      <button onclick="closeModal('cancelModal')" style="background:var(--surface-2);color:var(--cream);border-color:var(--border-hover);">Keep my subscription</button>
+      <button class="btn-danger-solid" onclick="doCancel()" id="confirmCancelBtn">Yes, cancel</button>
     </div>
-    <div id="cancelResult" style="font-size:0.82rem;margin-top:12px;min-height:0;"></div>
   </div>
 </div>
-</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
 
 <script>
 let slug;
 let currentPlan = "starter";
 let chartInstance = null;
+let isProUser = false;
 
 async function checkSession(){
   const res = await fetch("/session");
@@ -252,9 +319,10 @@ async function load(){
   const stats = await res.json();
 
   currentPlan = stats.plan_type || "starter";
-  const isTrial = stats.subscription_active === false && stats.trial_ends_at && new Date() < new Date(stats.trial_ends_at);
+  const isTrial = stats.subscription_active && stats.trial_ends_at && new Date() < new Date(stats.trial_ends_at);
+  isProUser = stats.subscription_active && (currentPlan === "pro" || isTrial);
 
-  document.getElementById("bizName").innerText = slug;
+  document.getElementById("bizName").innerText = stats.business_name || slug;
   document.getElementById("visits").innerText   = stats.visits  ?? 0;
   document.getElementById("positive").innerText = stats.positive ?? 0;
   document.getElementById("negative").innerText = stats.negative ?? 0;
@@ -262,13 +330,26 @@ async function load(){
 
   // Plan badge
   const badge = document.getElementById("planBadge");
-  if(isTrial){ badge.style.display="inline-flex"; badge.textContent="🕐 Trial"; }
-  else if(currentPlan === "pro"){ badge.style.display="inline-flex"; badge.textContent="⭐ Pro"; badge.style.color="#8EC9A8"; }
+  if(!stats.subscription_active && isTrial){ badge.style.display="inline-flex"; badge.textContent="🕐 Trial"; }
+  else if(currentPlan === "pro" && stats.subscription_active){ badge.style.display="inline-flex"; badge.textContent="⭐ Pro"; badge.style.color="#8EC9A8"; }
+  else if(stats.subscription_active){ badge.style.display="inline-flex"; badge.textContent="Starter"; badge.style.color="var(--cream-dim)"; }
 
-  // Show pro-lock notices
-  if(currentPlan !== "pro" && !isTrial){
-    document.getElementById("aiProNote").style.display    = "inline-flex";
-    document.getElementById("emailProNote").style.display = "inline-flex";
+  // Show/hide pro features
+  const hasPro = stats.subscription_active && (currentPlan === "pro");
+  const hasTrialAccess = stats.subscription_active; // all features during active sub/trial
+
+  if(hasTrialAccess){
+    // Unlocked — show the real features
+    document.getElementById("emailUnlocked").style.display = "block";
+    document.getElementById("emailLocked").style.display   = "none";
+    document.getElementById("aiUnlocked").style.display    = "block";
+    document.getElementById("aiLocked").style.display      = "none";
+  } else {
+    // Starter without active sub — show locks
+    document.getElementById("emailUnlocked").style.display = "none";
+    document.getElementById("emailLocked").style.display   = "block";
+    document.getElementById("aiUnlocked").style.display    = "none";
+    document.getElementById("aiLocked").style.display      = "block";
   }
 
   const reviewLink = window.location.origin+"/r/"+slug;
@@ -277,7 +358,6 @@ async function load(){
   document.getElementById("qr").src             = "/qr-download/"+slug;
   document.getElementById("qrDownload").href    = "/qr-download/"+slug;
 
-  // Feedback list
   const list = document.getElementById("negativeList");
   if(stats.feedback && stats.feedback.length > 0){
     list.innerHTML = "";
@@ -288,7 +368,7 @@ async function load(){
     });
   }
 
-  // Chart — destroy previous instance to prevent "Canvas is already in use" error
+  // Chart
   if(chartInstance){ chartInstance.destroy(); chartInstance = null; }
   const ctx = document.getElementById("ratingChart").getContext("2d");
   const dist = stats.rating_distribution || {};
@@ -300,22 +380,17 @@ async function load(){
         label: "Ratings",
         data: [dist[1]||0, dist[2]||0, dist[3]||0, dist[4]||0, dist[5]||0],
         backgroundColor: ["#C0675A","#C07A5A","#C8A96E","#8BAC6A","#6A9E7F"],
-        borderRadius: 6,
-        borderSkipped: false,
+        borderRadius: 6, borderSkipped: false,
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         tooltip: { backgroundColor: "#2A2A28", titleColor: "#EAE7DC", bodyColor: "rgba(234,231,220,0.6)", borderColor: "rgba(234,231,220,0.1)", borderWidth: 1 }
       },
       scales: {
-        y: {
-          beginAtZero: true, ticks: { stepSize: 1, color: "rgba(234,231,220,0.35)", font: { size: 11 } },
-          grid: { color: "rgba(234,231,220,0.05)" }
-        },
+        y: { beginAtZero: true, ticks: { stepSize: 1, color: "rgba(234,231,220,0.35)", font: { size: 11 } }, grid: { color: "rgba(234,231,220,0.05)" } },
         x: { grid: { display: false }, ticks: { color: "rgba(234,231,220,0.5)", font: { size: 12 } } }
       }
     }
@@ -331,80 +406,74 @@ function copyLink(){
 
 async function sendSMS(){
   const phone = document.getElementById("customerPhone").value.trim();
-  if(!phone){ alert("Please enter a phone number."); return; }
+  if(!phone){ showToast("Please enter a phone number.", "error"); return; }
   const btn = event.target; btn.disabled=true; btn.textContent="Sending...";
   const res = await fetch("/send-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone,slug})});
   const data = await res.json();
-  if(data.success){ document.getElementById("customerPhone").value=""; alert("SMS sent!"); }
-  else { alert("SMS failed: " + (data.error||"Unknown error. Check your Twilio credentials.")); }
+  if(data.success){ document.getElementById("customerPhone").value=""; showToast("SMS sent successfully! ✓", "success"); }
+  else { showToast("SMS failed: " + (data.error||"Check your Twilio credentials."), "error"); }
   btn.disabled=false; btn.textContent="Send SMS";
 }
 
 async function sendEmail(){
   const email = document.getElementById("customerEmail").value.trim();
-  if(!email){ alert("Please enter an email address."); return; }
+  if(!email){ showToast("Please enter an email address.", "error"); return; }
   const btn = event.target; btn.disabled=true; btn.textContent="Sending...";
   const res = await fetch("/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})});
   const data = await res.json();
-  if(data.success){ document.getElementById("customerEmail").value=""; alert("Email sent!"); }
-  else { alert(data.error || "Email failed. Make sure your Resend domain is verified."); }
+  if(data.success){ document.getElementById("customerEmail").value=""; showToast("Email sent successfully! ✓", "success"); }
+  else { showToast(data.error || "Email failed. Make sure your Resend domain is verified.", "error"); }
   btn.disabled=false; btn.textContent="Send Email";
 }
 
 async function generateReply(){
   const review = document.getElementById("reviewText").value.trim();
-  if(!review){ alert("Please paste a review first."); return; }
+  if(!review){ showToast("Please paste a review first.", "error"); return; }
   const btn = document.getElementById("aiBtn"); btn.disabled=true; btn.textContent="Generating...";
   const res = await fetch("/generate-reply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({review})});
   const data = await res.json();
-  if(data.error){ alert(data.error); }
-  else { document.getElementById("aiReply").value = data.reply; }
+  if(data.error){ showToast(data.error, "error"); }
+  else { document.getElementById("aiReply").value = data.reply; showToast("Reply generated! ✓", "success"); }
   btn.disabled=false; btn.textContent="Generate Reply";
 }
 
 function logout(){ window.location="/logout"; }
 
-async function billing(){
-  const btn = event.target; btn.disabled=true; btn.textContent="Opening...";
-  const res = await fetch("/billing-portal",{method:"POST"});
-  const data = await res.json();
-  if(data.url) window.location=data.url;
-  else { alert("Billing portal unavailable. Make sure you have an active subscription."); btn.disabled=false; btn.textContent="Billing"; }
-}
+// ── Modal helpers ──
+function openModal(id){ document.getElementById(id).classList.add("open"); document.body.style.overflow="hidden"; }
+function closeModal(id){ document.getElementById(id).classList.remove("open"); document.body.style.overflow=""; }
+function handleModalOverlay(e, id){ if(e.target === document.getElementById(id)) closeModal(id); }
+document.addEventListener("keydown", e => { if(e.key==="Escape") document.querySelectorAll(".modal-overlay.open").forEach(m=>m.classList.remove("open")); });
 
-async function confirmCancel(){
-  const confirmed = confirm(
-    "Are you sure you want to cancel your subscription?\n\n" +
-    "You'll keep access until the end of your current billing period, then your account will revert to read-only.\n\n" +
-    "You can resubscribe at any time."
-  );
-  if(!confirmed) return;
- 
-  const btn = document.getElementById('cancelBtn');
-  btn.disabled = true;
-  btn.textContent = 'Cancelling...';
- 
+// ── Cancel subscription ──
+function confirmCancel(){ openModal("cancelModal"); }
+
+async function doCancel(){
+  const btn = document.getElementById("confirmCancelBtn");
+  btn.disabled = true; btn.textContent = "Cancelling...";
   try {
     const res = await fetch("/cancel-subscription", { method: "POST" });
     const data = await res.json();
-    const result = document.getElementById('cancelResult');
- 
+    closeModal("cancelModal");
     if(data.success){
-      result.style.color = '#8EC9A8';
-      result.textContent = '✓ Subscription cancelled. You\'ll retain access until the end of your billing period.';
-      btn.style.display = 'none';
+      showToast("✓ Subscription cancelled. You'll keep access until your billing period ends.", "success");
+      document.getElementById("cancelResult") && (document.getElementById("cancelResult").textContent = "");
     } else {
-      result.style.color = '#D4897C';
-      result.textContent = 'Could not cancel: ' + (data.error || 'Please try again or use the billing portal.');
-      btn.disabled = false;
-      btn.textContent = 'Cancel subscription';
+      showToast("Could not cancel: " + (data.error || "Please try the billing portal."), "error");
     }
   } catch(e) {
-    document.getElementById('cancelResult').textContent = 'Something went wrong. Please try using the billing portal instead.';
-    document.getElementById('cancelResult').style.color = '#D4897C';
-    btn.disabled = false;
-    btn.textContent = 'Cancel subscription';
+    closeModal("cancelModal");
+    showToast("Something went wrong. Please try the billing portal.", "error");
   }
+  btn.disabled = false; btn.textContent = "Yes, cancel";
+}
+
+// ── Toast ──
+function showToast(message, type = "success") {
+  const t = document.getElementById("toast");
+  t.textContent = type === "success" ? "✓ " + message : "✕ " + message;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove("show"), 4000);
 }
 </script>
 </body>

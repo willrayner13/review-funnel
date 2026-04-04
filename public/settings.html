@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — ReviewBoost</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { min-height: 100vh; padding: 0; background-color: var(--bg); }
+    .topnav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid var(--border); background: rgba(30,30,28,0.9); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 8px; }
+    .nav-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+    .back-btn { font-size: 0.8rem; color: var(--cream-dim); background: transparent; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color 0.2s; min-height: 0; padding: 0; }
+    .back-btn:hover { color: var(--cream); transform: none; box-shadow: none; }
+
+    .page-body { max-width: 640px; margin: 0 auto; padding: 48px 24px 80px; }
+    .page-eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); display: block; margin-bottom: 10px; }
+    .page-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+    .page-sub { font-size: 0.95rem; color: var(--cream-dim); margin-bottom: 48px; }
+
+    .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 16px; position: relative; overflow: hidden; }
+    .settings-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(234,231,220,0.15), transparent); }
+    .settings-card-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 18px; display: block; }
+    .settings-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .settings-card p { font-size: 0.875rem; color: var(--cream-dim); line-height: 1.65; margin-bottom: 20px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { font-size: 0.8rem; font-weight: 500; color: var(--cream-dim); display: block; margin-bottom: 6px; }
+    .form-group input { margin-bottom: 0; }
+
+    /* Password toggle wrapper */
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 48px; }
+    .pw-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--cream-dim); font-size: 1.1rem; padding: 4px; min-height: 0; transition: color 0.2s; }
+    .pw-toggle:hover { color: var(--cream); transform: translateY(-50%); box-shadow: none; }
+
+    .save-btn { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem; background: var(--cream); color: #1A1A18; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; }
+    .save-btn:hover { background: #F5F2EB; transform: translateY(-1px); }
+    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .msg { font-size: 0.82rem; margin-top: 12px; min-height: 18px; }
+    .msg.success { color: #8EC9A8; }
+    .msg.error { color: #D4897C; }
+
+    .danger-zone { border-color: rgba(192,103,90,0.3); }
+    .danger-zone .settings-card-label { color: #D4897C; }
+    .btn-danger-outline { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.875rem; background: transparent; color: #D4897C; padding: 12px 20px; border-radius: 8px; border: 1px solid rgba(192,103,90,0.3); cursor: pointer; transition: all 0.2s; }
+    .btn-danger-outline:hover { background: rgba(192,103,90,0.08); border-color: var(--danger); transform: none; box-shadow: none; }
+
+    @media (max-width: 600px) {
+      .topnav { padding: 14px 16px; }
+      .page-body { padding: 32px 16px 60px; }
+      .settings-card { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo"><span class="nav-dot"></span>ReviewBoost</div>
+  <button class="back-btn" onclick="window.location='/for-business'">← Back to dashboard</button>
+</nav>
+
+<div class="page-body">
+  <span class="page-eyebrow">Account</span>
+  <h1 class="page-title">Settings</h1>
+  <p class="page-sub">Update your business details, change your password, and manage your account.</p>
+
+  <!-- Business details -->
+  <div class="settings-card">
+    <span class="settings-card-label">Business details</span>
+    <div class="form-group">
+      <label>Business name</label>
+      <input id="bizNameInput" type="text" placeholder="Your business name">
+    </div>
+    <div class="form-group">
+      <label>Google review link</label>
+      <input id="reviewLinkInput" type="url" placeholder="https://g.page/r/your-business/review">
+    </div>
+    <button class="save-btn" id="saveBizBtn" onclick="saveBizDetails()">Save changes</button>
+    <p class="msg" id="bizMsg"></p>
+  </div>
+
+  <!-- Change password -->
+  <div class="settings-card">
+    <span class="settings-card-label">Security</span>
+    <h3>Change password</h3>
+    <p>Enter your current password to confirm, then choose a new one.</p>
+    <div class="form-group">
+      <label>Current password</label>
+      <div class="pw-wrap">
+        <input id="currentPw" type="password" placeholder="Your current password">
+        <button class="pw-toggle" type="button" onclick="togglePw('currentPw', this)" tabindex="-1">👁</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>New password</label>
+      <div class="pw-wrap">
+        <input id="newPw" type="password" placeholder="At least 6 characters">
+        <button class="pw-toggle" type="button" onclick="togglePw('newPw', this)" tabindex="-1">👁</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Confirm new password</label>
+      <div class="pw-wrap">
+        <input id="confirmPw" type="password" placeholder="Repeat new password">
+        <button class="pw-toggle" type="button" onclick="togglePw('confirmPw', this)" tabindex="-1">👁</button>
+      </div>
+    </div>
+    <button class="save-btn" id="savePwBtn" onclick="changePassword()">Update password</button>
+    <p class="msg" id="pwMsg"></p>
+  </div>
+
+  <!-- Danger zone -->
+  <div class="settings-card danger-zone">
+    <span class="settings-card-label">Danger zone</span>
+    <h3>Sign out of all devices</h3>
+    <p>This will immediately end all active sessions including this one.</p>
+    <button class="btn-danger-outline" onclick="window.location='/logout'">Sign out everywhere</button>
+  </div>
+</div>
+
+<script>
+let slug;
+
+async function init(){
+  const res = await fetch("/session");
+  const data = await res.json();
+  if(!data.loggedIn){ window.location="/login"; return; }
+  slug = data.slug;
+  loadDetails();
+}
+init();
+
+async function loadDetails(){
+  const res = await fetch("/stats/"+slug);
+  if(!res.ok) return;
+  const stats = await res.json();
+  document.getElementById("bizNameInput").value = stats.business_name || "";
+  document.getElementById("reviewLinkInput").value = stats.review_link || "";
+}
+
+function togglePw(inputId, btn){
+  const input = document.getElementById(inputId);
+  if(input.type === "password"){
+    input.type = "text";
+    btn.textContent = "🙈";
+  } else {
+    input.type = "password";
+    btn.textContent = "👁";
+  }
+}
+
+async function saveBizDetails(){
+  const btn = document.getElementById("saveBizBtn");
+  const msg = document.getElementById("bizMsg");
+  btn.disabled = true; btn.textContent = "Saving...";
+  const name = document.getElementById("bizNameInput").value.trim();
+  const reviewLink = document.getElementById("reviewLinkInput").value.trim();
+  if(!name){ showMsg("bizMsg", "Business name cannot be empty.", "error"); btn.disabled=false; btn.textContent="Save changes"; return; }
+  try {
+    const res = await fetch("/update-business", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ name, review_link: reviewLink }) });
+    const data = await res.json();
+    if(data.success){ showMsg("bizMsg", "✓ Details saved.", "success"); }
+    else { showMsg("bizMsg", data.error || "Could not save.", "error"); }
+  } catch(e) { showMsg("bizMsg", "Something went wrong.", "error"); }
+  btn.disabled=false; btn.textContent="Save changes";
+}
+
+async function changePassword(){
+  const btn = document.getElementById("savePwBtn");
+  btn.disabled=true; btn.textContent="Updating...";
+  const current = document.getElementById("currentPw").value;
+  const newPw = document.getElementById("newPw").value;
+  const confirm = document.getElementById("confirmPw").value;
+  if(!current || !newPw || !confirm){ showMsg("pwMsg", "Please fill in all fields.", "error"); btn.disabled=false; btn.textContent="Update password"; return; }
+  if(newPw.length < 6){ showMsg("pwMsg", "New password must be at least 6 characters.", "error"); btn.disabled=false; btn.textContent="Update password"; return; }
+  if(newPw !== confirm){ showMsg("pwMsg", "Passwords don't match.", "error"); btn.disabled=false; btn.textContent="Update password"; return; }
+  try {
+    const res = await fetch("/change-password", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ current_password: current, new_password: newPw }) });
+    const data = await res.json();
+    if(data.success){
+      showMsg("pwMsg", "✓ Password updated.", "success");
+      document.getElementById("currentPw").value = "";
+      document.getElementById("newPw").value = "";
+      document.getElementById("confirmPw").value = "";
+    } else { showMsg("pwMsg", data.error || "Could not update password.", "error"); }
+  } catch(e) { showMsg("pwMsg", "Something went wrong.", "error"); }
+  btn.disabled=false; btn.textContent="Update password";
+}
+
+function showMsg(id, text, type){
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = "msg " + type;
+  setTimeout(() => { el.textContent = ""; el.className = "msg"; }, 5000);
+}
+</script>
+</body>
+</html>

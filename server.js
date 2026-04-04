@@ -57,8 +57,6 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     const plan = sess.metadata.plan;
     const customer = sess.customer;
     try {
-      // Set subscription_active: true immediately on checkout completion
-      // (trial starts here — they have full access from day 1)
       await supabase
         .from("businesses")
         .update({ subscription_active: true, plan_type: plan, stripe_customer: customer })
@@ -71,7 +69,6 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 
   if (event.type === "customer.subscription.trial_will_end") {
     console.log(`Trial ending soon: ${event.data.object.customer}`);
-    // Add reminder email logic here if desired
   }
 
   if (event.type === "customer.subscription.deleted") {
@@ -106,13 +103,13 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days — survives Stripe redirects
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   })
 );
 
 // ─── HTML ROUTES ──────────────────────────────────────────────────────────────
-const htmlPages = ["admin", "login", "for-business", "success", "cancel", "thanks", "bad", "landing", "demo"];
+const htmlPages = ["admin", "login", "for-business", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings"];
 htmlPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.sendFile(path.resolve("public", `${page}.html`));
@@ -122,7 +119,7 @@ htmlPages.forEach((page) => {
 app.get("/", (req, res) => res.sendFile(path.resolve("public", "landing.html")));
 app.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.html")));
 
-// ─── PUBLIC: subscription status — used by success.html, no session required ──
+// ─── PUBLIC: subscription status ──────────────────────────────────────────────
 app.get("/subscription-status/:slug", async (req, res) => {
   const { data, error } = await supabase
     .from("businesses")
@@ -133,9 +130,7 @@ app.get("/subscription-status/:slug", async (req, res) => {
   res.json({ subscription_active: data.subscription_active, plan_type: data.plan_type, trial_ends_at: data.trial_ends_at });
 });
 
-// ─── SESSION RESTORE — called by success.html after Stripe redirect ────────────
-// Stripe kills the session on redirect back. This re-establishes it using the
-// slug in the URL (safe because we verify it exists in DB with active sub).
+// ─── SESSION RESTORE after Stripe redirect ────────────────────────────────────
 app.post("/restore-session/:slug", async (req, res) => {
   const { slug } = req.params;
   const { data, error } = await supabase
@@ -210,7 +205,7 @@ app.get("/stats/:slug", async (req, res) => {
 
   const { data: businessData } = await supabase
     .from("businesses")
-    .select("subscription_active, plan_type, trial_ends_at")
+    .select("name, subscription_active, plan_type, trial_ends_at, review_link")
     .eq("slug", req.params.slug)
     .single();
   if (!businessData) return res.status(404).json({ error: "Business not found" });
@@ -226,6 +221,8 @@ app.get("/stats/:slug", async (req, res) => {
     subscription_active: businessData.subscription_active,
     plan_type: businessData.plan_type,
     trial_ends_at: businessData.trial_ends_at,
+    business_name: businessData.name,
+    review_link: businessData.review_link,
   };
 
   let ratingTotal = 0;
@@ -263,7 +260,6 @@ app.post("/create-business", async (req, res) => {
     const { data: existing } = await supabase.from("businesses").select("email").eq("email", email).single();
     if (existing) return res.status(400).json({ error: "Email already exists" });
 
-    // FIXED: trial_ends_at is now set on every new account
     const trialEnd = new Date();
     trialEnd.setDate(trialEnd.getDate() + 14);
 
@@ -301,7 +297,6 @@ app.post("/verify-login", async (req, res) => {
   req.session.slug = data.slug;
   req.session.save();
 
-  // FIXED: return subscription status so login page can redirect to /admin if no sub
   res.json({
     success: true,
     slug: data.slug,
@@ -329,10 +324,6 @@ app.get("/qr-download/:slug", async (req, res) => {
 });
 
 // ─── SEND SMS ─────────────────────────────────────────────────────────────────
-// NOTE: To SMS UK numbers (+44), you MUST use a UK Twilio number.
-// Buy one at console.twilio.com → Phone Numbers → Buy → United Kingdom
-// Then set TWILIO_PHONE=+447700xxxxxx in your Vercel env vars.
-// US numbers (+1) cannot send to UK numbers — that is the cause of your error.
 app.post("/send-sms", smsLimiter, async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const { phone } = req.body;
@@ -358,7 +349,6 @@ app.post("/create-checkout", async (req, res) => {
     line_items: [{ price: priceId, quantity: 1 }],
     mode: "subscription",
     subscription_data: { trial_period_days: 14 },
-    // FIXED: cancel goes back to /admin (plan selection), not /cancel page
     success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
     cancel_url: `${process.env.BASE_URL}/admin`,
     metadata: { slug, plan },
@@ -383,7 +373,7 @@ app.post("/cancel-subscription", async (req, res) => {
 
     await stripe.subscriptions.update(sub.id, { cancel_at_period_end: true });
     await supabase.from("businesses").update({ subscription_active: false }).eq("slug", req.session.slug);
-    res.json({ success: true, message: "Subscription cancelled. Access continues until end of billing period." });
+    res.json({ success: true, message: "Subscription cancelled." });
   } catch (err) {
     console.log("Cancel error:", err.message);
     res.status(500).json({ error: err.message });
@@ -446,9 +436,45 @@ app.post("/billing-portal", async (req, res) => {
     if (!data || !data.stripe_customer) return res.status(400).json({ error: "No billing account found. Please subscribe first." });
     const portal = await stripe.billingPortal.sessions.create({
       customer: data.stripe_customer,
-      return_url: process.env.BASE_URL + "/for-business",
+      return_url: process.env.BASE_URL + "/billing",
     });
     res.json({ url: portal.url });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── UPDATE BUSINESS DETAILS (settings page) ──────────────────────────────────
+app.post("/update-business", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  const { name, review_link } = req.body;
+  if (!name || name.trim().length < 1) return res.status(400).json({ error: "Business name required" });
+  const { error } = await supabase
+    .from("businesses")
+    .update({ name: name.trim(), review_link: review_link || "" })
+    .eq("slug", req.session.slug);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// ─── CHANGE PASSWORD (settings page) ──────────────────────────────────────────
+app.post("/change-password", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  const { current_password, new_password } = req.body;
+  if (!current_password || !new_password) return res.status(400).json({ error: "Both fields required" });
+  if (new_password.length < 6) return res.status(400).json({ error: "New password must be at least 6 characters" });
+
+  try {
+    const { data } = await supabase.from("businesses").select("password").eq("slug", req.session.slug).single();
+    if (!data) return res.status(404).json({ error: "Account not found" });
+
+    const valid = await bcrypt.compare(current_password, data.password);
+    if (!valid) return res.status(401).json({ error: "Current password is incorrect" });
+
+    const hashed = await bcrypt.hash(new_password, 10);
+    const { error } = await supabase.from("businesses").update({ password: hashed }).eq("slug", req.session.slug);
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -471,7 +497,7 @@ app.post("/feedback-summary", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const slug = req.session.slug;
   const { data } = await supabase.from("events").select("message").eq("business_slug", slug).eq("event_type", "negative");
-  const feedback = data.map((f) => f.message).join("\n");
+  const feedback = (data || []).map((f) => f.message).join("\n");
   const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [

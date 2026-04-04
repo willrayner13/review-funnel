@@ -10,62 +10,57 @@
     .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--cream); margin-bottom: 48px; display: flex; align-items: center; gap: 8px; }
     .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
     .container { max-width: 440px; width: 100%; padding: 44px 40px; }
-    .page-eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 10px; }
+    .page-eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 10px; display: block; }
     .form-group { margin-bottom: 16px; }
     .form-group label { font-size: 0.8rem; font-weight: 500; color: var(--cream-dim); display: block; margin-bottom: 6px; }
     .form-group input { margin-bottom: 0; }
     .signup-link { text-align: center; font-size: 0.85rem; color: var(--cream-dim); margin-top: 20px; }
     .signup-link a { color: var(--accent); font-weight: 500; }
     .signup-link a:hover { text-decoration: underline; }
-    #result { text-align: center; min-height: 20px; font-size: 0.875rem; color: #D4897C; }
+    #result { text-align: center; min-height: 20px; font-size: 0.875rem; color: #D4897C; margin-top: 10px; }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 50px; margin-bottom: 0; }
+    .pw-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--cream-dim); font-size: 1.1rem; padding: 4px; min-height: 0; line-height: 1; transition: color 0.2s; }
+    .pw-eye:hover { color: var(--cream); transform: translateY(-50%); box-shadow: none; }
   </style>
 </head>
 <body>
   <div class="logo"><span class="logo-dot"></span>ReviewBoost</div>
-
   <div class="container">
-    <p class="page-eyebrow">Welcome back</p>
+    <span class="page-eyebrow">Welcome back</span>
     <h2>Sign in to your dashboard</h2>
     <p style="margin-bottom:32px;">Manage your reviews, feedback, and analytics.</p>
-
     <div class="form-group">
       <label for="email">Business email</label>
       <input id="email" type="email" placeholder="you@yourbusiness.com">
     </div>
     <div class="form-group">
       <label for="password">Password</label>
-      <input id="password" type="password" placeholder="Your dashboard password">
+      <div class="pw-wrap">
+        <input id="password" type="password" placeholder="Your dashboard password">
+        <button class="pw-eye" type="button" onclick="togglePw('password','eyeBtn')" tabindex="-1" id="eyeBtn">👁</button>
+      </div>
     </div>
-
     <button class="btn-full" onclick="login()" style="margin-top:8px;">Sign In →</button>
     <p id="result"></p>
-
-    <div class="signup-link">
-      Don't have an account? <a href="/admin">Create one free</a>
-    </div>
+    <div class="signup-link">Don't have an account? <a href="/admin">Create one free</a></div>
   </div>
-
 <script>
-async function login() {
+function togglePw(inputId, btnId){
+  const input = document.getElementById(inputId);
+  const btn = document.getElementById(btnId);
+  if(input.type === "password"){ input.type = "text"; btn.textContent = "🙈"; }
+  else { input.type = "password"; btn.textContent = "👁"; }
+}
+async function login(){
   const btn = document.querySelector('button[onclick="login()"]');
-  btn.disabled = true;
-  btn.textContent = 'Signing in...';
-
+  btn.disabled = true; btn.textContent = 'Signing in...';
   const email    = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
-  const res  = await fetch("/verify-login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+  const res  = await fetch("/verify-login", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,password}) });
   const data = await res.json();
-
-  if (data.success) {
-    // FIX: if they have no active subscription, send them to /admin to pick a plan
-    // They created an account but never completed checkout (e.g. closed Stripe window)
-    if (!data.subscription_active) {
-      // Store slug so admin.html can skip the signup step and show plans directly
+  if(data.success){
+    if(!data.subscription_active){
       sessionStorage.setItem("currentSlug", data.slug);
       sessionStorage.setItem("skipToPlans", "true");
       window.location = "/admin";
@@ -74,12 +69,10 @@ async function login() {
     }
   } else {
     document.getElementById("result").innerText = "Incorrect email or password.";
-    btn.disabled = false;
-    btn.textContent = 'Sign In →';
+    btn.disabled = false; btn.textContent = 'Sign In →';
   }
 }
-
-document.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+document.addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 </script>
 </body>
 </html>

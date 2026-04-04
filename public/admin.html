@@ -17,17 +17,20 @@
     .helper-text{font-size:0.75rem;color:rgba(234,231,220,0.3);margin-top:5px;}
     .login-link{text-align:center;font-size:0.85rem;color:var(--cream-dim);margin-top:20px;}
     .login-link a{color:var(--accent);font-weight:500;}
-
+    /* Password eye toggle */
+    .pw-wrap{position:relative;}
+    .pw-wrap input{padding-right:50px;margin-bottom:0;}
+    .pw-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--cream-dim);font-size:1.1rem;padding:4px;min-height:0;line-height:1;transition:color 0.2s;}
+    .pw-eye:hover{color:var(--cream);transform:translateY(-50%);box-shadow:none;}
     /* Review link row */
     .review-link-row{display:flex;align-items:center;gap:8px;}
     .review-link-row input{flex:1;margin-bottom:0;}
     .help-btn{flex-shrink:0;background:var(--accent-dim);border:1px solid rgba(200,169,110,0.3);color:var(--accent);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;padding:0 14px;height:52px;cursor:pointer;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:5px;}
     .help-btn:hover{background:rgba(200,169,110,0.25);border-color:rgba(200,169,110,0.5);}
-
     /* Modal */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;}
     .modal-overlay.open{opacity:1;pointer-events:all;}
-    .modal{background:var(--surface);border:1px solid var(--border-hi);border-radius:var(--radius-lg);padding:36px 32px;max-width:520px;width:100%;position:relative;box-shadow:0 32px 80px rgba(0,0,0,0.6);transform:translateY(16px);transition:transform .25s;}
+    .modal{background:var(--surface);border:1px solid var(--border-hover);border-radius:var(--radius-lg);padding:36px 32px;max-width:520px;width:100%;position:relative;box-shadow:0 32px 80px rgba(0,0,0,0.6);transform:translateY(16px);transition:transform .25s;}
     .modal-overlay.open .modal{transform:translateY(0);}
     .modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(234,231,220,0.2),transparent);}
     .modal-close{position:absolute;top:16px;right:16px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--cream-dim);font-size:1rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
@@ -42,7 +45,6 @@
     .url-example{background:var(--surface-3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'Courier New',monospace;font-size:0.75rem;color:var(--accent);word-break:break-all;line-height:1.6;margin-bottom:16px;}
     .modal-cta{display:block;width:100%;background:var(--accent);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;padding:13px;border-radius:8px;text-align:center;transition:all .2s;border:none;cursor:pointer;}
     .modal-cta:hover{background:#D4B87A;transform:translateY(-1px);}
-
     /* Plan screen */
     #planScreen{display:none;max-width:680px;width:100%;}
     .plan-header{text-align:center;margin-bottom:40px;}
@@ -89,7 +91,13 @@
       </div>
       <p class="helper-text">The direct link customers use to leave you a Google review.</p>
     </div>
-    <div class="form-group"><label>Dashboard password</label><input id="password" type="password" placeholder="Choose a secure password"></div>
+    <div class="form-group">
+      <label>Dashboard password</label>
+      <div class="pw-wrap">
+        <input id="password" type="password" placeholder="Choose a secure password">
+        <button class="pw-eye" type="button" onclick="togglePw('password','pwEye')" tabindex="-1" id="pwEye">👁</button>
+      </div>
+    </div>
 
     <button class="btn-full" id="createBtn" onclick="createBusiness()" style="margin-top:8px;">Continue to plan selection →</button>
     <p id="result"></p>
@@ -103,37 +111,28 @@
       <h2>Choose your plan</h2>
       <p>Your card is saved but <strong style="color:var(--cream);">£0 is charged today.</strong> Billing starts automatically after 14 days.</p>
     </div>
-
     <div class="plans-grid">
       <div class="plan">
         <div class="plan-name">Starter</div>
         <div class="plan-price"><sup>£</sup>15<span>/mo</span></div>
         <div class="plan-desc">Everything you need to start collecting more reviews and capturing feedback privately.</div>
-        <ul class="plan-features">
-          <li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li>
-        </ul>
-        <!-- FIXED: correct price shown -->
+        <ul class="plan-features"><li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li></ul>
         <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £15/mo. Cancel before day 14 to pay nothing.</div>
         <button onclick="subscribe('starter')">Start free trial</button>
       </div>
-
       <div class="plan featured">
         <div class="plan-name">Pro</div>
         <div class="plan-price"><sup>£</sup>39<span>/mo</span></div>
         <div class="plan-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</div>
-        <ul class="plan-features">
-          <li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li>
-        </ul>
-        <!-- FIXED: was showing £15, now shows correct £39 -->
+        <ul class="plan-features"><li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li></ul>
         <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £39/mo. Cancel before day 14 to pay nothing.</div>
         <button onclick="subscribe('pro')">Start free trial</button>
       </div>
     </div>
-
     <p class="global-trial-note">You'll be taken to Stripe's secure checkout to save your card.<br>Cancel anytime from your dashboard — no phone calls, no hassle.</p>
   </div>
 
-  <!-- GOOGLE REVIEW LINK HELPER MODAL -->
+  <!-- Google review link helper modal -->
   <div class="modal-overlay" id="helpModal" onclick="handleOverlayClick(event)">
     <div class="modal">
       <button class="modal-close" onclick="closeModal()">✕</button>
@@ -154,11 +153,18 @@
 <script>
 let currentSlug = "";
 
-// FIXED: if returning from login with no subscription, skip signup and show plans
+function togglePw(inputId, btnId){
+  const input = document.getElementById(inputId);
+  const btn = document.getElementById(btnId);
+  if(input.type === "password"){ input.type = "text"; btn.textContent = "🙈"; }
+  else { input.type = "password"; btn.textContent = "👁"; }
+}
+
+// If returning from login with no subscription, skip to plan selection
 window.addEventListener("DOMContentLoaded", () => {
   const skipToPlans = sessionStorage.getItem("skipToPlans");
   const savedSlug   = sessionStorage.getItem("currentSlug");
-  if (skipToPlans === "true" && savedSlug) {
+  if(skipToPlans === "true" && savedSlug){
     currentSlug = savedSlug;
     sessionStorage.removeItem("skipToPlans");
     document.getElementById("signupCard").style.display  = "none";
@@ -167,49 +173,44 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function openModal() { document.getElementById('helpModal').classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal() { document.getElementById('helpModal').classList.remove('open'); document.body.style.overflow=''; }
-function handleOverlayClick(e) { if (e.target === document.getElementById('helpModal')) closeModal(); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+function openModal(){ document.getElementById('helpModal').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(){ document.getElementById('helpModal').classList.remove('open'); document.body.style.overflow=''; }
+function handleOverlayClick(e){ if(e.target===document.getElementById('helpModal')) closeModal(); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
 
-async function createBusiness() {
+async function createBusiness(){
   const btn = document.getElementById("createBtn");
   btn.disabled = true; btn.textContent = 'Creating account...';
-
   const name     = document.getElementById("name").value.trim();
   const email    = document.getElementById("email").value.trim();
   const review   = document.getElementById("review").value.trim();
   const password = document.getElementById("password").value;
-
-  if (!name || !email || !password) {
+  if(!name||!email||!password){
     document.getElementById("result").innerText = "Please fill in all required fields.";
     document.getElementById("result").style.color = "#D4897C";
-    btn.disabled = false; btn.textContent = 'Continue to plan selection →';
-    return;
+    btn.disabled=false; btn.textContent='Continue to plan selection →'; return;
   }
-
-  const res  = await fetch("/create-business", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, review, password }) });
+  const res  = await fetch("/create-business",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,review,password})});
   const data = await res.json();
-
-  if (data.success) {
+  if(data.success){
     currentSlug = data.slug;
     sessionStorage.setItem("currentSlug", currentSlug);
     document.getElementById("signupCard").style.display  = "none";
     document.getElementById("planScreen").style.display  = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({top:0,behavior:'smooth'});
   } else {
-    const msg = data.error || "";
+    const msg = data.error||"";
     document.getElementById("result").innerText = msg.includes("already") ? "That email is already registered. Try signing in." : "Something went wrong. Please try again.";
     document.getElementById("result").style.color = "#D4897C";
-    btn.disabled = false; btn.textContent = 'Continue to plan selection →';
+    btn.disabled=false; btn.textContent='Continue to plan selection →';
   }
 }
 
-async function subscribe(plan) {
-  document.querySelectorAll('.plan button').forEach(b => { b.disabled = true; b.textContent = 'Taking you to Stripe...'; });
-  const res  = await fetch("/create-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug: currentSlug, plan }) });
+async function subscribe(plan){
+  document.querySelectorAll('.plan button').forEach(b=>{b.disabled=true;b.textContent='Taking you to Stripe...';});
+  const res  = await fetch("/create-checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug:currentSlug,plan})});
   const data = await res.json();
-  if (data.url) window.location = data.url;
+  if(data.url) window.location=data.url;
 }
 </script>
 </body>
