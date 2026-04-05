@@ -35,34 +35,21 @@
     .funnel-card h2 { font-size: 1.4rem; margin-bottom: 6px; }
     .funnel-card > div > p { color: var(--cream-dim); font-size: 0.9rem; }
 
-    /* THE CRITICAL FIX: equal-height, equal-width buttons using CSS grid */
     .funnel-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 24px 0 4px;
-      width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin: 24px 0 4px; width: 100%;
     }
 
-    /* Override default button styles entirely for funnel buttons */
     .funnel-btn {
-      all: unset; /* clear ALL inherited button styles */
-      box-sizing: border-box;
+      all: unset; box-sizing: border-box;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 10px;
       background: var(--surface-2); border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px 12px;
-      /* Fixed aspect: makes both buttons always the same height */
-      min-height: 120px;
-      width: 100%;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; color: var(--cream);
+      border-radius: 14px; padding: 24px 12px; min-height: 120px; width: 100%;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 500; color: var(--cream);
       transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
-      /* Proper touch targets */
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      user-select: none;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
     }
     .funnel-btn .funnel-icon { font-size: 2.2rem; line-height: 1; }
     .funnel-btn.positive:hover, .funnel-btn.positive:active {
@@ -74,10 +61,8 @@
       transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
 
-    /* Stars */
     .stars-hint { font-size: 0.78rem; color: var(--cream-dim); margin-top: 6px; }
 
-    /* Review prompt */
     .review-prompt {
       background: rgba(106,158,127,0.08); border: 1px solid rgba(106,158,127,0.25);
       border-radius: var(--radius); padding: 22px; margin: 16px 0;
@@ -89,13 +74,36 @@
     }
     .review-prompt button:hover { background: #D4B87A; }
 
-    /* Feedback textarea */
-    #feedbackBox textarea { margin: 16px 0 12px; min-height: 110px; }
-    #feedbackBox button { width: 100%; justify-content: center; }
+    /* Countdown ring for lapsed delay */
+    .countdown-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      padding: 8px 0 4px;
+    }
+    .countdown-ring-wrap { position: relative; width: 64px; height: 64px; }
+    .countdown-ring-wrap svg { transform: rotate(-90deg); }
+    .countdown-circle-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+    .countdown-circle { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+    .countdown-number {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--accent);
+    }
+    .countdown-label { font-size: 0.82rem; color: var(--cream-dim); line-height: 1.5; }
 
+    /* Powered by — becomes subtle ad for ReviewBoost */
     .powered-by { text-align: center; margin-top: 20px; font-size: 0.7rem; color: rgba(234,231,220,0.2); }
     .powered-by a { transition: color 0.2s; }
     .powered-by a:hover { color: var(--accent); }
+
+    /* Lapsed feedback message */
+    .feedback-unavailable {
+      padding: 20px; text-align: center;
+      background: rgba(234,231,220,0.04); border-radius: var(--radius);
+      border: 1px solid var(--border); margin-top: 8px;
+    }
+    .feedback-unavailable p { font-size: 0.875rem; color: var(--cream-dim); line-height: 1.6; margin: 0; }
+
+    #feedbackBox textarea { margin: 16px 0 12px; min-height: 110px; }
+    #feedbackBox button { width: 100%; justify-content: center; }
 
     @media (max-width: 380px) {
       .funnel-card { padding: 32px 20px; }
@@ -117,12 +125,10 @@
       <p>Your feedback helps us improve.</p>
       <div class="funnel-options">
         <button class="funnel-btn positive" onclick="positive()">
-          <span class="funnel-icon">😊</span>
-          Great!
+          <span class="funnel-icon">😊</span>Great!
         </button>
         <button class="funnel-btn negative" onclick="showFeedback()">
-          <span class="funnel-icon">😕</span>
-          Could be better
+          <span class="funnel-icon">😕</span>Could be better
         </button>
       </div>
     </div>
@@ -143,7 +149,7 @@
       <p class="stars-hint">Tap a star to rate</p>
     </div>
 
-    <!-- Step 3: Leave review -->
+    <!-- Step 3a: Leave review — NORMAL (active subscription) -->
     <div id="reviewSection" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
       <h2>Thank you!</h2>
@@ -153,7 +159,27 @@
       </div>
     </div>
 
-    <!-- Step 4: Negative feedback -->
+    <!-- Step 3b: Leave review — LAPSED (countdown delay before redirect) -->
+    <div id="reviewSectionLapsed" style="display:none">
+      <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
+      <h2>Thank you!</h2>
+      <p style="color:var(--cream-dim);margin-bottom:20px;">We're redirecting you to leave a review...</p>
+      <div class="countdown-wrap">
+        <div class="countdown-ring-wrap">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <circle class="countdown-circle-bg" cx="32" cy="32" r="28"/>
+            <circle class="countdown-circle" id="countdownRing" cx="32" cy="32" r="28"
+              stroke-dasharray="175.9" stroke-dashoffset="0"/>
+          </svg>
+          <div class="countdown-number" id="countdownNum">8</div>
+        </div>
+        <p class="countdown-label">Redirecting in <span id="countdownSec">8</span> seconds<br>
+          <span style="font-size:0.72rem;color:rgba(234,231,220,0.3);">Powered by <a href="/" style="color:var(--accent);text-decoration:none;">ReviewBoost</a></span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Step 4a: Negative feedback — NORMAL (active subscription) -->
     <div id="feedbackBox" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">💬</div>
       <h2>We're sorry to hear that</h2>
@@ -162,44 +188,112 @@
       <button onclick="sendFeedback()">Send Feedback</button>
     </div>
 
+    <!-- Step 4b: Negative feedback — LAPSED (graceful degradation) -->
+    <div id="feedbackBoxLapsed" style="display:none">
+      <div style="font-size:2.4rem;margin-bottom:12px;">💬</div>
+      <h2>We're sorry to hear that</h2>
+      <div class="feedback-unavailable">
+        <p>Private feedback is temporarily unavailable for this business. To share your experience, please contact them directly.</p>
+      </div>
+    </div>
+
   </div>
 
   <p class="powered-by"><a href="/">Powered by ReviewBoost</a></p>
 </div>
 
 <script>
-const slug = window.slug;
+const slug         = window.slug;
+const isLapsed     = window.accountLapsed === true;  // set by server
+const REDIRECT_DELAY = 8; // seconds delay before Google redirect when lapsed
 
+// ── Navigation helpers ────────────────────────────────────────────────────────
+function show(id){
+  ["mainQuestion","ratingSection","reviewSection","reviewSectionLapsed","feedbackBox","feedbackBoxLapsed"]
+    .forEach(s => { document.getElementById(s).style.display = s === id ? "block" : "none"; });
+}
+
+// ── Step 1: Positive ──────────────────────────────────────────────────────────
 function positive(){
   fetch("/positive",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
   show("ratingSection");
 }
-function showFeedback(){ show("feedbackBox"); }
 
-function sendFeedback(){
-  const message = document.getElementById("message").value;
-  fetch("/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({business:slug,message})});
-  document.getElementById("feedbackBox").innerHTML = `
-    <div style="font-size:2.4rem;margin-bottom:12px;">✅</div>
-    <h2>Feedback received</h2>
-    <p style="color:var(--cream-dim);">Thank you — we appreciate you taking the time.</p>
-  `;
+// ── Step 1: Negative ──────────────────────────────────────────────────────────
+function showFeedback(){
+  // When lapsed: show the graceful degradation message instead of the real form
+  show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox");
 }
+
+// ── Step 2: Rating ────────────────────────────────────────────────────────────
+function rate(stars){
+  fetch("/rating",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,rating:stars})});
+  if(stars >= 4){
+    // Good rating — go to review prompt (with or without delay)
+    if(isLapsed){
+      show("reviewSectionLapsed");
+      startCountdown();
+    } else {
+      show("reviewSection");
+    }
+  } else {
+    // Poor rating — feedback form (degraded if lapsed)
+    show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox");
+  }
+}
+
+// ── Step 3: Leave review (active subscription) ────────────────────────────────
 function leaveReview(){
   fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
   window.location.href = window.reviewLink;
 }
-function rate(stars){
-  fetch("/rating",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,rating:stars})});
-  if(stars>=4){ show("reviewSection"); }
-  else { show("feedbackBox"); }
-}
-function show(id){
-  ["mainQuestion","ratingSection","reviewSection","feedbackBox"].forEach(s=>{
-    document.getElementById(s).style.display = s===id ? "block" : "none";
-  });
+
+// ── Step 3b: Countdown then redirect (lapsed) ────────────────────────────────
+function startCountdown(){
+  const circumference = 175.9; // 2πr where r=28
+  const ring   = document.getElementById("countdownRing");
+  const numEl  = document.getElementById("countdownNum");
+  const secEl  = document.getElementById("countdownSec");
+  let   remaining = REDIRECT_DELAY;
+
+  // Set initial state
+  ring.style.strokeDashoffset = "0";
+
+  const interval = setInterval(() => {
+    remaining--;
+    numEl.textContent = remaining;
+    secEl.textContent = remaining;
+
+    // Animate the ring draining
+    const progress   = (REDIRECT_DELAY - remaining) / REDIRECT_DELAY;
+    ring.style.strokeDashoffset = String(circumference * progress);
+
+    if(remaining <= 0){
+      clearInterval(interval);
+      // Track the click then redirect
+      fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
+      window.location.href = window.reviewLink;
+    }
+  }, 1000);
 }
 
+// ── Step 4: Send feedback (active subscription only) ─────────────────────────
+function sendFeedback(){
+  const message = document.getElementById("message").value.trim();
+  if(!message) return;
+  const btn = document.querySelector('#feedbackBox button');
+  btn.disabled = true; btn.textContent = "Sending...";
+  fetch("/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({business:slug,message})})
+    .then(() => {
+      document.getElementById("feedbackBox").innerHTML = `
+        <div style="font-size:2.4rem;margin-bottom:12px;">✅</div>
+        <h2>Feedback received</h2>
+        <p style="color:var(--cream-dim);">Thank you — we appreciate you taking the time.</p>
+      `;
+    });
+}
+
+// ── Set business name ─────────────────────────────────────────────────────────
 const t = document.getElementById("businessTitle");
 if(t && window.businessName) t.innerText = window.businessName;
 </script>

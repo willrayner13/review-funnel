@@ -155,20 +155,31 @@ app.get("/r/:business", async (req, res) => {
   const slug = req.params.business;
   const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (error || !data) return res.status(404).send("Business not found");
+ 
+  // Always record the visit — even lapsed businesses get their data collected
+  // (this is what powers the FOMO counter on the lapsed dashboard page)
   await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
+ 
   const pagePath = path.join(__dirname, "public", "index.html");
   const page = fs.readFileSync(pagePath, "utf8");
+ 
+  // Pass account status to the client-side page.
+  // accountLapsed=true triggers the degraded experience (countdown, no feedback form).
+  const isLapsed = !data.subscription_active;
+ 
   res.send(`
     <html>
       <script>
-        window.businessName="${data.name}";
-        window.slug="${slug}";
-        window.reviewLink="${data.review_link}";
+        window.businessName   = "${data.name.replace(/"/g, '\\"')}";
+        window.slug           = "${slug}";
+        window.reviewLink     = "${(data.review_link || "").replace(/"/g, '\\"')}";
+        window.accountLapsed  = ${isLapsed};
       </script>
       ${page}
     </html>
   `);
 });
+ 
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 app.post("/positive", async (req, res) => {
