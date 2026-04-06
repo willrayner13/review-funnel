@@ -184,8 +184,8 @@ async function init(){
   // Update display
   document.getElementById("planName").textContent = currentPlan === "pro" ? "Pro" : "Starter";
   document.getElementById("planPrice").innerHTML = currentPlan === "pro"
-    ? '<sup>£</sup>39<span>/mo</span>'
-    : '<sup>£</sup>15<span>/mo</span>';
+    ? '<sup>£</sup>29.99<span>/mo</span>'
+    : '<sup>£</sup>9.99<span>/mo</span>';
 
   const badge = document.getElementById("planBadge");
   if(inTrial){ badge.textContent = "🕐 Trial"; badge.className = "plan-badge-inline badge-trial"; }
@@ -206,7 +206,7 @@ async function init(){
   plansRow.innerHTML = `
     <div class="plan-option ${currentPlan === 'starter' ? 'current-plan' : ''}">
       <div class="plan-option-name">Starter</div>
-      <div class="plan-option-price"><sup>£</sup>15<span>/mo</span></div>
+      <div class="plan-option-price"><sup>£</sup>9.99<span>/mo</span></div>
       <ul class="plan-option-features">
         <li>Smart review funnel</li><li>Analytics dashboard</li>
         <li>QR code generator</li><li>Private feedback capture</li>
@@ -218,7 +218,7 @@ async function init(){
     </div>
     <div class="plan-option ${currentPlan === 'pro' ? 'current-plan' : ''}">
       <div class="plan-option-name">Pro</div>
-      <div class="plan-option-price"><sup>£</sup>39<span>/mo</span></div>
+      <div class="plan-option-price"><sup>£</sup>29.99<span>/mo</span></div>
       <ul class="plan-option-features">
         <li>Everything in Starter</li><li>AI reply generator</li>
         <li>SMS & email requests</li><li>Advanced analytics</li>
