@@ -37,7 +37,7 @@ function isTrialActive(business) {
   return new Date() < new Date(business.trial_ends_at);
 }
 function hasProAccess(business) {
-  return business.subscription_active || business.plan_type === "pro" || isTrialActive(business);
+  return business.subscription_active && (business.plan_type === "pro" || isTrialActive(business));
 }
 
 // ─── STRIPE WEBHOOK — must come before bodyParser.json() ──────────────────────
@@ -109,13 +109,15 @@ app.use(
 );
 
 // ─── HTML ROUTES ──────────────────────────────────────────────────────────────
-const htmlPages = ["admin", "login", "for-business", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings"];
+// NOTE: "/" serves landing.html — the funnel is only at /r/:slug
+const htmlPages = ["admin", "login", "for-business", "lapsed", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings"];
 htmlPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.sendFile(path.resolve("public", `${page}.html`));
   });
 });
 
+// Root serves landing page — NOT the funnel
 app.get("/", (req, res) => res.sendFile(path.resolve("public", "landing.html")));
 app.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.html")));
 
@@ -123,7 +125,7 @@ app.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.h
 app.get("/subscription-status/:slug", async (req, res) => {
   const { data, error } = await supabase
     .from("businesses")
-    .select("subscription_active, plan_type, trial_ends_at")
+    .select("name, subscription_active, plan_type, trial_ends_at, review_link")
     .eq("slug", req.params.slug)
     .single();
   if (error || !data) return res.status(404).json({ error: "Not found" });
@@ -150,23 +152,22 @@ app.post("/restore-session/:slug", async (req, res) => {
   }
 });
 
-// ─── BUSINESS FUNNEL PAGE ──────────────────────────────────────────────────────
+// ─── BUSINESS FUNNEL PAGE — only at /r/:slug, never at / ──────────────────────
 app.get("/r/:business", async (req, res) => {
   const slug = req.params.business;
   const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (error || !data) return res.status(404).send("Business not found");
- 
+
   // Always record the visit — even lapsed businesses get their data collected
-  // (this is what powers the FOMO counter on the lapsed dashboard page)
+  // (this powers the FOMO counter on the lapsed dashboard page)
   await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
- 
+
   const pagePath = path.join(__dirname, "public", "index.html");
   const page = fs.readFileSync(pagePath, "utf8");
- 
-  // Pass account status to the client-side page.
-  // accountLapsed=true triggers the degraded experience (countdown, no feedback form).
+
+  // accountLapsed=true triggers the degraded experience (countdown, no feedback form)
   const isLapsed = !data.subscription_active;
- 
+
   res.send(`
     <html>
       <script>
@@ -179,7 +180,6 @@ app.get("/r/:business", async (req, res) => {
     </html>
   `);
 });
- 
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 app.post("/positive", async (req, res) => {
@@ -234,6 +234,7 @@ app.get("/stats/:slug", async (req, res) => {
     trial_ends_at: businessData.trial_ends_at,
     business_name: businessData.name,
     review_link: businessData.review_link,
+    account_lapsed: !businessData.subscription_active,
   };
 
   let ratingTotal = 0;
@@ -351,21 +352,38 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
 });
 
 // ─── STRIPE CHECKOUT ──────────────────────────────────────────────────────────
+// IMPORTANT: Uses Starter_subscription and Pro_subscription env vars
+// These correspond to the new products created in Stripe:
+//   Starter_subscription = price_1TIxTlLvZp6Pwd26oYD8wL7R
+//   Pro_subscription     = price_1TIxTNLvZp6Pwd26ccsZ4bTX
+// Set these in Vercel → Settings → Environment Variables
 app.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
-  const priceId = plan === "pro" ? process.env.PRICE_PRO : process.env.PRICE_STARTER;
+  // Uses the new env var names — NOT the old PRICE_STARTER / PRICE_PRO
+  const priceId = plan === "pro"
+    ? process.env.Pro_subscription
+    : process.env.Starter_subscription;
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: [{ price: priceId, quantity: 1 }],
-    mode: "subscription",
-    subscription_data: { trial_period_days: 14 },
-    success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
-    cancel_url: `${process.env.BASE_URL}/admin`,
-    metadata: { slug, plan },
-  });
+  if (!priceId) {
+    console.error("Missing Stripe price ID for plan:", plan);
+    return res.status(500).json({ error: "Pricing configuration error. Please contact support." });
+  }
 
-  res.json({ url: session.url });
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: "subscription",
+      subscription_data: { trial_period_days: 14 },
+      success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
+      cancel_url: `${process.env.BASE_URL}/admin`,
+      metadata: { slug, plan },
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("Stripe checkout error:", err.message);
+    res.status(500).json({ error: "Could not create checkout session. Please try again." });
+  }
 });
 
 // ─── CANCEL SUBSCRIPTION ──────────────────────────────────────────────────────
@@ -403,7 +421,7 @@ app.post("/send-email", async (req, res) => {
 
     const reviewUrl = `${process.env.BASE_URL}/r/${slug}`;
     await resend.emails.send({
-      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "yourdomain.com"}>`,
+      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
       to: email,
       subject: `Thanks for visiting ${business.name}`,
       html: `<p>Hi!</p><p>Thanks for visiting <b>${business.name}</b> today.</p><p>If you have a moment, we'd really appreciate a quick review.</p><p><a href="${reviewUrl}">Leave a review</a></p><p>Thank you!</p>`,
@@ -434,8 +452,14 @@ app.post("/generate-reply", async (req, res) => {
     });
     res.json({ reply: completion.choices[0].message.content });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err.message });
+    console.log("OpenAI error:", err.status, err.message);
+    if (err.status === 429 || (err.message && err.message.includes("quota"))) {
+      return res.status(503).json({ error: "AI service temporarily unavailable. Please try again in a few minutes." });
+    }
+    if (err.status === 401) {
+      return res.status(503).json({ error: "AI service temporarily unavailable. Please try again later." });
+    }
+    res.status(500).json({ error: "AI service temporarily unavailable. Please try again later." });
   }
 });
 
@@ -503,20 +527,25 @@ app.get("/review-growth/:slug", async (req, res) => {
   res.json(months);
 });
 
-// ─── FEEDBACK SUMMARY ─────────────────────────────────────────────────────────
+// ─── FEEDBACK SUMMARY (Pro only) ──────────────────────────────────────────────
 app.post("/feedback-summary", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const slug = req.session.slug;
   const { data } = await supabase.from("events").select("message").eq("business_slug", slug).eq("event_type", "negative");
   const feedback = (data || []).map((f) => f.message).join("\n");
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: "Summarize the most common complaints from this customer feedback" },
-      { role: "user", content: feedback },
-    ],
-  });
-  res.json({ summary: completion.choices[0].message.content });
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "Summarize the most common complaints from this customer feedback in 2-3 concise bullet points." },
+        { role: "user", content: feedback },
+      ],
+    });
+    res.json({ summary: completion.choices[0].message.content });
+  } catch (err) {
+    console.log("OpenAI error:", err.status, err.message);
+    res.status(503).json({ error: "AI service temporarily unavailable. Please try again later." });
+  }
 });
 
 // ─── AUTO REVIEW SMS ──────────────────────────────────────────────────────────
@@ -527,6 +556,29 @@ app.post("/auto-review", async (req, res) => {
   const message = `Thanks for visiting ${data.name}! Please leave a quick review: ${process.env.BASE_URL}/r/${slug}`;
   await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: phone, body: message });
   res.json({ success: true });
+});
+
+// ─── LAPSED STATS — counts only, for the FOMO wall on lapsed.html ─────────────
+app.get("/lapsed-stats/:slug", async (req, res) => {
+  if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("subscription_active")
+    .eq("slug", req.params.slug)
+    .single();
+  if (error || !data) return res.status(404).json({ error: "Not found" });
+  if (data.subscription_active) return res.json({ active: true });
+  const { data: events } = await supabase
+    .from("events")
+    .select("event_type")
+    .eq("business_slug", req.params.slug);
+  const counts = { visits: 0, feedback: 0, reviews: 0 };
+  (events || []).forEach(e => {
+    if (e.event_type === "visit")        counts.visits++;
+    if (e.event_type === "negative")     counts.feedback++;
+    if (e.event_type === "review_click") counts.reviews++;
+  });
+  res.json(counts);
 });
 
 // ─── EXPORT ───────────────────────────────────────────────────────────────────

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — ReviewBoost</title>
+  <title>Dashboard — ReviewLift</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="/style.css">
   <style>
@@ -154,7 +154,7 @@
 
 <!-- Top Nav -->
 <nav class="topnav">
-  <div class="nav-logo"><span class="nav-dot"></span>ReviewBoost</div>
+  <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
   <div class="nav-right">
     <span class="nav-biz" id="bizName">Loading...</span>
     <span class="trial-badge" id="planBadge" style="display:none">⭐ Trial</span>
@@ -318,9 +318,16 @@ async function load(){
   if(!res.ok){ window.location="/login"; return; }
   const stats = await res.json();
 
+  // Redirect to lapsed page if subscription has expired
+  if(stats.account_lapsed){
+    window.location = "/lapsed";
+    return;
+  }
+
   currentPlan = stats.plan_type || "starter";
-  const isTrial = stats.subscription_active && stats.trial_ends_at && new Date() < new Date(stats.trial_ends_at);
-  isProUser = stats.subscription_active && (currentPlan === "pro" || isTrial);
+  const trialEnd = stats.trial_ends_at ? new Date(stats.trial_ends_at) : null;
+  const isTrial = stats.subscription_active && trialEnd && new Date() < trialEnd;
+  isProUser = stats.subscription_active && currentPlan === "pro";
 
   document.getElementById("bizName").innerText = stats.business_name || slug;
   document.getElementById("visits").innerText   = stats.visits  ?? 0;
@@ -330,22 +337,24 @@ async function load(){
 
   // Plan badge
   const badge = document.getElementById("planBadge");
-  if(!stats.subscription_active && isTrial){ badge.style.display="inline-flex"; badge.textContent="🕐 Trial"; }
+  if(isTrial && currentPlan === "pro"){ badge.style.display="inline-flex"; badge.textContent="⭐ Pro Trial"; badge.style.color="#8EC9A8"; }
+  else if(isTrial){ badge.style.display="inline-flex"; badge.textContent="🕐 Trial"; badge.style.color="var(--accent)"; }
   else if(currentPlan === "pro" && stats.subscription_active){ badge.style.display="inline-flex"; badge.textContent="⭐ Pro"; badge.style.color="#8EC9A8"; }
   else if(stats.subscription_active){ badge.style.display="inline-flex"; badge.textContent="Starter"; badge.style.color="var(--cream-dim)"; }
 
   // Show/hide pro features
-  const hasPro = stats.subscription_active && (currentPlan === "pro");
-  const hasTrialAccess = stats.subscription_active; // all features during active sub/trial
+  // Pro access: only unlock email/AI if they are on the Pro plan (not Starter)
+  // During trial, give Pro features if they signed up for Pro plan
+  const hasProFeatures = stats.subscription_active && (currentPlan === "pro");
 
-  if(hasTrialAccess){
-    // Unlocked — show the real features
+  if(hasProFeatures){
+    // Pro plan — show all features
     document.getElementById("emailUnlocked").style.display = "block";
     document.getElementById("emailLocked").style.display   = "none";
     document.getElementById("aiUnlocked").style.display    = "block";
     document.getElementById("aiLocked").style.display      = "none";
   } else {
-    // Starter without active sub — show locks
+    // Starter plan — show upgrade locks for Pro features
     document.getElementById("emailUnlocked").style.display = "none";
     document.getElementById("emailLocked").style.display   = "block";
     document.getElementById("aiUnlocked").style.display    = "none";

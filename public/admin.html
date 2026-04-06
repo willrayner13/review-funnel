@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Your Account — ReviewBoost</title>
+  <title>Create Your Account — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
   <style>
     body{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:40px 16px 64px;}
@@ -73,13 +73,13 @@
   </style>
 </head>
 <body>
-  <div class="logo"><span class="logo-dot"></span>ReviewBoost</div>
+  <div class="logo"><span class="logo-dot"></span>ReviewLift</div>
 
   <!-- STEP 1: Signup form -->
   <div class="container" id="signupCard">
     <span class="page-eyebrow">Get started</span>
     <h2>Create your account</h2>
-    <p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial. Your card is required but nothing is charged until day 15.</p>
+    <p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial · Your card is required · <strong style="color:var(--cream);">£0 charged until day 15</strong></p>
 
     <div class="form-group"><label>Business name</label><input id="name" type="text" placeholder="e.g. The Coffee House"></div>
     <div class="form-group"><label>Business email</label><input id="email" type="email" placeholder="you@yourbusiness.com"></div>
@@ -114,18 +114,18 @@
     <div class="plans-grid">
       <div class="plan">
         <div class="plan-name">Starter</div>
-        <div class="plan-price"><sup>£</sup>15<span>/mo</span></div>
+        <div class="plan-price"><sup>£</sup>9.99<span>/mo</span></div>
         <div class="plan-desc">Everything you need to start collecting more reviews and capturing feedback privately.</div>
         <ul class="plan-features"><li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li></ul>
-        <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £15/mo. Cancel before day 14 to pay nothing.</div>
+        <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £9.99/mo. Cancel before day 14 to pay nothing.</div>
         <button onclick="subscribe('starter')">Start free trial</button>
       </div>
       <div class="plan featured">
         <div class="plan-name">Pro</div>
-        <div class="plan-price"><sup>£</sup>39<span>/mo</span></div>
+        <div class="plan-price"><sup>£</sup>29.99<span>/mo</span></div>
         <div class="plan-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</div>
         <ul class="plan-features"><li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li></ul>
-        <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £39/mo. Cancel before day 14 to pay nothing.</div>
+        <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £29.99/mo. Cancel before day 14 to pay nothing.</div>
         <button onclick="subscribe('pro')">Start free trial</button>
       </div>
     </div>
@@ -208,10 +208,42 @@ async function createBusiness(){
 
 async function subscribe(plan){
   document.querySelectorAll('.plan button').forEach(b=>{b.disabled=true;b.textContent='Taking you to Stripe...';});
-  const res  = await fetch("/create-checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug:currentSlug,plan})});
-  const data = await res.json();
-  if(data.url) window.location=data.url;
+  try {
+    const res  = await fetch("/create-checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug:currentSlug,plan})});
+    const data = await res.json();
+    if(data.url){
+      window.location=data.url;
+    } else {
+      resetPlanButtons();
+    }
+  } catch(e) {
+    resetPlanButtons();
+  }
 }
+
+function resetPlanButtons(){
+  const btns = document.querySelectorAll('.plan button');
+  btns.forEach(b=>{b.disabled=false;});
+  // Restore original button text
+  const starter = document.querySelector('.plan:not(.featured) button');
+  const pro = document.querySelector('.plan.featured button');
+  if(starter) starter.textContent = 'Start free trial';
+  if(pro) pro.textContent = 'Start free trial';
+}
+
+// When user presses Back from Stripe, the page is restored from bfcache
+// with buttons still frozen. This fires on page show to reset them.
+window.addEventListener('pageshow', function(e){
+  if(e.persisted){
+    // Page was restored from back-forward cache (user pressed back from Stripe)
+    resetPlanButtons();
+  }
+});
+
+// Also reset if the page regains focus (tab switch / back navigation)
+window.addEventListener('focus', function(){
+  resetPlanButtons();
+});
 </script>
 </body>
 </html>
