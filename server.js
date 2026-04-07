@@ -109,7 +109,7 @@ app.use(
 );
 
 // ─── HTML ROUTES ──────────────────────────────────────────────────────────────
-const htmlPages = ["admin", "login", "for-business", "lapsed", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings"];
+const htmlPages = ["admin", "login", "for-business", "lapsed", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings", "about"];
 htmlPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.sendFile(path.resolve("public", `${page}.html`));
