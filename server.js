@@ -354,7 +354,7 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
 // ─── STRIPE CHECKOUT ──────────────────────────────────────────────────────────
 app.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
-  const priceId = plan === "pro" ? process.env.PRO_SUBSCRIPTION : process.env.STARTER_SUBSCRIPTION;
+  const priceId = plan === "pro" ? process.env.Pro_subscription : process.env.Starter_subscription;
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
