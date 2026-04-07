@@ -136,11 +136,32 @@ app.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.h
 app.get("/subscription-status/:slug", async (req, res) => {
   const { data, error } = await supabase
     .from("businesses")
-    .select("name, subscription_active, plan_type, trial_ends_at, review_link")
+    .select("name, subscription_active, plan_type, trial_ends_at, review_link, stripe_customer")
     .eq("slug", req.params.slug)
     .single();
   if (error || !data) return res.status(404).json({ error: "Not found" });
-  res.json({ subscription_active: data.subscription_active, plan_type: data.plan_type, trial_ends_at: data.trial_ends_at });
+
+  // Check if subscription has cancel_at_period_end set on Stripe
+  let cancel_pending = false;
+  if (stripe && data.stripe_customer && data.subscription_active) {
+    try {
+      const [activeSubs, trialSubs] = await Promise.all([
+        stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
+        stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
+      ]);
+      const sub = activeSubs.data[0] || trialSubs.data[0];
+      if (sub && sub.cancel_at_period_end) cancel_pending = true;
+    } catch(e) {
+      // Non-fatal — just don't set cancel_pending
+    }
+  }
+
+  res.json({
+    subscription_active: data.subscription_active,
+    plan_type: data.plan_type,
+    trial_ends_at: data.trial_ends_at,
+    cancel_pending,
+  });
 });
 
 // ─── SESSION RESTORE after Stripe redirect ────────────────────────────────────
@@ -419,6 +440,29 @@ app.post("/upgrade-plan", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.log("Upgrade error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── REACTIVATE SUBSCRIPTION ─────────────────────────────────────────────────
+// Removes cancel_at_period_end so the subscription continues normally.
+app.post("/reactivate-subscription", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
+  try {
+    const { data } = await supabase.from("businesses").select("stripe_customer").eq("slug", req.session.slug).single();
+    if (!data || !data.stripe_customer) return res.status(400).json({ error: "No subscription found." });
+
+    const [activeSubs, trialSubs] = await Promise.all([
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
+    ]);
+    const sub = activeSubs.data[0] || trialSubs.data[0];
+    if (!sub) return res.status(400).json({ error: "No active subscription found." });
+
+    await stripe.subscriptions.update(sub.id, { cancel_at_period_end: false });
+    res.json({ success: true });
+  } catch (err) {
+    console.log("Reactivate error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });

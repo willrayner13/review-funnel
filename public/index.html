@@ -105,6 +105,16 @@
     #feedbackBox textarea { margin: 16px 0 12px; min-height: 110px; }
     #feedbackBox button { width: 100%; justify-content: center; }
 
+
+    /* Back button */
+    .funnel-back {
+      display: none; /* shown via JS when past step 1 */
+      background: none; border: none; cursor: pointer;
+      color: rgba(234,231,220,0.35); font-size: 0.78rem;
+      padding: 0; margin-bottom: 16px; font-family: "DM Sans", sans-serif;
+      transition: color 0.2s; align-items: center; gap: 4px;
+    }
+    .funnel-back:hover { color: var(--cream-dim); transform: none; box-shadow: none; }
     @media (max-width: 380px) {
       .funnel-card { padding: 32px 20px; }
       .funnel-btn { min-height: 100px; font-size: 0.9rem; }
@@ -118,6 +128,8 @@
   <span id="businessTitle"></span>
 
   <div class="funnel-card">
+
+    <button class="funnel-back" id="backBtn" onclick="goBack()">← Back</button>
 
     <!-- Step 1: Yes / No -->
     <div id="mainQuestion">
@@ -208,21 +220,40 @@ const isLapsed     = window.accountLapsed === true;  // set by server
 const REDIRECT_DELAY = 8; // seconds delay before Google redirect when lapsed
 
 // ── Navigation helpers ────────────────────────────────────────────────────────
+let stepHistory = [];
+
 function show(id){
   ["mainQuestion","ratingSection","reviewSection","reviewSectionLapsed","feedbackBox","feedbackBoxLapsed"]
     .forEach(s => { document.getElementById(s).style.display = s === id ? "block" : "none"; });
+  // Show back button on all steps except the first
+  const backBtn = document.getElementById("backBtn");
+  if(backBtn) backBtn.style.display = id === "mainQuestion" ? "none" : "flex";
+}
+
+function showWithHistory(id){
+  // Get current visible step and push to history before changing
+  const current = ["mainQuestion","ratingSection","reviewSection","reviewSectionLapsed","feedbackBox","feedbackBoxLapsed"]
+    .find(s => document.getElementById(s) && document.getElementById(s).style.display !== "none");
+  if(current) stepHistory.push(current);
+  show(id);
+}
+
+function goBack(){
+  if(stepHistory.length > 0){
+    const prev = stepHistory.pop();
+    show(prev);
+  }
 }
 
 // ── Step 1: Positive ──────────────────────────────────────────────────────────
 function positive(){
   fetch("/positive",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
-  show("ratingSection");
+  showWithHistory("ratingSection");
 }
 
 // ── Step 1: Negative ──────────────────────────────────────────────────────────
 function showFeedback(){
-  // When lapsed: show the graceful degradation message instead of the real form
-  show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox");
+  showWithHistory(isLapsed ? "feedbackBoxLapsed" : "feedbackBox");
 }
 
 // ── Step 2: Rating ────────────────────────────────────────────────────────────
@@ -231,14 +262,13 @@ function rate(stars){
   if(stars >= 4){
     // Good rating — go to review prompt (with or without delay)
     if(isLapsed){
-      show("reviewSectionLapsed");
+      showWithHistory("reviewSectionLapsed");
       startCountdown();
     } else {
-      show("reviewSection");
+      showWithHistory("reviewSection");
     }
   } else {
-    // Poor rating — feedback form (degraded if lapsed)
-    show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox");
+    showWithHistory(isLapsed ? "feedbackBoxLapsed" : "feedbackBox");
   }
 }
 
