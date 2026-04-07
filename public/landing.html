@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ReviewLift — More 5-star reviews. Fewer public complaints.</title>
-  <meta name="description" content="ReviewLift helps local businesses collect more positive reviews and capture negative feedback privately, before it reaches Google.">
+  <meta name="description" content="ReviewLift helps local UK businesses collect more positive Google reviews and capture negative feedback privately, before it reaches Google. QR code, SMS, email and link — all in one tool.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
@@ -38,50 +38,23 @@
 
     section{position:relative;z-index:1;}
 
-    /* ── HERO — clean, centred, no demo card ── */
-    .hero{
-      min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      text-align:center;padding:100px 24px 80px;
-      background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(200,169,110,0.11) 0%,transparent 70%),
-                 radial-gradient(ellipse 40% 30% at 80% 80%,rgba(200,169,110,0.05) 0%,transparent 60%);
-    }
+    /* ── HERO ── */
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 80px;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(200,169,110,0.11) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 80% 80%,rgba(200,169,110,0.05) 0%,transparent 60%);}
     .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,169,110,0.25);border-radius:100px;padding:6px 16px;margin-bottom:32px;animation:fadeUp .6s ease both;}
     .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,6vw,5rem);font-weight:800;line-height:1.06;letter-spacing:-1.5px;max-width:820px;animation:fadeUp .6s .1s ease both;}
     .hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent) 0%,#E8C98A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .hero-sub{margin-top:24px;max-width:540px;font-size:1.1rem;color:var(--cream-dim);line-height:1.7;animation:fadeUp .6s .2s ease both;}
-
-    /* Hero buttons */
     .hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:40px;animation:fadeUp .6s .3s ease both;}
     .btn-trial{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;background:var(--cream);color:#1A1A18;padding:16px 36px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;}
     .btn-trial:hover{background:#F5F2EB;transform:translateY(-2px);box-shadow:0 8px 28px rgba(234,231,220,0.18);}
-
-    /* Demo button — deliberately eye-catching, different style */
-    .btn-demo{
-      font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;
-      background:transparent;color:var(--accent);
-      padding:15px 32px;border-radius:10px;
-      border:2px solid var(--accent);
-      cursor:pointer;transition:all .25s;
-      display:inline-flex;align-items:center;gap:10px;
-      position:relative;overflow:hidden;
-    }
-    .btn-demo::before{
-      content:'';position:absolute;inset:0;
-      background:var(--accent);opacity:0;transition:opacity .25s;
-    }
+    .btn-demo{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;background:transparent;color:var(--accent);padding:15px 32px;border-radius:10px;border:2px solid var(--accent);cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;position:relative;overflow:hidden;}
+    .btn-demo::before{content:'';position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .25s;}
     .btn-demo:hover{color:#1A1A18;transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,169,110,0.3);}
     .btn-demo:hover::before{opacity:1;}
     .btn-demo span{position:relative;z-index:1;}
-    /* Pulse ring on demo button to draw the eye */
     .btn-demo-wrap{position:relative;display:inline-block;}
-    .btn-demo-wrap::after{
-      content:'';position:absolute;inset:-6px;border-radius:14px;
-      border:2px solid rgba(200,169,110,0.4);
-      animation:demoRing 2.4s ease-in-out infinite;
-      pointer-events:none;
-    }
+    .btn-demo-wrap::after{content:'';position:absolute;inset:-6px;border-radius:14px;border:2px solid rgba(200,169,110,0.4);animation:demoRing 2.4s ease-in-out infinite;pointer-events:none;}
     @keyframes demoRing{0%,100%{opacity:0;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
-
     .hero-note{margin-top:18px;font-size:0.78rem;color:rgba(234,231,220,0.28);animation:fadeUp .6s .4s ease both;}
 
     /* ── PROOF BAR ── */
@@ -91,40 +64,6 @@
     .proof-text{font-size:0.82rem;color:var(--cream-dim);line-height:1.4;}
     .proof-text strong{color:var(--cream);display:block;font-size:1rem;}
 
-       /* ── TESTIMONIALS CAROUSEL ── */
-    .testimonials-section{padding:0 0 100px;overflow:hidden;}
-    .testimonials-header{max-width:1000px;margin:0 auto 40px;padding:0 24px;}
-    .carousel-outer{
-      position:relative;
-      -webkit-mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);
-      mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);
-    }
-    .carousel-track{
-      display:flex;
-      gap:20px;
-      width:max-content;
-      animation:scrollLeft 42s linear infinite;
-    }
-    .carousel-track:hover{animation-play-state:paused;}
-    @keyframes scrollLeft{
-      0%{transform:translateX(0);}
-      100%{transform:translateX(-50%);}
-    }
-        @keyframes scrollLeft{
-      0%{transform:translateX(0);}
-      100%{transform:translateX(-50%);}
-    }
-    .t-card{
-      background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
-      padding:28px 26px 24px;width:300px;flex-shrink:0;
-    }
-    .t-stars{color:var(--accent);font-size:0.875rem;letter-spacing:3px;margin-bottom:14px;}
-    .t-quote{font-size:0.875rem;color:var(--cream-dim);line-height:1.7;margin-bottom:20px;font-style:italic;}
-    .t-author{border-top:1px solid var(--border);padding-top:14px;display:flex;flex-direction:column;gap:3px;}
-    .t-name{font-size:0.82rem;font-weight:600;color:var(--cream);}
-    .t-biz{font-size:0.72rem;color:var(--accent);}
- 
-
     /* ── STATS SECTION ── */
     .stats-section{padding:100px 24px;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(200,169,110,0.07) 0%,transparent 70%);}
     .stats-inner{max-width:1000px;margin:0 auto;}
@@ -132,26 +71,16 @@
     .stats-eyebrow{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--accent);margin-bottom:14px;display:block;}
     .stats-heading{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.6px;line-height:1.1;margin-bottom:14px;}
     .stats-sub{font-size:1rem;color:var(--cream-dim);max-width:520px;margin:0 auto;line-height:1.7;}
-
-    /* Interactive calculator card */
     .calc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:48px;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);}
     .calc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.4),transparent);}
     .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
-
-    /* Slider controls */
     .calc-controls{display:flex;flex-direction:column;gap:28px;}
     .slider-group label{font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--cream-dim);display:block;margin-bottom:10px;}
     .slider-value-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
     .slider-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--cream);}
-    input[type=range]{
-      -webkit-appearance:none;appearance:none;width:100%;height:4px;
-      background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--pct,40%),var(--surface-3) var(--pct,40%),var(--surface-3) 100%);
-      border-radius:4px;outline:none;cursor:pointer;border:none;margin:0;padding:0;
-    }
+    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--pct,40%),var(--surface-3) var(--pct,40%),var(--surface-3) 100%);border-radius:4px;outline:none;cursor:pointer;border:none;margin:0;padding:0;}
     input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 3px rgba(200,169,110,0.2);}
     input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
-
-    /* Results */
     .calc-results{display:flex;flex-direction:column;gap:16px;}
     .result-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;transition:border-color .3s,transform .3s;}
     .result-card.highlight{border-color:rgba(200,169,110,0.35);background:linear-gradient(135deg,var(--surface-2),rgba(200,169,110,0.06));}
@@ -162,8 +91,6 @@
     .result-value.danger{color:#D4897C;}
     .result-sub{font-size:0.75rem;color:var(--cream-dim);margin-top:4px;line-height:1.5;}
     .calc-disclaimer{font-size:0.7rem;color:rgba(234,231,220,0.25);margin-top:24px;line-height:1.5;text-align:center;}
-
-    /* Stat tiles below calc */
     .stat-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;}
     .stat-tile{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);padding:24px 20px;text-align:center;transition:all .2s;}
     .stat-tile:hover{border-color:var(--border-hi);transform:translateY(-2px);}
@@ -173,37 +100,22 @@
     /* ── DEMO SPOTLIGHT ── */
     .demo-spotlight{background:linear-gradient(135deg,var(--surface) 0%,rgba(200,169,110,0.03) 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
     .spotlight-inner{max-width:1000px;margin:0 auto;padding:80px 48px;display:grid;grid-template-columns:1fr 1.5fr;gap:60px;align-items:start;}
-
     .section-tag{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
     .section-tag::after{content:'';flex:1;max-width:60px;height:1px;background:var(--accent);opacity:.4;}
     .section-heading{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.8px;line-height:1.1;max-width:560px;margin-bottom:16px;}
     .section-sub{font-size:1rem;color:var(--cream-dim);max-width:480px;line-height:1.7;margin-bottom:60px;}
-
     .ds-sub{font-size:0.95rem;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;}
     .ds-steps{display:flex;flex-direction:column;gap:14px;}
     .ds-step{display:flex;align-items:flex-start;gap:14px;}
     .ds-num{width:26px;height:26px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,169,110,0.3);color:var(--accent);font-size:0.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
     .ds-step strong{font-size:0.875rem;font-weight:600;color:var(--cream);display:block;margin-bottom:2px;}
     .ds-step span{font-size:0.8rem;color:var(--cream-dim);}
-
-    /* Big demo card — spacious, no trial CTA inside */
-    .spotlight-card{
-      background:var(--surface-2);border:1px solid var(--border-hi);
-      border-radius:var(--r-lg);overflow:hidden;
-      box-shadow:0 24px 64px rgba(0,0,0,0.45);
-      position:sticky;top:84px;
-    }
-    .sc-header{
-      background:linear-gradient(135deg,rgba(200,169,110,0.18) 0%,rgba(200,169,110,0.06) 100%);
-      border-bottom:1px solid rgba(200,169,110,0.2);
-      padding:18px 28px;display:flex;align-items:center;justify-content:space-between;
-    }
+    .spotlight-card{background:var(--surface-2);border:1px solid var(--border-hi);border-radius:var(--r-lg);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.45);position:sticky;top:84px;}
+    .sc-header{background:linear-gradient(135deg,rgba(200,169,110,0.18) 0%,rgba(200,169,110,0.06) 100%);border-bottom:1px solid rgba(200,169,110,0.2);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;}
     .sc-header-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);}
     .sc-live{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--success);}
     .sc-pulse{width:7px;height:7px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
     @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
-
-    /* Funnel preview inside card */
     .sc-preview{padding:28px 28px 24px;text-align:center;border-bottom:1px solid var(--border);}
     .sc-biz{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:600;color:var(--accent);margin-bottom:6px;min-height:1.4em;transition:all .15s;}
     .sc-q{font-size:1.05rem;font-weight:600;font-family:'Syne',sans-serif;margin-bottom:18px;}
@@ -216,68 +128,89 @@
     .sc-dest{font-size:0.68rem;font-weight:600;padding:6px 8px;border-radius:6px;text-align:center;}
     .sc-dest.google{background:rgba(106,158,127,0.12);color:#8EC9A8;border:1px solid rgba(106,158,127,0.25);}
     .sc-dest.private{background:rgba(192,103,90,0.1);color:#D4897C;border:1px solid rgba(192,103,90,0.2);}
-
-    /* Generator */
     .sc-gen{padding:24px 28px 28px;}
     .sc-gen-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:6px;}
     .sc-gen-sub{font-size:0.8rem;color:var(--cream-dim);margin-bottom:18px;line-height:1.55;}
     .sc-input{width:100%;padding:15px 18px;background:var(--surface-3);border:1px solid var(--border);border-radius:8px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:1rem;transition:border-color .2s;display:block;margin-bottom:12px;-webkit-appearance:none;}
     .sc-input:focus{outline:none;border-color:rgba(234,231,220,0.35);background:var(--surface);}
     .sc-input::placeholder{color:rgba(234,231,220,0.28);}
-    .sc-link-out{
-      background:var(--surface-3);border:1px solid var(--border);border-radius:8px;
-      padding:12px 16px;font-size:0.75rem;color:rgba(234,231,220,0.3);
-      font-family:'Courier New',monospace;word-break:break-all;
-      min-height:44px;margin-bottom:14px;line-height:1.6;transition:color .2s;
-    }
+    .sc-link-out{background:var(--surface-3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:0.75rem;color:rgba(234,231,220,0.3);font-family:'Courier New',monospace;word-break:break-all;min-height:44px;margin-bottom:14px;line-height:1.6;transition:color .2s;}
     .sc-link-out.active{color:var(--accent);}
     .sc-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .sc-copy-btn{
-      font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;
-      background:var(--accent);color:#1A1A18;border:none;
-      padding:14px;border-radius:8px;cursor:pointer;
-      transition:all .2s;-webkit-tap-highlight-color:transparent;
-    }
+    .sc-copy-btn{font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;background:var(--accent);color:#1A1A18;border:none;padding:14px;border-radius:8px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;}
     .sc-copy-btn:hover{background:#D4B87A;transform:translateY(-1px);}
-    .sc-open-btn{
-      font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;
-      background:transparent;color:var(--cream-dim);
-      border:1px solid var(--border-hi);
-      padding:14px;border-radius:8px;cursor:pointer;
-      transition:all .2s;text-align:center;display:flex;align-items:center;justify-content:center;
-    }
+    .sc-open-btn{font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;background:transparent;color:var(--cream-dim);border:1px solid var(--border-hi);padding:14px;border-radius:8px;cursor:pointer;transition:all .2s;text-align:center;display:flex;align-items:center;justify-content:center;}
     .sc-open-btn:hover{color:var(--cream);background:var(--cream-faint);}
     .sc-footnote{font-size:0.68rem;color:rgba(234,231,220,0.22);text-align:center;margin-top:12px;}
 
-    /* ── HOW IT WORKS ── */
-    .section-wrap{max-width:1000px;margin:0 auto;padding:100px 48px;}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-    .step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px 28px;transition:all .2s;position:relative;overflow:hidden;}
-    .step:hover{border-color:var(--border-hi);transform:translateY(-4px);}
-    .step::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(234,231,220,0.12),transparent);}
-    .step-num{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:rgba(200,169,110,0.18);line-height:1;margin-bottom:20px;}
-    .step-icon{font-size:1.8rem;margin-bottom:14px;display:block;}
-    .step h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:10px;}
-    .step p{font-size:0.875rem;color:var(--cream-dim);line-height:1.65;}
+    /* ── PIPELINE SECTION (replaces "how it works" + "features") ── */
+    .pipeline-section{padding:100px 48px;background:linear-gradient(180deg,transparent,rgba(200,169,110,0.03),transparent);}
+    .pipeline-inner{max-width:1000px;margin:0 auto;}
+    .pipeline-intro{text-align:center;margin-bottom:64px;}
+    .pipeline-intro h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.6px;line-height:1.1;margin-bottom:14px;}
+    .pipeline-intro p{font-size:1rem;color:var(--cream-dim);max-width:520px;margin:0 auto;line-height:1.7;}
 
-    /* ── FEATURES ── */
-    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-    .feature{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:all .2s;}
-    .feature:hover{border-color:var(--border-hi);}
-    .feature-icon{font-size:1.6rem;margin-bottom:14px;display:block;}
-    .feature h4{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:8px;}
-    .feature p{font-size:0.825rem;color:var(--cream-dim);line-height:1.6;}
-    .feature-tag{display:inline-block;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;background:var(--accent-dim);color:var(--accent);border-radius:4px;padding:2px 7px;margin-top:10px;}
+    /* The funnel diagram itself */
+    .pipeline-diagram{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:center;margin-bottom:56px;}
+    .pipe-node{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px 20px;text-align:center;transition:all .25s;position:relative;}
+    .pipe-node:hover{border-color:var(--border-hi);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3);}
+    .pipe-node::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r-lg) var(--r-lg) 0 0;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.3),transparent);}
+    .pipe-icon{font-size:2rem;margin-bottom:12px;display:block;}
+    .pipe-title{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--cream);margin-bottom:6px;}
+    .pipe-desc{font-size:0.75rem;color:var(--cream-dim);line-height:1.55;}
+    .pipe-arrow{display:flex;align-items:center;justify-content:center;padding:0 12px;color:rgba(200,169,110,0.4);font-size:1.4rem;flex-shrink:0;}
 
-    /* ── TESTIMONIALS ── */
-    .testimonials{max-width:1000px;margin:0 auto;padding:0 48px 100px;}
-    .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-    .testimonial{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:all .2s;}
-    .testimonial:hover{border-color:var(--border-hi);}
-    .t-stars{color:var(--accent);font-size:0.85rem;margin-bottom:12px;letter-spacing:2px;}
-    .t-quote{font-size:0.875rem;color:var(--cream-dim);line-height:1.65;margin-bottom:18px;font-style:italic;}
-    .t-author{display:flex;flex-direction:column;gap:2px;}
-    .t-name{font-size:0.8rem;font-weight:600;color:var(--cream);}
+    /* The "what the customer sees" mockup + the "what the business gets" split */
+    .pipeline-split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:56px;}
+    .split-card{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border);}
+    .split-card-header{padding:14px 20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+    .split-card-header.customer{background:rgba(106,158,127,0.12);color:#8EC9A8;border-bottom:1px solid rgba(106,158,127,0.2);}
+    .split-card-header.business{background:rgba(200,169,110,0.1);color:var(--accent);border-bottom:1px solid rgba(200,169,110,0.2);}
+    .split-card-body{background:var(--surface);padding:24px 20px;}
+
+    /* SMS mockup */
+    .sms-mockup{background:var(--surface-2);border-radius:12px;padding:16px;max-width:280px;margin:0 auto;}
+    .sms-bubble{background:#2563EB;color:white;border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:0.82rem;line-height:1.6;margin-bottom:8px;}
+    .sms-bubble .sms-sender{font-size:0.68rem;color:rgba(255,255,255,0.65);margin-bottom:4px;font-weight:600;}
+    .sms-time{font-size:0.65rem;color:var(--cream-dim);text-align:center;}
+    .sms-cta{display:block;background:var(--accent);color:#1A1A18;font-size:0.78rem;font-weight:700;padding:10px 16px;border-radius:8px;text-align:center;margin-top:10px;}
+
+    /* Email mockup */
+    .email-mockup{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface-3);font-size:0.78rem;}
+    .email-header{background:var(--surface-2);padding:10px 14px;border-bottom:1px solid var(--border);}
+    .email-header-row{display:flex;gap:6px;align-items:center;color:var(--cream-dim);margin-bottom:3px;}
+    .email-header-row strong{color:var(--cream);}
+    .email-body{padding:14px;}
+    .email-body p{color:var(--cream-dim);line-height:1.6;margin-bottom:8px;}
+    .email-cta-btn{display:inline-block;background:var(--accent);color:#1A1A18;padding:8px 18px;border-radius:6px;font-weight:700;font-size:0.78rem;margin-top:4px;}
+
+    /* Business gets */
+    .biz-gets{display:flex;flex-direction:column;gap:14px;}
+    .biz-get-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;}
+    .biz-get-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px;}
+    .biz-get-title{font-size:0.85rem;font-weight:600;color:var(--cream);margin-bottom:2px;}
+    .biz-get-desc{font-size:0.75rem;color:var(--cream-dim);line-height:1.5;}
+
+    /* Channels row */
+    .channels-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+    .channel-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 16px;text-align:center;transition:all .2s;}
+    .channel-card:hover{border-color:var(--border-hi);transform:translateY(-2px);}
+    .channel-icon{font-size:1.8rem;margin-bottom:10px;display:block;}
+    .channel-title{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--cream);margin-bottom:4px;}
+    .channel-desc{font-size:0.73rem;color:var(--cream-dim);line-height:1.5;}
+
+    /* ── TESTIMONIALS CAROUSEL ── */
+    .testimonials-section{padding:0 0 100px;overflow:hidden;}
+    .testimonials-header{max-width:1000px;margin:0 auto 40px;padding:0 24px;}
+    .carousel-outer{position:relative;-webkit-mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);}
+    .carousel-track{display:flex;gap:20px;width:max-content;animation:scrollLeft 42s linear infinite;}
+    .carousel-track:hover{animation-play-state:paused;}
+    @keyframes scrollLeft{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+    .t-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px 26px 24px;width:300px;flex-shrink:0;}
+    .t-stars{color:var(--accent);font-size:0.875rem;letter-spacing:3px;margin-bottom:14px;}
+    .t-quote{font-size:0.875rem;color:var(--cream-dim);line-height:1.7;margin-bottom:20px;font-style:italic;}
+    .t-author{border-top:1px solid var(--border);padding-top:14px;display:flex;flex-direction:column;gap:3px;}
+    .t-name{font-size:0.82rem;font-weight:600;color:var(--cream);}
     .t-biz{font-size:0.72rem;color:var(--accent);}
 
     /* ── PRICING ── */
@@ -301,17 +234,51 @@
     .price-cta.gold:hover{background:#D4B87A;transform:translateY(-1px);}
     .pricing-note{text-align:center;margin-top:24px;font-size:.8rem;color:rgba(234,231,220,.28);}
 
-    /* ── FINAL CTA ── */
-    .cta-strip{background:linear-gradient(135deg,rgba(200,169,110,0.12) 0%,rgba(200,169,110,0.04) 100%);border-top:1px solid rgba(200,169,110,0.2);padding:80px 48px;text-align:center;}
-    .cta-strip h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.5px;margin-bottom:14px;}
-    .cta-strip p{font-size:1rem;color:var(--cream-dim);max-width:420px;margin:0 auto 32px;line-height:1.7;}
-    .cta-btns{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
-    .cta-note{font-size:0.75rem;color:rgba(234,231,220,0.28);margin-top:16px;}
+    /* ── FINAL CTA — redesigned, much more impactful ── */
+    .cta-section{position:relative;overflow:hidden;padding:120px 48px;}
+    .cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(200,169,110,0.12) 0%,transparent 70%);pointer-events:none;}
+    .cta-section::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.3),transparent);}
+    .cta-inner{max-width:720px;margin:0 auto;text-align:center;position:relative;z-index:1;}
+    .cta-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,169,110,0.25);border-radius:100px;padding:6px 16px;margin-bottom:28px;}
+    .cta-section h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:20px;}
+    .cta-section h2 em{font-style:normal;background:linear-gradient(135deg,var(--accent) 0%,#E8C98A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .cta-section p{font-size:1.05rem;color:var(--cream-dim);line-height:1.75;margin-bottom:40px;max-width:520px;margin-left:auto;margin-right:auto;}
+    .cta-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:24px;}
+    .btn-cta-primary{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1.05rem;background:var(--accent);color:#1A1A18;padding:18px 44px;border-radius:12px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;}
+    .btn-cta-primary:hover{background:#D4B87A;transform:translateY(-2px);box-shadow:0 10px 36px rgba(200,169,110,0.35);}
+    .btn-cta-secondary{font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;background:transparent;color:var(--cream-dim);padding:17px 32px;border-radius:12px;border:1px solid var(--border-hi);cursor:pointer;transition:all .2s;}
+    .btn-cta-secondary:hover{color:var(--cream);border-color:rgba(234,231,220,0.4);background:var(--cream-faint);}
+    .cta-proof{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding-top:8px;}
+    .cta-proof-item{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:rgba(234,231,220,0.35);}
+    .cta-proof-item::before{content:'✓';color:var(--accent);font-size:0.7rem;}
+
+    /* ── CONTACT SECTION ── */
+    .contact-section{padding:100px 48px;border-top:1px solid var(--border);}
+    .contact-inner{max-width:700px;margin:0 auto;}
+    .contact-intro{text-align:center;margin-bottom:48px;}
+    .contact-intro h2{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.4px;margin-bottom:10px;}
+    .contact-intro p{font-size:0.95rem;color:var(--cream-dim);line-height:1.7;}
+    .contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:40px;position:relative;overflow:hidden;}
+    .contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.3),transparent);}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+    .contact-field{display:flex;flex-direction:column;gap:6px;}
+    .contact-field label{font-size:0.78rem;font-weight:600;color:var(--cream-dim);text-transform:uppercase;letter-spacing:.6px;}
+    .contact-field input,.contact-field textarea{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.9rem;transition:border-color .2s;outline:none;}
+    .contact-field input:focus,.contact-field textarea:focus{border-color:rgba(200,169,110,0.4);}
+    .contact-field textarea{min-height:120px;resize:vertical;}
+    .contact-submit{width:100%;background:var(--accent);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;margin-top:8px;}
+    .contact-submit:hover{background:#D4B87A;transform:translateY(-1px);}
+    .contact-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+    #contactMsg{text-align:center;font-size:0.85rem;margin-top:12px;min-height:20px;}
+    #contactMsg.success{color:#8EC9A8;}
+    #contactMsg.error{color:#D4897C;}
+    .contact-alt{text-align:center;margin-top:20px;font-size:0.82rem;color:var(--cream-dim);}
+    .contact-alt a{color:var(--accent);}
 
     /* ── FOOTER ── */
     footer{border-top:1px solid var(--border);padding:40px 48px;position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
     .footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;}
-    .footer-links{display:flex;gap:28px;}
+    .footer-links{display:flex;gap:28px;flex-wrap:wrap;}
     .footer-links a{font-size:.82rem;color:var(--cream-dim);transition:color .2s;}
     .footer-links a:hover{color:var(--cream);}
     .footer-copy{font-size:.78rem;color:rgba(234,231,220,.22);}
@@ -329,25 +296,29 @@
       .stat-tiles{grid-template-columns:1fr 1fr;}
       .spotlight-inner{grid-template-columns:1fr;gap:40px;padding:60px 24px;}
       .spotlight-card{position:static;}
-      .section-wrap{padding:80px 24px;}
-      .steps{grid-template-columns:1fr;}
-      .features-grid{grid-template-columns:1fr 1fr;}
+      .pipeline-section{padding:80px 24px;}
+      .pipeline-diagram{grid-template-columns:1fr;gap:16px;}
+      .pipe-arrow{display:none;}
+      .pipeline-split{grid-template-columns:1fr;}
+      .channels-row{grid-template-columns:1fr 1fr;}
       .pricing-grid{grid-template-columns:1fr;max-width:420px;}
-      .testimonials{padding:0 24px 80px;}
-      .testimonials-grid{grid-template-columns:1fr;}
-      .cta-strip{padding:60px 24px;}
+      .cta-section{padding:80px 24px;}
+      .contact-section{padding:80px 24px;}
+      .contact-grid{grid-template-columns:1fr;}
       footer{flex-direction:column;align-items:flex-start;padding:32px 24px;}
       .stats-section{padding:80px 24px;}
       .calc-card{padding:32px 24px;}
     }
     @media(max-width:500px){
-      .features-grid{grid-template-columns:1fr;}
       .hero h1{font-size:2.2rem;}
       .hero-actions{flex-direction:column;align-items:stretch;}
       .btn-trial,.btn-demo{justify-content:center;width:100%;}
       .btn-demo-wrap{width:100%;display:block;}
       .stat-tiles{grid-template-columns:1fr;}
       .sc-btn-row{grid-template-columns:1fr;}
+      .channels-row{grid-template-columns:1fr;}
+      .cta-actions{flex-direction:column;align-items:stretch;}
+      .btn-cta-primary,.btn-cta-secondary{justify-content:center;width:100%;}
     }
   </style>
 </head>
@@ -356,10 +327,11 @@
 <nav>
   <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
   <div class="nav-links">
-    <a href="#how-it-works">How it works</a>
+    <a href="#pipeline">How it works</a>
     <a href="#demo-section">Live demo</a>
-    <a href="#features">Features</a>
     <a href="#pricing">Pricing</a>
+    <a href="/about">About</a>
+    <a href="#contact">Contact</a>
   </div>
   <div class="nav-cta">
     <a href="/login"><button class="btn-nav-login">Sign in</button></a>
@@ -367,30 +339,17 @@
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════
-     HERO — clean, centred
-═══════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-badge">⭐ Reputation management for local businesses</div>
-
   <h1>Turn happy customers into<br><em>5-star reviews</em></h1>
-
-  <p class="hero-sub">
-    ReviewLift quietly intercepts unhappy customers before they reach Google — and sends satisfied ones straight to your review page. Set up in 2 minutes.
-  </p>
-
+  <p class="hero-sub">ReviewLift quietly intercepts unhappy customers before they reach Google — and sends satisfied ones straight to your review page. Set up in 2 minutes.</p>
   <div class="hero-actions">
-    <a href="/admin">
-      <button class="btn-trial">Start 14-day free trial →</button>
-    </a>
-
+    <a href="/admin"><button class="btn-trial">Start 14-day free trial →</button></a>
     <a href="#demo-section" class="btn-demo-wrap">
-      <button class="btn-demo">
-        <span>▶ See live demo</span>
-      </button>
+      <button class="btn-demo"><span>▶ See live demo</span></button>
     </a>
   </div>
-
   <p class="hero-note">14-day free trial · Card required · Cancel before day 14 to pay nothing</p>
 </section>
 
@@ -402,9 +361,7 @@
   <div class="proof-item"><span class="proof-icon">📊</span><div class="proof-text"><strong>Full analytics</strong>Track every visit, rating & click</div></div>
 </div>
 
-<!-- ═══════════════════════════════════
-     INTERACTIVE STATS / CALCULATOR
-═══════════════════════════════════ -->
+<!-- STATS / CALCULATOR -->
 <section class="stats-section" id="stats-section">
   <div class="stats-inner">
     <div class="stats-intro reveal">
@@ -412,63 +369,42 @@
       <h2 class="stats-heading">One bad review costs more than you think</h2>
       <p class="stats-sub">Use the calculator below to see exactly what negative reviews are costing your business — and what fixing them is worth.</p>
     </div>
-
     <div class="calc-card reveal">
       <div class="calc-grid">
-        <!-- Sliders -->
         <div class="calc-controls">
           <div class="slider-group">
             <label>Monthly customers</label>
-            <div class="slider-value-row">
-              <span class="slider-val" id="custVal">200</span>
-              <span style="font-size:0.72rem;color:var(--cream-dim)">per month</span>
-            </div>
+            <div class="slider-value-row"><span class="slider-val" id="custVal">200</span><span style="font-size:0.72rem;color:var(--cream-dim)">per month</span></div>
             <input type="range" id="custSlider" min="10" max="5000" value="200" oninput="calcUpdate()">
           </div>
-
           <div class="slider-group">
             <label>Average job / order value</label>
-            <div class="slider-value-row">
-              <span class="slider-val" id="spendVal">£35</span>
-              <span style="font-size:0.72rem;color:var(--cream-dim)" id="spendUnit">per job/visit</span>
-            </div>
+            <div class="slider-value-row"><span class="slider-val" id="spendVal">£100</span><span style="font-size:0.72rem;color:var(--cream-dim)" id="spendUnit">per visit</span></div>
             <input type="range" id="spendSlider" min="5" max="50000" value="100" oninput="calcUpdate()">
           </div>
-
           <div class="slider-group">
             <label>Current Google rating</label>
-            <div class="slider-value-row">
-              <span class="slider-val" id="ratingVal">3.8 ★</span>
-              <span style="font-size:0.72rem;color:var(--cream-dim)">stars</span>
-            </div>
+            <div class="slider-value-row"><span class="slider-val" id="ratingVal">3.8 ★</span><span style="font-size:0.72rem;color:var(--cream-dim)">stars</span></div>
             <input type="range" id="ratingSlider" min="1" max="5" step="0.1" value="3.8" oninput="calcUpdate()">
           </div>
-
-          <p style="font-size:0.78rem;color:var(--cream-dim);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);">
-            Studies show businesses with 4.5+ stars see up to <strong style="color:var(--accent)">28% more new customers</strong> than those below 4.0, and a single negative review can deter an average of <strong style="color:var(--accent)">30 potential customers</strong>.
-          </p>
+          <p style="font-size:0.78rem;color:var(--cream-dim);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);">Studies show businesses with 4.5+ stars see up to <strong style="color:var(--accent)">28% more new customers</strong> than those below 4.0, and a single negative review can deter an average of <strong style="color:var(--accent)">30 potential customers</strong>.</p>
         </div>
-
-        <!-- Results -->
         <div class="calc-results">
           <div class="result-card highlight">
             <div class="result-label">Customers lost to bad reviews / month</div>
             <div class="result-value danger" id="lostCustomers">—</div>
             <div class="result-sub" id="lostSub">Based on your rating and volume</div>
           </div>
-
           <div class="result-card highlight">
             <div class="result-label">Revenue lost per month</div>
             <div class="result-value danger" id="lostRevenue">—</div>
             <div class="result-sub">Customers who choose a competitor instead</div>
           </div>
-
           <div class="result-card">
             <div class="result-label">ReviewLift cost per month</div>
             <div class="result-value accent">£9.99–£29.99</div>
             <div class="result-sub">Less than one lost customer covers it</div>
           </div>
-
           <div class="result-card" style="border-color:rgba(106,158,127,0.3);background:linear-gradient(135deg,var(--surface-2),rgba(106,158,127,0.06));">
             <div class="result-label">Potential revenue recovered / month</div>
             <div class="result-value positive" id="recovered">—</div>
@@ -476,54 +412,34 @@
           </div>
         </div>
       </div>
-
       <p class="calc-disclaimer">* Estimates based on industry research. Actual results vary by business type, location, and market. These figures are illustrative.</p>
     </div>
-
-    <!-- Static stat tiles -->
     <div class="stat-tiles">
-      <div class="stat-tile reveal">
-        <div class="tile-num" style="color:var(--danger)">30</div>
-        <div class="tile-label">potential customers deterred by a single 1-star review, on average</div>
-      </div>
-      <div class="stat-tile reveal" style="transition-delay:.08s">
-        <div class="tile-num" style="color:var(--accent)">28%</div>
-        <div class="tile-label">more new customers for businesses rated 4.5+ vs under 4.0 stars</div>
-      </div>
-      <div class="stat-tile reveal" style="transition-delay:.16s">
-        <div class="tile-num" style="color:#8EC9A8">89%</div>
-        <div class="tile-label">of UK consumers read reviews before choosing a local business</div>
-      </div>
+      <div class="stat-tile reveal"><div class="tile-num" style="color:var(--danger)">30</div><div class="tile-label">potential customers deterred by a single 1-star review, on average</div></div>
+      <div class="stat-tile reveal" style="transition-delay:.08s"><div class="tile-num" style="color:var(--accent)">28%</div><div class="tile-label">more new customers for businesses rated 4.5+ vs under 4.0 stars</div></div>
+      <div class="stat-tile reveal" style="transition-delay:.16s"><div class="tile-num" style="color:#8EC9A8">89%</div><div class="tile-label">of UK consumers read reviews before choosing a local business</div></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════
-     DEMO SPOTLIGHT — big, prominent
-═══════════════════════════════════ -->
+<!-- DEMO SPOTLIGHT -->
 <section class="demo-spotlight" id="demo-section">
   <div class="spotlight-inner">
-
     <div class="reveal">
       <div class="section-tag">Live demo</div>
       <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;letter-spacing:-.5px;line-height:1.1;margin-bottom:14px;">Send them a demo that feels built for them</h2>
-      <p class="ds-sub">ReviewLift creates a private review funnel for your business — happy customers go to Google, unhappy ones leave feedback only you see. The fastest way to make a prospect understand this is to let them feel it as a customer would. Type their business name, copy the link, drop it in your cold email.</p>
-
+      <p class="ds-sub">ReviewLift creates a private review funnel for your business — happy customers go to Google, unhappy ones leave feedback only you see. The fastest way to make a prospect understand this is to let them feel it. Type their business name, copy the link, drop it in your cold email.</p>
       <div class="ds-steps">
-        <div class="ds-step"><div class="ds-num">1</div><div><strong>Type their business name into the box</strong><span>The funnel preview on the right updates live — they see their exact business name on the page.</span></div></div>
-        <div class="ds-step"><div class="ds-num">2</div><div><strong>Copy the personalised link</strong><span>Every link is unique to that business. Takes 5 seconds, no account or setup needed.</span></div></div>
-        <div class="ds-step"><div class="ds-num">3</div><div><strong>Paste it in the email: "Here's what your customers would see"</strong><span>That's your entire pitch. They click, land on their own-named funnel, feel the product immediately.</span></div></div>
-        <div class="ds-step"><div class="ds-num">4</div><div><strong>They try it, they understand it, they sign up</strong><span>No sales call. No explanation needed. The product is so intuitive it sells itself.</span></div></div>
+        <div class="ds-step"><div class="ds-num">1</div><div><strong>Type their business name into the box</strong><span>The funnel preview updates live with their exact business name.</span></div></div>
+        <div class="ds-step"><div class="ds-num">2</div><div><strong>Copy the personalised link</strong><span>Unique to that business. Takes 5 seconds.</span></div></div>
+        <div class="ds-step"><div class="ds-num">3</div><div><strong>Paste it in the email: "Here's what your customers would see"</strong><span>That's your entire pitch. They click, they get it, they sign up.</span></div></div>
       </div>
     </div>
-
-    <!-- DEMO CARD — spacious, no trial CTA inside -->
     <div class="spotlight-card reveal" style="transition-delay:.15s">
       <div class="sc-header">
         <span class="sc-header-label">👇 Type any business name</span>
         <span class="sc-live"><span class="sc-pulse"></span>Live</span>
       </div>
-
       <div class="sc-preview">
         <div class="sc-biz" id="scBizName">Your Business Name</div>
         <div class="sc-q">How was your experience?</div>
@@ -536,10 +452,9 @@
           <div class="sc-dest private">→ Captured privately</div>
         </div>
       </div>
-
       <div class="sc-gen">
         <div class="sc-gen-title">Generate personalised demo link</div>
-        <div class="sc-gen-sub">Enter any business name and this becomes a live preview of their own review funnel. Copy the link and send it — their name will appear on the page when they click it.</div>
+        <div class="sc-gen-sub">Enter any business name and this becomes a live preview of their own review funnel.</div>
         <input class="sc-input" id="scInput" placeholder="e.g. Joe's Barbershop, The Coffee House..." oninput="updateDemo()">
         <div class="sc-link-out" id="scLinkOut">Type a business name to generate their link...</div>
         <div class="sc-btn-row">
@@ -549,60 +464,145 @@
         <p class="sc-footnote">No login needed · Works on any device · Instant</p>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section id="how-it-works">
-  <div class="section-wrap">
-    <div class="section-tag reveal">How it works</div>
-    <h2 class="section-heading reveal">Simple. Smart. Automatic.</h2>
-    <p class="section-sub reveal">Your review funnel runs on autopilot — separating happy and unhappy customers every time a customer scans your QR code.</p>
-    <div class="steps">
-      <div class="step reveal"><div class="step-num">01</div><span class="step-icon">🏪</span><h3>Create your funnel</h3><p>Sign up, add your Google review link, and instantly get a unique funnel page and a printable QR code.</p></div>
-      <div class="step reveal" style="transition-delay:.1s"><div class="step-num">02</div><span class="step-icon">📲</span><h3>Customers scan your QR</h3><p>Place it on tables, receipts, or your counter. Customers scan it and answer one simple question.</p></div>
-      <div class="step reveal" style="transition-delay:.2s"><div class="step-num">03</div><span class="step-icon">✨</span><h3>The funnel does the work</h3><p>Happy customers go to Google. Unhappy customers leave private feedback — only you see it.</p></div>
-    </div>
-  </div>
-</section>
+<!-- ═══════════════════════════════════════════════════════════
+     PIPELINE — replaces "how it works" + "features"
+     Shows the four reach channels + what customer/business gets
+════════════════════════════════════════════════════════════ -->
+<section class="pipeline-section" id="pipeline">
+  <div class="pipeline-inner">
 
-<!-- FEATURES -->
-<section id="features" style="background:linear-gradient(180deg,transparent,rgba(200,169,110,0.02));">
-  <div class="section-wrap" style="padding-top:60px;">
-    <div class="section-tag reveal">Features</div>
-    <h2 class="section-heading reveal">Everything a local business needs</h2>
-    <p class="section-sub reveal">No bloated dashboards. No confusing setup. Just the tools that actually move the needle on your rating.</p>
-    <div class="features-grid">
-      <div class="feature reveal"><span class="feature-icon">🔀</span><h4>Smart review funnel</h4><p>Routes happy customers to Google and captures complaints privately before they go public.</p></div>
-      <div class="feature reveal" style="transition-delay:.05s"><span class="feature-icon">📊</span><h4>Analytics dashboard</h4><p>Track visits, positive rates, review clicks, and star distribution in one clean dashboard.</p></div>
-      <div class="feature reveal" style="transition-delay:.1s"><span class="feature-icon">📱</span><h4>QR code generator</h4><p>Instantly download a print-ready QR code for your counter, tables, or receipts.</p></div>
-      <div class="feature reveal" style="transition-delay:.15s"><span class="feature-icon">💬</span><h4>SMS & email requests</h4><p>Send review requests directly to customers via SMS or email with one click.</p><span class="feature-tag">Pro</span></div>
-      <div class="feature reveal" style="transition-delay:.2s"><span class="feature-icon">🤖</span><h4>AI review replies</h4><p>Paste any customer review and generate a polished, professional reply in seconds.</p><span class="feature-tag">Pro</span></div>
-      <div class="feature reveal" style="transition-delay:.25s"><span class="feature-icon">🔒</span><h4>Private feedback capture</h4><p>Unhappy customers submit feedback only you see. Resolve issues without public damage.</p></div>
+    <div class="pipeline-intro reveal">
+      <span class="stats-eyebrow">How ReviewLift works</span>
+      <h2>Four ways in. One funnel. Every time.</h2>
+      <p>Your customers can reach your review funnel through any channel — QR code, a link, an SMS, or an email. You choose which ones to use. ReviewLift handles everything from there.</p>
     </div>
+
+    <!-- Channel cards: the four ways in -->
+    <div class="channels-row reveal" style="margin-bottom:48px;">
+      <div class="channel-card">
+        <span class="channel-icon">📷</span>
+        <div class="channel-title">QR Code</div>
+        <div class="channel-desc">Print it and place it on your counter, tables, receipts, or window. Customer scans with their phone — no app needed.</div>
+      </div>
+      <div class="channel-card">
+        <span class="channel-icon">🔗</span>
+        <div class="channel-title">Direct Link</div>
+        <div class="channel-desc">Share in your email signature, Instagram bio, website, or a printed card. One click and they're on your funnel.</div>
+      </div>
+      <div class="channel-card" style="border-color:rgba(200,169,110,0.25);position:relative;">
+        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--accent);color:#1A1A18;font-size:0.55rem;font-weight:700;letter-spacing:.8px;padding:3px 10px;border-radius:0 0 6px 6px;">PRO</div>
+        <span class="channel-icon">💬</span>
+        <div class="channel-title">SMS</div>
+        <div class="channel-desc">Type a customer's number into your dashboard and send a personalised text in one click. They tap the link, done.</div>
+      </div>
+      <div class="channel-card" style="border-color:rgba(200,169,110,0.25);position:relative;">
+        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--accent);color:#1A1A18;font-size:0.55rem;font-weight:700;letter-spacing:.8px;padding:3px 10px;border-radius:0 0 6px 6px;">PRO</div>
+        <span class="channel-icon">📧</span>
+        <div class="channel-title">Email</div>
+        <div class="channel-desc">Enter a customer's email and send a beautifully designed review request — branded, personal, and ready in seconds.</div>
+      </div>
+    </div>
+
+    <!-- What happens inside the funnel -->
+    <div class="pipeline-diagram reveal" style="margin-bottom:48px;">
+      <div class="pipe-node">
+        <span class="pipe-icon">🤔</span>
+        <div class="pipe-title">Customer scans / clicks</div>
+        <div class="pipe-desc">They land on your branded funnel page and answer one question: was their experience good or not?</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node" style="border-color:rgba(200,169,110,0.3);">
+        <span class="pipe-icon">🔀</span>
+        <div class="pipe-title">ReviewLift routes them</div>
+        <div class="pipe-desc">Happy customers are sent to your Google review page. Unhappy ones are taken to a private feedback form.</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node">
+        <span class="pipe-icon">✅</span>
+        <div class="pipe-title">Your rating grows</div>
+        <div class="pipe-desc">5-star reviews go public on Google. Complaints land in your private dashboard — never seen by anyone else.</div>
+      </div>
+    </div>
+
+    <!-- What the customer sees vs what the business gets -->
+    <div class="pipeline-split reveal">
+      <div class="split-card">
+        <div class="split-card-header customer">📱 What your customer receives</div>
+        <div class="split-card-body">
+          <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;line-height:1.6;">After visiting your business, a customer receives a message like this. One tap on the button takes them to your funnel.</p>
+          <!-- SMS mockup -->
+          <div class="sms-mockup">
+            <div class="sms-bubble">
+              <div class="sms-sender">The Coffee House</div>
+              Hi! Thanks for popping in today ☕<br>We'd love to hear how it went — takes 30 seconds.
+              <a class="sms-cta">How was your visit? →</a>
+            </div>
+            <div class="sms-time">Just now · reviewlift.app</div>
+          </div>
+          <p style="font-size:0.72rem;color:rgba(234,231,220,0.3);margin-top:12px;text-align:center;">Email requests look equally clean — branded and professional.</p>
+        </div>
+      </div>
+
+      <div class="split-card">
+        <div class="split-card-header business">📊 What you get in your dashboard</div>
+        <div class="split-card-body">
+          <div class="biz-gets">
+            <div class="biz-get-item">
+              <span class="biz-get-icon">⭐</span>
+              <div>
+                <div class="biz-get-title">More Google reviews</div>
+                <div class="biz-get-desc">Happy customers are sent straight to your Google review page — your rating climbs week by week.</div>
+              </div>
+            </div>
+            <div class="biz-get-item">
+              <span class="biz-get-icon">🔒</span>
+              <div>
+                <div class="biz-get-title">Private complaints — only you see them</div>
+                <div class="biz-get-desc">Unhappy customers vent to you directly. You can act on it without the damage of a public 1-star review.</div>
+              </div>
+            </div>
+            <div class="biz-get-item">
+              <span class="biz-get-icon">📊</span>
+              <div>
+                <div class="biz-get-title">Full analytics</div>
+                <div class="biz-get-desc">Every visit, rating, review click and piece of feedback tracked. See exactly how your reputation is trending.</div>
+              </div>
+            </div>
+            <div class="biz-get-item">
+              <span class="biz-get-icon">🤖</span>
+              <div>
+                <div class="biz-get-title">AI reply generator (Pro)</div>
+                <div class="biz-get-desc">Paste any Google review and get a polished, professional reply written for you in seconds.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<!-- TESTIMONIALS — infinite auto-scrolling carousel, pauses on hover -->
 <section class="testimonials-section">
   <div class="testimonials-header reveal">
     <div class="section-tag">What businesses say</div>
   </div>
   <div class="carousel-outer">
     <div class="carousel-track">
-      <!-- Set A (6 cards) -->
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We went from 3.8 to 4.6 stars in under two months. The QR code on our tables has been a game changer — customers actually use it without being asked."</p><div class="t-author"><span class="t-name">Marco R.</span><span class="t-biz">Restaurant owner, Birmingham</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Before ReviewLift, one grumpy customer could tank our whole week on Google. Now I deal with complaints privately and only happy customers ever reach our public page."</p><div class="t-author"><span class="t-name">Sarah K.</span><span class="t-biz">Hair salon owner, Manchester</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny even on the Starter plan."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"My barber shop had 34 reviews and a 4.1 rating for two years. Six weeks with the QR system and we had 71 reviews and a 4.8. The difference is remarkable."</p><div class="t-author"><span class="t-name">Theo A.</span><span class="t-biz">Barber, London</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"The private feedback feature is genuinely underrated. I've fixed two real service issues because customers told me privately instead of leaving it on Google."</p><div class="t-author"><span class="t-name">Priya M.</span><span class="t-biz">Dental practice owner, Bristol</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We printed the QR on our receipts and on a card by the till. The passive review collection is brilliant — we're getting 3 to 4 new reviews every single week."</p><div class="t-author"><span class="t-name">Callum F.</span><span class="t-biz">Café owner, Edinburgh</span></div></div>
-      <!-- Set B — exact duplicate for seamless looping -->
+      <!-- Duplicate set for seamless loop -->
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We went from 3.8 to 4.6 stars in under two months. The QR code on our tables has been a game changer — customers actually use it without being asked."</p><div class="t-author"><span class="t-name">Marco R.</span><span class="t-biz">Restaurant owner, Birmingham</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Before ReviewLift, one grumpy customer could tank our whole week on Google. Now I deal with complaints privately and only happy customers ever reach our public page."</p><div class="t-author"><span class="t-name">Sarah K.</span><span class="t-biz">Hair salon owner, Manchester</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny even on the Starter plan."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
+      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"My barber shop had 34 reviews and a 4.1 rating for two years. Six weeks with the QR system and we had 71 reviews and a 4.8. The difference is remarkable."</p><div class="t-author"><span class="t-name">Theo A.</span><span class="t-biz">Barber, London</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"The private feedback feature is genuinely underrated. I've fixed two real service issues because customers told me privately instead of leaving it on Google."</p><div class="t-author"><span class="t-name">Priya M.</span><span class="t-biz">Dental practice owner, Bristol</span></div></div>
       <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We printed the QR on our receipts and on a card by the till. The passive review collection is brilliant — we're getting 3 to 4 new reviews every single week."</p><div class="t-author"><span class="t-name">Callum F.</span><span class="t-biz">Café owner, Edinburgh</span></div></div>
@@ -613,16 +613,16 @@
 
 <!-- PRICING -->
 <section id="pricing">
-  <div class="section-wrap">
+  <div style="max-width:1000px;margin:0 auto;padding:100px 48px;">
     <div class="section-tag reveal" style="justify-content:center;">Pricing</div>
-    <h2 class="section-heading reveal" style="text-align:center;max-width:100%;margin-bottom:12px;">Honest, simple pricing</h2>
-    <p class="section-sub reveal" style="text-align:center;max-width:100%;margin-bottom:48px;">No contracts. No hidden fees. Cancel any time.</p>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.6px;text-align:center;margin-bottom:12px;" class="reveal">Honest, simple pricing</h2>
+    <p style="font-size:1rem;color:var(--cream-dim);text-align:center;margin-bottom:48px;line-height:1.7;" class="reveal">No contracts. No hidden fees. Cancel any time.</p>
     <div class="pricing-grid reveal">
       <div class="price-card">
         <div class="price-name">Starter</div>
         <div class="price-amount"><sup>£</sup>9.99<span>/mo</span></div>
         <p class="price-desc">Everything you need to start collecting more reviews and capturing feedback privately.</p>
-        <ul class="price-features"><li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li></ul>
+        <ul class="price-features"><li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Direct link sharing</li><li>Private feedback capture</li></ul>
         <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
       </div>
       <div class="price-card highlighted">
@@ -630,7 +630,7 @@
         <div class="price-name">Pro</div>
         <div class="price-amount"><sup>£</sup>29.99<span>/mo</span></div>
         <p class="price-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</p>
-        <ul class="price-features"><li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li></ul>
+        <ul class="price-features"><li>Everything in Starter</li><li>SMS review requests</li><li>Email review campaigns</li><li>AI review reply generator</li><li>Advanced analytics</li></ul>
         <a href="/admin"><button class="price-cta gold">Start free trial</button></a>
       </div>
     </div>
@@ -638,25 +638,70 @@
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="cta-strip reveal">
-  <h2>Ready to get more 5-star reviews?</h2>
-  <p>Join local businesses already using ReviewLift to protect and grow their reputation online.</p>
-  <div class="cta-btns">
-    <a href="/admin"><button class="btn-trial">Start free trial →</button></a>
-    <a href="#demo-section"><button style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.95rem;background:transparent;color:var(--cream-dim);padding:15px 24px;border-radius:10px;border:1px solid var(--border-hi);cursor:pointer;transition:all .2s;">Try the demo first</button></a>
+<!-- FINAL CTA — redesigned -->
+<section class="cta-section reveal">
+  <div class="cta-inner">
+    <div class="cta-eyebrow">🚀 Ready when you are</div>
+    <h2>Your next <em>5-star review</em><br>is 2 minutes away</h2>
+    <p>Join local businesses already using ReviewLift to grow their Google rating, handle complaints privately, and stay ahead of their competition.</p>
+    <div class="cta-actions">
+      <a href="/admin"><button class="btn-cta-primary">Start my free trial →</button></a>
+      <a href="#demo-section"><button class="btn-cta-secondary">Try the demo first</button></a>
+    </div>
+    <div class="cta-proof">
+      <span class="cta-proof-item">14-day free trial</span>
+      <span class="cta-proof-item">Card required, £0 charged until day 15</span>
+      <span class="cta-proof-item">Cancel in one click, any time</span>
+      <span class="cta-proof-item">2-minute setup</span>
+    </div>
   </div>
-  <p class="cta-note">14-day free trial · Card required upfront · Cancel before day 14 to pay nothing</p>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-intro reveal">
+      <span class="stats-eyebrow">Get in touch</span>
+      <h2>Any questions? We'd love to help.</h2>
+      <p>Whether you're wondering if ReviewLift is right for your business, need help getting set up, or just want to ask something — fill in the form and we'll get back to you promptly.</p>
+    </div>
+    <div class="contact-card reveal">
+      <div class="contact-grid">
+        <div class="contact-field">
+          <label>Your name</label>
+          <input type="text" id="contactName" placeholder="e.g. Joe Smith">
+        </div>
+        <div class="contact-field">
+          <label>Email address</label>
+          <input type="email" id="contactEmail" placeholder="you@yourbusiness.com">
+        </div>
+      </div>
+      <div class="contact-field" style="margin-bottom:16px;">
+        <label>Message</label>
+        <textarea id="contactMessage" placeholder="Tell us what you're wondering about..."></textarea>
+      </div>
+      <button class="contact-submit" id="contactSubmit" onclick="submitContact()">Send message →</button>
+      <p id="contactMsg"></p>
+    </div>
+    <p class="contact-alt">Or email us directly at <a href="mailto:billy@reviewlift.app">billy@reviewlift.app</a></p>
+  </div>
 </section>
 
 <footer>
   <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
-  <div class="footer-links"><a href="#how-it-works">How it works</a><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="/login">Login</a><a href="/admin">Sign up</a></div>
-  <div class="footer-copy">© 2025 ReviewLift. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#pipeline">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="/login">Sign in</a>
+    <a href="/admin">Sign up</a>
+  </div>
+  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
 </footer>
 
 <script>
-  /* ── Slider range gradient update ── */
+  /* ── Slider range gradient ── */
   function updateSliderFill(el){
     const min=parseFloat(el.min),max=parseFloat(el.max),val=parseFloat(el.value);
     const pct=((val-min)/(max-min)*100).toFixed(1)+'%';
@@ -680,11 +725,9 @@
     const rating=parseFloat(document.getElementById('ratingSlider').value);
 
     document.getElementById('custVal').textContent=cust.toLocaleString();
-    // Format spend nicely for large values (construction, dental etc)
     document.getElementById('spendVal').textContent= spend>=1000 ? '£'+(spend/1000).toFixed(spend>=10000?0:1)+'k' : '£'+spend;
     document.getElementById('ratingVal').textContent=rating.toFixed(1)+' ★';
 
-    // Show appropriate unit label based on spend size
     const unitEl=document.getElementById('spendUnit');
     if(unitEl){
       if(spend>=5000) unitEl.textContent='per project';
@@ -720,12 +763,7 @@
     const biz=document.getElementById('scBizName');
     const out=document.getElementById('scLinkOut');
     const openBtn=document.getElementById('scOpenBtn');
-    if(!name){
-      biz.textContent='Your Business Name';
-      out.textContent='Type a business name to generate their link...';
-      out.className='sc-link-out';
-      openBtn.href='#'; return;
-    }
+    if(!name){biz.textContent='Your Business Name';out.textContent='Type a business name to generate their link...';out.className='sc-link-out';openBtn.href='#';return;}
     biz.textContent=name;
     const url=makeUrl(name);
     out.textContent=url;
@@ -740,6 +778,28 @@
     const t=document.getElementById('scCopyTxt');
     t.textContent='✓ Copied!';
     setTimeout(()=>t.textContent='📋 Copy demo link',2200);
+  }
+
+  /* ── Contact form ── */
+  async function submitContact(){
+    const btn=document.getElementById('contactSubmit');
+    const msg=document.getElementById('contactMsg');
+    const name=document.getElementById('contactName').value.trim();
+    const email=document.getElementById('contactEmail').value.trim();
+    const message=document.getElementById('contactMessage').value.trim();
+    if(!name||!email||!message){msg.textContent='Please fill in all fields.';msg.className='error';return;}
+    btn.disabled=true;btn.textContent='Sending...';
+    try{
+      const res=await fetch('/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,message})});
+      const data=await res.json();
+      if(data.success){
+        msg.textContent='✓ Message sent! We\'ll get back to you shortly.';msg.className='success';
+        document.getElementById('contactName').value='';
+        document.getElementById('contactEmail').value='';
+        document.getElementById('contactMessage').value='';
+      }else{msg.textContent=data.error||'Something went wrong.';msg.className='error';}
+    }catch(e){msg.textContent='Could not send. Please email billy@reviewlift.app directly.';msg.className='error';}
+    btn.disabled=false;btn.textContent='Send message →';
   }
 
   /* ── Scroll reveal ── */

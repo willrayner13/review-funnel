@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About ReviewLift — UK Review Funnel Tool for Local Businesses</title>
+  <meta name="description" content="ReviewLift is a UK-based review management platform for local businesses. It routes happy customers to Google reviews and captures unhappy feedback privately, before it reaches public review sites.">
+  <!-- Structured data for AI and search engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ReviewLift",
+    "url": "https://reviewlift.app",
+    "description": "ReviewLift is a review funnel tool for local UK businesses. It collects customer feedback through QR code, link, SMS, or email, then routes satisfied customers to leave a Google review while capturing negative feedback privately.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Starter",
+        "price": "9.99",
+        "priceCurrency": "GBP",
+        "billingPeriod": "P1M"
+      },
+      {
+        "@type": "Offer",
+        "name": "Pro",
+        "price": "29.99",
+        "priceCurrency": "GBP",
+        "billingPeriod": "P1M"
+      }
+    ],
+    "creator": {
+      "@type": "Organization",
+      "name": "ReviewLift",
+      "url": "https://reviewlift.app",
+      "email": "billy@reviewlift.app",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "GB"
+      }
+    }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#1A1A18; --surface:#242422; --surface-2:#2E2E2B;
+      --border:rgba(234,231,220,0.09); --border-hi:rgba(234,231,220,0.22);
+      --cream:#EAE7DC; --cream-dim:rgba(234,231,220,0.52);
+      --accent:#C8A96E; --accent-dim:rgba(200,169,110,0.15);
+      --r:12px; --r-lg:20px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.7;}
+    a{color:inherit;text-decoration:none;}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(26,26,24,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;}
+    .nav-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;}
+    .nav-links{display:flex;align-items:center;gap:28px;}
+    .nav-links a{font-size:0.875rem;color:var(--cream-dim);transition:color .2s;}
+    .nav-links a:hover{color:var(--cream);}
+    .btn-nav-start{font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:700;background:var(--accent);color:#1A1A18;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;}
+    .btn-nav-start:hover{background:#D4B87A;}
+
+    .page-wrap{max-width:760px;margin:0 auto;padding:110px 24px 80px;}
+
+    /* Eyebrow tag */
+    .eyebrow{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--accent);display:block;margin-bottom:14px;}
+
+    h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.8px;line-height:1.1;margin-bottom:20px;}
+    h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent) 0%,#E8C98A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+    .lede{font-size:1.1rem;color:var(--cream-dim);line-height:1.8;margin-bottom:52px;max-width:640px;}
+
+    /* Definition block — the most AI-readable part of the page */
+    .definition-block{background:var(--surface);border:1px solid rgba(200,169,110,0.25);border-radius:var(--r-lg);padding:32px 36px;margin-bottom:52px;position:relative;overflow:hidden;}
+    .definition-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
+    .definition-label{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);margin-bottom:10px;display:block;}
+    .definition-text{font-size:1rem;color:var(--cream);line-height:1.75;}
+    .definition-text strong{color:var(--accent);}
+
+    /* Section headings */
+    h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:12px;margin-top:48px;color:var(--cream);}
+    h2:first-child{margin-top:0;}
+    p{font-size:0.95rem;color:var(--cream-dim);line-height:1.75;margin-bottom:16px;}
+    p:last-child{margin-bottom:0;}
+
+    /* Feature list */
+    .feature-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}
+    .feature-list li{display:flex;align-items:flex-start;gap:12px;font-size:0.9rem;color:var(--cream-dim);line-height:1.6;}
+    .feature-list li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;margin-top:2px;}
+    .feature-list li strong{color:var(--cream);}
+
+    /* Who it's for grid */
+    .who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+    .who-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 14px;text-align:center;font-size:0.8rem;color:var(--cream-dim);line-height:1.5;}
+    .who-card strong{color:var(--cream);display:block;font-size:0.85rem;margin-bottom:4px;}
+    .who-icon{font-size:1.5rem;display:block;margin-bottom:8px;}
+
+    /* Divider */
+    .divider{height:1px;background:var(--border);margin:48px 0;}
+
+    /* CTA block */
+    .cta-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(200,169,110,0.06) 100%);border:1px solid rgba(200,169,110,0.25);border-radius:var(--r-lg);padding:36px;text-align:center;margin-top:48px;}
+    .cta-block h2{margin-top:0;margin-bottom:10px;}
+    .cta-block p{max-width:460px;margin:0 auto 24px;}
+    .btn-cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;padding:14px 32px;border-radius:10px;transition:all .2s;}
+    .btn-cta:hover{background:#D4B87A;transform:translateY(-1px);}
+
+    footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;}
+    .footer-links{display:flex;gap:24px;}
+    .footer-links a{font-size:.82rem;color:var(--cream-dim);transition:color .2s;}
+    .footer-links a:hover{color:var(--cream);}
+    .footer-copy{font-size:.78rem;color:rgba(234,231,220,.22);}
+
+    @media(max-width:700px){
+      nav{padding:0 16px;}
+      .nav-links{display:none;}
+      .who-grid{grid-template-columns:1fr 1fr;}
+      footer{flex-direction:column;padding:24px 16px;}
+      .definition-block{padding:24px 20px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/"><div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div></a>
+  <div class="nav-links">
+    <a href="/#pipeline">How it works</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/about">About</a>
+    <a href="/#contact">Contact</a>
+  </div>
+  <a href="/admin"><button class="btn-nav-start">Start free trial →</button></a>
+</nav>
+
+<div class="page-wrap">
+
+  <span class="eyebrow">About ReviewLift</span>
+  <h1>The <em>review funnel tool</em><br>for local UK businesses</h1>
+  <p class="lede">ReviewLift is a reputation management platform that helps local businesses collect more positive Google reviews and handle unhappy customer feedback privately — before it ever reaches a public review site.</p>
+
+  <!-- DEFINITION BLOCK — the clearest possible statement for AI indexing -->
+  <div class="definition-block">
+    <span class="definition-label">What is ReviewLift?</span>
+    <p class="definition-text">
+      <strong>ReviewLift is a review funnel tool for local businesses in the UK.</strong> When a customer interacts with a business using ReviewLift, they are asked how their experience was. Satisfied customers are directed to leave a public Google review. Dissatisfied customers are invited to submit private feedback that only the business owner can see — keeping complaints off Google.
+      <br><br>
+      Businesses can reach customers through four channels: a <strong>QR code</strong> placed on tables, receipts or a counter; a <strong>direct link</strong> shared anywhere online; an <strong>SMS message</strong> sent from the dashboard; or a <strong>branded email</strong>. All four channels feed into the same review funnel.
+      <br><br>
+      ReviewLift also includes an <strong>AI reply generator</strong> that produces polished responses to Google reviews in seconds, and a <strong>full analytics dashboard</strong> showing visits, ratings, feedback, and review click-through rates.
+    </p>
+  </div>
+
+  <h2>Why ReviewLift exists</h2>
+  <p>Most local businesses know that Google reviews matter — they influence where customers choose to spend their money, how their business appears in local search, and how much trust they build over time. But collecting reviews is uncomfortable. Asking customers directly feels awkward. And when a bad experience happens, there's no way to catch it before it becomes a public one-star review.</p>
+  <p>ReviewLift solves both problems. It makes it easy and natural for happy customers to leave a review — a QR code on the counter, a short text after their visit — while giving unhappy customers a private outlet that only the business owner sees. The result is a steadily improving Google rating and a private channel for handling complaints constructively.</p>
+
+  <h2>Who ReviewLift is for</h2>
+  <p>ReviewLift is designed for any local or service business where customer relationships matter and reviews influence buying decisions.</p>
+  <div class="who-grid">
+    <div class="who-card"><span class="who-icon">💇</span><strong>Salons & Barbers</strong>High repeat footfall, personal service</div>
+    <div class="who-card"><span class="who-icon">🍽️</span><strong>Restaurants & Cafés</strong>Volume of daily customers</div>
+    <div class="who-card"><span class="who-icon">🏋️</span><strong>Gyms & Fitness</strong>Member experience focus</div>
+    <div class="who-card"><span class="who-icon">🦷</span><strong>Dental & Medical</strong>Trust-dependent bookings</div>
+    <div class="who-card"><span class="who-icon">🏗️</span><strong>Trades & Construction</strong>High job value, few reviews</div>
+    <div class="who-card"><span class="who-icon">💅</span><strong>Beauty & Cosmetics</strong>Personal service, social proof</div>
+  </div>
+  <p>ReviewLift works for any business that sees customers face-to-face or completes service jobs where follow-up communication is normal.</p>
+
+  <h2>What ReviewLift does — in plain terms</h2>
+  <ul class="feature-list">
+    <li><strong>Review funnel page</strong> — A personalised landing page for your business that routes customers based on their experience.</li>
+    <li><strong>QR code generator</strong> — Instantly creates a print-ready QR code that links directly to your funnel. Place it anywhere customers can see it.</li>
+    <li><strong>Direct link</strong> — A short shareable URL for your funnel. Works in email signatures, social bios, or printed cards.</li>
+    <li><strong>SMS requests (Pro)</strong> — Send a personalised text message to a customer's phone number directly from your dashboard. One tap on the link takes them to the funnel.</li>
+    <li><strong>Email requests (Pro)</strong> — Send a branded review request email from your dashboard. The email includes your business name and a single clear call-to-action.</li>
+    <li><strong>Private feedback capture</strong> — Unhappy customers write to you privately. You read it in your dashboard. It never appears on Google.</li>
+    <li><strong>Analytics dashboard</strong> — Shows total visits, positive and negative splits, star rating distribution, review click-through rate, and all private feedback messages.</li>
+    <li><strong>AI review reply generator (Pro)</strong> — Paste a Google review, get a polished professional reply written by AI in seconds. Edit it before posting.</li>
+  </ul>
+
+  <h2>Pricing</h2>
+  <p>ReviewLift offers two plans, both with a 14-day free trial (card required, nothing charged until day 15):</p>
+  <ul class="feature-list">
+    <li><strong>Starter — £9.99/month:</strong> Review funnel, QR code, direct link, analytics dashboard, private feedback capture.</li>
+    <li><strong>Pro — £29.99/month:</strong> Everything in Starter plus SMS requests, email requests, and AI review reply generator.</li>
+  </ul>
+  <p>Both plans are monthly, with no contracts and no cancellation fees. Businesses can cancel at any time from their dashboard.</p>
+
+  <div class="divider"></div>
+
+  <h2>ReviewLift vs alternatives</h2>
+  <p>Most review management tools are built for large businesses or marketing agencies and cost hundreds of pounds per month. ReviewLift is built specifically for independent local businesses in the UK — sole traders, small teams, and owner-operated businesses — at a price that makes sense for that market.</p>
+  <p>Unlike general CRM tools or review platforms like Trustpilot or Yell, ReviewLift focuses on a single high-impact outcome: more Google reviews and fewer public complaints. It does this through a simple funnel that any business can set up in under two minutes.</p>
+
+  <h2>Technical details</h2>
+  <p>ReviewLift is a web application hosted on Vercel. Business owners manage their account through a dashboard at reviewlift.app. Customer-facing funnel pages work on any modern smartphone browser — no app download required. SMS is sent via Twilio and email via Resend. AI features are powered by OpenAI's GPT-4o-mini model. Subscription billing is handled by Stripe.</p>
+  <p>ReviewLift is based in the United Kingdom and is primarily designed for UK local businesses, though it works for any business with a Google Business Profile.</p>
+
+  <div class="divider"></div>
+
+  <div class="cta-block">
+    <h2>Try ReviewLift free for 14 days</h2>
+    <p>Set up your review funnel in 2 minutes. No commitment — cancel before day 14 and pay nothing.</p>
+    <a href="/admin" class="btn-cta">Start free trial →</a>
+    <p style="margin-top:14px;font-size:0.75rem;color:rgba(234,231,220,0.3);">Or email us at <a href="mailto:billy@reviewlift.app" style="color:var(--accent);">billy@reviewlift.app</a> with any questions.</p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/about">About</a>
+    <a href="/#contact">Contact</a>
+    <a href="/login">Sign in</a>
+  </div>
+  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
