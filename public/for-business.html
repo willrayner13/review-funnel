@@ -148,6 +148,31 @@
       .input-row { flex-direction: column; }
       .input-row button { height: 52px; width: 100%; padding: 0; }
     }
+
+    /* ── Getting Started onboarding banner ── */
+    .onboarding-banner{background:linear-gradient(135deg,var(--surface) 0%,rgba(200,169,110,0.06) 100%);border:1px solid rgba(200,169,110,0.25);border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:36px;position:relative;overflow:hidden;}
+    .onboarding-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
+    .onboarding-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--cream);margin-bottom:4px;}
+    .onboarding-sub{font-size:0.82rem;color:var(--cream-dim);margin-bottom:22px;}
+    .onboarding-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+    .ob-step{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;text-align:center;}
+    .ob-step.done{border-color:rgba(106,158,127,0.35);background:rgba(106,158,127,0.06);}
+    .ob-num{width:26px;height:26px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,169,110,0.3);color:var(--accent);font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+    .ob-step.done .ob-num{background:rgba(106,158,127,0.2);border-color:rgba(106,158,127,0.4);color:#8EC9A8;}
+    .ob-step-title{font-size:0.78rem;font-weight:600;color:var(--cream);margin-bottom:3px;}
+    .ob-step-desc{font-size:0.7rem;color:var(--cream-dim);line-height:1.5;}
+    .onboarding-dismiss{display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--cream-dim);background:transparent;border:1px solid var(--border);border-radius:6px;padding:7px 14px;cursor:pointer;transition:all 0.2s;min-height:0;}
+    .onboarding-dismiss:hover{border-color:var(--border-hover);color:var(--cream);transform:none;box-shadow:none;}
+
+    /* ── Upgrade to Pro banner (Starter trial only) ── */
+    .upgrade-banner{background:linear-gradient(135deg,rgba(200,169,110,0.10) 0%,rgba(200,169,110,0.03) 100%);border:1px solid rgba(200,169,110,0.28);border-radius:var(--radius);padding:14px 20px;margin-bottom:36px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+    .upgrade-banner-text{font-size:0.875rem;color:var(--cream);}
+    .upgrade-banner-text span{color:var(--accent);font-weight:600;}
+    .upgrade-banner-btn{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;padding:9px 18px;border-radius:7px;border:none;cursor:pointer;transition:all 0.2s;white-space:nowrap;min-height:0;}
+    .upgrade-banner-btn:hover{background:#D4B87A;transform:translateY(-1px);}
+
+    /* ── Panel description text ── */
+    .panel-desc{font-size:0.78rem;color:rgba(234,231,220,0.35);margin-bottom:14px;line-height:1.5;}
   </style>
 </head>
 <body>
@@ -165,6 +190,42 @@
 </nav>
 
 <div class="dash-body">
+
+  <!-- Getting Started onboarding guide — dismissed via localStorage -->
+  <div class="onboarding-banner" id="onboardingBanner" style="display:none">
+    <div class="onboarding-title">👋 Welcome to ReviewLift — here's how to get started</div>
+    <p class="onboarding-sub">Four quick steps to your first review. Takes about 5 minutes total.</p>
+    <div class="onboarding-steps">
+      <div class="ob-step done">
+        <div class="ob-num">✓</div>
+        <div class="ob-step-title">Account created</div>
+        <div class="ob-step-desc">You're in. Your funnel is already live.</div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-num">2</div>
+        <div class="ob-step-title">Download your QR code</div>
+        <div class="ob-step-desc">Print it and place it on your counter, tables, or receipts.</div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-num">3</div>
+        <div class="ob-step-title">Copy your review link</div>
+        <div class="ob-step-desc">Add it to your email signature, Instagram bio, or website.</div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-num">4</div>
+        <div class="ob-step-title">Send your first request</div>
+        <div class="ob-step-desc">Text or email a recent customer and watch your first review come in.</div>
+      </div>
+    </div>
+    <button class="onboarding-dismiss" onclick="dismissOnboarding()">Got it, dismiss this ✕</button>
+  </div>
+
+  <!-- Upgrade to Pro banner — shown only during Starter trial -->
+  <div class="upgrade-banner" id="upgradeBanner" style="display:none">
+    <div class="upgrade-banner-text">🚀 You're on the <span>Starter trial</span> — upgrade to Pro to unlock SMS, email requests, and AI replies. <span>Your remaining trial days carry over.</span></div>
+    <button class="upgrade-banner-btn" onclick="upgradeToProTrial()">⭐ Upgrade to Pro free</button>
+  </div>
+
 
   <!-- Metrics -->
   <div class="dash-section">
@@ -190,6 +251,7 @@
     <div class="dash-section-title">Share Your Funnel</div>
     <div class="panel">
       <h3>Your review link</h3>
+      <p class="panel-desc">Copy this and add it to your email signature, website, social bio, or a printed card. Every click goes to your review funnel.</p>
       <div class="input-row">
         <input id="reviewLink" readonly>
         <button onclick="copyLink()">Copy <span class="flash" id="copyFlash">✓</span></button>
@@ -208,6 +270,7 @@
     </div>
     <div class="panel">
       <h3>Embed button code</h3>
+      <p class="panel-desc">Paste this HTML snippet into your website or booking confirmation page to add a "Leave us a review" button.</p>
       <textarea id="embedCode" readonly></textarea>
     </div>
   </div>
@@ -215,13 +278,22 @@
   <!-- Messaging -->
   <div class="dash-section">
     <div class="dash-section-title">Request Reviews</div>
-    <div class="panel">
-      <h3>Send SMS request</h3>
-      <div class="input-row">
-        <input id="customerPhone" type="tel" placeholder="Customer phone (e.g. +447700900000)">
-        <button onclick="sendSMS()">Send SMS</button>
+    <!-- SMS — Pro only -->
+    <div id="smsUnlocked" style="display:none">
+      <div class="panel">
+        <h3>Send SMS request</h3>
+        <p class="panel-desc">Send a personalised text directly to a customer's phone. UK numbers work with any format — 07..., +44..., or just the 10-digit number.</p>
+        <div class="input-row">
+          <input id="customerPhone" type="tel" placeholder="e.g. 07700 900000 or +447700900000">
+          <button onclick="sendSMS()">Send SMS</button>
+        </div>
       </div>
-      <p style="font-size:0.75rem;color:rgba(234,231,220,0.3);margin-top:4px;">Include country code. UK numbers: +44...</p>
+    </div>
+    <div class="pro-lock-panel" id="smsLocked" style="display:none">
+      <span class="lock-icon">💬</span>
+      <h4>SMS review requests</h4>
+      <p>Send a personalised text message directly to a customer's phone. One tap on the link and they're on your review funnel. Available on Pro — upgrade to unlock.</p>
+      <a href="/billing">⭐ Upgrade to Pro</a>
     </div>
 
     <!-- Email — Pro lock if not pro -->
@@ -338,7 +410,7 @@ async function load(){
   // Plan badge
   const badge = document.getElementById("planBadge");
   if(isTrial && currentPlan === "pro"){ badge.style.display="inline-flex"; badge.textContent="⭐ Pro Trial"; badge.style.color="#8EC9A8"; }
-  else if(isTrial){ badge.style.display="inline-flex"; badge.textContent="🕐 Trial"; badge.style.color="var(--accent)"; }
+  else if(isTrial){ badge.style.display="inline-flex"; badge.textContent="🕐 Starter Trial"; badge.style.color="var(--accent)"; }
   else if(currentPlan === "pro" && stats.subscription_active){ badge.style.display="inline-flex"; badge.textContent="⭐ Pro"; badge.style.color="#8EC9A8"; }
   else if(stats.subscription_active){ badge.style.display="inline-flex"; badge.textContent="Starter"; badge.style.color="var(--cream-dim)"; }
 
@@ -348,17 +420,29 @@ async function load(){
   const hasProFeatures = stats.subscription_active && (currentPlan === "pro");
 
   if(hasProFeatures){
-    // Pro plan — show all features
+    document.getElementById("smsUnlocked").style.display   = "block";
+    document.getElementById("smsLocked").style.display     = "none";
     document.getElementById("emailUnlocked").style.display = "block";
     document.getElementById("emailLocked").style.display   = "none";
     document.getElementById("aiUnlocked").style.display    = "block";
     document.getElementById("aiLocked").style.display      = "none";
   } else {
-    // Starter plan — show upgrade locks for Pro features
+    document.getElementById("smsUnlocked").style.display   = "none";
+    document.getElementById("smsLocked").style.display     = "block";
     document.getElementById("emailUnlocked").style.display = "none";
     document.getElementById("emailLocked").style.display   = "block";
     document.getElementById("aiUnlocked").style.display    = "none";
     document.getElementById("aiLocked").style.display      = "block";
+  }
+
+  // Show upgrade banner if on Starter trial
+  if(isTrial && currentPlan === "starter"){
+    document.getElementById("upgradeBanner").style.display = "flex";
+  }
+
+  // Show onboarding guide if not dismissed
+  if(!localStorage.getItem("rl_onboarding_dismissed")){
+    document.getElementById("onboardingBanner").style.display = "block";
   }
 
   const reviewLink = window.location.origin+"/r/"+slug;
@@ -419,7 +503,7 @@ async function sendSMS(){
   const btn = event.target; btn.disabled=true; btn.textContent="Sending...";
   const res = await fetch("/send-sms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone,slug})});
   const data = await res.json();
-  if(data.success){ document.getElementById("customerPhone").value=""; showToast("SMS sent successfully! ✓", "success"); }
+  if(data.success){ document.getElementById("customerPhone").value=""; showToast("SMS sent! ✓", "success"); }
   else { showToast("SMS failed: " + (data.error||"Check your Twilio credentials."), "error"); }
   btn.disabled=false; btn.textContent="Send SMS";
 }
@@ -476,6 +560,31 @@ async function doCancel(){
   }
   btn.disabled = false; btn.textContent = "Yes, cancel";
 }
+
+function dismissOnboarding(){
+  localStorage.setItem("rl_onboarding_dismissed","1");
+  document.getElementById("onboardingBanner").style.display="none";
+}
+
+async function upgradeToProTrial(){
+  const btn=event.target; btn.disabled=true; btn.textContent="Upgrading...";
+  try{
+    const res=await fetch("/upgrade-plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:"pro"})});
+    const data=await res.json();
+    if(data.success){
+      showToast("✓ Upgraded to Pro! Your remaining trial days carry over.","success");
+      document.getElementById("upgradeBanner").style.display="none";
+      setTimeout(()=>window.location.reload(),1500);
+    }else{
+      showToast(data.error||"Could not upgrade. Please try the billing page.","error");
+      btn.disabled=false; btn.textContent="⭐ Upgrade to Pro free";
+    }
+  }catch(e){
+    showToast("Something went wrong. Please try the billing page.","error");
+    btn.disabled=false; btn.textContent="⭐ Upgrade to Pro free";
+  }
+}
+
 
 // ── Toast ──
 function showToast(message, type = "success") {
