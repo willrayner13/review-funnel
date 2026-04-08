@@ -363,7 +363,14 @@ app.get("/qr-download/:slug", async (req, res) => {
   res.send(qr);
 });
 
-// ─── SEND SMS (Pro only) ──────────────────────────────────────────────────────
+// ─── SEND SMS (Pro only, with usage cap) ──────────────────────────────────────
+// SMS limits (hidden from users — enforced server-side):
+//   Trial (Pro trial): 50 SMS total during trial period
+//   Pro paid:          300 SMS per calendar month
+// These are fair-use soft caps. If genuinely exceeded we contact the user.
+const SMS_TRIAL_LIMIT = 50;
+const SMS_MONTHLY_LIMIT = 300;
+
 app.post("/send-sms", smsLimiter, async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const { phone } = req.body;
@@ -375,9 +382,51 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
       return res.status(403).json({ error: "Pro plan required to send SMS." });
     }
 
+    // Count SMS sent this period
+    const now = new Date();
+    const trialEnd = data.trial_ends_at ? new Date(data.trial_ends_at) : null;
+    const inTrial = trialEnd && now < trialEnd;
+
+    let smsCount = 0;
+    if(inTrial){
+      // Count all SMS sent since account creation (trial period)
+      const { count } = await supabase
+        .from("events")
+        .select("*", { count: "exact", head: true })
+        .eq("business_slug", slug)
+        .eq("event_type", "sms_sent");
+      smsCount = count || 0;
+      if(smsCount >= SMS_TRIAL_LIMIT){
+        return res.status(429).json({
+          error: `You've reached the SMS limit for your trial. Upgrade to a paid Pro plan to continue sending review requests.`,
+          limit_reached: true
+        });
+      }
+    } else {
+      // Count SMS sent this calendar month
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const { count } = await supabase
+        .from("events")
+        .select("*", { count: "exact", head: true })
+        .eq("business_slug", slug)
+        .eq("event_type", "sms_sent")
+        .gte("created_at", monthStart);
+      smsCount = count || 0;
+      if(smsCount >= SMS_MONTHLY_LIMIT){
+        return res.status(429).json({
+          error: `You've sent a lot of review requests this month — get in touch at billy@reviewlift.app to discuss higher volume options.`,
+          limit_reached: true
+        });
+      }
+    }
+
     const normalisedPhone = normalisePhone(phone);
-    const message = `Hi! Thanks for visiting ${data.name} today 😊 We'd love to know how it went — takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
+    const message = `Hi! Thanks for visiting ${data.name} today. We'd love to know how it went - takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
     await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: normalisedPhone, body: message });
+
+    // Record the SMS send as an event for usage counting
+    await supabase.from("events").insert({ business_slug: slug, event_type: "sms_sent" });
+
     res.json({ success: true });
   } catch (err) {
     console.log("Twilio error:", err.code, err.message);
