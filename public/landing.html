@@ -370,17 +370,25 @@
       <h2 class="stats-heading">One bad review costs more than you think</h2>
       <p class="stats-sub">Use the calculator below to see exactly what negative reviews are costing your business — and what fixing them is worth.</p>
     </div>
-    <div class="calc-card reveal">
+<div class="calc-card reveal">
       <div class="calc-grid">
+        <!-- Sliders -->
         <div class="calc-controls">
           <div class="slider-group">
             <label>Monthly customers</label>
-            <div class="slider-value-row"><span class="slider-val" id="custVal">200</span><span style="font-size:0.72rem;color:var(--cream-dim)">per month</span></div>
+            <div class="slider-value-row">
+              <span class="slider-val" id="custVal">200</span>
+              <span style="font-size:0.72rem;color:var(--cream-dim)">per month</span>
+            </div>
             <input type="range" id="custSlider" min="10" max="1000" value="200" oninput="calcUpdate()">
           </div>
+ 
           <div class="slider-group">
             <label>Average job / order value</label>
-            <div class="slider-value-row"><span class="slider-val" id="spendVal">£100</span><span style="font-size:0.72rem;color:var(--cream-dim)" id="spendUnit">per visit</span></div>
+            <div class="slider-value-row">
+              <span class="slider-val" id="spendVal">£35</span>
+              <span style="font-size:0.72rem;color:var(--cream-dim)" id="spendUnit">per job/visit</span>
+            </div>
             <input type="range" id="spendSlider" min="5" max="10000" value="100" oninput="calcUpdate()">
           </div>
           <div class="slider-group">
@@ -702,7 +710,7 @@
 </footer>
 
 <script>
-  /* ── Slider range gradient ── */
+ /* ── Slider range gradient update ── */
   function updateSliderFill(el){
     const min=parseFloat(el.min),max=parseFloat(el.max),val=parseFloat(el.value);
     const pct=((val-min)/(max-min)*100).toFixed(1)+'%';
@@ -712,48 +720,51 @@
     updateSliderFill(el);
     el.addEventListener('input',()=>updateSliderFill(el));
   });
-
+ 
   /* ── Calculator ── */
   function formatCurrency(n){
     if(n>=1000000) return '£'+(n/1000000).toFixed(1)+'m';
     if(n>=1000) return '£'+(n/1000).toFixed(1)+'k';
     return '£'+n.toLocaleString();
   }
-
+ 
   function calcUpdate(){
     const cust=parseInt(document.getElementById('custSlider').value);
     const spend=parseInt(document.getElementById('spendSlider').value);
     const rating=parseFloat(document.getElementById('ratingSlider').value);
-
+ 
     document.getElementById('custVal').textContent=cust.toLocaleString();
-    document.getElementById('spendVal').textContent= spend>=1000 ? '£'+(spend/1000).toFixed(spend>=10000?0:1)+'k' : '£'+spend;
+    // Format spend nicely for large values (construction, dental etc)
+    document.getElementById('spendVal').textContent= spend>=1000 ? '£'+(spend/1000).toFixed(1)+'k' : '£'+spend;
     document.getElementById('ratingVal').textContent=rating.toFixed(1)+' ★';
-
+ 
+    // Show appropriate unit label based on spend size
     const unitEl=document.getElementById('spendUnit');
     if(unitEl){
       if(spend>=5000) unitEl.textContent='per project';
       else if(spend>=500) unitEl.textContent='per job';
       else unitEl.textContent='per visit';
     }
-
+ 
     let lostPct=0;
     if(rating<3.0) lostPct=0.30;
     else if(rating<3.5) lostPct=0.22;
     else if(rating<4.0) lostPct=0.15;
     else if(rating<4.5) lostPct=0.07;
     else lostPct=0;
-
+ 
     const lost=Math.round(cust*lostPct);
     const lostRev=lost*spend;
     const gain=Math.round(cust*0.28*0.4);
     const gainRev=gain*spend;
-
+ 
     document.getElementById('lostCustomers').textContent=lost.toLocaleString();
     document.getElementById('lostRevenue').textContent=formatCurrency(lostRev);
     document.getElementById('recovered').textContent=formatCurrency(gainRev);
     document.getElementById('recoveredSub').textContent=`~${gain.toLocaleString()} extra customers at ${spend>=1000?'£'+(spend/1000).toFixed(1)+'k':'£'+spend} avg`;
   }
   calcUpdate();
+ 
 
   /* ── Demo generator ── */
   function slugify(s){return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
