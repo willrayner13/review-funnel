@@ -36,10 +36,23 @@ function isTrialActive(business) {
   if (!business.trial_ends_at) return false;
   return new Date() < new Date(business.trial_ends_at);
 }
+
+// Pro access: subscription must be active AND on pro plan
 function hasProAccess(business) {
   return business.subscription_active && (business.plan_type === "pro");
 }
 
+// Normalise UK phone numbers — handles 07..., 7..., +44..., 00...
+function normalisePhone(phone) {
+  const digits = phone.replace(/[\s\-\(\)]/g, "");
+  if (digits.startsWith("+")) return digits;
+  if (digits.startsWith("07") && digits.length === 11) return "+44" + digits.slice(1);
+  if (digits.startsWith("7") && digits.length === 10) return "+44" + digits;
+  if (digits.startsWith("00")) return "+" + digits.slice(2);
+  return digits;
+}
+
+// ─── STRIPE WEBHOOK — must come before bodyParser.json() ──────────────────────
 // ─── STRIPE WEBHOOK — must come before bodyParser.json() ──────────────────────
 app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
@@ -50,28 +63,34 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     console.log("Webhook error:", err.message);
     return res.status(400).send("Webhook error");
   }
-
+ 
   if (event.type === "checkout.session.completed") {
     const sess = event.data.object;
     const slug = sess.metadata.slug;
     const plan = sess.metadata.plan;
     const customer = sess.customer;
     try {
-      const mrr = plan === "pro" ? 24.99 : 9.99;
+      const mrr = plan === "pro" ? 29.99 : 9.99;
       await supabase
         .from("businesses")
-        .update({ subscription_active: true, plan_type: plan, stripe_customer: customer, subscribed_at: new Date().toISOString(), mrr })
+        .update({
+          subscription_active: true,
+          plan_type: plan,
+          stripe_customer: customer,
+          subscribed_at: new Date().toISOString(),
+          mrr,
+        })
         .eq("slug", slug);
       console.log(`Checkout complete for ${slug}, plan: ${plan}`);
     } catch (err) {
       console.log("Supabase update error:", err.message);
     }
   }
-
+ 
   if (event.type === "customer.subscription.trial_will_end") {
     console.log(`Trial ending soon: ${event.data.object.customer}`);
   }
-
+ 
   if (event.type === "customer.subscription.deleted") {
     const customer = event.data.object.customer;
     await supabase
@@ -80,7 +99,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
       .eq("stripe_customer", customer);
     console.log(`Subscription deleted: ${customer}`);
   }
-
+ 
   if (event.type === "invoice.payment_failed") {
     const customer = event.data.object.customer;
     await supabase
@@ -89,14 +108,16 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
       .eq("stripe_customer", customer);
     console.log(`Payment failed: ${customer}`);
   }
-
+ 
   res.json({ received: true });
 });
+ 
 
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public"), { index: false })); // index:false prevents /index.html being served at /
+// index:false prevents express.static auto-serving index.html at /
+app.use(express.static(path.join(__dirname, "public"), { index: false }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "supersecretkey-change-this",
@@ -124,22 +145,32 @@ app.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.h
 app.get("/subscription-status/:slug", async (req, res) => {
   const { data, error } = await supabase
     .from("businesses")
-    .select("name, subscription_active, plan_type, trial_ends_at, review_link")
+    .select("name, subscription_active, plan_type, trial_ends_at, review_link, stripe_customer")
     .eq("slug", req.params.slug)
     .single();
   if (error || !data) return res.status(404).json({ error: "Not found" });
+
+  // Check if subscription has cancel_at_period_end set on Stripe
   let cancel_pending = false;
   if (stripe && data.stripe_customer && data.subscription_active) {
     try {
-      const [a, t] = await Promise.all([
+      const [activeSubs, trialSubs] = await Promise.all([
         stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
         stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
       ]);
-      const sub = a.data[0] || t.data[0];
+      const sub = activeSubs.data[0] || trialSubs.data[0];
       if (sub && sub.cancel_at_period_end) cancel_pending = true;
-    } catch(e) {}
+    } catch(e) {
+      // Non-fatal — just don't set cancel_pending
+    }
   }
-  res.json({ subscription_active: data.subscription_active, plan_type: data.plan_type, trial_ends_at: data.trial_ends_at, cancel_pending });
+
+  res.json({
+    subscription_active: data.subscription_active,
+    plan_type: data.plan_type,
+    trial_ends_at: data.trial_ends_at,
+    cancel_pending,
+  });
 });
 
 // ─── SESSION RESTORE after Stripe redirect ────────────────────────────────────
@@ -162,23 +193,18 @@ app.post("/restore-session/:slug", async (req, res) => {
   }
 });
 
-// ─── BUSINESS FUNNEL PAGE ──────────────────────────────────────────────────────
+// ─── BUSINESS FUNNEL PAGE ─────────────────────────────────────────────────────
 app.get("/r/:business", async (req, res) => {
   const slug = req.params.business;
   const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (error || !data) return res.status(404).send("Business not found");
- 
-  // Always record the visit — even lapsed businesses get their data collected
-  // (this is what powers the FOMO counter on the lapsed dashboard page)
+
   await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
- 
+
   const pagePath = path.join(__dirname, "public", "index.html");
   const page = fs.readFileSync(pagePath, "utf8");
- 
-  // Pass account status to the client-side page.
-  // accountLapsed=true triggers the degraded experience (countdown, no feedback form).
   const isLapsed = !data.subscription_active;
- 
+
   res.send(`
     <html>
       <script>
@@ -191,7 +217,6 @@ app.get("/r/:business", async (req, res) => {
     </html>
   `);
 });
- 
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 app.post("/positive", async (req, res) => {
@@ -276,8 +301,7 @@ app.get("/stats/:slug", async (req, res) => {
 app.post("/create-business", async (req, res) => {
   try {
     const { name, email, review, password } = req.body;
-    if (!password) return res.status(400).json({ error: "Password is required." });
-    if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
+    if (!password || password.length < 4) return res.status(400).json({ error: "Password required (min 4 characters)" });
 
     const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -322,11 +346,7 @@ app.post("/verify-login", async (req, res) => {
   req.session.slug = data.slug;
   req.session.save();
 
-  res.json({
-    success: true,
-    slug: data.slug,
-    subscription_active: data.subscription_active,
-  });
+  res.json({ success: true, slug: data.slug, subscription_active: data.subscription_active });
 });
 
 app.get("/session", (req, res) => {
@@ -348,15 +368,21 @@ app.get("/qr-download/:slug", async (req, res) => {
   res.send(qr);
 });
 
-// ─── SEND SMS ─────────────────────────────────────────────────────────────────
+// ─── SEND SMS (Pro only) ──────────────────────────────────────────────────────
 app.post("/send-sms", smsLimiter, async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const { phone } = req.body;
   const slug = req.session.slug;
   try {
     const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single();
-    const message = `Hi! Thanks for visiting ${data.name}. Please leave a review: ${process.env.BASE_URL}/r/${slug}`;
-    await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: phone, body: message });
+
+    if (!hasProAccess(data)) {
+      return res.status(403).json({ error: "Pro plan required to send SMS." });
+    }
+
+    const normalisedPhone = normalisePhone(phone);
+    const message = `Hi! Thanks for visiting ${data.name} today 😊 We'd love to know how it went — takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
+    await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: normalisedPhone, body: message });
     res.json({ success: true });
   } catch (err) {
     console.log("Twilio error:", err.code, err.message);
@@ -365,40 +391,33 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
 });
 
 // ─── STRIPE CHECKOUT ──────────────────────────────────────────────────────────
+// Env vars: Starter_subscription and Pro_subscription (set in Vercel)
 app.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
-  const priceId = plan === "pro" ? process.env.Pro_subscription : process.env.Starter_subscription;
+  const priceId = plan === "pro"
+    ? process.env.Pro_subscription
+    : process.env.Starter_subscription;
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: [{ price: priceId, quantity: 1 }],
-    mode: "subscription",
-    subscription_data: { trial_period_days: 14 },
-    success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
-    cancel_url: `${process.env.BASE_URL}/admin`,
-    metadata: { slug, plan },
-  });
+  if (!priceId) {
+    console.error("Missing price ID. Check Starter_subscription and Pro_subscription env vars.");
+    return res.status(500).json({ error: "Pricing configuration error. Please contact support." });
+  }
 
-  res.json({ url: session.url });
-});
-
-
-// ─── REACTIVATE SUBSCRIPTION ─────────────────────────────────────────────────
-app.post("/reactivate-subscription", async (req, res) => {
-  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
   try {
-    const { data } = await supabase.from("businesses").select("stripe_customer").eq("slug", req.session.slug).single();
-    if (!data || !data.stripe_customer) return res.status(400).json({ error: "No subscription found." });
-    const [a, t] = await Promise.all([
-      stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
-      stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
-    ]);
-    const sub = a.data[0] || t.data[0];
-    if (!sub) return res.status(400).json({ error: "No active subscription found." });
-    await stripe.subscriptions.update(sub.id, { cancel_at_period_end: false });
-    await supabase.from("businesses").update({ cancel_requested_at: null }).eq("slug", req.session.slug);
-    res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: "subscription",
+      subscription_data: { trial_period_days: 14 },
+      success_url: `${process.env.BASE_URL}/success?slug=${slug}`,
+      cancel_url: `${process.env.BASE_URL}/admin`,
+      metadata: { slug, plan },
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("Stripe checkout error:", err.message);
+    res.status(500).json({ error: "Could not create checkout. Please try again." });
+  }
 });
 
 // ─── UPGRADE PLAN (during trial — preserves trial days) ───────────────────────
@@ -406,26 +425,41 @@ app.post("/upgrade-plan", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
   const { plan } = req.body;
   try {
-    const { data } = await supabase.from("businesses").select("stripe_customer, plan_type").eq("slug", req.session.slug).single();
+    const { data } = await supabase
+      .from("businesses")
+      .select("stripe_customer, plan_type")
+      .eq("slug", req.session.slug)
+      .single();
+
     if (!data || !data.stripe_customer) return res.status(400).json({ error: "No active subscription found." });
+
     const newPriceId = plan === "pro" ? process.env.Pro_subscription : process.env.Starter_subscription;
     if (!newPriceId) return res.status(500).json({ error: "Price configuration error." });
+
     const subs = await stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 });
     const sub = subs.data[0];
     if (!sub) return res.status(400).json({ error: "No active trial found." });
-    await stripe.subscriptions.update(sub.id, { items: [{ id: sub.items.data[0].id, price: newPriceId }], proration_behavior: "none" });
-    const newMrr = plan === "pro" ? 24.99 : 9.99;
-    await supabase.from("businesses").update({ plan_type: plan, mrr: newMrr }).eq("slug", req.session.slug);
+
+    await stripe.subscriptions.update(sub.id, {
+      items: [{ id: sub.items.data[0].id, price: newPriceId }],
+      proration_behavior: "none",
+    });
+
+    await supabase.from("businesses").update({ plan_type: plan }).eq("slug", req.session.slug);
     res.json({ success: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    console.log("Upgrade error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// ─── CANCEL SUBSCRIPTION ──────────────────────────────────────────────────────
-app.post("/cancel-subscription", async (req, res) => {
+// ─── REACTIVATE SUBSCRIPTION ─────────────────────────────────────────────────
+// Removes cancel_at_period_end so the subscription continues normally.
+app.post("/reactivate-subscription", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
   try {
     const { data } = await supabase.from("businesses").select("stripe_customer").eq("slug", req.session.slug).single();
-    if (!data || !data.stripe_customer) return res.status(400).json({ error: "No active subscription found." });
+    if (!data || !data.stripe_customer) return res.status(400).json({ error: "No subscription found." });
 
     const [activeSubs, trialSubs] = await Promise.all([
       stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
@@ -434,16 +468,40 @@ app.post("/cancel-subscription", async (req, res) => {
     const sub = activeSubs.data[0] || trialSubs.data[0];
     if (!sub) return res.status(400).json({ error: "No active subscription found." });
 
+    await stripe.subscriptions.update(sub.id, { cancel_at_period_end: false });
+    res.json({ success: true });
+  } catch (err) {
+    console.log("Reactivate error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── CANCEL SUBSCRIPTION ──────────────────────────────────────────────────────
+// IMPORTANT: Do NOT set subscription_active: false here.
+// User keeps access until period end. The customer.subscription.deleted webhook handles revocation.
+app.post("/cancel-subscription", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
+  try {
+    const { data } = await supabase.from("businesses").select("stripe_customer").eq("slug", req.session.slug).single();
+    if (!data || !data.stripe_customer) return res.status(400).json({ error: "No active subscription found." });
+ 
+    const [activeSubs, trialSubs] = await Promise.all([
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
+    ]);
+    const sub = activeSubs.data[0] || trialSubs.data[0];
+    if (!sub) return res.status(400).json({ error: "No active subscription found." });
+ 
     await stripe.subscriptions.update(sub.id, { cancel_at_period_end: true });
-    // Record when cancellation was requested (but keep subscription_active: true — access continues until period end)
-    // The customer.subscription.deleted webhook handles the actual revocation
-    await supabase.from("businesses").update({ cancel_requested_at: new Date().toISOString() }).eq("slug", req.session.slug);
+    // DO NOT set subscription_active: false here — user keeps access until period end
+    // The customer.subscription.deleted webhook handles actual revocation
     res.json({ success: true, message: "Subscription cancelled. You'll keep access until your billing period ends." });
   } catch (err) {
     console.log("Cancel error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
+ 
 
 // ─── SEND EMAIL (Pro only) ────────────────────────────────────────────────────
 app.post("/send-email", async (req, res) => {
@@ -457,15 +515,74 @@ app.post("/send-email", async (req, res) => {
 
     const reviewUrl = `${process.env.BASE_URL}/r/${slug}`;
     await resend.emails.send({
-      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "yourdomain.com"}>`,
+      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
       to: email,
-      subject: `Thanks for visiting ${business.name}`,
-      html: `<p>Hi!</p><p>Thanks for visiting <b>${business.name}</b> today.</p><p>If you have a moment, we'd really appreciate a quick review.</p><p><a href="${reviewUrl}">Leave a review</a></p><p>Thank you!</p>`,
+      subject: `How was your visit to ${business.name}?`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+        <body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:32px 16px;">
+            <tr><td align="center">
+              <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                <tr><td style="background:#1E1E1C;padding:22px 32px;">
+                  <p style="margin:0;font-family:Arial,sans-serif;font-size:17px;font-weight:bold;color:#EAE7DC;">⭐ ${business.name}</p>
+                </td></tr>
+                <tr><td style="padding:36px 32px 28px;">
+                  <h2 style="margin:0 0 14px;font-size:20px;color:#1E1E1C;font-family:Arial,sans-serif;font-weight:700;line-height:1.3;">How was your recent visit?</h2>
+                  <p style="margin:0 0 10px;font-size:15px;color:#555;line-height:1.65;">Thanks for coming in — we hope you had a great experience.</p>
+                  <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.65;">Your feedback, whether good or not, genuinely helps us improve. It only takes <strong>30 seconds</strong> and there's just one question.</p>
+                  <table cellpadding="0" cellspacing="0">
+                    <tr><td>
+                      <a href="${reviewUrl}" style="display:inline-block;background:#C8A96E;color:#1E1E1C;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 32px;border-radius:8px;font-family:Arial,sans-serif;">Share how it went →</a>
+                    </td></tr>
+                  </table>
+                </td></tr>
+                <tr><td style="padding:16px 32px 24px;border-top:1px solid #eee;">
+                  <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Sent by ${business.name} · Powered by <a href="https://reviewlift.app" style="color:#C8A96E;text-decoration:none;">ReviewLift</a></p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+      `,
     });
     res.json({ success: true });
   } catch (err) {
-    console.log(err);
+    console.log("Email error:", err.message);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── CONTACT FORM ─────────────────────────────────────────────────────────────
+// Receives enquiries from the landing page and forwards to billy@reviewlift.app.
+// Resend sends the notification. Titan (billy@reviewlift.app) receives and handles replies.
+app.post("/contact", async (req, res) => {
+  const { name, email, message } = req.body;
+  if (!name || !email || !message) return res.status(400).json({ error: "All fields required" });
+  try {
+    await resend.emails.send({
+      from: `ReviewLift Contact <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+      to: "billy@reviewlift.app",
+      reply_to: email,
+      subject: `New enquiry from ${name} — ReviewLift`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:520px;padding:24px;">
+          <h3 style="margin:0 0 16px;color:#1E1E1C;">New contact form message</h3>
+          <p style="margin:0 0 8px;"><strong>Name:</strong> ${name}</p>
+          <p style="margin:0 0 8px;"><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p style="margin:0 0 16px;"><strong>Message:</strong></p>
+          <div style="background:#f5f5f3;padding:16px;border-radius:8px;font-size:14px;line-height:1.7;color:#333;">${message.replace(/\n/g, "<br>")}</div>
+          <p style="margin:16px 0 0;font-size:12px;color:#999;">Hit reply to respond directly to ${name}.</p>
+        </div>
+      `,
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.log("Contact error:", err.message);
+    res.status(500).json({ error: "Could not send. Please email billy@reviewlift.app directly." });
   }
 });
 
@@ -482,14 +599,17 @@ app.post("/generate-reply", async (req, res) => {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You are a friendly professional business owner replying to customer reviews. Write a polite and helpful reply." },
+        { role: "system", content: "You are a friendly professional business owner replying to customer reviews. Write a polite, warm, and helpful reply. Keep it concise — 2-4 sentences. Do not start with 'Thank you for your review'." },
         { role: "user", content: `Write a reply to this customer review:\n\n${review}` },
       ],
     });
     res.json({ reply: completion.choices[0].message.content });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err.message });
+    console.log("OpenAI error:", err.status, err.message);
+    if (err.status === 429 || (err.message && err.message.includes("quota"))) {
+      return res.status(503).json({ error: "AI temporarily unavailable. Try again in a few minutes." });
+    }
+    res.status(500).json({ error: "AI temporarily unavailable. Please try again." });
   }
 });
 
@@ -509,7 +629,7 @@ app.post("/billing-portal", async (req, res) => {
   }
 });
 
-// ─── UPDATE BUSINESS DETAILS (settings page) ──────────────────────────────────
+// ─── UPDATE BUSINESS DETAILS ──────────────────────────────────────────────────
 app.post("/update-business", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const { name, review_link } = req.body;
@@ -522,20 +642,17 @@ app.post("/update-business", async (req, res) => {
   res.json({ success: true });
 });
 
-// ─── CHANGE PASSWORD (settings page) ──────────────────────────────────────────
+// ─── CHANGE PASSWORD ──────────────────────────────────────────────────────────
 app.post("/change-password", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const { current_password, new_password } = req.body;
   if (!current_password || !new_password) return res.status(400).json({ error: "Both fields required" });
   if (new_password.length < 6) return res.status(400).json({ error: "New password must be at least 6 characters" });
-
   try {
     const { data } = await supabase.from("businesses").select("password").eq("slug", req.session.slug).single();
     if (!data) return res.status(404).json({ error: "Account not found" });
-
     const valid = await bcrypt.compare(current_password, data.password);
     if (!valid) return res.status(401).json({ error: "Current password is incorrect" });
-
     const hashed = await bcrypt.hash(new_password, 10);
     const { error } = await supabase.from("businesses").update({ password: hashed }).eq("slug", req.session.slug);
     if (error) return res.status(500).json({ error: error.message });
@@ -563,14 +680,18 @@ app.post("/feedback-summary", async (req, res) => {
   const slug = req.session.slug;
   const { data } = await supabase.from("events").select("message").eq("business_slug", slug).eq("event_type", "negative");
   const feedback = (data || []).map((f) => f.message).join("\n");
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: "Summarize the most common complaints from this customer feedback" },
-      { role: "user", content: feedback },
-    ],
-  });
-  res.json({ summary: completion.choices[0].message.content });
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "Summarize the most common complaints from this customer feedback in 2-3 concise bullet points." },
+        { role: "user", content: feedback },
+      ],
+    });
+    res.json({ summary: completion.choices[0].message.content });
+  } catch (err) {
+    res.status(503).json({ error: "AI temporarily unavailable. Please try again." });
+  }
 });
 
 // ─── AUTO REVIEW SMS ──────────────────────────────────────────────────────────
@@ -578,32 +699,12 @@ app.post("/auto-review", async (req, res) => {
   const { phone, slug } = req.body;
   const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (!data) return res.status(404).json({ error: "Business not found" });
-  const message = `Thanks for visiting ${data.name}! Please leave a quick review: ${process.env.BASE_URL}/r/${slug}`;
-  await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: phone, body: message });
+  const message = `Thanks for visiting ${data.name}! We'd love to hear how it went — takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
+  await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: normalisePhone(phone), body: message });
   res.json({ success: true });
 });
 
-
-
-// ─── CONTACT FORM ─────────────────────────────────────────────────────────────
-app.post("/contact", async (req, res) => {
-  const { name, email, message } = req.body;
-  if (!name || !email || !message) return res.status(400).json({ error: "All fields required" });
-  try {
-    await resend.emails.send({
-      from: `ReviewLift Contact <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-      to: "billy@reviewlift.app",
-      reply_to: email,
-      subject: `New enquiry from ${name} — ReviewLift`,
-      html: `<div style="font-family:Arial,sans-serif;max-width:520px;padding:24px;"><h3 style="margin:0 0 16px;">New contact form message</h3><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p><p><strong>Message:</strong></p><div style="background:#f5f5f3;padding:16px;border-radius:8px;font-size:14px;line-height:1.7;">${message.replace(/\n/g, "<br>")}</div><p style="font-size:12px;color:#999;margin-top:12px;">Hit reply to respond directly to ${name}.</p></div>`,
-    });
-    res.json({ success: true });
-  } catch (err) {
-    console.log("Contact error:", err.message);
-    res.status(500).json({ error: "Could not send. Please email billy@reviewlift.app directly." });
-  }
-});
-
+// ─── LAPSED STATS ─────────────────────────────────────────────────────────────
 // ─── LAPSED STATS — counts only, for the FOMO wall on lapsed.html ─────────────
 app.get("/lapsed-stats/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
