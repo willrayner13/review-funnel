@@ -223,7 +223,7 @@ async function init(){
       <button class="btn-stripe" onclick="reactivateSubscription()" style="background:var(--accent);color:#1A1A18;border:none;">
         ⭐ Reactivate my subscription
       </button>
-      <button class="btn-outline-sm" onclick="goToPortal()">🔗 Manage payment details</button>
+      <button class="btn-stripe" onclick="goToPortal()">🔗 Manage payment details</button>
     `;
   } else if(isActive){
     actionRow.innerHTML = `
@@ -271,8 +271,9 @@ async function goToPortal(){
   const res = await fetch("/billing-portal", { method: "POST" });
   const data = await res.json();
   if(data.url) window.location = data.url;
-  else {
-    setMsg(data.error || "Could not open billing portal.", "error");
+ else {
+    document.getElementById("statusMsg").textContent = data.error || "Could not open billing portal.";
+    document.getElementById("statusMsg").style.color = "#D4897C";
     btn.disabled=false; btn.textContent="🔗 Manage payment details";
   }
 }

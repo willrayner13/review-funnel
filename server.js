@@ -53,6 +53,7 @@ function normalisePhone(phone) {
 }
 
 // ─── STRIPE WEBHOOK — must come before bodyParser.json() ──────────────────────
+// ─── STRIPE WEBHOOK — must come before bodyParser.json() ──────────────────────
 app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
@@ -62,36 +63,43 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     console.log("Webhook error:", err.message);
     return res.status(400).send("Webhook error");
   }
-
+ 
   if (event.type === "checkout.session.completed") {
     const sess = event.data.object;
     const slug = sess.metadata.slug;
     const plan = sess.metadata.plan;
     const customer = sess.customer;
     try {
+      const mrr = plan === "pro" ? 29.99 : 9.99;
       await supabase
         .from("businesses")
-        .update({ subscription_active: true, plan_type: plan, stripe_customer: customer })
+        .update({
+          subscription_active: true,
+          plan_type: plan,
+          stripe_customer: customer,
+          subscribed_at: new Date().toISOString(),
+          mrr,
+        })
         .eq("slug", slug);
       console.log(`Checkout complete for ${slug}, plan: ${plan}`);
     } catch (err) {
       console.log("Supabase update error:", err.message);
     }
   }
-
+ 
   if (event.type === "customer.subscription.trial_will_end") {
     console.log(`Trial ending soon: ${event.data.object.customer}`);
   }
-
+ 
   if (event.type === "customer.subscription.deleted") {
     const customer = event.data.object.customer;
     await supabase
       .from("businesses")
-      .update({ subscription_active: false, plan_type: "starter" })
+      .update({ subscription_active: false, plan_type: "starter", cancelled_at: new Date().toISOString(), mrr: 0 })
       .eq("stripe_customer", customer);
     console.log(`Subscription deleted: ${customer}`);
   }
-
+ 
   if (event.type === "invoice.payment_failed") {
     const customer = event.data.object.customer;
     await supabase
@@ -100,9 +108,10 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
       .eq("stripe_customer", customer);
     console.log(`Payment failed: ${customer}`);
   }
-
+ 
   res.json({ received: true });
 });
+ 
 
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.use(cors());
@@ -475,22 +484,24 @@ app.post("/cancel-subscription", async (req, res) => {
   try {
     const { data } = await supabase.from("businesses").select("stripe_customer").eq("slug", req.session.slug).single();
     if (!data || !data.stripe_customer) return res.status(400).json({ error: "No active subscription found." });
-
+ 
     const [activeSubs, trialSubs] = await Promise.all([
       stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
       stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
     ]);
     const sub = activeSubs.data[0] || trialSubs.data[0];
     if (!sub) return res.status(400).json({ error: "No active subscription found." });
-
+ 
     await stripe.subscriptions.update(sub.id, { cancel_at_period_end: true });
-    // DO NOT touch subscription_active — let the webhook handle it at period end
+    // DO NOT set subscription_active: false here — user keeps access until period end
+    // The customer.subscription.deleted webhook handles actual revocation
     res.json({ success: true, message: "Subscription cancelled. You'll keep access until your billing period ends." });
   } catch (err) {
     console.log("Cancel error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
+ 
 
 // ─── SEND EMAIL (Pro only) ────────────────────────────────────────────────────
 app.post("/send-email", async (req, res) => {
@@ -694,12 +705,20 @@ app.post("/auto-review", async (req, res) => {
 });
 
 // ─── LAPSED STATS ─────────────────────────────────────────────────────────────
+// ─── LAPSED STATS — counts only, for the FOMO wall on lapsed.html ─────────────
 app.get("/lapsed-stats/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
-  const { data, error } = await supabase.from("businesses").select("subscription_active").eq("slug", req.params.slug).single();
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("subscription_active")
+    .eq("slug", req.params.slug)
+    .single();
   if (error || !data) return res.status(404).json({ error: "Not found" });
   if (data.subscription_active) return res.json({ active: true });
-  const { data: events } = await supabase.from("events").select("event_type").eq("business_slug", req.params.slug);
+  const { data: events } = await supabase
+    .from("events")
+    .select("event_type")
+    .eq("business_slug", req.params.slug);
   const counts = { visits: 0, feedback: 0, reviews: 0 };
   (events || []).forEach(e => {
     if (e.event_type === "visit")        counts.visits++;
