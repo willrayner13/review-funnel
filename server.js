@@ -583,7 +583,35 @@ app.post("/auto-review", async (req, res) => {
   res.json({ success: true });
 });
 
+// ─── REACTIVATE SUBSCRIPTION ─────────────────────────────────────────────────
+app.post("/reactivate-subscription", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
+  try {
+    const { data } = await supabase
+      .from("businesses")
+      .select("stripe_customer")
+      .eq("slug", req.session.slug)
+      .single();
 
+    if (!data || !data.stripe_customer) {
+      return res.status(400).json({ error: "No subscription found." });
+    }
+
+    // Find active or trialing subscription
+    const [activeSubs, trialSubs] = await Promise.all([
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "active", limit: 1 }),
+      stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 }),
+    ]);
+    const sub = activeSubs.data[0] || trialSubs.data[0];
+    if (!sub) return res.status(400).json({ error: "No active subscription found." });
+
+    await stripe.subscriptions.update(sub.id, { cancel_at_period_end: false });
+    res.json({ success: true });
+  } catch (err) {
+    console.log("Reactivate error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ─── CONTACT FORM ─────────────────────────────────────────────────────────────
 app.post("/contact", async (req, res) => {
