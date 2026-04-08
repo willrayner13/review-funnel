@@ -10,8 +10,8 @@
     .topnav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid var(--border); background: rgba(30,30,28,0.9); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 100; }
     .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 8px; }
     .nav-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
-    .back-btn { font-size: 0.8rem; color: var(--cream-dim); background: transparent; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color 0.2s; min-height: 0; padding: 0; }
-    .back-btn:hover { color: var(--cream); transform: none; box-shadow: none; }
+    .back-btn { font-size: 0.8rem; color: rgba(234,231,220,0.28); background: transparent; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: color 0.2s; min-height: 0; padding: 0; font-family: 'DM Sans', sans-serif; letter-spacing: 0.2px; }
+    .back-btn:hover { color: rgba(234,231,220,0.5); transform: none; box-shadow: none; }
 
     .page-body { max-width: 700px; margin: 0 auto; padding: 48px 24px 80px; }
 
@@ -38,7 +38,7 @@
     .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
     .action-row button, .action-row a { flex-shrink: 0; }
 
-   .btn-stripe { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.875rem; background: var(--accent); color: #1A1A18; padding: 12px 22px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-stripe { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.875rem; background: var(--accent); color: #1A1A18; padding: 12px 22px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
     .btn-stripe:hover { background: #D4B87A; transform: translateY(-1px); }
 
     .btn-outline-sm { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.875rem; background: transparent; color: var(--cream-dim); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border-hover); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
@@ -114,9 +114,9 @@
     </div>
     <p style="margin-top:14px;font-size:0.82rem;color:var(--cream-dim);" id="planStatusText"></p>
     <div class="action-row">
-      <!-- Populated by JS based on subscription state -->
+      <button class="btn-stripe" onclick="goToPortal()">🔗 Manage payment details</button>
+      <button class="btn-danger-outline" onclick="openModal('cancelModal')">Cancel subscription</button>
     </div>
-    <div id="actionRow" class="action-row" style="margin-top:20px;"></div>
     <div id="statusMsg"></div>
   </div>
 
@@ -165,7 +165,6 @@
 <script>
 let currentPlan = "starter";
 let slug;
-let isCancelPending = false;
 
 async function init(){
   const sessionRes = await fetch("/session");
@@ -177,92 +176,59 @@ async function init(){
   if(!statsRes.ok){ window.location="/login"; return; }
   const stats = await statsRes.json();
 
-  // Fetch cancel_pending state from extended subscription status
-  const subRes = await fetch("/subscription-status/"+slug);
-  const subData = await subRes.json();
-  isCancelPending = subData.cancel_pending === true;
-
   currentPlan = stats.plan_type || "starter";
   const isActive = stats.subscription_active;
   const trialEnd = stats.trial_ends_at ? new Date(stats.trial_ends_at) : null;
   const inTrial = isActive && trialEnd && new Date() < trialEnd;
 
+  // Update display
   document.getElementById("planName").textContent = currentPlan === "pro" ? "Pro" : "Starter";
   document.getElementById("planPrice").innerHTML = currentPlan === "pro"
-    ? '<sup>£</sup>24.99<span>/mo</span>'
+    ? '<sup>£</sup>29.99<span>/mo</span>'
     : '<sup>£</sup>9.99<span>/mo</span>';
 
   const badge = document.getElementById("planBadge");
-  if(isCancelPending){ badge.textContent = "⏳ Cancelling"; badge.className = "plan-badge-inline badge-trial"; }
-  else if(inTrial){ badge.textContent = "🕐 Trial"; badge.className = "plan-badge-inline badge-trial"; }
+  if(inTrial){ badge.textContent = "🕐 Trial"; badge.className = "plan-badge-inline badge-trial"; }
   else if(currentPlan === "pro"){ badge.textContent = "⭐ Pro"; badge.className = "plan-badge-inline badge-pro"; }
   else { badge.textContent = "Starter"; badge.className = "plan-badge-inline badge-starter"; }
 
-  if(isCancelPending && trialEnd){
-    const daysLeft = Math.max(0, Math.ceil((trialEnd - new Date()) / (1000*60*60*24)));
-    document.getElementById("planStatusText").innerHTML =
-      `<span style="color:#D4897C;">⚠ Your subscription is scheduled to cancel.</span> You have ${daysLeft > 0 ? daysLeft+" more day"+(daysLeft===1?"":"s") : "until the end of today"} of access remaining.`;
-  } else if(isCancelPending){
-    document.getElementById("planStatusText").innerHTML =
-      '<span style="color:#D4897C;">⚠ Your subscription will cancel at the end of the billing period.</span>';
-  } else if(inTrial && trialEnd){
+  if(inTrial && trialEnd){
     const daysLeft = Math.ceil((trialEnd - new Date()) / (1000*60*60*24));
-    document.getElementById("planStatusText").textContent =
-      `Your free trial ends in ${daysLeft} day${daysLeft===1?"":"s"}. You won't be charged until then.`;
+    document.getElementById("planStatusText").textContent = `Your free trial ends in ${daysLeft} day${daysLeft===1?'':'s'}. You won't be charged until then.`;
   } else if(isActive){
     document.getElementById("planStatusText").textContent = "Your subscription is active and renews automatically.";
   } else {
-    document.getElementById("planStatusText").textContent = "No active subscription. Choose a plan below.";
-  }
-
-  // Render action buttons based on subscription state
-  const actionRow = document.getElementById("actionRow");
-  if(isCancelPending){
-    // Already cancelled — don't show cancel again, show reactivate instead
-    actionRow.innerHTML = `
-      <button class="btn-stripe" onclick="reactivateSubscription()" style="background:var(--accent);color:#1A1A18;border:none;">
-        ⭐ Reactivate my subscription
-      </button>
-      <button class="btn-stripe" onclick="goToPortal()">🔗 Manage payment details</button>
-    `;
-  } else if(isActive){
-    actionRow.innerHTML = `
-      <button class="btn-stripe" onclick="goToPortal()">🔗 Manage payment details</button>
-      <button class="btn-danger-outline" onclick="openModal('cancelModal')">Cancel subscription</button>
-    `;
-  } else {
-    actionRow.innerHTML = `
-      <button class="btn-stripe" onclick="goToPortal()">🔗 Manage billing</button>
-    `;
+    document.getElementById("planStatusText").textContent = "No active subscription. Choose a plan below to continue.";
   }
 
   // Render plan cards
-  document.getElementById("plansRow").innerHTML = `
-  <div class="plan-option ${currentPlan==='starter'?'current-plan':''}">
-    <div class="plan-option-name">Starter</div>
-    <div class="plan-option-price"><sup>£</sup>9.99<span>/mo</span></div>
-    <ul class="plan-option-features">
-      <li>Smart review funnel</li><li>Analytics dashboard</li>
-      <li>QR code generator</li><li>Private feedback capture</li>
-    </ul>
-    ${currentPlan==='starter'
-      ? '<button disabled>Current plan</button>'
-      : '<button onclick="changePlan(\'starter\')">Switch to Starter</button>'
-    }
-  </div>
-  <div class="plan-option ${currentPlan==='pro'?'current-plan':''}">
-    <div class="plan-option-name">Pro</div>
-    <div class="plan-option-price"><sup>£</sup>24.99<span>/mo</span></div>
-    <ul class="plan-option-features">
-      <li>Everything in Starter</li><li>AI reply generator</li>
-      <li>SMS & email requests</li><li>Advanced analytics</li>
-    </ul>
-    ${currentPlan==='pro'
-      ? '<button disabled>Current plan</button>'
-      : '<button onclick="changePlan(\'pro\')" style="background:var(--accent);color:#1A1A18;border-color:var(--accent);">⭐ Upgrade to Pro</button>'
-    }
-  </div>
-`;
+  const plansRow = document.getElementById("plansRow");
+  plansRow.innerHTML = `
+    <div class="plan-option ${currentPlan === 'starter' ? 'current-plan' : ''}">
+      <div class="plan-option-name">Starter</div>
+      <div class="plan-option-price"><sup>£</sup>9.99<span>/mo</span></div>
+      <ul class="plan-option-features">
+        <li>Smart review funnel</li><li>Analytics dashboard</li>
+        <li>QR code generator</li><li>Private feedback capture</li>
+      </ul>
+      ${currentPlan === 'starter'
+        ? '<button disabled>Current plan</button>'
+        : '<button onclick="changePlan(\'starter\')">Switch to Starter</button>'
+      }
+    </div>
+    <div class="plan-option ${currentPlan === 'pro' ? 'current-plan' : ''}">
+      <div class="plan-option-name">Pro</div>
+      <div class="plan-option-price"><sup>£</sup>29.99<span>/mo</span></div>
+      <ul class="plan-option-features">
+        <li>Everything in Starter</li><li>AI reply generator</li>
+        <li>SMS & email requests</li><li>Advanced analytics</li>
+      </ul>
+      ${currentPlan === 'pro'
+        ? '<button disabled>Current plan</button>'
+        : '<button onclick="changePlan(\'pro\')" style="background:var(--accent);color:#1A1A18;border-color:var(--accent);">⭐ Upgrade to Pro</button>'
+      }
+    </div>
+  `;
 }
 init();
 
@@ -271,7 +237,7 @@ async function goToPortal(){
   const res = await fetch("/billing-portal", { method: "POST" });
   const data = await res.json();
   if(data.url) window.location = data.url;
- else {
+  else {
     document.getElementById("statusMsg").textContent = data.error || "Could not open billing portal.";
     document.getElementById("statusMsg").style.color = "#D4897C";
     btn.disabled=false; btn.textContent="🔗 Manage payment details";
@@ -279,56 +245,33 @@ async function goToPortal(){
 }
 
 async function changePlan(plan){
-  const res = await fetch("/create-checkout", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({slug,plan}) });
+  const res = await fetch("/create-checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug, plan }) });
   const data = await res.json();
   if(data.url) window.location = data.url;
 }
 
-async function reactivateSubscription(){
-  const btn = event.target; btn.disabled=true; btn.textContent="Reactivating...";
-  try {
-    const res = await fetch("/reactivate-subscription", { method:"POST" });
-    const data = await res.json();
-    if(data.success){
-      setMsg("✓ Subscription reactivated! Your plan will continue as normal.", "success");
-      setTimeout(() => window.location.reload(), 1800);
-    } else {
-      setMsg(data.error || "Could not reactivate. Please contact support.", "error");
-      btn.disabled=false; btn.textContent="⭐ Reactivate my subscription";
-    }
-  } catch(e){
-    setMsg("Something went wrong. Please try the billing portal.", "error");
-    btn.disabled=false; btn.textContent="⭐ Reactivate my subscription";
-  }
-}
-
-function setMsg(text, type){
-  const msg = document.getElementById("statusMsg");
-  msg.textContent = text;
-  msg.style.color = type==="success" ? "#8EC9A8" : "#D4897C";
-}
-
 function openModal(id){ document.getElementById(id).classList.add("open"); document.body.style.overflow="hidden"; }
 function closeModal(id){ document.getElementById(id).classList.remove("open"); document.body.style.overflow=""; }
-function handleModalOverlay(e, id){ if(e.target===document.getElementById(id)) closeModal(id); }
+function handleModalOverlay(e, id){ if(e.target === document.getElementById(id)) closeModal(id); }
 document.addEventListener("keydown", e => { if(e.key==="Escape") document.querySelectorAll(".modal-overlay.open").forEach(m=>m.classList.remove("open")); });
 
 async function doCancel(){
   const btn = document.getElementById("confirmCancelBtn");
   btn.disabled=true; btn.textContent="Cancelling...";
   try {
-    const res = await fetch("/cancel-subscription", { method:"POST" });
+    const res = await fetch("/cancel-subscription", { method: "POST" });
     const data = await res.json();
     closeModal("cancelModal");
+    const msg = document.getElementById("statusMsg");
     if(data.success){
-      setMsg("✓ Cancellation scheduled. You keep access until your billing period ends.", "success");
-      setTimeout(() => window.location.reload(), 1800);
+      msg.style.color = "#8EC9A8";
+      msg.textContent = "✓ Subscription cancelled. You'll retain access until the end of your billing period.";
     } else {
-      setMsg("Could not cancel: "+(data.error||"Please try the payment portal."), "error");
+      msg.style.color = "#D4897C";
+      msg.textContent = "Could not cancel: " + (data.error || "Please try the payment portal.");
     }
   } catch(e) {
     closeModal("cancelModal");
-    setMsg("Something went wrong. Please try the billing portal.", "error");
   }
   btn.disabled=false; btn.textContent="Yes, cancel";
 }
