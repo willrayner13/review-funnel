@@ -64,7 +64,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     return res.status(400).send("Webhook error");
   }
  
-  if (event.type === "checkout.session.completed") {
+if (event.type === "checkout.session.completed") {
     const sess = event.data.object;
     const slug = sess.metadata.slug;
     const plan = sess.metadata.plan;
@@ -73,13 +73,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
       const mrr = plan === "pro" ? 29.99 : 9.99;
       await supabase
         .from("businesses")
-        .update({
-          subscription_active: true,
-          plan_type: plan,
-          stripe_customer: customer,
-          subscribed_at: new Date().toISOString(),
-          mrr,
-        })
+        .update({ subscription_active: true, plan_type: plan, stripe_customer: customer, subscribed_at: new Date().toISOString(), mrr })
         .eq("slug", slug);
       console.log(`Checkout complete for ${slug}, plan: ${plan}`);
     } catch (err) {
@@ -301,17 +295,18 @@ app.get("/stats/:slug", async (req, res) => {
 app.post("/create-business", async (req, res) => {
   try {
     const { name, email, review, password } = req.body;
-    if (!password || password.length < 4) return res.status(400).json({ error: "Password required (min 4 characters)" });
-
+    if (!password) return res.status(400).json({ error: "Password is required." });
+    if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
+ 
     const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
     const hashedPassword = await bcrypt.hash(password, 10);
-
+ 
     const { data: existing } = await supabase.from("businesses").select("email").eq("email", email).single();
     if (existing) return res.status(400).json({ error: "Email already exists" });
-
+ 
     const trialEnd = new Date();
     trialEnd.setDate(trialEnd.getDate() + 14);
-
+ 
     const { error } = await supabase.from("businesses").insert({
       name,
       email,
@@ -322,9 +317,9 @@ app.post("/create-business", async (req, res) => {
       subscription_active: false,
       trial_ends_at: trialEnd.toISOString(),
     });
-
+ 
     if (error) return res.status(500).json(error);
-
+ 
     req.session.slug = slug;
     req.session.save();
     res.json({ success: true, slug });
@@ -420,37 +415,22 @@ app.post("/create-checkout", async (req, res) => {
   }
 });
 
-// ─── UPGRADE PLAN (during trial — preserves trial days) ───────────────────────
 app.post("/upgrade-plan", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
   const { plan } = req.body;
   try {
-    const { data } = await supabase
-      .from("businesses")
-      .select("stripe_customer, plan_type")
-      .eq("slug", req.session.slug)
-      .single();
-
+    const { data } = await supabase.from("businesses").select("stripe_customer, plan_type").eq("slug", req.session.slug).single();
     if (!data || !data.stripe_customer) return res.status(400).json({ error: "No active subscription found." });
-
     const newPriceId = plan === "pro" ? process.env.Pro_subscription : process.env.Starter_subscription;
     if (!newPriceId) return res.status(500).json({ error: "Price configuration error." });
-
     const subs = await stripe.subscriptions.list({ customer: data.stripe_customer, status: "trialing", limit: 1 });
     const sub = subs.data[0];
     if (!sub) return res.status(400).json({ error: "No active trial found." });
-
-    await stripe.subscriptions.update(sub.id, {
-      items: [{ id: sub.items.data[0].id, price: newPriceId }],
-      proration_behavior: "none",
-    });
-
-    await supabase.from("businesses").update({ plan_type: plan }).eq("slug", req.session.slug);
+    await stripe.subscriptions.update(sub.id, { items: [{ id: sub.items.data[0].id, price: newPriceId }], proration_behavior: "none" });
+    const newMrr = plan === "pro" ? 29.99 : 9.99;
+    await supabase.from("businesses").update({ plan_type: plan, mrr: newMrr }).eq("slug", req.session.slug);
     res.json({ success: true });
-  } catch (err) {
-    console.log("Upgrade error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 // ─── REACTIVATE SUBSCRIPTION ─────────────────────────────────────────────────
@@ -493,8 +473,9 @@ app.post("/cancel-subscription", async (req, res) => {
     if (!sub) return res.status(400).json({ error: "No active subscription found." });
  
     await stripe.subscriptions.update(sub.id, { cancel_at_period_end: true });
-    // DO NOT set subscription_active: false here — user keeps access until period end
-    // The customer.subscription.deleted webhook handles actual revocation
+    // Record when cancellation was requested (but keep subscription_active: true — access continues until period end)
+    // The customer.subscription.deleted webhook handles the actual revocation
+    await supabase.from("businesses").update({ cancel_requested_at: new Date().toISOString() }).eq("slug", req.session.slug);
     res.json({ success: true, message: "Subscription cancelled. You'll keep access until your billing period ends." });
   } catch (err) {
     console.log("Cancel error:", err.message);
