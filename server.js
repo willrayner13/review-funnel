@@ -9,6 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
+const { Store } = require("express-session");
 const twilio = require("twilio");
 const OpenAI = require("openai");
 const Stripe = require("stripe");
@@ -108,18 +109,71 @@ if (event.type === "checkout.session.completed") {
  
 
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
+
+// Trust Vercel's reverse proxy so secure cookies work correctly on HTTPS
+app.set("trust proxy", 1);
+
 app.use(cors());
 app.use(bodyParser.json());
 // index:false prevents express.static auto-serving index.html at /
 app.use(express.static(path.join(__dirname, "public"), { index: false }));
+
+// ─── SUPABASE SESSION STORE ───────────────────────────────────────────────────
+// express-session's default MemoryStore is wiped on every Vercel cold start.
+// This custom store persists sessions in a Supabase `sessions` table so they
+// survive across serverless instances and restarts.
+// Run this SQL once in Supabase: 
+//   CREATE TABLE IF NOT EXISTS sessions (
+//     sid TEXT PRIMARY KEY,
+//     sess JSONB NOT NULL,
+//     expire TIMESTAMPTZ NOT NULL
+//   );
+//   CREATE INDEX IF NOT EXISTS sessions_expire_idx ON sessions (expire);
+class SupabaseSessionStore extends Store {
+  async get(sid, cb) {
+    try {
+      const { data } = await supabase
+        .from("sessions")
+        .select("sess, expire")
+        .eq("sid", sid)
+        .single();
+      if (!data) return cb(null, null);
+      if (new Date(data.expire) < new Date()) {
+        await supabase.from("sessions").delete().eq("sid", sid);
+        return cb(null, null);
+      }
+      cb(null, data.sess);
+    } catch (e) { cb(null, null); }
+  }
+  async set(sid, sess, cb) {
+    try {
+      const expire = sess.cookie?.expires
+        ? new Date(sess.cookie.expires)
+        : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      await supabase.from("sessions").upsert({ sid, sess, expire: expire.toISOString() });
+      cb(null);
+    } catch (e) { cb(null); }
+  }
+  async destroy(sid, cb) {
+    try {
+      await supabase.from("sessions").delete().eq("sid", sid);
+      cb(null);
+    } catch (e) { cb(null); }
+  }
+}
+
 app.use(
   session({
+    store: new SupabaseSessionStore(),
     secret: process.env.SESSION_SECRET || "supersecretkey-change-this",
     resave: false,
     saveUninitialized: false,
+    name: "rl_sid",
     cookie: {
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     },
   })
 );
@@ -351,8 +405,8 @@ app.post("/create-business", async (req, res) => {
                   <tr><td style="padding:36px 32px 28px;">
                     <h2 style="margin:0 0 14px;font-size:21px;color:#1E1E1C;font-family:Arial,sans-serif;font-weight:700;line-height:1.3;">You're in, ${name}.</h2>
                     <p style="margin:0 0 12px;font-size:15px;color:#555;line-height:1.65;">Your review funnel for <strong style="color:#1E1E1C;">${name}</strong> is live. Customers can already use it — share the link below to start collecting reviews.</p>
-                    <p style="margin:0 0 6px;font-size:13px;color:#888;">Your review funnel link:</p>
-                    <p style="margin:0 0 24px;font-size:14px;font-family:'Courier New',monospace;background:#f5f5f3;padding:10px 14px;border-radius:6px;color:#333;word-break:break-all;">${funnelUrl}</p>
+                    <p style="margin:0 0 6px;font-size:13px;color:#888;">Your dashboard link:</p>
+                    <p style="margin:0 0 24px;font-size:14px;font-family:'Courier New',monospace;background:#f5f5f3;padding:10px 14px;border-radius:6px;color:#333;word-break:break-all;">${dashboardUrl}</p>
                     <p style="margin:0 0 10px;font-size:15px;color:#555;line-height:1.65;">Your next step: choose a plan so your account stays active after the 14-day trial.</p>
                     <table cellpadding="0" cellspacing="0" style="margin-top:4px;">
                       <tr><td>
