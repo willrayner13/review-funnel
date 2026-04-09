@@ -193,7 +193,8 @@ app.get("/r/:business", async (req, res) => {
   const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (error || !data) return res.status(404).send("Business not found");
 
-  await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
+  const { error: visitError } = await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
+  if (visitError) console.error("Events insert error (visit):", visitError.message);
 
   const pagePath = path.join(__dirname, "public", "index.html");
   const page = fs.readFileSync(pagePath, "utf8");
@@ -301,7 +302,7 @@ app.post("/create-business", async (req, res) => {
     const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
     const hashedPassword = await bcrypt.hash(password, 10);
  
-    const { data: existing } = await supabase.from("businesses").select("email").eq("email", email).single();
+    const { data: existing } = await supabase.from("businesses").select("email").eq("email", email).maybeSingle();
     if (existing) return res.status(400).json({ error: "Email already exists" });
  
     const trialEnd = new Date();
@@ -317,15 +318,23 @@ app.post("/create-business", async (req, res) => {
       subscription_active: false,
       trial_ends_at: trialEnd.toISOString(),
     });
- 
-    if (error) return res.status(500).json(error);
- 
+
+    if (error) {
+      // Log the full Supabase error to Vercel logs so you can diagnose RLS/schema issues
+      console.error("Supabase insert error on /create-business:", JSON.stringify(error));
+      // Return a friendly message to the user, not the raw DB error
+      if (error.code === "42501" || (error.message && error.message.includes("row-level security"))) {
+        return res.status(500).json({ error: "Database permission error. Please contact support." });
+      }
+      return res.status(500).json({ error: error.message || "Could not create account. Please try again." });
+    }
+
     req.session.slug = slug;
     req.session.save();
     res.json({ success: true, slug });
   } catch (err) {
-    console.log("Server error:", err);
-    res.status(500).json({ error: err.message });
+    console.error("Server error on /create-business:", err);
+    res.status(500).json({ error: err.message || "Something went wrong. Please try again." });
   }
 });
 
