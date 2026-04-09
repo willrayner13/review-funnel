@@ -684,16 +684,55 @@
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="cta-strip reveal">
-  <h2>Ready to get more 5-star reviews?</h2>
-  <p>Join local businesses already using ReviewLift to protect and grow their reputation online.</p>
-  <div class="cta-btns">
-    <a href="/admin"><button class="btn-trial">Start free trial →</button></a>
-    <a href="#demo-section"><button style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.95rem;background:transparent;color:var(--cream-dim);padding:15px 24px;border-radius:10px;border:1px solid var(--border-hi);cursor:pointer;transition:all .2s;">Try the demo first</button></a>
+<!-- FINAL CTA — redesigned -->
+<section class="cta-section reveal">
+  <div class="cta-inner">
+    <div class="cta-eyebrow">🚀 Ready when you are</div>
+    <h2>Your next <em>5-star review</em><br>is 2 minutes away</h2>
+    <p>Join local businesses already using ReviewLift to grow their Google rating, handle complaints privately, and stay ahead of their competition.</p>
+    <div class="cta-actions">
+      <a href="/admin"><button class="btn-cta-primary">Start my free trial →</button></a>
+      <a href="#demo-section"><button class="btn-cta-secondary">Try the demo first</button></a>
+    </div>
+    <div class="cta-proof">
+      <span class="cta-proof-item">14-day free trial</span>
+      <span class="cta-proof-item">Card required, £0 charged until day 15</span>
+      <span class="cta-proof-item">Cancel in one click, any time</span>
+      <span class="cta-proof-item">2-minute setup</span>
+    </div>
   </div>
-  <p class="cta-note">14-day free trial · Card required upfront · Cancel before day 14 to pay nothing</p>
 </section>
+
+<!-- CONTACT SECTION -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-intro reveal">
+      <span class="stats-eyebrow">Get in touch</span>
+      <h2>Any questions? We'd love to help.</h2>
+      <p>Whether you're wondering if ReviewLift is right for your business, need help getting set up, or just want to ask something — fill in the form and we'll get back to you promptly.</p>
+    </div>
+    <div class="contact-card reveal">
+      <div class="contact-grid">
+        <div class="contact-field">
+          <label>Your name</label>
+          <input type="text" id="contactName" placeholder="e.g. Joe Smith">
+        </div>
+        <div class="contact-field">
+          <label>Email address</label>
+          <input type="email" id="contactEmail" placeholder="you@yourbusiness.com">
+        </div>
+      </div>
+      <div class="contact-field" style="margin-bottom:16px;">
+        <label>Message</label>
+        <textarea id="contactMessage" placeholder="Tell us what you're wondering about..."></textarea>
+      </div>
+      <button class="contact-submit" id="contactSubmit" onclick="submitContact()">Send message →</button>
+      <p id="contactMsg"></p>
+    </div>
+    <p class="contact-alt">Or email us directly at <a href="mailto:billy@reviewlift.app">billy@reviewlift.app</a></p>
+  </div>
+</section>
+
 
 <footer>
   <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
@@ -816,6 +855,30 @@ document.addEventListener('click', function(e){
     closeNav();
   }
 });
+
+  /* ── Contact form ── */
+  async function submitContact(){
+    const btn=document.getElementById('contactSubmit');
+    const msg=document.getElementById('contactMsg');
+    const name=document.getElementById('contactName').value.trim();
+    const email=document.getElementById('contactEmail').value.trim();
+    const message=document.getElementById('contactMessage').value.trim();
+    if(!name||!email||!message){msg.textContent='Please fill in all fields.';msg.className='error';return;}
+    btn.disabled=true;btn.textContent='Sending...';
+    try{
+      const res=await fetch('/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,message})});
+      const data=await res.json();
+      if(data.success){
+        msg.textContent='✓ Message sent! We\'ll get back to you shortly.';msg.className='success';
+        document.getElementById('contactName').value='';
+        document.getElementById('contactEmail').value='';
+        document.getElementById('contactMessage').value='';
+      }else{msg.textContent=data.error||'Something went wrong.';msg.className='error';}
+    }catch(e){msg.textContent='Could not send. Please email billy@reviewlift.app directly.';msg.className='error';}
+    btn.disabled=false;btn.textContent='Send message →';
+  }
+
+
 </script>
 </body>
 </html>
