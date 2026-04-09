@@ -31,6 +31,7 @@
     .nav-links a{font-size:0.875rem;color:var(--cream-dim);transition:color .2s;}
     .nav-links a:hover{color:var(--cream);}
     .nav-cta{display:flex;align-items:center;gap:10px;}
+    .nav-cta{display:flex;align-items:center;gap:10px;}
     .btn-nav-login{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;color:var(--cream-dim);padding:8px 16px;border:1px solid var(--border);border-radius:8px;transition:all .2s;cursor:pointer;background:transparent;}
     .btn-nav-login:hover{border-color:var(--border-hi);color:var(--cream);}
     .btn-nav-start{font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:700;background:var(--accent);color:#1A1A18;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;}
@@ -53,6 +54,23 @@
     .nav-drawer-cta .btn-nav-start{width:100%;text-align:center;display:block;padding:12px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;background:var(--accent);color:#1A1A18;}
 
     section{position:relative;z-index:1;}
+
+        /* SMS mockup */
+    .sms-mockup{background:var(--surface-2);border-radius:12px;padding:16px;max-width:280px;margin:0 auto;}
+    .sms-bubble{background:#2563EB;color:white;border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:0.82rem;line-height:1.6;margin-bottom:8px;}
+    .sms-bubble .sms-sender{font-size:0.68rem;color:rgba(255,255,255,0.65);margin-bottom:4px;font-weight:600;}
+    .sms-time{font-size:0.65rem;color:var(--cream-dim);text-align:center;}
+    .sms-cta{display:block;background:var(--accent);color:#1A1A18;font-size:0.78rem;font-weight:700;padding:10px 16px;border-radius:8px;text-align:center;margin-top:10px;}
+
+    /* Email mockup */
+    .email-mockup{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface-3);font-size:0.78rem;}
+    .email-header{background:var(--surface-2);padding:10px 14px;border-bottom:1px solid var(--border);}
+    .email-header-row{display:flex;gap:6px;align-items:center;color:var(--cream-dim);margin-bottom:3px;}
+    .email-header-row strong{color:var(--cream);}
+    .email-body{padding:14px;}
+    .email-body p{color:var(--cream-dim);line-height:1.6;margin-bottom:8px;}
+    .email-cta-btn{display:inline-block;background:var(--accent);color:#1A1A18;padding:8px 18px;border-radius:6px;font-weight:700;font-size:0.78rem;margin-top:4px;}
+
 
     /* ── HERO — clean, centred, no demo card ── */
     .hero{
@@ -296,6 +314,29 @@
     .t-name{font-size:0.8rem;font-weight:600;color:var(--cream);}
     .t-biz{font-size:0.72rem;color:var(--accent);}
 
+ /* ── CONTACT SECTION ── */
+    .contact-section{padding:100px 48px;border-top:1px solid var(--border);}
+    .contact-inner{max-width:700px;margin:0 auto;}
+    .contact-intro{text-align:center;margin-bottom:48px;}
+    .contact-intro h2{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.4px;margin-bottom:10px;}
+    .contact-intro p{font-size:0.95rem;color:var(--cream-dim);line-height:1.7;}
+    .contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:40px;position:relative;overflow:hidden;}
+    .contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.3),transparent);}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+    .contact-field{display:flex;flex-direction:column;gap:6px;}
+    .contact-field label{font-size:0.78rem;font-weight:600;color:var(--cream-dim);text-transform:uppercase;letter-spacing:.6px;}
+    .contact-field input,.contact-field textarea{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.9rem;transition:border-color .2s;outline:none;}
+    .contact-field input:focus,.contact-field textarea:focus{border-color:rgba(200,169,110,0.4);}
+    .contact-field textarea{min-height:120px;resize:vertical;}
+    .contact-submit{width:100%;background:var(--accent);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;margin-top:8px;}
+    .contact-submit:hover{background:#D4B87A;transform:translateY(-1px);}
+    .contact-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+    #contactMsg{text-align:center;font-size:0.85rem;margin-top:12px;min-height:20px;}
+    #contactMsg.success{color:#8EC9A8;}
+    #contactMsg.error{color:#D4897C;}
+    .contact-alt{text-align:center;margin-top:20px;font-size:0.82rem;color:var(--cream-dim);}
+    .contact-alt a{color:var(--accent);}
+
     /* ── PRICING ── */
     .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:680px;margin:0 auto;}
     .price-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:36px 32px;transition:all .2s;position:relative;overflow:hidden;}
@@ -311,18 +352,30 @@
     .price-features li{font-size:.85rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;}
     .price-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
     .price-cta{width:100%;padding:14px;border-radius:10px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;transition:all .2s;text-align:center;display:block;}
-    .price-cta.dark{background:var(--cream);color:#1A1A18;}
-    .price-cta.dark:hover{background:#F5F2EB;transform:translateY(-1px);}
+    .price-cta.dark{background:var(--surface-2);color:var(--cream);border:1px solid var(--border-hi);}
+    .price-cta.dark:hover{background:var(--surface-3);border-color:var(--cream-dim);transform:translateY(-1px);}
+    .price-cta.gold{background:var(--accent);color:#1A1A18;}
     .price-cta.gold{background:var(--accent);color:#1A1A18;}
     .price-cta.gold:hover{background:#D4B87A;transform:translateY(-1px);}
-    .pricing-note{text-align:center;margin-top:24px;font-size:.8rem;color:rgba(234,231,220,.28);}
 
     /* ── FINAL CTA ── */
-    .cta-strip{background:linear-gradient(135deg,rgba(200,169,110,0.12) 0%,rgba(200,169,110,0.04) 100%);border-top:1px solid rgba(200,169,110,0.2);padding:80px 48px;text-align:center;}
-    .cta-strip h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.5px;margin-bottom:14px;}
-    .cta-strip p{font-size:1rem;color:var(--cream-dim);max-width:420px;margin:0 auto 32px;line-height:1.7;}
-    .cta-btns{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
-    .cta-note{font-size:0.75rem;color:rgba(234,231,220,0.28);margin-top:16px;}
+    /* ── FINAL CTA — redesigned, much more impactful ── */
+    .cta-section{position:relative;overflow:hidden;padding:120px 48px;}
+    .cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(200,169,110,0.12) 0%,transparent 70%);pointer-events:none;}
+    .cta-section::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.3),transparent);}
+    .cta-inner{max-width:720px;margin:0 auto;text-align:center;position:relative;z-index:1;}
+    .cta-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,169,110,0.25);border-radius:100px;padding:6px 16px;margin-bottom:28px;}
+    .cta-section h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:20px;}
+    .cta-section h2 em{font-style:normal;background:linear-gradient(135deg,var(--accent) 0%,#E8C98A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .cta-section p{font-size:1.05rem;color:var(--cream-dim);line-height:1.75;margin-bottom:40px;max-width:520px;margin-left:auto;margin-right:auto;}
+    .cta-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:24px;}
+    .btn-cta-primary{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1.05rem;background:var(--accent);color:#1A1A18;padding:18px 44px;border-radius:12px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;}
+    .btn-cta-primary:hover{background:#D4B87A;transform:translateY(-2px);box-shadow:0 10px 36px rgba(200,169,110,0.35);}
+    .btn-cta-secondary{font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;background:transparent;color:var(--cream-dim);padding:17px 32px;border-radius:12px;border:1px solid var(--border-hi);cursor:pointer;transition:all .2s;}
+    .btn-cta-secondary:hover{color:var(--cream);border-color:rgba(234,231,220,0.4);background:var(--cream-faint);}
+    .cta-proof{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding-top:8px;}
+    .cta-proof-item{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:rgba(234,231,220,0.35);}
+    .cta-proof-item::before{content:'✓';color:var(--accent);font-size:0.7rem;}
 
     /* ── FOOTER ── */
     footer{border-top:1px solid var(--border);padding:40px 48px;position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
@@ -353,7 +406,10 @@
       .pricing-grid{grid-template-columns:1fr;max-width:420px;}
       .testimonials{padding:0 24px 80px;}
       .testimonials-grid{grid-template-columns:1fr;}
+      .contact-section{padding:80px 24px;}
+      .contact-grid{grid-template-columns:1fr;}
       .cta-strip{padding:60px 24px;}
+            .cta-section{padding:80px 24px;}
       footer{flex-direction:column;align-items:flex-start;padding:32px 24px;}
       .stats-section{padding:80px 24px;}
       .calc-card{padding:32px 24px;}
@@ -366,6 +422,9 @@
       .btn-demo-wrap{width:100%;display:block;}
       .stat-tiles{grid-template-columns:1fr;}
       .sc-btn-row{grid-template-columns:1fr;}
+            .cta-actions{flex-direction:column;align-items:stretch;}
+      .cta-actions{flex-direction:column;align-items:stretch;}
+      .btn-cta-primary,.btn-cta-secondary{justify-content:center;width:100%;}
     }
     /* ── Mobile steps: horizontal numbered timeline instead of plain grid cards ── */
     @media(max-width:900px){
@@ -391,6 +450,7 @@
     <a href="#demo-section">Live demo</a>
     <a href="#features">Features</a>
     <a href="#pricing">Pricing</a>
+    <a href="#contact">Contact</a>
   </div>
   <div class="nav-cta">
     <a href="/login"><button class="btn-nav-login">Sign in</button></a>
@@ -703,6 +763,7 @@
   </div>
 </section>
 
+
 <!-- CONTACT SECTION -->
 <section class="contact-section" id="contact">
   <div class="contact-inner">
@@ -877,7 +938,6 @@ document.addEventListener('click', function(e){
     }catch(e){msg.textContent='Could not send. Please email billy@reviewlift.app directly.';msg.className='error';}
     btn.disabled=false;btn.textContent='Send message →';
   }
-
 
 </script>
 </body>
