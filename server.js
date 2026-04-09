@@ -193,8 +193,7 @@ app.get("/r/:business", async (req, res) => {
   const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (error || !data) return res.status(404).send("Business not found");
 
-  const { error: visitError } = await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
-  if (visitError) console.error("Events insert error (visit):", visitError.message);
+  await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
 
   const pagePath = path.join(__dirname, "public", "index.html");
   const page = fs.readFileSync(pagePath, "utf8");
@@ -318,12 +317,10 @@ app.post("/create-business", async (req, res) => {
       subscription_active: false,
       trial_ends_at: trialEnd.toISOString(),
     });
-
+ 
     if (error) {
-      // Log the full Supabase error to Vercel logs so you can diagnose RLS/schema issues
-      console.error("Supabase insert error on /create-business:", JSON.stringify(error));
-      // Return a friendly message to the user, not the raw DB error
-      if (error.code === "42501" || (error.message && error.message.includes("row-level security"))) {
+      console.error("Supabase insert error /create-business:", JSON.stringify(error));
+      if (error.code === "42501" || (error.message && error.message.includes("row-level"))) {
         return res.status(500).json({ error: "Database permission error. Please contact support." });
       }
       return res.status(500).json({ error: error.message || "Could not create account. Please try again." });
@@ -331,6 +328,53 @@ app.post("/create-business", async (req, res) => {
 
     req.session.slug = slug;
     req.session.save();
+
+    // Send welcome email via Resend
+    try {
+      const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
+      const dashboardUrl = `${process.env.BASE_URL}/for-business`;
+      await resend.emails.send({
+        from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+        to: email,
+        subject: `Welcome to ReviewLift, ${name}`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+          <body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:32px 16px;">
+              <tr><td align="center">
+                <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                  <tr><td style="background:#1E1E1C;padding:22px 32px;">
+                    <p style="margin:0;font-family:Arial,sans-serif;font-size:18px;font-weight:bold;color:#EAE7DC;">⭐ ReviewLift</p>
+                  </td></tr>
+                  <tr><td style="padding:36px 32px 28px;">
+                    <h2 style="margin:0 0 14px;font-size:21px;color:#1E1E1C;font-family:Arial,sans-serif;font-weight:700;line-height:1.3;">You're in, ${name}.</h2>
+                    <p style="margin:0 0 12px;font-size:15px;color:#555;line-height:1.65;">Your review funnel for <strong style="color:#1E1E1C;">${name}</strong> is live. Customers can already use it — share the link below to start collecting reviews.</p>
+                    <p style="margin:0 0 6px;font-size:13px;color:#888;">Your review funnel link:</p>
+                    <p style="margin:0 0 24px;font-size:14px;font-family:'Courier New',monospace;background:#f5f5f3;padding:10px 14px;border-radius:6px;color:#333;word-break:break-all;">${funnelUrl}</p>
+                    <p style="margin:0 0 10px;font-size:15px;color:#555;line-height:1.65;">Your next step: choose a plan so your account stays active after the 14-day trial.</p>
+                    <table cellpadding="0" cellspacing="0" style="margin-top:4px;">
+                      <tr><td>
+                        <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 32px;border-radius:8px;font-family:Arial,sans-serif;">Go to your dashboard →</a>
+                      </td></tr>
+                    </table>
+                  </td></tr>
+                  <tr><td style="padding:16px 32px 24px;border-top:1px solid #eee;">
+                    <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Questions? Reply to this email or contact <a href="mailto:billy@reviewlift.app" style="color:#C8A96E;text-decoration:none;">billy@reviewlift.app</a></p>
+                  </td></tr>
+                </table>
+              </td></tr>
+            </table>
+          </body>
+          </html>
+        `,
+      });
+    } catch (emailErr) {
+      // Non-fatal — account was created successfully, email just failed
+      console.error("Welcome email failed (non-fatal):", emailErr.message);
+    }
+
     res.json({ success: true, slug });
   } catch (err) {
     console.error("Server error on /create-business:", err);
