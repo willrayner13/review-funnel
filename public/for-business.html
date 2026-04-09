@@ -141,13 +141,33 @@
     .toast.error { border-color: rgba(192,103,90,0.4); }
 
     @media (max-width: 700px) {
-      .topnav { padding: 14px 16px; }
+      .topnav { padding: 12px 16px; }
       .metrics-grid { grid-template-columns: 1fr 1fr; }
       .qr-area { flex-direction: column; }
       .dash-body { padding: 24px 16px 60px; }
       .input-row { flex-direction: column; }
       .input-row button { height: 52px; width: 100%; padding: 0; }
+      /* Hide desktop nav items, show hamburger */
+      .nav-right { display: none; }
+      .nav-menu-btn { display: flex; }
     }
+    @media (max-width: 480px) {
+      .onboarding-steps { grid-template-columns: 1fr 1fr; }
+      .ob-step-desc { display: none; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .plans-row { grid-template-columns: 1fr; }
+    }
+    /* ── Mobile nav for dashboard ── */
+    .nav-menu-btn{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:transparent;border:none;cursor:pointer;padding:8px;min-height:0;width:36px;height:36px;flex-shrink:0;}
+    .nav-menu-btn span{display:block;width:20px;height:2px;background:var(--cream-dim);border-radius:2px;transition:all .25s;}
+    .nav-menu-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-menu-btn.open span:nth-child(2){opacity:0;}
+    .nav-menu-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .nav-drawer-dash{display:none;position:fixed;top:60px;left:0;right:0;background:rgba(22,22,20,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:8px 0 16px;flex-direction:column;z-index:199;}
+    .nav-drawer-dash.open{display:flex;}
+    .nav-drawer-dash a,.nav-drawer-dash button{display:block;width:100%;text-align:left;padding:14px 20px;font-size:0.9rem;color:var(--cream-dim);background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s;}
+    .nav-drawer-dash a:last-child,.nav-drawer-dash button:last-child{border-bottom:none;}
+    .nav-drawer-dash a:hover,.nav-drawer-dash button:hover{color:var(--cream);}
 
     /* ── Getting Started onboarding banner ── */
     .onboarding-banner{background:linear-gradient(135deg,var(--surface) 0%,rgba(200,169,110,0.06) 100%);border:1px solid rgba(200,169,110,0.25);border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:36px;position:relative;overflow:hidden;}
@@ -187,7 +207,17 @@
     <a href="/settings"><button style="background:transparent;color:var(--cream-dim);border:none;font-size:0.8rem;padding:9px 14px;min-height:38px;">⚙ Settings</button></a>
     <button onclick="logout()" style="background:transparent;color:var(--cream-dim);border:none;min-height:38px;font-size:0.8rem;padding:9px 14px;">Sign out</button>
   </div>
+  <!-- Mobile hamburger — shown only on small screens -->
+  <button class="nav-menu-btn" id="dashHamburger" onclick="toggleDashNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<!-- Mobile nav drawer for dashboard -->
+<div class="nav-drawer-dash" id="dashDrawer">
+  <a href="/billing" onclick="closeDashNav()">💳 Billing</a>
+  <a href="/settings" onclick="closeDashNav()">⚙ Settings</a>
+  <button onclick="closeDashNav();logout();">Sign out</button>
+</div>
 
 <div class="dash-body">
 
@@ -593,6 +623,25 @@ function showToast(message, type = "success") {
   t.className = `toast ${type} show`;
   setTimeout(() => t.classList.remove("show"), 4000);
 }
+
+// ── Mobile nav drawer for dashboard ──
+function toggleDashNav(){
+  const h = document.getElementById('dashHamburger');
+  const d = document.getElementById('dashDrawer');
+  h.classList.toggle('open');
+  d.classList.toggle('open');
+}
+function closeDashNav(){
+  document.getElementById('dashHamburger').classList.remove('open');
+  document.getElementById('dashDrawer').classList.remove('open');
+}
+document.addEventListener('click', function(e){
+  const d = document.getElementById('dashDrawer');
+  const h = document.getElementById('dashHamburger');
+  if(d && d.classList.contains('open') && !d.contains(e.target) && !h.contains(e.target)){
+    closeDashNav();
+  }
+});
 </script>
 </body>
 </html>
