@@ -134,12 +134,14 @@ init();
 
 async function loadDetails(){
   const res = await fetch("/stats/"+slug);
-  if(!res.ok) return;
+  if(!res.ok){
+    if(res.status === 401){ window.location="/login"; return; }
+    return;
+  }
   const stats = await res.json();
   document.getElementById("bizNameInput").value = stats.business_name || "";
   document.getElementById("reviewLinkInput").value = stats.review_link || "";
 }
-
 function togglePw(inputId, btn){
   const input = document.getElementById(inputId);
   if(input.type === "password"){
