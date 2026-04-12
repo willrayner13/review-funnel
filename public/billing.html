@@ -172,7 +172,7 @@ async function init(){
 
   document.getElementById("planName").textContent = currentPlan === "pro" ? "Pro" : "Starter";
   document.getElementById("planPrice").innerHTML = currentPlan === "pro"
-    ? '<sup>£</sup>29.99<span>/mo</span>'
+    ? '<sup>£</sup>24.99<span>/mo</span>'
     : '<sup>£</sup>9.99<span>/mo</span>';
 
   const badge = document.getElementById("planBadge");
@@ -217,7 +217,7 @@ async function init(){
     </div>
     <div class="plan-option ${currentPlan==='pro'?'current-plan':''}">
       <div class="plan-option-name">Pro</div>
-      <div class="plan-option-price"><sup>£</sup>29.99<span>/mo</span></div>
+      <div class="plan-option-price"><sup>£</sup>24.99<span>/mo</span></div>
       <ul class="plan-option-features">
         <li>Everything in Starter</li><li>AI reply generator</li>
         <li>SMS & email requests</li><li>Advanced analytics</li>
