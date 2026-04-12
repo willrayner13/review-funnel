@@ -71,7 +71,7 @@ if (event.type === "checkout.session.completed") {
     const plan = sess.metadata.plan;
     const customer = sess.customer;
     try {
-      const mrr = plan === "pro" ? 29.99 : 9.99;
+      const mrr = plan === "pro" ? 24.99 : 9.99;
       await supabase
         .from("businesses")
         .update({ subscription_active: true, plan_type: plan, stripe_customer: customer, subscribed_at: new Date().toISOString(), mrr })
@@ -179,7 +179,7 @@ app.use(
 );
 
 // ─── HTML ROUTES ──────────────────────────────────────────────────────────────
-const htmlPages = ["admin", "login", "for-business", "lapsed", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings", "about", "contact"];
+const htmlPages = ["admin", "login", "for-business", "lapsed", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings", "about", "contact", "blog"];
 htmlPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.sendFile(path.resolve("public", `${page}.html`));
@@ -583,7 +583,7 @@ app.post("/upgrade-plan", async (req, res) => {
     const sub = subs.data[0];
     if (!sub) return res.status(400).json({ error: "No active trial found." });
     await stripe.subscriptions.update(sub.id, { items: [{ id: sub.items.data[0].id, price: newPriceId }], proration_behavior: "none" });
-    const newMrr = plan === "pro" ? 29.99 : 9.99;
+    const newMrr = plan === "pro" ? 24.99 : 9.99;
     await supabase.from("businesses").update({ plan_type: plan, mrr: newMrr }).eq("slug", req.session.slug);
     res.json({ success: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
