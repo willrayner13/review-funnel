@@ -677,7 +677,7 @@ app.post("/send-email", async (req, res) => {
                   </table>
                 </td></tr>
                 <tr><td style="padding:16px 32px 24px;border-top:1px solid #eee;">
-                  <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Sent by ${business.name} · Powered by <a href="https://reviewlift.app" style="color:#C8A96E;text-decoration:none;">ReviewLift</a></p>
+                  <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Sent by ${business.name} · Powered by <a href="https://www.reviewlift.app" style="color:#C8A96E;text-decoration:none;">ReviewLift</a></p>
                 </td></tr>
               </table>
             </td></tr>
