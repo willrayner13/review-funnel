@@ -650,3 +650,52 @@ ul.feedback-list::-webkit-scrollbar-thumb,
   /* Fix position: sticky in iOS Safari */
   .topnav { -webkit-transform: translateZ(0); }
 }
+
+.preview-banner {
+  background: linear-gradient(135deg, #C8A96E 0%, #D4B87A 100%);
+  color: #1A1A18;
+  text-align: center;
+  padding: 10px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.preview-banner a {
+  background: #1A1A18;
+  color: #C8A96E;
+  padding: 8px 18px;
+  border-radius: 40px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.preview-banner a:hover {
+  background: #000;
+  color: #D4B87A;
+  transform: scale(1.02);
+}
+.preview-banner .banner-close {
+  background: transparent;
+  color: #1A1A18;
+  border: 1px solid rgba(26,26,24,0.3);
+  padding: 4px 10px;
+  border-radius: 40px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+/* Push content down when banner is present */
+body.has-preview-banner .funnel-wrap {
+  padding-top: 70px;
+}
