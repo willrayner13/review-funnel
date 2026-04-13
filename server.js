@@ -528,7 +528,7 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
     }
 
     const normalisedPhone = normalisePhone(phone);
-    const message = `Hi! Thanks for visiting ${data.name} today. We'd love to know how it went - takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
+    const message = `Hello Florence! Hope you are having a lovely time with Charlie and Nathan`;
     await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: normalisedPhone, body: message });
 
     // Record the SMS send as an event for usage counting
