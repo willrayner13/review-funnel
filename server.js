@@ -189,6 +189,19 @@ htmlPages.forEach((page) => {
 app.get("/", (req, res) => res.sendFile(path.resolve("public", "landing.html")));
 app.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.html")));
 
+// ─── DYNAMIC BLOG POST ROUTE ─────────────────────────────────────────────────
+app.get('/blog/:slug', (req, res) => {
+  const slug = req.params.slug;
+  // Prevent directory traversal attacks
+  if (slug.includes('..') || slug.includes('/')) {
+    return res.status(400).send('Invalid slug');
+  }
+  const filePath = path.join(__dirname, 'public', `${slug}.html`);
+  res.sendFile(filePath, (err) => {
+    if (err) res.status(404).send('Post not found');
+  });
+});
+
 // ─── PUBLIC: subscription status ──────────────────────────────────────────────
 app.get("/subscription-status/:slug", async (req, res) => {
   const { data, error } = await supabase

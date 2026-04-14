@@ -7,15 +7,15 @@
   <meta name="description" content="Practical advice on Google reviews, reputation management, and growing your local business — from the team behind ReviewLift.">
   <meta name="keywords" content="reviewlift blog, google reviews uk, reputation management tips, local business marketing, review funnel guide">
   <link rel="canonical" href="https://www.reviewlift.app/blog">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   
   <!-- Fonts & base styling -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
   
   <style>
     /* ——— ROOT VARIABLES ——— */
@@ -205,9 +205,9 @@
       font-weight: 700;
     }
 
-    /* ——— BLOG CONTENT ——— */
+    /* ——— PAGE WRAPPER ——— */
     .page-wrap {
-      max-width: 820px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 110px 24px 80px;
       position: relative;
@@ -216,6 +216,7 @@
 
     .blog-header {
       margin-bottom: 52px;
+      text-align: center;
     }
     .eyebrow {
       font-size: 0.7rem;
@@ -246,98 +247,72 @@
       color: var(--cream-dim);
       line-height: 1.8;
       max-width: 640px;
+      margin: 0 auto;
     }
 
-    /* ——— BLOG POST CARD ——— */
+    /* ——— CARD GRID ——— */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
+    }
+
     .post-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--r-lg);
-      padding: 44px 48px;
-      margin-bottom: 48px;
-      position: relative;
       overflow: hidden;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+      transition: transform 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
-    .post-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
+    .post-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-4px);
+    }
+
+    .post-card-content {
+      padding: 28px 24px;
+      flex: 1;
     }
 
     .post-meta {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 20px;
-      font-size: 0.75rem;
+      margin-bottom: 16px;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--cream-dim);
     }
-    .post-date {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .post-readtime {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .post-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.9rem;
-      font-weight: 800;
-      line-height: 1.2;
-      letter-spacing: -0.5px;
-      margin-bottom: 28px;
-      color: var(--cream);
-    }
 
-    .post-body {
-      color: var(--cream-dim);
-    }
-    .post-body h2 {
+    .post-title {
       font-family: 'Syne', sans-serif;
       font-size: 1.3rem;
       font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 12px;
       color: var(--cream);
-      margin: 36px 0 16px;
-      letter-spacing: -0.3px;
-    }
-    .post-body h2:first-of-type {
-      margin-top: 8px;
-    }
-    .post-body p {
-      font-size: 1rem;
-      line-height: 1.75;
-      margin-bottom: 20px;
-    }
-    .post-body strong {
-      color: var(--cream);
-      font-weight: 600;
-    }
-    .post-body ul, .post-body ol {
-      margin: 16px 0 24px 24px;
-      color: var(--cream-dim);
-    }
-    .post-body li {
-      margin-bottom: 8px;
-      font-size: 1rem;
     }
 
-    .post-footer-note {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
+    .post-excerpt {
       font-size: 0.9rem;
+      color: var(--cream-dim);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .post-card-footer {
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
       color: var(--accent);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     /* ——— FOOTER ——— */
@@ -383,17 +358,10 @@
       .nav-cta { display: none; }
       .nav-hamburger { display: flex; }
       .page-wrap { padding: 100px 20px 60px; }
-      .post-card { padding: 32px 28px; }
-      .post-title { font-size: 1.7rem; }
     }
     @media (max-width: 600px) {
-      .post-card { padding: 28px 20px; }
-      .post-title { font-size: 1.5rem; }
-      .post-body p { font-size: 0.95rem; }
+      .posts-grid { grid-template-columns: 1fr; }
       footer { flex-direction: column; align-items: flex-start; padding: 32px 24px; }
-    }
-    @media (max-width: 480px) {
-      .page-wrap { padding: 90px 16px 50px; }
     }
 
     .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
@@ -402,7 +370,7 @@
 </head>
 <body>
 
-<!-- NAVIGATION -->
+<!-- NAVIGATION (unchanged) -->
 <nav>
   <a href="/"><div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div></a>
   <div class="nav-links">
@@ -434,7 +402,7 @@
   </div>
 </div>
 
-<!-- BLOG CONTENT -->
+<!-- BLOG INDEX CONTENT -->
 <div class="page-wrap">
   <div class="blog-header reveal">
     <span class="eyebrow">Insights & guides</span>
@@ -442,159 +410,66 @@
     <p class="blog-intro">Practical advice on Google reviews, customer trust, and growing your local business — without the fluff.</p>
   </div>
 
-  <!-- POST 1 -->
-  <article class="post-card reveal" style="transition-delay: .1s">
-    <div class="post-meta">
-      <span class="post-date">📅 12 Apr 2026</span>
-      <span class="post-readtime">⏱️ 4 min read</span>
-    </div>
-    <h2 class="post-title">How to get more Google reviews for your local business in the UK</h2>
-    <div class="post-body">
-      <p>Google reviews are one of the most important trust signals for any local business. When someone searches for a service in their area, they rarely compare websites in detail — they scan ratings, read a few reviews, and make a decision in seconds.</p>
-      <p>In many cases, your Google rating is the first impression you make. It can be the difference between someone choosing you or a competitor.</p>
-      <p>Yet most local businesses don’t have enough reviews, even when they deliver great service.</p>
-
-      <h2>Why most businesses struggle to get Google reviews</h2>
-      <p>It’s rarely because customers are unhappy. In fact, the opposite is usually true. The problem is execution.</p>
-      <p>There are three common reasons businesses fall behind on reviews:</p>
-      <ul>
-        <li><strong>1. It feels awkward to ask</strong><br>Many business owners know reviews matter, but feel uncomfortable asking. It can feel pushy or awkward, even when the customer is happy. So they don’t ask at all — and the moment passes.</li>
-        <li><strong>2. They forget in the moment</strong><br>After a good experience, both the business and customer move on quickly. The intention to “leave a review later” gets lost in daily life. By the time anyone remembers, the moment has passed.</li>
-        <li><strong>3. There is no system in place</strong><br>Most businesses treat reviews as something they do occasionally, not something built into their process. Without a system, results are inconsistent.</li>
-      </ul>
-
-      <h2>The solution: make it passive and automatic</h2>
-      <p>The key to consistently getting more Google reviews is not persuasion — it’s system design.</p>
-      <p>Instead of relying on memory or awkward conversations, you embed review collection into your customer journey.</p>
-      <ul>
-        <li><strong>1. Use a QR code at the point of service</strong><br>A QR code linking directly to your Google review page removes friction. Customers can leave a review in seconds while the experience is fresh.</li>
-        <li><strong>2. Add a review link to your email signature</strong><br>Every email becomes an opportunity to collect reviews. Over time, this creates a steady flow without extra effort.</li>
-        <li><strong>3. Follow up after service</strong><br>A short message sent shortly after a purchase or appointment significantly increases response rates. Timing is everything.</li>
-      </ul>
-
-      <h2>Why consistency matters more than effort</h2>
-      <p>Businesses that consistently get reviews aren’t necessarily better — they’re more systematic.</p>
-      <p>Once review collection becomes part of your process, growth becomes predictable rather than random.</p>
-      <p>Instead of hoping for reviews, you start generating them.</p>
-
-      <h2>A simpler way to manage this</h2>
-      <p>Some businesses build these systems manually. Others use tools to automate the process.</p>
-      <p>ReviewLift is one example of a tool designed to help local businesses do this. It helps send review requests via SMS and email and makes it easier to collect feedback consistently.</p>
-      <p>The goal is simple: make it easier for happy customers to leave a review, and ensure no opportunity is missed.</p>
-
-      <h2>Final thought</h2>
-      <p>Getting more Google reviews isn’t about asking harder — it’s about building a system where asking happens automatically.</p>
-      <p>Once that system is in place, your online reputation grows in the background while you focus on running your business.</p>
-    </div>
-    <div class="post-footer-note">
-      <span>⭐</span> Ready to build your system? <a href="/admin" style="color:var(--accent); text-decoration:underline; text-underline-offset:4px;">Start your 14‑day free trial →</a>
-    </div>
-  </article>
-
-  <!-- POST 2 -->
-  <article class="post-card reveal" style="transition-delay: .2s">
-    <div class="post-meta">
-      <span class="post-date">📅 12 Apr 2026</span>
-      <span class="post-readtime">⏱️ 5 min read</span>
-    </div>
-    <h2 class="post-title">How much a single bad Google review can cost your business</h2>
-    <div class="post-body">
-      <p>Most business owners underestimate the impact of a single bad Google review.</p>
-      <p>It feels small in isolation — just one customer, one opinion, one rating. But in reality, that one review can quietly influence dozens or even hundreds of future customers.</p>
-
-      <h2>Why bad reviews matter more than you think</h2>
-      <p>When someone searches for a local business, they don’t read every review. They skim. They look for patterns. And most importantly, they look for reasons <em>not</em> to trust you.</p>
-      <p>A single negative review creates doubt, even if everything else is positive.</p>
-      <p>It shifts the question in a customer’s mind from:<br>“Is this a good business?”<br>to<br>“Is this business reliable?”</p>
-      <p>That small shift can change behaviour.</p>
-
-      <h2>The hidden impact of one bad review</h2>
-      <p>A bad review doesn’t just sit on your profile — it affects how people interpret everything else:</p>
-      <ul>
-        <li><strong>1. Lower conversion rates</strong><br>Even if people find you, they are less likely to call, book, or buy if they see negative feedback.</li>
-        <li><strong>2. Reduced trust</strong><br>One negative experience often outweighs multiple positive ones in perception. People assume the worst-case scenario might happen to them.</li>
-        <li><strong>3. Long-term reputation effects</strong><br>Reviews compound. A few early negative reviews can influence your overall rating for years, especially for small businesses with low volume.</li>
-      </ul>
-
-      <h2>The real problem: not the bad review itself</h2>
-      <p>Every business gets negative feedback at some point. That’s normal.</p>
-      <p>The real issue is <strong>lack of balance</strong>.</p>
-      <p>Most businesses don’t actively generate enough positive reviews to dilute the impact of the occasional negative one.</p>
-      <p>So the negative reviews stand out more than they should.</p>
-
-      <h2>Why businesses fail to fix it</h2>
-      <p>There are two main reasons:</p>
-      <ul>
-        <li><strong>1. They react instead of preventing</strong><br>Most businesses only respond to bad reviews after they happen, rather than building a system to consistently generate positive ones.</li>
-        <li><strong>2. They don’t ask enough customers</strong><br>Happy customers rarely leave reviews unless prompted. Without a system, positive feedback goes uncollected.</li>
-      </ul>
-
-      <h2>The solution: proactive reputation building</h2>
-      <p>The goal is not to eliminate bad reviews — it’s to ensure they are outweighed by a steady stream of positive ones.</p>
-      <p>This comes down to three things:</p>
-      <ul>
-        <li>Asking every happy customer</li>
-        <li>Asking at the right time</li>
-        <li>Making it effortless to respond</li>
-      </ul>
-
-      <h2>A practical way to do this</h2>
-      <p>Many businesses now automate parts of this process using tools that send follow-up messages and review requests after a service or purchase.</p>
-      <p>ReviewLift is one example of a tool that helps businesses manage this by sending SMS and email review requests and helping ensure happy customers are guided to leave feedback.</p>
-      <p>The idea is simple: don’t leave your reputation to chance.</p>
-
-      <h2>Final thought</h2>
-      <p>A single bad review can influence perception far more than most business owners realise.</p>
-      <p>But with the right system in place, its impact becomes minimal — because it’s balanced by a consistent flow of positive feedback.</p>
-      <p>In the end, your reputation isn’t defined by one review. It’s defined by the system you build to generate them.</p>
-    </div>
-    <div class="post-footer-note">
-      <span>🛡️</span> Protect your reputation automatically — <a href="/admin" style="color:var(--accent); text-decoration:underline; text-underline-offset:4px;">try ReviewLift free →</a>
-    </div>
-  </article>
-
-    <!-- POST 3: COMPETITOR COMPARISON -->
-  <article class="post-card reveal" style="transition-delay: .3s">
-    <div class="post-meta">
-      <span class="post-date">📅 12 Apr 2026</span>
-      <span class="post-readtime">⏱️ 2 min read</span>
-    </div>
-    <h2 class="post-title">ReviewLift vs. The Other ReviewLift: What's the Difference?</h2>
-    <div class="post-body">
-      <p>You might have noticed there are two sites using the name "ReviewLift" — <strong>reviewlift.app</strong> (us) and <strong>reviewlift.pro</strong> (them). Here's the honest difference, so you can choose what's right for your business.</p>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:28px 0;">
-        <div style="background:var(--surface-2); border-radius:var(--r); padding:24px 20px;">
-          <div style="font-weight:700; margin-bottom:14px; color:var(--accent); font-family:'Syne',sans-serif;">🇬🇧 ReviewLift.app</div>
-          <ul style="list-style:none; padding:0; margin:0;">
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--accent);">✓</span> Self‑serve software</li>
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--accent);">✓</span> Live demo — try it now</li>
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--accent);">✓</span> £9.99/mo, cancel anytime</li>
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--accent);">✓</span> Built for UK local businesses</li>
-          </ul>
+  <div class="posts-grid">
+    <!-- Post 1 Card -->
+    <a href="/blog/how-to-get-more-google-reviews-uk" class="post-card reveal" style="transition-delay: .1s">
+      <div class="post-card-content">
+        <div class="post-meta">
+          <span>📅 12 Apr 2026</span>
+          <span>⏱️ 4 min</span>
         </div>
-        <div style="background:var(--surface-2); border-radius:var(--r); padding:24px 20px; opacity:0.85;">
-          <div style="font-weight:700; margin-bottom:14px; font-family:'Syne',sans-serif;">📋 ReviewLift.pro</div>
-          <ul style="list-style:none; padding:0; margin:0;">
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--cream-dim);">→</span> Done‑for‑you agency service</li>
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--cream-dim);">→</span> Contact form / sales call</li>
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--cream-dim);">→</span> Custom pricing (unlisted)</li>
-            <li style="margin-bottom:12px; display:flex; gap:10px;"><span style="color:var(--cream-dim);">→</span> U.S.‑focused</li>
-          </ul>
-        </div>
+        <h2 class="post-title">How to get more Google reviews for your local business in the UK</h2>
+        <p class="post-excerpt">Google reviews are the first impression you make. Yet most local businesses don't have enough. Here's the system that changes that.</p>
       </div>
+      <div class="post-card-footer">
+        <span>Read article →</span>
+      </div>
+    </a>
 
-      <p>We're not saying one is better than the other — they serve different needs. If you want a hands‑off, fully managed service, the .pro site might be for you. But if you're a UK business owner who wants an affordable, self‑serve tool you control directly, you're already in the right place.</p>
+    <!-- Post 2 Card -->
+    <a href="/blog/cost-of-a-bad-google-review" class="post-card reveal" style="transition-delay: .2s">
+      <div class="post-card-content">
+        <div class="post-meta">
+          <span>📅 12 Apr 2026</span>
+          <span>⏱️ 5 min</span>
+        </div>
+        <h2 class="post-title">How much a single bad Google review can cost your business</h2>
+        <p class="post-excerpt">One negative review can quietly influence dozens of future customers. Understand the real cost and how to protect yourself.</p>
+      </div>
+      <div class="post-card-footer">
+        <span>Read article →</span>
+      </div>
+    </a>
 
-      <p>The live demo on our homepage shows exactly how the review funnel works — no signup required.</p>
-    </div>
-    <div class="post-footer-note">
-      <span>🔍</span> See for yourself — <a href="/#demo-section" style="color:var(--accent); text-decoration:underline; text-underline-offset:4px;">try the live demo →</a>
-    </div>
-  </article>
-  
-  <div style="text-align: center; margin-top: 24px;">
-    <a href="/" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--cream-dim); border: 1px solid var(--border); padding: 10px 24px; border-radius: 40px; transition: all 0.2s;">← Back to home</a>
+    <!-- Post 3 Card -->
+    <a href="/blog/reviewlift-vs-the-other-reviewlift" class="post-card reveal" style="transition-delay: .3s">
+      <div class="post-card-content">
+        <div class="post-meta">
+          <span>📅 12 Apr 2026</span>
+          <span>⏱️ 2 min</span>
+        </div>
+        <h2 class="post-title">ReviewLift vs. The Other ReviewLift: What's the Difference?</h2>
+        <p class="post-excerpt">Two sites, same name. One is a UK self‑serve tool. The other is a US agency service. Here's the honest comparison.</p>
+      </div>
+      <div class="post-card-footer">
+        <span>Read article →</span>
+      </div>
+    </a>
+
+    <!-- NEW Post 4 Card (Comparison Blog) -->
+    <a href="/blog/reviewlift-vs-birdeye-vs-trustpilot" class="post-card reveal" style="transition-delay: .4s">
+      <div class="post-card-content">
+        <div class="post-meta">
+          <span>📅 14 Apr 2026</span>
+          <span>⏱️ 6 min</span>
+        </div>
+        <h2 class="post-title">ReviewLift vs Birdeye vs Trustpilot: Which is Best for UK Local Businesses?</h2>
+        <p class="post-excerpt">Big names come with big price tags. We compare features, pricing, and the private feedback funnel that sets ReviewLift apart.</p>
+      </div>
+      <div class="post-card-footer">
+        <span>Read article →</span>
+      </div>
+    </a>
   </div>
 </div>
 
@@ -641,6 +516,5 @@
     document.querySelectorAll('.reveal').forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight-50) el.classList.add('visible'); });
   });
 </script>
-
 </body>
 </html>
