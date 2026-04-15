@@ -105,6 +105,75 @@
 
     .powered-by { text-align: center; margin-top: 24px; font-size: 0.72rem; color: rgba(234,231,220,0.22); }
     .powered-by a:hover { color: var(--accent); }
+
+    /* Mobile‑friendly demo banner */
+@media (max-width: 600px) {
+  body {
+    padding-top: 70px !important; /* Push content down so banner doesn't cover it */
+  }
+
+  .demo-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--accent);
+    color: #1A1A18;
+    padding: 10px 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    line-height: 1.4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .demo-banner span {
+    flex: 1 1 100%; /* Force text onto its own line on very small screens */
+    max-width: 280px;
+  }
+
+  .demo-banner a {
+    background: #1A1A18;
+    color: var(--accent);
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  /* Adjust funnel wrap spacing */
+  .funnel-wrap {
+    margin-top: 20px;
+  }
+
+  /* Make funnel card padding smaller on mobile */
+  .funnel-card {
+    padding: 32px 20px;
+  }
+
+  /* Stack buttons if needed */
+  .funnel-options {
+    gap: 10px;
+  }
+
+  .funnel-btn {
+    padding: 20px 10px;
+    font-size: 0.9rem;
+  }
+
+  .funnel-btn .funnel-icon {
+    font-size: 2rem;
+  }
+}
   </style>
 </head>
 <body>
