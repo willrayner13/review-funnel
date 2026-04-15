@@ -112,17 +112,28 @@
 
 
     /* Back button — appears on steps 2+ to let customers correct mistakes */
-    .funnel-back {
-      display: none;
-      background: none; border: none; cursor: pointer;
-      color: rgba(234,231,220,0.3); font-size: 0.78rem;
-      padding: 0; margin-bottom: 14px;
-      font-family: "DM Sans", sans-serif;
-      transition: color 0.2s;
-      align-items: center; gap: 4px;
-    }
-    .funnel-back:hover { color: var(--cream-dim); transform: none; box-shadow: none; }
+.funnel-back {
+  display: none;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  color: rgba(234,231,220,0.3);
+  font-size: 0.78rem;
+  padding: 0;
+  margin-bottom: 14px;
+  font-family: "DM Sans", sans-serif;
+  transition: color 0.2s;
+  align-items: center;
+  gap: 4px;
+  box-shadow: none !important;
+}
 
+.funnel-back:hover {
+  color: var(--cream-dim);
+  background: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
   .preview-banner {
     background: linear-gradient(135deg, #C8A96E 0%, #D4B87A 100%);
     color: #1A1A18;
