@@ -95,12 +95,12 @@
     <div class="form-group"><label>Business name</label><input id="name" type="text" placeholder="e.g. The Coffee House"></div>
     <div class="form-group"><label>Business email</label><input id="email" type="email" placeholder="you@yourbusiness.com"></div>
     <div class="form-group">
-      <label>Google review link</label>
+      <label>Your review link</label>
       <div class="review-link-row">
-        <input id="review" type="url" placeholder="https://g.page/r/your-business/review">
+        <input id="review" type="url" placeholder="https://g.page/r/your-business/review or Trustpilot/Checkatrade link">
         <button class="help-btn" onclick="openModal()" type="button">❓ How to find it</button>
       </div>
-      <p class="helper-text">This is the direct link customers use to leave you a Google review.</p>
+      <p class="helper-text">Paste your Google, Trustpilot, Checkatrade, or any review platform link. Happy customers will be sent here.</p>
     </div>
     <div class="form-group">
       <label>Dashboard password</label>
@@ -153,12 +153,12 @@
     <p class="global-trial-note">You'll be taken to Stripe's secure checkout to save your card.<br>Cancel anytime from your dashboard — no phone calls, no hassle.</p>
   </div>
 
-  <!-- Google review link helper modal -->
+  <!-- Review link helper modal -->
   <div class="modal-overlay" id="helpModal" onclick="handleOverlayClick(event)">
     <div class="modal">
       <button class="modal-close" onclick="closeModal()">✕</button>
-      <h3>🔍 How to find your Google review link</h3>
-      <p>Your Google review link sends customers directly to your review page on Google. Here's how to find it in 60 seconds:</p>
+      <h3>🔍 How to find your review link</h3>
+      <p>Paste the link to your review page—Google, Trustpilot, Checkatrade, or any platform you use. Here's how to find the most common ones:</p>
       <div class="steps-list">
         <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Go to Google Maps</strong><span>Open <a href="https://maps.google.com" target="_blank" style="color:var(--accent)">maps.google.com</a> and search for your exact business name and town.</span></div></div>
         <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Click on your business listing</strong><span>It appears in the left panel. Make sure it's your official Google Business Profile.</span></div></div>
@@ -167,6 +167,7 @@
       </div>
       <div class="url-example">https://search.google.com/local/writereview?placeid=ChIJxxxxxxxxxxxxxxxx</div>
       <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:20px;line-height:1.55;">Alternatively, log into your <a href="https://business.google.com" target="_blank" style="color:var(--accent)">Google Business Profile</a> and look for <strong style="color:var(--cream)">"Get more reviews"</strong> — Google gives you a short shareable link there too.</p>
+      <p style="font-size:0.8rem;color:var(--cream-dim);margin-top:16px;line-height:1.55;"><strong>Trustpilot:</strong> Go to your Trustpilot page, click "Share," and copy the link.<br><strong>Checkatrade:</strong> Visit your Checkatrade profile and copy the URL from your browser.</p>
       <button class="modal-cta" onclick="closeModal()">Got it — back to sign up</button>
     </div>
   </div>
