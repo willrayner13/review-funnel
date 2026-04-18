@@ -393,56 +393,62 @@ app.post("/create-business", async (req, res) => {
       return res.status(500).json({ error: error.message || "Could not create account. Please try again." });
     }
 
+    // ✅ FIX: Wait for session to save before responding
     req.session.slug = slug;
-    req.session.save();
+    req.session.save(async (err) => {
+      if (err) {
+        console.error("Session save error:", err);
+        return res.status(500).json({ error: "Session save failed. Please try again." });
+      }
 
-    // Send welcome email via Resend
-    try {
-      const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
-      const dashboardUrl = `${process.env.BASE_URL}/for-business`;
-      await resend.emails.send({
-        from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-        to: email,
-        subject: `Welcome to ReviewLift, ${name}`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-          <body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:32px 16px;">
-              <tr><td align="center">
-                <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                  <tr><td style="background:#1E1E1C;padding:22px 32px;">
-                    <p style="margin:0;font-family:Arial,sans-serif;font-size:18px;font-weight:bold;color:#EAE7DC;">⭐ ReviewLift</p>
-                  </td></tr>
-                  <tr><td style="padding:36px 32px 28px;">
-                    <h2 style="margin:0 0 14px;font-size:21px;color:#1E1E1C;font-family:Arial,sans-serif;font-weight:700;line-height:1.3;">You're in, ${name}.</h2>
-                    <p style="margin:0 0 12px;font-size:15px;color:#555;line-height:1.65;">Your review funnel for <strong style="color:#1E1E1C;">${name}</strong> is live. Customers can already use it — share the link below to start collecting reviews.</p>
-                    <p style="margin:0 0 6px;font-size:13px;color:#888;">Your dashboard link:</p>
-                    <p style="margin:0 0 24px;font-size:14px;font-family:'Courier New',monospace;background:#f5f5f3;padding:10px 14px;border-radius:6px;color:#333;word-break:break-all;">${dashboardUrl}</p>
-                    <p style="margin:0 0 10px;font-size:15px;color:#555;line-height:1.65;">Your next step: choose a plan so your account stays active after the 14-day trial.</p>
-                    <table cellpadding="0" cellspacing="0" style="margin-top:4px;">
-                      <tr><td>
-                        <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 32px;border-radius:8px;font-family:Arial,sans-serif;">Go to your dashboard →</a>
-                      </td></tr>
-                    </table>
-                  </td></tr>
-                  <tr><td style="padding:16px 32px 24px;border-top:1px solid #eee;">
-                    <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Questions? Reply to this email or contact <a href="mailto:billy@reviewlift.app" style="color:#C8A96E;text-decoration:none;">billy@reviewlift.app</a></p>
-                  </td></tr>
-                </table>
-              </td></tr>
-            </table>
-          </body>
-          </html>
-        `,
-      });
-    } catch (emailErr) {
-      // Non-fatal — account was created successfully, email just failed
-      console.error("Welcome email failed (non-fatal):", emailErr.message);
-    }
+      // Send welcome email (non‑blocking—don't await it)
+      try {
+        const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
+        const dashboardUrl = `${process.env.BASE_URL}/for-business`;
+        await resend.emails.send({
+          from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+          to: email,
+          subject: `Welcome to ReviewLift, ${name}`,
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+            <body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:32px 16px;">
+                <tr><td align="center">
+                  <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+                    <tr><td style="background:#1E1E1C;padding:22px 32px;">
+                      <p style="margin:0;font-family:Arial,sans-serif;font-size:18px;font-weight:bold;color:#EAE7DC;">⭐ ReviewLift</p>
+                    </td></tr>
+                    <tr><td style="padding:36px 32px 28px;">
+                      <h2 style="margin:0 0 14px;font-size:21px;color:#1E1E1C;font-family:Arial,sans-serif;font-weight:700;line-height:1.3;">You're in, ${name}.</h2>
+                      <p style="margin:0 0 12px;font-size:15px;color:#555;line-height:1.65;">Your review funnel for <strong style="color:#1E1E1C;">${name}</strong> is live. Customers can already use it — share the link below to start collecting reviews.</p>
+                      <p style="margin:0 0 6px;font-size:13px;color:#888;">Your dashboard link:</p>
+                      <p style="margin:0 0 24px;font-size:14px;font-family:'Courier New',monospace;background:#f5f5f3;padding:10px 14px;border-radius:6px;color:#333;word-break:break-all;">${dashboardUrl}</p>
+                      <p style="margin:0 0 10px;font-size:15px;color:#555;line-height:1.65;">Your next step: choose a plan so your account stays active after the 14-day trial.</p>
+                      <table cellpadding="0" cellspacing="0" style="margin-top:4px;">
+                        <tr><td>
+                          <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 32px;border-radius:8px;font-family:Arial,sans-serif;">Go to your dashboard →</a>
+                        </td></tr>
+                      </table>
+                    </td></tr>
+                    <tr><td style="padding:16px 32px 24px;border-top:1px solid #eee;">
+                      <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Questions? Reply to this email or contact <a href="mailto:billy@reviewlift.app" style="color:#C8A96E;text-decoration:none;">billy@reviewlift.app</a></p>
+                    </td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            </body>
+            </html>
+          `,
+        });
+      } catch (emailErr) {
+        console.error("Welcome email failed (non-fatal):", emailErr.message);
+      }
 
-    res.json({ success: true, slug });
+      // ✅ Now respond — session is saved
+      res.json({ success: true, slug });
+    });
   } catch (err) {
     console.error("Server error on /create-business:", err);
     res.status(500).json({ error: err.message || "Something went wrong. Please try again." });
