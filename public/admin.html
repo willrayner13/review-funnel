@@ -57,45 +57,30 @@
     .modal-cta{display:block;width:100%;background:var(--accent);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;padding:13px;border-radius:8px;text-align:center;transition:all .2s;border:none;cursor:pointer;}
     .modal-cta:hover{background:#D4B87A;transform:translateY(-1px);}
     /* Plan screen */
-/* Plan Screen — Guaranteed Visible */
-#planScreen {
-  display: none;
-  max-width: 680px;
-  width: 100%;
-}
-
-#planScreen.visible {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-.plan-header { text-align: center; margin-bottom: 40px; }
-.plan-header h2 { font-size: 1.8rem; margin-bottom: 10px; }
-.plan-header p { color: var(--cream-dim); font-size: 0.95rem; }
-.plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-.plan { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 28px; transition: all .2s; position: relative; overflow: hidden; }
-.plan:hover { border-color: rgba(234,231,220,0.25); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-.plan.featured { border-color: var(--accent); background: linear-gradient(135deg, var(--surface-2) 0%, rgba(200,169,110,0.07) 100%); }
-.plan.featured::after { content: 'POPULAR'; position: absolute; top: 14px; right: -24px; background: var(--accent); color: #1E1E1C; font-size: 0.58rem; font-weight: 700; letter-spacing: 1px; padding: 4px 32px; transform: rotate(35deg); }
-.plan-name { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
-.plan-price { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; margin: 10px 0 4px; }
-.plan-price sup { font-size: 1rem; vertical-align: top; margin-top: 6px; }
-.plan-price span { font-size: 0.9rem; font-weight: 400; color: var(--cream-dim); }
-.plan-desc { font-size: 0.8rem; color: var(--cream-dim); margin-bottom: 20px; line-height: 1.5; }
-.plan-features { list-style: none; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
-.plan-features li { font-size: 0.8rem; color: var(--cream-dim); display: flex; align-items: center; gap: 8px; }
-.plan-features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
-.plan-trial-note { font-size: 0.7rem; color: rgba(234,231,220,0.3); margin-bottom: 16px; line-height: 1.5; padding: 10px 12px; background: rgba(200,169,110,0.06); border-radius: 6px; border: 1px solid rgba(200,169,110,0.15); }
-.plan button { width: 100%; justify-content: center; padding: 13px; font-size: 0.9rem; }
-.plan.featured button { background: var(--accent); color: #1E1E1C; border-color: var(--accent); }
-.plan.featured button:hover { background: #D4B87A; }
-.global-trial-note { text-align: center; font-size: 0.78rem; color: rgba(234,231,220,0.3); margin-top: 12px; line-height: 1.6; }
-#result { text-align: center; font-size: 0.875rem; margin-top: 10px; min-height: 20px; }
-@media (max-width: 560px) { .plans-grid { grid-template-columns: 1fr; } }
-
+    #planScreen{display:none;max-width:680px;width:100%;}
+    .plan-header{text-align:center;margin-bottom:40px;}
+    .plan-header h2{font-size:1.8rem;margin-bottom:10px;}
+    .plan-header p{color:var(--cream-dim);font-size:0.95rem;}
+    .plans-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+    .plan{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 28px;transition:all .2s;position:relative;overflow:hidden;}
+    .plan:hover{border-color:rgba(234,231,220,0.25);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+    .plan.featured{border-color:var(--accent);background:linear-gradient(135deg,var(--surface-2) 0%,rgba(200,169,110,0.07) 100%);}
+    .plan.featured::after{content:'POPULAR';position:absolute;top:14px;right:-24px;background:var(--accent);color:#1E1E1C;font-size:0.58rem;font-weight:700;letter-spacing:1px;padding:4px 32px;transform:rotate(35deg);}
+    .plan-name{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:4px;}
+    .plan-price{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;margin:10px 0 4px;}
+    .plan-price sup{font-size:1rem;vertical-align:top;margin-top:6px;}
+    .plan-price span{font-size:0.9rem;font-weight:400;color:var(--cream-dim);}
+    .plan-desc{font-size:0.8rem;color:var(--cream-dim);margin-bottom:20px;line-height:1.5;}
+    .plan-features{list-style:none;margin-bottom:16px;display:flex;flex-direction:column;gap:8px;}
+    .plan-features li{font-size:0.8rem;color:var(--cream-dim);display:flex;align-items:center;gap:8px;}
+    .plan-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
+    .plan-trial-note{font-size:0.7rem;color:rgba(234,231,220,0.3);margin-bottom:16px;line-height:1.5;padding:10px 12px;background:rgba(200,169,110,0.06);border-radius:6px;border:1px solid rgba(200,169,110,0.15);}
+    .plan button{width:100%;justify-content:center;padding:13px;font-size:0.9rem;}
+    .plan.featured button{background:var(--accent);color:#1E1E1C;border-color:var(--accent);}
+    .plan.featured button:hover{background:#D4B87A;}
+    .global-trial-note{text-align:center;font-size:0.78rem;color:rgba(234,231,220,0.3);margin-top:12px;line-height:1.6;}
+    #result{text-align:center;font-size:0.875rem;margin-top:10px;min-height:20px;}
+    @media(max-width:560px){.plans-grid{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -110,14 +95,13 @@
     <div class="form-group"><label>Business name</label><input id="name" type="text" placeholder="e.g. The Coffee House"></div>
     <div class="form-group"><label>Business email</label><input id="email" type="email" placeholder="you@yourbusiness.com"></div>
     <div class="form-group">
-   <div class="form-group">
-  <label>Your review link</label>
-  <div class="review-link-row">
-    <input id="review" type="url" placeholder="https://g.page/r/your-business/review or Trustpilot/Checkatrade link">
-    <button class="help-btn" onclick="openModal()" type="button">❓ How to find it</button>
-  </div>
-  <p class="helper-text">Paste your Google, Trustpilot, Checkatrade, or any review platform link. Happy customers will be sent here.</p>
-</div>
+      <label>Google review link</label>
+      <div class="review-link-row">
+        <input id="review" type="url" placeholder="https://g.page/r/your-business/review">
+        <button class="help-btn" onclick="openModal()" type="button">❓ How to find it</button>
+      </div>
+      <p class="helper-text">This is the direct link customers use to leave you a Google review.</p>
+    </div>
     <div class="form-group">
       <label>Dashboard password</label>
       <div class="pw-wrap">
@@ -173,8 +157,8 @@
   <div class="modal-overlay" id="helpModal" onclick="handleOverlayClick(event)">
     <div class="modal">
       <button class="modal-close" onclick="closeModal()">✕</button>
-<h3>🔍 How to find your review link</h3>
-<p>Paste the link to your review page—Google, Trustpilot, Checkatrade, or any platform you use. Here's how to find the most common ones:</p>
+      <h3>🔍 How to find your Google review link</h3>
+      <p>Your Google review link sends customers directly to your review page on Google. Here's how to find it in 60 seconds:</p>
       <div class="steps-list">
         <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Go to Google Maps</strong><span>Open <a href="https://maps.google.com" target="_blank" style="color:var(--accent)">maps.google.com</a> and search for your exact business name and town.</span></div></div>
         <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Click on your business listing</strong><span>It appears in the left panel. Make sure it's your official Google Business Profile.</span></div></div>
@@ -184,7 +168,6 @@
       <div class="url-example">https://search.google.com/local/writereview?placeid=ChIJxxxxxxxxxxxxxxxx</div>
       <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:20px;line-height:1.55;">Alternatively, log into your <a href="https://business.google.com" target="_blank" style="color:var(--accent)">Google Business Profile</a> and look for <strong style="color:var(--cream)">"Get more reviews"</strong> — Google gives you a short shareable link there too.</p>
       <button class="modal-cta" onclick="closeModal()">Got it — back to sign up</button>
-      <p style="font-size:0.8rem;color:var(--cream-dim);margin-top:16px;line-height:1.55;"><strong>Trustpilot:</strong> Go to your Trustpilot page, click "Share," and copy the link.<br><strong>Checkatrade:</strong> Visit your Checkatrade profile and copy the URL from your browser.</p>
     </div>
   </div>
 
@@ -219,11 +202,8 @@ window.addEventListener("DOMContentLoaded", () => {
   if(skipToPlans === "true" && savedSlug){
     currentSlug = savedSlug;
     sessionStorage.removeItem("skipToPlans");
-document.getElementById("signupCard").style.display = "none";
-document.getElementById("planScreen").classList.add("visible");
-document.getElementById("planScreen").style.visibility = "visible";  // ADD THIS LINE
-document.getElementById("planScreen").style.opacity = "1";           // ADD THIS LINE
-window.scrollTo({top:0,behavior:'smooth'});
+    document.getElementById("signupCard").style.display = "none";
+    document.getElementById("planScreen").style.display = "block";
     document.getElementById("planEyebrow") && (document.getElementById("planEyebrow").textContent = "Complete your setup — choose a plan");
   }
 });
@@ -263,16 +243,13 @@ async function createBusiness(){
   const res  = await fetch("/create-business", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name,email,review,password}) });
   const data = await res.json();
 
-if(data.success){
-  console.log("✅ Signup success. Slug:", data.slug);
-  currentSlug = data.slug;
-  sessionStorage.setItem("currentSlug", currentSlug);
-  
-document.getElementById("signupCard").style.display = "none";
-document.getElementById("planScreen").classList.add("visible");
-  
-  window.scrollTo({top:0,behavior:'smooth'});
-} else {
+  if(data.success){
+    currentSlug = data.slug;
+    sessionStorage.setItem("currentSlug", currentSlug);
+    document.getElementById("signupCard").style.display = "none";
+    document.getElementById("planScreen").style.display = "block";
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
     const msg = data.error || "";
     if(msg.includes("already")) result.innerText = "That email is already registered. Try signing in.";
     else if(msg.includes("Password") || msg.includes("password")) result.innerText = msg;
