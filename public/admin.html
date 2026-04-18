@@ -245,13 +245,19 @@ async function createBusiness(){
   const res  = await fetch("/create-business", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name,email,review,password}) });
   const data = await res.json();
 
-  if(data.success){
-    currentSlug = data.slug;
-    sessionStorage.setItem("currentSlug", currentSlug);
-    document.getElementById("signupCard").style.display = "none";
-    document.getElementById("planScreen").style.display = "block";
-    window.scrollTo({top:0,behavior:'smooth'});
-  } else {
+if(data.success){
+  console.log("✅ Signup success. Slug:", data.slug);
+  currentSlug = data.slug;
+  sessionStorage.setItem("currentSlug", currentSlug);
+  
+  console.log("🔄 Hiding signup card...");
+  document.getElementById("signupCard").style.display = "none";
+  
+  console.log("🔄 Showing plan screen...");
+  document.getElementById("planScreen").style.display = "block";
+  
+  window.scrollTo({top:0,behavior:'smooth'});
+} else {
     const msg = data.error || "";
     if(msg.includes("already")) result.innerText = "That email is already registered. Try signing in.";
     else if(msg.includes("Password") || msg.includes("password")) result.innerText = msg;
