@@ -82,11 +82,20 @@
     #result{text-align:center;font-size:0.875rem;margin-top:10px;min-height:20px;}
     @media(max-width:560px){.plans-grid{grid-template-columns:1fr;}}
 
-    #planScreen[style*="display: block"] {
+/* Force plan screen visibility */
+#planScreen {
+  display: none;
+}
+
+#planScreen[style*="display: block"] {
   display: flex !important;
   flex-direction: column;
   align-items: center;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
+
+
   </style>
 </head>
 <body>
