@@ -509,7 +509,6 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
 
     let smsCount = 0;
     if(inTrial){
-      // Count all SMS sent since account creation (trial period)
       const { count } = await supabase
         .from("events")
         .select("*", { count: "exact", head: true })
@@ -523,7 +522,6 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
         });
       }
     } else {
-      // Count SMS sent this calendar month
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       const { count } = await supabase
         .from("events")
@@ -541,10 +539,17 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
     }
 
     const normalisedPhone = normalisePhone(phone);
+
+    // 🚨 BLOCK NON‑UK NUMBERS
+    if (!normalisedPhone.startsWith('+44')) {
+      return res.status(400).json({ 
+        error: "SMS is currently available for UK numbers only. We're working on international support." 
+      });
+    }
+
     const message = `Hi! Thanks for visiting ${data.name} today. We'd love to know how it went - takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
     await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: normalisedPhone, body: message });
 
-    // Record the SMS send as an event for usage counting
     await supabase.from("events").insert({ business_slug: slug, event_type: "sms_sent" });
 
     res.json({ success: true });

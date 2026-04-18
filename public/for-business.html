@@ -314,22 +314,24 @@
   <div class="dash-section">
     <div class="dash-section-title">Request Reviews</div>
     <!-- SMS — Pro only -->
-    <div id="smsUnlocked" style="display:none">
-      <div class="panel">
-        <h3>Send SMS request</h3>
-        <p class="panel-desc">Send a personalised text directly to a customer's phone. UK numbers work with any format — 07..., +44..., or just the 10-digit number.</p>
-        <div class="input-row">
-          <input id="customerPhone" type="tel" placeholder="e.g. 07700 900000 or +447700900000">
-          <button onclick="sendSMS()">Send SMS</button>
-        </div>
-      </div>
+<!-- SMS — Pro only -->
+<div id="smsUnlocked" style="display:none">
+  <div class="panel">
+    <h3>Send SMS request</h3>
+    <p class="panel-desc">Send a personalised text directly to a customer's phone. 🇬🇧 UK numbers only. International support coming soon.</p>
+    <div class="input-row">
+      <input id="customerPhone" type="tel" placeholder="e.g. 07700 900000 or +447700900000">
+      <button onclick="sendSMS()">Send SMS</button>
     </div>
-    <div class="pro-lock-panel" id="smsLocked" style="display:none">
-      <span class="lock-icon">💬</span>
-      <h4>SMS review requests</h4>
-      <p>Send a personalised text message directly to a customer's phone. One tap on the link and they're on your review funnel. Available on Pro — upgrade to unlock.</p>
-      <a href="/billing">⭐ Upgrade to Pro</a>
-    </div>
+    <p class="helper-text" style="color: var(--accent); margin-top: 8px;">Works with any UK format — 07..., +44..., or 10‑digit number.</p>
+  </div>
+</div>
+<div class="pro-lock-panel" id="smsLocked" style="display:none">
+  <span class="lock-icon">💬</span>
+  <h4>SMS review requests</h4>
+  <p>Send a personalised text message directly to a customer's phone. One tap on the link and they're on your review funnel. 🇬🇧 UK numbers only. Available on Pro — upgrade to unlock.</p>
+  <a href="/billing">⭐ Upgrade to Pro</a>
+</div>
 
     <!-- Email — Pro lock if not pro -->
     <div id="emailSection">
