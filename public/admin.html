@@ -211,7 +211,11 @@ window.addEventListener("DOMContentLoaded", () => {
     currentSlug = savedSlug;
     sessionStorage.removeItem("skipToPlans");
     document.getElementById("signupCard").style.display = "none";
+    
     document.getElementById("planScreen").style.display = "block";
+document.getElementById("planScreen").style.visibility = "visible";  // ADD THIS LINE
+document.getElementById("planScreen").style.opacity = "1";           // ADD THIS LINE
+window.scrollTo({top:0,behavior:'smooth'});
     document.getElementById("planEyebrow") && (document.getElementById("planEyebrow").textContent = "Complete your setup — choose a plan");
   }
 });
