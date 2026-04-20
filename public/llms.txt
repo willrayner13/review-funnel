@@ -1,0 +1,18 @@
+# ReviewLift
+ReviewLift is a UK review funnel tool for local businesses. It routes happy customers to leave public reviews on Google, Trustpilot, Checkatrade, or any platform, and catches unhappy feedback privately before it goes public.
+
+## Core Features
+- Smart review funnel: Happy customers → public reviews. Unhappy → private feedback.
+- QR code generator: Print-ready QR codes for counters, tables, or receipts.
+- SMS and email requests (Pro): Send review requests directly to customers.
+- AI review reply generator (Pro): Professional replies to reviews in seconds.
+- Analytics dashboard: Track visits, ratings, and feedback.
+- Private feedback capture: Complaints never reach public review sites.
+
+## Pricing
+- Starter: £9.99/mo — Review funnel, QR code, analytics, private feedback.
+- Pro: £24.99/mo — Everything in Starter plus SMS, email, and AI replies.
+- 14-day free trial. Cancel anytime.
+
+## Website
+https://www.reviewlift.app
