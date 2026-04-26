@@ -5,41 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Affiliate Portal — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <style>
-    body { min-height: 100vh; padding: 0; background-color: var(--bg); }
-    .topnav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid var(--border); background: rgba(30,30,28,0.9); backdrop-filter: blur(16px); }
-    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 8px; }
-    .nav-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
-    .page-body { max-width: 800px; margin: 0 auto; padding: 48px 24px 80px; }
-    .page-eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); display: block; margin-bottom: 10px; }
-    .page-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
-    .page-sub { font-size: 0.95rem; color: var(--cream-dim); margin-bottom: 36px; }
-    
-    .metrics-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 36px; }
-    .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-    .metric-value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 6px; }
-    .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cream-dim); }
-    
-    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
-    .panel h3 { font-size: 1rem; color: var(--cream); font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 6px; }
-    .panel p { font-size: 0.85rem; color: var(--cream-dim); margin-bottom: 0; }
-    
-    .ref-link-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--accent); word-break: break-all; margin: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .copy-btn { background: var(--accent); color: #1A1A18; border: none; padding: 8px 16px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-    .copy-btn:hover { background: #D4B87A; }
-    
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-    th { text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cream-dim); padding: 10px 12px; border-bottom: 1px solid var(--border); }
-    td { font-size: 0.85rem; color: var(--cream); padding: 10px 12px; border-bottom: 1px solid var(--border); }
-    td.amount { color: #8EC9A8; font-weight: 600; }
-    
-    .empty-state { text-align: center; padding: 40px 20px; color: var(--cream-dim); }
-    .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
-    
-    @media (max-width: 700px) {
-      .metrics-grid { grid-template-columns: 1fr 1fr; }
-      .topnav { padding: 14px 16px; }
-      .page-body { padding: 32px 16px 60px; }
+    :root {
+      --bg:#1A1A18; --surface:#242422; --surface-2:#2E2E2B;
+      --border:rgba(234,231,220,0.09); --border-hover:rgba(234,231,220,0.18);
+      --cream:#EAE7DC; --cream-dim:rgba(234,231,220,0.52);
+      --accent:#C8A96E; --accent-dim:rgba(200,169,110,0.15);
+      --success:#6A9E7F; --danger:#C0675A;
+      --radius:12px; --radius-sm:8px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);-webkit-font-smoothing:antialiased;min-height:100vh;padding:0;}
+    a{color:inherit;text-decoration:none;}
+
+    .topnav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);background:rgba(30,30,28,0.9);backdrop-filter:blur(16px);}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;}
+    .nav-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;}
+
+    .page-body{max-width:860px;margin:0 auto;padding:48px 24px 80px;}
+    .page-eyebrow{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);display:block;margin-bottom:10px;}
+    .page-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:6px;}
+    .page-sub{font-size:0.95rem;color:var(--cream-dim);margin-bottom:36px;}
+
+    .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:36px;}
+    .metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+    .metric-value{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1;margin-bottom:6px;}
+    .metric-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--cream-dim);}
+
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+    .panel h3{font-size:1rem;color:var(--cream);font-family:'Syne',sans-serif;font-weight:700;margin-bottom:10px;}
+
+    .ref-link-box{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:0.85rem;color:var(--accent);word-break:break-all;margin:12px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .copy-btn{background:var(--accent);color:#1A1A18;border:none;padding:8px 16px;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.8rem;cursor:pointer;white-space:nowrap;transition:all 0.2s;min-height:0;}
+    .copy-btn:hover{background:#D4B87A;transform:none;box-shadow:none;}
+
+    table{width:100%;border-collapse:collapse;margin-top:12px;}
+    th{text-align:left;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--cream-dim);padding:10px 12px;border-bottom:1px solid var(--border);}
+    td{font-size:0.85rem;color:var(--cream);padding:10px 12px;border-bottom:1px solid var(--border);}
+    td.amount{color:#8EC9A8;font-weight:600;}
+    td.trial{color:var(--accent);}
+
+    .status-badge{display:inline-flex;align-items:center;gap:4px;font-size:0.72rem;font-weight:600;padding:3px 10px;border-radius:100px;}
+    .status-active{background:rgba(106,158,127,0.12);color:#8EC9A8;border:1px solid rgba(106,158,127,0.25);}
+    .status-trial{background:rgba(200,169,110,0.1);color:var(--accent);border:1px solid rgba(200,169,110,0.25);}
+    .status-cancelled{background:rgba(192,103,90,0.08);color:#D4897C;border:1px solid rgba(192,103,90,0.2);}
+
+    .empty-state{text-align:center;padding:40px 20px;color:var(--cream-dim);}
+    .empty-state .icon{font-size:2.5rem;display:block;margin-bottom:12px;}
+
+    .payout-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:14px;}
+    .payout-item{}
+    .payout-value{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--cream);}
+    .payout-desc{font-size:0.78rem;color:var(--cream-dim);margin-top:4px;line-height:1.5;}
+
+    .payout-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+    .next-payout{font-size:0.8rem;color:var(--cream-dim);}
+    .next-payout strong{color:var(--cream);}
+    .bank-details-btn{font-size:0.8rem;color:var(--accent);font-weight:500;display:inline-flex;align-items:center;gap:4px;transition:color 0.2s;}
+    .bank-details-btn:hover{color:#D4B87A;}
+
+    /* Earnings note — distinguishes trial from paid */
+    .earnings-note{font-size:0.72rem;color:rgba(234,231,220,0.3);margin-top:4px;}
+
+    @media(max-width:700px){
+      .metrics-grid{grid-template-columns:1fr 1fr;}
+      .payout-grid{grid-template-columns:1fr;}
+      .topnav{padding:14px 16px;}
+      .page-body{padding:32px 16px 60px;}
+      .payout-footer{flex-direction:column;align-items:flex-start;}
+    }
+    @media(max-width:400px){
+      .metrics-grid{grid-template-columns:1fr;}
     }
   </style>
 </head>
@@ -50,30 +90,78 @@
 </nav>
 
 <div class="page-body">
-  <span class="page-eyebrow">Affiliate Portal</span>
-  <h1 class="page-title" id="partnerName">Your Dashboard</h1>
-  <p class="page-sub" id="welcomeMsg">Track your referrals, conversions, and earnings.</p>
+  <div id="mainContent">
+    <span class="page-eyebrow">Affiliate Portal</span>
+    <h1 class="page-title" id="partnerName">Your Dashboard</h1>
+    <p class="page-sub" id="welcomeMsg">Track your referrals, conversions, and earnings.</p>
 
-  <div class="metrics-grid">
-    <div class="metric-card"><div class="metric-value" id="totalSignups">—</div><div class="metric-label">Total Signups</div></div>
-    <div class="metric-card"><div class="metric-value" id="activeCustomers" style="color:#8EC9A8">—</div><div class="metric-label">Active Customers</div></div>
-    <div class="metric-card"><div class="metric-value" id="monthlyEarnings" style="color:var(--accent)">—</div><div class="metric-label">Monthly Earnings</div></div>
-    <div class="metric-card"><div class="metric-value" id="totalEarned" style="color:#8EC9A8">—</div><div class="metric-label">Total Earned</div></div>
-  </div>
-
-  <div class="panel">
-    <h3>Your referral link</h3>
-    <p>Share this link anywhere — website, email, social media. Anyone who signs up through it is tracked to you.</p>
-    <div class="ref-link-box">
-      <span id="refLink">—</span>
-      <button class="copy-btn" onclick="copyRefLink()">📋 Copy</button>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" id="totalSignups">—</div>
+        <div class="metric-label">Total Signups</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="activeCustomers" style="color:#8EC9A8">—</div>
+        <div class="metric-label">Active Customers</div>
+        <div class="earnings-note">Paying customers only</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="monthlyEarnings" style="color:var(--accent)">—</div>
+        <div class="metric-label">Monthly Earnings</div>
+        <div class="earnings-note">From active customers</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="totalEarned" style="color:#8EC9A8">—</div>
+        <div class="metric-label">Pending This Month</div>
+        <div class="earnings-note">Paid on <span id="payoutDate">1st</span></div>
+      </div>
     </div>
-  </div>
 
-  <div class="panel">
-    <h3>Your referrals</h3>
-    <div id="referralsTable">
-      <div class="empty-state"><span class="icon">📭</span><p>No referrals yet. Share your link to get started.</p></div>
+    <!-- Payout info panel -->
+    <div class="panel" style="background:rgba(200,169,110,0.04);border-color:rgba(200,169,110,0.2);">
+      <h3>💳 How payouts work</h3>
+      <div class="payout-grid">
+        <div class="payout-item">
+          <div class="payout-value">Monthly</div>
+          <div class="payout-desc">Paid by bank transfer on the 1st of each month for the previous month's earnings</div>
+        </div>
+        <div class="payout-item">
+          <div class="payout-value">30%</div>
+          <div class="payout-desc">Commission on every <strong style="color:var(--cream);">paying</strong> customer you refer, every month</div>
+        </div>
+        <div class="payout-item">
+          <div class="payout-value">Recurring</div>
+          <div class="payout-desc">You earn as long as the customer stays on ReviewLift — not just once</div>
+        </div>
+      </div>
+      <div class="payout-footer">
+        <span class="next-payout">
+          Next payout: <strong id="nextPayoutDate">1st May 2026</strong>
+          <span style="font-size:0.7rem;color:rgba(234,231,220,0.3);display:block;margin-top:2px;">Only includes customers who have completed trial and are paying</span>
+        </span>
+        <a class="bank-details-btn" id="bankDetailsLink" href="mailto:billy@reviewlift.app?subject=Payout%20details%20for%20affiliate%20code">
+          Submit bank details for payouts →
+        </a>
+      </div>
+    </div>
+
+    <!-- Referral link -->
+    <div class="panel">
+      <h3>Your referral link</h3>
+      <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:0;">Share this link anywhere — website, email, social media. Anyone who signs up through it is tracked to you.</p>
+      <div class="ref-link-box">
+        <span id="refLink">—</span>
+        <button class="copy-btn" onclick="copyRefLink()">📋 Copy</button>
+      </div>
+      <p style="font-size:0.72rem;color:rgba(234,231,220,0.25);margin-top:6px;">Tip: Add <code style="color:var(--accent);">?ref=</code> to any page on reviewlift.app — it'll follow them through signup</p>
+    </div>
+
+    <!-- Referrals table -->
+    <div class="panel">
+      <h3>Your referrals</h3>
+      <div id="referralsTable">
+        <div class="empty-state"><span class="icon">📭</span><p>No referrals yet. Share your link to get started.</p></div>
+      </div>
     </div>
   </div>
 </div>
@@ -82,17 +170,27 @@
 const params = new URLSearchParams(window.location.search);
 const code = params.get('code');
 
+// Calculate next payout date (1st of next month)
+function getNextPayoutDate() {
+  const now = new Date();
+  let next;
+  if (now.getDate() === 1) {
+    // Today is the 1st — payout is today, but we show next month's for clarity
+    next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  } else {
+    next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  }
+  return next.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 if (!code) {
-  document.getElementById('partnerName').textContent = 'Affiliate Portal';
-  document.getElementById('welcomeMsg').textContent = 'Enter your affiliate code to view your dashboard.';
-  // Show a code input form
-  document.querySelector('.page-body').innerHTML = `
+  document.getElementById('mainContent').innerHTML = `
     <span class="page-eyebrow">Affiliate Portal</span>
     <h1 class="page-title">Enter your code</h1>
     <p class="page-sub">Enter the affiliate code you were given to see your dashboard.</p>
     <div style="display:flex;gap:10px;max-width:400px;">
-      <input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;">
-      <button class="copy-btn" onclick="window.location='?code='+document.getElementById('codeInput').value.trim()" style="padding:14px 20px;">View Dashboard →</button>
+      <input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;">
+      <button class="copy-btn" onclick="window.location='?code='+encodeURIComponent(document.getElementById('codeInput').value.trim())" style="padding:14px 20px;font-size:0.95rem;">View Dashboard →</button>
     </div>
   `;
 } else {
@@ -102,8 +200,12 @@ if (!code) {
 async function loadDashboard(code) {
   const res = await fetch('/affiliate-stats/' + code);
   if (!res.ok) {
-    document.getElementById('partnerName').textContent = 'Not found';
-    document.getElementById('welcomeMsg').textContent = 'Invalid affiliate code.';
+    document.getElementById('mainContent').innerHTML = `
+      <span class="page-eyebrow">Affiliate Portal</span>
+      <h1 class="page-title">Not found</h1>
+      <p class="page-sub">That affiliate code doesn't exist yet. It'll activate when your first referral signs up.</p>
+      <p style="font-size:0.85rem;color:var(--cream-dim);">Your referral link: <code style="color:var(--accent);">${window.location.origin}/admin?ref=${code}</code></p>
+    `;
     return;
   }
   const data = await res.json();
@@ -113,17 +215,35 @@ async function loadDashboard(code) {
   document.getElementById('totalSignups').textContent = data.total_signups || 0;
   document.getElementById('activeCustomers').textContent = data.active_customers || 0;
   document.getElementById('monthlyEarnings').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
-  document.getElementById('totalEarned').textContent = '£' + (data.total_earned || 0).toFixed(2);
+  document.getElementById('totalEarned').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
+  
+  // Dynamic payout date
+  const payoutDate = getNextPayoutDate();
+  document.getElementById('nextPayoutDate').textContent = payoutDate;
+  document.getElementById('payoutDate').textContent = payoutDate;
+  
+  // Update bank details mailto link with the affiliate code
+  document.getElementById('bankDetailsLink').href = 
+    `mailto:billy@reviewlift.app?subject=Payout%20details%20-%20${encodeURIComponent(code)}`;
   
   if (data.referrals && data.referrals.length > 0) {
     let html = '<table><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr>';
     data.referrals.forEach(r => {
+      let statusBadge = '';
+      if (r.status === 'active') {
+        statusBadge = '<span class="status-badge status-active">✅ Paying</span>';
+      } else if (r.status === 'trial') {
+        statusBadge = '<span class="status-badge status-trial">🕐 Trial</span>';
+      } else {
+        statusBadge = '<span class="status-badge status-cancelled">✕ Cancelled</span>';
+      }
+      
       html += `<tr>
         <td>${r.business_name || r.slug}</td>
         <td>${r.plan === 'pro' ? 'Pro' : 'Starter'}</td>
         <td>${new Date(r.created_at).toLocaleDateString('en-GB')}</td>
-        <td>${r.active ? '✅ Active' : '⏳ Trial'}</td>
-        <td class="amount">£${r.commission.toFixed(2)}</td>
+        <td>${statusBadge}</td>
+        <td class="${r.status === 'active' ? 'amount' : 'trial'}">${r.status === 'active' ? '£' + r.commission.toFixed(2) : '£0.00 (trial)'}</td>
       </tr>`;
     });
     html += '</table>';

@@ -922,36 +922,60 @@ app.get("/affiliate-stats/:code", async (req, res) => {
       total_signups: 0,
       active_customers: 0,
       monthly_earnings: 0,
-      total_earned: 0,
       referrals: []
     });
   }
   
-  const active = businesses.filter(b => b.subscription_active);
-  const monthlyEarnings = active.reduce((sum, b) => {
+  const now = new Date();
+  
+  // Only count paying customers (subscription active AND trial has ended)
+  const paying = businesses.filter(b => {
+    if (!b.subscription_active) return false;
+    // If they have a trial_ends_at and it's in the future, they're still on trial
+    if (b.trial_ends_at && new Date(b.trial_ends_at) > now) return false;
+    return true;
+  });
+  
+  const trialCustomers = businesses.filter(b => {
+    return b.subscription_active && b.trial_ends_at && new Date(b.trial_ends_at) > now;
+  });
+  
+  const monthlyEarnings = paying.reduce((sum, b) => {
     return sum + (b.plan_type === 'pro' ? 24.99 * 0.3 : 9.99 * 0.3);
   }, 0);
   
-  const referrals = businesses.map(b => ({
-    business_name: b.name,
-    slug: b.slug,
-    plan: b.plan_type || 'starter',
-    created_at: b.created_at,
-    active: b.subscription_active,
-    commission: b.subscription_active ? (b.plan_type === 'pro' ? 24.99 * 0.3 : 9.99 * 0.3) : 0
-  }));
+  const referrals = businesses.map(b => {
+    let status = 'cancelled';
+    if (b.subscription_active && b.trial_ends_at && new Date(b.trial_ends_at) > now) {
+      status = 'trial';
+    } else if (b.subscription_active) {
+      status = 'active';
+    }
+    
+    const commission = status === 'active' 
+      ? (b.plan_type === 'pro' ? 24.99 * 0.3 : 9.99 * 0.3) 
+      : 0;
+    
+    return {
+      business_name: b.name,
+      slug: b.slug,
+      plan: b.plan_type || 'starter',
+      created_at: b.created_at,
+      status: status,
+      commission: commission
+    };
+  });
   
   res.json({
     partner_name: code,
     referral_link: `${process.env.BASE_URL}/admin?ref=${code}`,
     total_signups: businesses.length,
-    active_customers: active.length,
+    active_customers: paying.length,
+    trial_customers: trialCustomers.length,
     monthly_earnings: monthlyEarnings,
-    total_earned: monthlyEarnings, // Simplified — you can track historical earnings later
     referrals
   });
 });
-
 // ─── EXPORT ───────────────────────────────────────────────────────────────────
 const serverless = require("serverless-http");
 module.exports = app;
