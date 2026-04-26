@@ -70,6 +70,7 @@ if (event.type === "checkout.session.completed") {
     const slug = sess.metadata.slug;
     const plan = sess.metadata.plan;
     const customer = sess.customer;
+
     try {
       const mrr = plan === "pro" ? 24.99 : 9.99;
       await supabase
@@ -77,6 +78,17 @@ if (event.type === "checkout.session.completed") {
         .update({ subscription_active: true, plan_type: plan, stripe_customer: customer, subscribed_at: new Date().toISOString(), mrr })
         .eq("slug", slug);
       console.log(`Checkout complete for ${slug}, plan: ${plan}`);
+
+      // ✅ Now log the referral conversion (moved inside try, after the update)
+      const { data: biz } = await supabase.from("businesses").select("referred_by").eq("slug", slug).single();
+      if (biz && biz.referred_by) {
+        await supabase.from("referral_conversions").insert({
+          referral_code: biz.referred_by,
+          business_slug: slug,
+          plan: plan,
+          converted_at: new Date().toISOString()
+        });
+      }
     } catch (err) {
       console.log("Supabase update error:", err.message);
     }
@@ -362,11 +374,13 @@ app.get("/stats/:slug", async (req, res) => {
 app.post("/create-business", async (req, res) => {
   try {
     const { name, email, review, password } = req.body;
+    const { referral } = req.body; 
     if (!password) return res.status(400).json({ error: "Password is required." });
     if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
  
     const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
     const hashedPassword = await bcrypt.hash(password, 10);
+  
  
     const { data: existing } = await supabase.from("businesses").select("email").eq("email", email).maybeSingle();
     if (existing) return res.status(400).json({ error: "Email already exists" });
@@ -374,16 +388,17 @@ app.post("/create-business", async (req, res) => {
     const trialEnd = new Date();
     trialEnd.setDate(trialEnd.getDate() + 14);
  
-    const { error } = await supabase.from("businesses").insert({
-      name,
-      email,
-      review_link: review,
-      slug,
-      password: hashedPassword,
-      plan_type: "starter",
-      subscription_active: false,
-      trial_ends_at: trialEnd.toISOString(),
-    });
+  const { error } = await supabase.from("businesses").insert({
+  name,
+  email,
+  review_link: review,
+  slug,
+  password: hashedPassword,
+  plan_type: "starter",
+  subscription_active: false,
+  trial_ends_at: trialEnd.toISOString(),
+  referred_by: referral || null,   // ✅ ADD THIS
+});
  
     if (error) {
       console.error("Supabase insert error /create-business:", JSON.stringify(error));

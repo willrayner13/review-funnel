@@ -209,6 +209,20 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (ref) {
+    // Store it so it survives the Stripe redirect and page reloads
+    sessionStorage.setItem('referral_code', ref);
+    // Clean the URL so it looks tidy (optional)
+    if (window.history && window.history.replaceState) {
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }
+})();
+
 async function createBusiness(){
   const btn = document.getElementById("createBtn");
   btn.disabled = true; btn.textContent = 'Creating account...';
@@ -241,7 +255,8 @@ async function createBusiness(){
     btn.disabled=false; btn.textContent='Continue to plan selection →'; return;
   }
 
-  const res  = await fetch("/create-business", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name,email,review,password}) });
+  const referral = sessionStorage.getItem('referral_code') || '';
+const res  = await fetch("/create-business", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name, email, review, password, referral}) });
   const data = await res.json();
 
   if(data.success){
@@ -282,6 +297,8 @@ async function subscribe(plan){
 // Stripe back button fix
 window.addEventListener('pageshow', e => { if(e.persisted){ document.querySelectorAll('.plan button').forEach(b=>{b.disabled=false; b.textContent='Start free trial';}); } });
 window.addEventListener('focus', () => { document.querySelectorAll('.plan button').forEach(b=>{if(b.disabled){b.disabled=false; b.textContent='Start free trial';}}); });
+
+
 </script>
 </body>
 </html>
