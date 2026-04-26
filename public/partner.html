@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Affiliate Portal — ReviewLift</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { min-height: 100vh; padding: 0; background-color: var(--bg); }
+    .topnav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid var(--border); background: rgba(30,30,28,0.9); backdrop-filter: blur(16px); }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 8px; }
+    .nav-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+    .page-body { max-width: 800px; margin: 0 auto; padding: 48px 24px 80px; }
+    .page-eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); display: block; margin-bottom: 10px; }
+    .page-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+    .page-sub { font-size: 0.95rem; color: var(--cream-dim); margin-bottom: 36px; }
+    
+    .metrics-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 36px; }
+    .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .metric-value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cream-dim); }
+    
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+    .panel h3 { font-size: 1rem; color: var(--cream); font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 6px; }
+    .panel p { font-size: 0.85rem; color: var(--cream-dim); margin-bottom: 0; }
+    
+    .ref-link-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--accent); word-break: break-all; margin: 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .copy-btn { background: var(--accent); color: #1A1A18; border: none; padding: 8px 16px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .copy-btn:hover { background: #D4B87A; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th { text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cream-dim); padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    td { font-size: 0.85rem; color: var(--cream); padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    td.amount { color: #8EC9A8; font-weight: 600; }
+    
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--cream-dim); }
+    .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+    
+    @media (max-width: 700px) {
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .topnav { padding: 14px 16px; }
+      .page-body { padding: 32px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
+</nav>
+
+<div class="page-body">
+  <span class="page-eyebrow">Affiliate Portal</span>
+  <h1 class="page-title" id="partnerName">Your Dashboard</h1>
+  <p class="page-sub" id="welcomeMsg">Track your referrals, conversions, and earnings.</p>
+
+  <div class="metrics-grid">
+    <div class="metric-card"><div class="metric-value" id="totalSignups">—</div><div class="metric-label">Total Signups</div></div>
+    <div class="metric-card"><div class="metric-value" id="activeCustomers" style="color:#8EC9A8">—</div><div class="metric-label">Active Customers</div></div>
+    <div class="metric-card"><div class="metric-value" id="monthlyEarnings" style="color:var(--accent)">—</div><div class="metric-label">Monthly Earnings</div></div>
+    <div class="metric-card"><div class="metric-value" id="totalEarned" style="color:#8EC9A8">—</div><div class="metric-label">Total Earned</div></div>
+  </div>
+
+  <div class="panel">
+    <h3>Your referral link</h3>
+    <p>Share this link anywhere — website, email, social media. Anyone who signs up through it is tracked to you.</p>
+    <div class="ref-link-box">
+      <span id="refLink">—</span>
+      <button class="copy-btn" onclick="copyRefLink()">📋 Copy</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Your referrals</h3>
+    <div id="referralsTable">
+      <div class="empty-state"><span class="icon">📭</span><p>No referrals yet. Share your link to get started.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const code = params.get('code');
+
+if (!code) {
+  document.getElementById('partnerName').textContent = 'Affiliate Portal';
+  document.getElementById('welcomeMsg').textContent = 'Enter your affiliate code to view your dashboard.';
+  // Show a code input form
+  document.querySelector('.page-body').innerHTML = `
+    <span class="page-eyebrow">Affiliate Portal</span>
+    <h1 class="page-title">Enter your code</h1>
+    <p class="page-sub">Enter the affiliate code you were given to see your dashboard.</p>
+    <div style="display:flex;gap:10px;max-width:400px;">
+      <input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;">
+      <button class="copy-btn" onclick="window.location='?code='+document.getElementById('codeInput').value.trim()" style="padding:14px 20px;">View Dashboard →</button>
+    </div>
+  `;
+} else {
+  loadDashboard(code);
+}
+
+async function loadDashboard(code) {
+  const res = await fetch('/affiliate-stats/' + code);
+  if (!res.ok) {
+    document.getElementById('partnerName').textContent = 'Not found';
+    document.getElementById('welcomeMsg').textContent = 'Invalid affiliate code.';
+    return;
+  }
+  const data = await res.json();
+  
+  document.getElementById('partnerName').textContent = data.partner_name || code;
+  document.getElementById('refLink').textContent = data.referral_link;
+  document.getElementById('totalSignups').textContent = data.total_signups || 0;
+  document.getElementById('activeCustomers').textContent = data.active_customers || 0;
+  document.getElementById('monthlyEarnings').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
+  document.getElementById('totalEarned').textContent = '£' + (data.total_earned || 0).toFixed(2);
+  
+  if (data.referrals && data.referrals.length > 0) {
+    let html = '<table><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr>';
+    data.referrals.forEach(r => {
+      html += `<tr>
+        <td>${r.business_name || r.slug}</td>
+        <td>${r.plan === 'pro' ? 'Pro' : 'Starter'}</td>
+        <td>${new Date(r.created_at).toLocaleDateString('en-GB')}</td>
+        <td>${r.active ? '✅ Active' : '⏳ Trial'}</td>
+        <td class="amount">£${r.commission.toFixed(2)}</td>
+      </tr>`;
+    });
+    html += '</table>';
+    document.getElementById('referralsTable').innerHTML = html;
+  }
+}
+
+function copyRefLink() {
+  const link = document.getElementById('refLink').textContent;
+  navigator.clipboard.writeText(link);
+  const btn = event.target;
+  btn.textContent = '✓ Copied!';
+  setTimeout(() => btn.textContent = '📋 Copy', 2000);
+}
+</script>
+</body>
+</html>

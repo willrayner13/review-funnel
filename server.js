@@ -191,7 +191,7 @@ app.use(
 );
 
 // ─── HTML ROUTES ──────────────────────────────────────────────────────────────
-const htmlPages = ["admin", "login", "for-business", "lapsed", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings", "about", "contact", "blog"];
+const htmlPages = ["admin", "login", "for-business", "lapsed", "success", "cancel", "thanks", "bad", "landing", "demo", "billing", "settings", "about", "contact", "blog", "partner"];
 htmlPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.sendFile(path.resolve("public", `${page}.html`));
@@ -902,6 +902,54 @@ app.get("/lapsed-stats/:slug", async (req, res) => {
     if (e.event_type === "review_click") counts.reviews++;
   });
   res.json(counts);
+});
+
+// ─── AFFILIATE STATS ──────────────────────────────────────────────────────────
+app.get("/affiliate-stats/:code", async (req, res) => {
+  const code = req.params.code;
+  
+  // Get all businesses referred by this code
+  const { data: businesses } = await supabase
+    .from("businesses")
+    .select("name, slug, subscription_active, plan_type, created_at, trial_ends_at")
+    .eq("referred_by", code)
+    .order("created_at", { ascending: false });
+  
+  if (!businesses || businesses.length === 0) {
+    return res.json({
+      partner_name: code,
+      referral_link: `${process.env.BASE_URL}/admin?ref=${code}`,
+      total_signups: 0,
+      active_customers: 0,
+      monthly_earnings: 0,
+      total_earned: 0,
+      referrals: []
+    });
+  }
+  
+  const active = businesses.filter(b => b.subscription_active);
+  const monthlyEarnings = active.reduce((sum, b) => {
+    return sum + (b.plan_type === 'pro' ? 24.99 * 0.3 : 9.99 * 0.3);
+  }, 0);
+  
+  const referrals = businesses.map(b => ({
+    business_name: b.name,
+    slug: b.slug,
+    plan: b.plan_type || 'starter',
+    created_at: b.created_at,
+    active: b.subscription_active,
+    commission: b.subscription_active ? (b.plan_type === 'pro' ? 24.99 * 0.3 : 9.99 * 0.3) : 0
+  }));
+  
+  res.json({
+    partner_name: code,
+    referral_link: `${process.env.BASE_URL}/admin?ref=${code}`,
+    total_signups: businesses.length,
+    active_customers: active.length,
+    monthly_earnings: monthlyEarnings,
+    total_earned: monthlyEarnings, // Simplified — you can track historical earnings later
+    referrals
+  });
 });
 
 // ─── EXPORT ───────────────────────────────────────────────────────────────────
