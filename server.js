@@ -976,6 +976,31 @@ app.get("/affiliate-stats/:code", async (req, res) => {
     referrals
   });
 });
+
+// ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
+app.get("/partner-info/:code", async (req, res) => {
+  const code = req.params.code;
+  
+  // For now, return the code as the display name. 
+  // Later you can add a partners table with bios, headshots, etc.
+  // This endpoint exists so you can enrich it without changing the frontend.
+  
+  // Check if this code has actually referred anyone (validates it's a real partner)
+  const { count } = await supabase
+    .from("businesses")
+    .select("*", { count: "exact", head: true })
+    .eq("referred_by", code);
+  
+  res.json({
+    code: code,
+    name: code.charAt(0).toUpperCase() + code.slice(1).replace(/-/g, ' '), // "toddnorwich" → "Toddnorwich"
+    has_referrals: count > 0,
+    // Future: pull from a partners table
+    // display_name: "Todd at Semibold",
+    // quote: "I recommend ReviewLift to all my clients...",
+    // logo_url: "..."
+  });
+});
 // ─── EXPORT ───────────────────────────────────────────────────────────────────
 const serverless = require("serverless-http");
 module.exports = app;
