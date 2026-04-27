@@ -495,7 +495,7 @@
 </div>
 
 <!-- Co-branded affiliate banner — only shows when ?ref= is present -->
-<div id="affiliateBanner" style="display:none; background: linear-gradient(135deg, var(--surface) 0%, rgba(200,169,110,0.08) 100%); border-bottom: 1px solid rgba(200,169,110,0.2); padding: 20px 48px; text-align: center;">
+<div id="affiliateBanner" style="display:none; background: linear-gradient(135deg, #242422 0%, rgba(200,169,110,0.08) 100%); border-bottom: 1px solid rgba(200,169,110,0.2); padding: 20px 48px; text-align: center;">
   <div style="max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
     <div style="display: flex; align-items: center; gap: 10px;">
       <div id="affiliateAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--accent-dim); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: var(--accent); flex-shrink: 0;"></div>
@@ -980,6 +980,50 @@ document.addEventListener('click', function(e){
     btn.disabled=false;btn.textContent='Send message →';
   }
 
+  // ── Co-branded affiliate banner ──
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (!ref) return;
+  
+  // Also store in cookie so it follows them to signup
+  const d = new Date();
+  d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
+  document.cookie = "rl_ref=" + ref + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
+  
+  // Fetch partner info
+  fetch('/partner-info/' + ref)
+    .then(r => r.json())
+    .then(data => {
+      const banner = document.getElementById('affiliateBanner');
+      if (!banner) return;
+      banner.style.display = 'block';
+      
+      document.getElementById('affiliateName').textContent = data.name;
+      
+      // Set avatar initials
+      const avatar = document.getElementById('affiliateAvatar');
+      const initials = data.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      avatar.textContent = initials || 'P';
+    })
+    .catch(() => {
+      // Silently fail — banner just won't show
+    });
+})();
+
+// ── Preserve ref param in all /admin links ──
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (!ref) return;
+  
+  document.querySelectorAll('a[href="/admin"], a[href*="/admin"]').forEach(link => {
+    const url = new URL(link.href);
+    url.searchParams.set('ref', ref);
+    link.href = url.toString();
+  });
+})();
+
 </script>
 
 <script type="application/ld+json">
@@ -1030,49 +1074,7 @@ document.addEventListener('click', function(e){
   }
 }
 
-// ── Co-branded affiliate banner ──
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-  if (!ref) return;
-  
-  // Also store in cookie so it follows them to signup
-  const d = new Date();
-  d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
-  document.cookie = "rl_ref=" + ref + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
-  
-  // Fetch partner info
-  fetch('/partner-info/' + ref)
-    .then(r => r.json())
-    .then(data => {
-      const banner = document.getElementById('affiliateBanner');
-      if (!banner) return;
-      banner.style.display = 'block';
-      
-      document.getElementById('affiliateName').textContent = data.name;
-      
-      // Set avatar initials
-      const avatar = document.getElementById('affiliateAvatar');
-      const initials = data.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-      avatar.textContent = initials || 'P';
-    })
-    .catch(() => {
-      // Silently fail — banner just won't show
-    });
-})();
 
-// ── Preserve ref param in all /admin links ──
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-  if (!ref) return;
-  
-  document.querySelectorAll('a[href="/admin"], a[href*="/admin"]').forEach(link => {
-    const url = new URL(link.href);
-    url.searchParams.set('ref', ref);
-    link.href = url.toString();
-  });
-})();
 </script>
 </body>
 </html>
