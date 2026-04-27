@@ -989,10 +989,13 @@
     const pct=((val-min)/(max-min)*100).toFixed(1)+'%';
     el.style.setProperty('--pct',pct);
   }
-  document.querySelectorAll('input[type=range]').forEach(el=>{
+// Only init sliders if they exist on the page
+document.querySelectorAll('input[type=range]').forEach(el=>{
+  if (el.id === 'custSlider' || el.id === 'spendSlider' || el.id === 'ratingSlider') {
     updateSliderFill(el);
     el.addEventListener('input',()=>updateSliderFill(el));
-  });
+  }
+});
 
   /* ── Calculator ── */
   function formatCurrency(n){
@@ -1036,7 +1039,10 @@
     document.getElementById('recovered').textContent=formatCurrency(gainRev);
     document.getElementById('recoveredSub').textContent=`~${gain.toLocaleString()} extra customers at ${spend>=1000?'£'+(spend/1000).toFixed(1)+'k':'£'+spend} avg`;
   }
+  // Only run calculator if the elements exist (they were removed from the page)
+if (document.getElementById('custSlider')) {
   calcUpdate();
+}
 
   /* ── Demo generator ── */
   function slugify(s){return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
