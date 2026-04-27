@@ -139,9 +139,9 @@
           Next payout: <strong id="nextPayoutDate">1st May 2026</strong>
           <span style="font-size:0.7rem;color:rgba(234,231,220,0.3);display:block;margin-top:2px;">Only includes customers who have completed trial and are paying</span>
         </span>
-        <a class="bank-details-btn" id="bankDetailsLink" href="mailto:billy@reviewlift.app?subject=Payout%20details%20for%20affiliate%20code">
-          Submit bank details for payouts →
-        </a>
+<a class="bank-details-btn" id="bankDetailsLink" href="#" onclick="openBankDetails(); return false;">
+  Submit bank details for payouts →
+</a>
       </div>
     </div>
 
@@ -223,8 +223,8 @@ async function loadDashboard(code) {
   document.getElementById('payoutDate').textContent = payoutDate;
   
   // Update bank details mailto link with the affiliate code
-  document.getElementById('bankDetailsLink').href = 
-    `mailto:billy@reviewlift.app?subject=Payout%20details%20-%20${encodeURIComponent(code)}`;
+// The href is set by the onclick handler, but set it as fallback
+document.getElementById('bankDetailsLink').setAttribute('data-code', code);
   
   if (data.referrals && data.referrals.length > 0) {
     let html = '<table><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr>';
@@ -257,6 +257,26 @@ function copyRefLink() {
   const btn = event.target;
   btn.textContent = '✓ Copied!';
   setTimeout(() => btn.textContent = '📋 Copy', 2000);
+}
+
+function openBankDetails() {
+  const code = new URLSearchParams(window.location.search).get('code') || 'unknown';
+  const subject = encodeURIComponent('Payout details - ' + code);
+  const body = encodeURIComponent('Hi Billy,\n\nHere are my bank details for affiliate payouts:\n\nAccount name: \nSort code: \nAccount number: \n\nMy affiliate code is: ' + code + '\n\nThanks!');
+  
+  // Try mailto first
+  const mailtoLink = 'mailto:billy@reviewlift.app?subject=' + subject + '&body=' + body;
+  
+  // Open in new tab (works even if mail client isn't set up — user sees the address)
+  const win = window.open(mailtoLink, '_blank');
+  
+  // If mailto didn't work after 1 second, show the email address
+  setTimeout(function() {
+    if (!win || win.closed) {
+      // Mail client might not have opened — show a fallback
+      alert('Please email your bank details to:\n\nbilly@reviewlift.app\n\nSubject: Payout details - ' + code + '\n\nInclude: Account name, Sort code, Account number');
+    }
+  }, 1000);
 }
 </script>
 </body>
