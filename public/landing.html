@@ -237,13 +237,13 @@
     .ds-step strong{font-size:0.875rem;font-weight:600;color:var(--cream);display:block;margin-bottom:2px;}
     .ds-step span{font-size:0.8rem;color:var(--cream-dim);}
 
-        /* ── PRODUCT SCREENSHOTS SECTION ── */
+    /* ── PRODUCT SCREENSHOTS SECTION ── */
     .screenshots-section {
-      padding: 80px 24px;
+      padding: 80px 24px 60px;
       background: #242422;
     }
     .screenshots-inner {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
     }
     .screenshots-intro {
@@ -285,13 +285,13 @@
     /* Three shots in a row */
     .shot-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      gap: 24px;
+      gap: 28px;
     }
     .shot-card {
       flex: 1;
-      max-width: 280px;
+      max-width: 320px;
       text-align: center;
     }
     .shot-card img {
@@ -302,7 +302,7 @@
       display: block;
     }
     .shot-card-featured {
-      transform: scale(1.08);
+      transform: scale(1.06);
       z-index: 2;
     }
     .shot-card-featured img {
@@ -310,12 +310,12 @@
     }
     .shot-caption {
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--cream-dim);
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
-    /* Divider between customer view and dashboard view */
+    /* Divider */
     .shot-divider {
       text-align: center;
       padding: 40px 0;
@@ -345,7 +345,7 @@
       z-index: 1;
     }
 
-    /* Stat tiles (kept from old section) */
+    /* Stat tiles */
     .stat-tiles {
       display: grid;
       grid-template-columns: repeat(3,1fr);
@@ -376,35 +376,45 @@
       line-height: 1.5;
     }
 
-    /* Responsive: stack on mobile */
-@media (max-width: 768px) {
-  .shot-row {
-    flex-direction: column;
-    align-items: center;
-    gap: 28px;
-  }
-  .shot-card {
-    max-width: 300px;
-    width: 100%;
-  }
-  .shot-card-featured {
-    transform: none;
-  }
-  .shot-card img {
-    max-height: 500px;
-    width: auto;
-    margin: 0 auto;
-  }
-  .shot-label {
-    margin-bottom: 24px;
-  }
-  .stat-tiles {
-    grid-template-columns: 1fr;
-  }
-  .shot-divider {
-    padding: 28px 0;
-  }
-}
+    /* ── MOBILE: smaller images, single column ── */
+    @media (max-width: 768px) {
+      .screenshots-section {
+        padding: 50px 20px 40px;
+      }
+      .screenshots-intro {
+        margin-bottom: 40px;
+      }
+      .shot-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+      }
+      .shot-card {
+        max-width: 260px;
+        width: 100%;
+      }
+      .shot-card-featured {
+        transform: none;
+      }
+      .shot-card img {
+        max-height: none;
+        width: 100%;
+      }
+      .shot-label {
+        margin-bottom: 22px;
+      }
+      .shot-caption {
+        font-size: 0.78rem;
+        margin-top: 10px;
+      }
+      .shot-divider {
+        padding: 24px 0;
+      }
+      .stat-tiles {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
 
     /* Big demo card — spacious, no trial CTA inside */
     .spotlight-card{
