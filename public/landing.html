@@ -377,22 +377,34 @@
     }
 
     /* Responsive: stack on mobile */
-    @media (max-width: 768px) {
-      .shot-row {
-        flex-direction: column;
-        gap: 32px;
-      }
-      .shot-card {
-        max-width: 340px;
-        width: 100%;
-      }
-      .shot-card-featured {
-        transform: none;
-      }
-      .stat-tiles {
-        grid-template-columns: 1fr;
-      }
-    }
+@media (max-width: 768px) {
+  .shot-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .shot-card {
+    max-width: 300px;
+    width: 100%;
+  }
+  .shot-card-featured {
+    transform: none;
+  }
+  .shot-card img {
+    max-height: 500px;
+    width: auto;
+    margin: 0 auto;
+  }
+  .shot-label {
+    margin-bottom: 24px;
+  }
+  .stat-tiles {
+    grid-template-columns: 1fr;
+  }
+  .shot-divider {
+    padding: 28px 0;
+  }
+}
 
     /* Big demo card — spacious, no trial CTA inside */
     .spotlight-card{
@@ -718,15 +730,15 @@
       <span class="shot-label">THE CUSTOMER EXPERIENCE</span>
       <div class="shot-row">
         <div class="shot-card">
-          <img src="/images/592shots_so.png" alt="A simple, branded question" loading="lazy">
+          <img src="/images/592shots_so.png" alt="A simple, branded question" loading="lazy" width="280" height="560">
           <p class="shot-caption">A simple, branded question</p>
         </div>
         <div class="shot-card shot-card-featured">
-          <img src="/images/627shots_so.png" alt="Unhappy? Feedback stays private" loading="lazy">
+          <img src="/images/627shots_so.png" alt="Unhappy? Feedback stays private" loading="lazy" width="280" height="560">
           <p class="shot-caption">Unhappy? Feedback stays private</p>
         </div>
         <div class="shot-card">
-          <img src="/images/482shots_so.png" alt="Happy? Straight to Google" loading="lazy">
+          <img src="/images/482shots_so.png" alt="Happy? Straight to Google" loading="lazy" width="280" height="560">
           <p class="shot-caption">Happy? Straight to Google</p>
         </div>
       </div>
@@ -742,15 +754,15 @@
       <span class="shot-label">YOUR DASHBOARD</span>
       <div class="shot-row">
         <div class="shot-card">
-          <img src="/images/641shots_so.png" alt="Track performance at a glance" loading="lazy">
+          <img src="/images/641shots_so.png" alt="Track performance at a glance" loading="lazy" width="280" height="190">
           <p class="shot-caption">Track performance at a glance</p>
         </div>
         <div class="shot-card shot-card-featured">
-          <img src="/images/699shots_so.png" alt="Send review requests by SMS or email" loading="lazy">
+          <img src="/images/699shots_so.png" alt="Send review requests by SMS or email" loading="lazy" width="280" height="190">
           <p class="shot-caption">Send review requests by SMS or email</p>
         </div>
         <div class="shot-card">
-          <img src="/images/337shots_so.png" alt="AI-generated replies and private feedback in one place" loading="lazy">
+          <img src="/images/337shots_so.png" alt="AI replies and private feedback" loading="lazy" width="280" height="190">
           <p class="shot-caption">AI replies and private feedback in one place</p>
         </div>
       </div>
