@@ -224,7 +224,7 @@ async function loadDashboard(code) {
       '<span class="page-eyebrow">Affiliate Portal</span>' +
       '<h1 class="page-title">Not found</h1>' +
       '<p class="page-sub">That affiliate code doesn\'t exist yet.</p>' +
-      '<p style="font-size:0.85rem;color:var(--cream-dim);">Your referral link: <code style="color:var(--accent);">' + window.location.origin + '/admin?ref=' + code + '</code></p>';
+      '<p style="font-size:0.85rem;color:var(--cream-dim);">Your referral link: <code style="color:var(--accent);">' + window.location.origin + '?ref=' + code + '</code></p>';
     return;
   }
   var data = await res.json();

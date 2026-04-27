@@ -918,7 +918,7 @@ app.get("/affiliate-stats/:code", async (req, res) => {
   if (!businesses || businesses.length === 0) {
     return res.json({
       partner_name: code,
-      referral_link: `https://www.reviewlift.app/admin?ref=${code}`,
+      referral_link: `https://www.reviewlift.app?ref=${code}`,
       total_signups: 0,
       active_customers: 0,
       monthly_earnings: 0,
@@ -968,7 +968,7 @@ app.get("/affiliate-stats/:code", async (req, res) => {
   
   res.json({
     partner_name: code,
-    referral_link: `https://www.reviewlift.app/admin?ref=${code}`,
+    referral_link: `https://www.reviewlift.app?ref=${code}`,
     total_signups: businesses.length,
     active_customers: paying.length,
     trial_customers: trialCustomers.length,
