@@ -173,42 +173,61 @@ const code = params.get('code');
 // Calculate next payout date (1st of next month)
 function getNextPayoutDate() {
   const now = new Date();
-  let next;
-  if (now.getDate() === 1) {
-    // Today is the 1st — payout is today, but we show next month's for clarity
-    next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  } else {
-    next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  }
+  let next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
   return next.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+// Copy referral link
+function copyRefLink() {
+  const link = document.getElementById('refLink').textContent;
+  navigator.clipboard.writeText(link);
+  const btn = event.target;
+  btn.textContent = '✓ Copied!';
+  setTimeout(function() { btn.textContent = '📋 Copy'; }, 2000);
+}
+
+// Open bank details form
+function openBankDetails() {
+  var code = new URLSearchParams(window.location.search).get('code') || 'unknown';
+  var subject = encodeURIComponent('Payout details - ' + code);
+  var body = encodeURIComponent(
+    'Hi Billy,\n\n' +
+    'Here are my bank details for affiliate payouts:\n\n' +
+    'Account name: \n' +
+    'Sort code: \n' +
+    'Account number: \n\n' +
+    'My affiliate code is: ' + code + '\n\n' +
+    'Thanks!'
+  );
+  
+  var mailtoLink = 'mailto:billy@reviewlift.app?subject=' + subject + '&body=' + body;
+  window.location.href = mailtoLink;
+}
+
 if (!code) {
-  document.getElementById('mainContent').innerHTML = `
-    <span class="page-eyebrow">Affiliate Portal</span>
-    <h1 class="page-title">Enter your code</h1>
-    <p class="page-sub">Enter the affiliate code you were given to see your dashboard.</p>
-    <div style="display:flex;gap:10px;max-width:400px;">
-      <input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;">
-      <button class="copy-btn" onclick="window.location='?code='+encodeURIComponent(document.getElementById('codeInput').value.trim())" style="padding:14px 20px;font-size:0.95rem;">View Dashboard →</button>
-    </div>
-  `;
+  document.getElementById('mainContent').innerHTML =
+    '<span class="page-eyebrow">Affiliate Portal</span>' +
+    '<h1 class="page-title">Enter your code</h1>' +
+    '<p class="page-sub">Enter the affiliate code you were given to see your dashboard.</p>' +
+    '<div style="display:flex;gap:10px;max-width:400px;">' +
+    '<input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;color:var(--cream);font-family:\'DM Sans\',sans-serif;font-size:0.95rem;outline:none;">' +
+    '<button class="copy-btn" onclick="window.location=\'?code=\'+encodeURIComponent(document.getElementById(\'codeInput\').value.trim())" style="padding:14px 20px;font-size:0.95rem;">View Dashboard →</button>' +
+    '</div>';
 } else {
   loadDashboard(code);
 }
 
 async function loadDashboard(code) {
-  const res = await fetch('/affiliate-stats/' + code);
+  var res = await fetch('/affiliate-stats/' + code);
   if (!res.ok) {
-    document.getElementById('mainContent').innerHTML = `
-      <span class="page-eyebrow">Affiliate Portal</span>
-      <h1 class="page-title">Not found</h1>
-      <p class="page-sub">That affiliate code doesn't exist yet. It'll activate when your first referral signs up.</p>
-      <p style="font-size:0.85rem;color:var(--cream-dim);">Your referral link: <code style="color:var(--accent);">${window.location.origin}/admin?ref=${code}</code></p>
-    `;
+    document.getElementById('mainContent').innerHTML =
+      '<span class="page-eyebrow">Affiliate Portal</span>' +
+      '<h1 class="page-title">Not found</h1>' +
+      '<p class="page-sub">That affiliate code doesn\'t exist yet.</p>' +
+      '<p style="font-size:0.85rem;color:var(--cream-dim);">Your referral link: <code style="color:var(--accent);">' + window.location.origin + '/admin?ref=' + code + '</code></p>';
     return;
   }
-  const data = await res.json();
+  var data = await res.json();
   
   document.getElementById('partnerName').textContent = data.partner_name || code;
   document.getElementById('refLink').textContent = data.referral_link;
@@ -217,19 +236,14 @@ async function loadDashboard(code) {
   document.getElementById('monthlyEarnings').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
   document.getElementById('totalEarned').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
   
-  // Dynamic payout date
-  const payoutDate = getNextPayoutDate();
+  var payoutDate = getNextPayoutDate();
   document.getElementById('nextPayoutDate').textContent = payoutDate;
   document.getElementById('payoutDate').textContent = payoutDate;
   
-  // Update bank details mailto link with the affiliate code
-// The href is set by the onclick handler, but set it as fallback
-document.getElementById('bankDetailsLink').setAttribute('data-code', code);
-  
   if (data.referrals && data.referrals.length > 0) {
-    let html = '<table><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr>';
-    data.referrals.forEach(r => {
-      let statusBadge = '';
+    var html = '<table><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr>';
+    data.referrals.forEach(function(r) {
+      var statusBadge = '';
       if (r.status === 'active') {
         statusBadge = '<span class="status-badge status-active">✅ Paying</span>';
       } else if (r.status === 'trial') {
@@ -238,45 +252,17 @@ document.getElementById('bankDetailsLink').setAttribute('data-code', code);
         statusBadge = '<span class="status-badge status-cancelled">✕ Cancelled</span>';
       }
       
-      html += `<tr>
-        <td>${r.business_name || r.slug}</td>
-        <td>${r.plan === 'pro' ? 'Pro' : 'Starter'}</td>
-        <td>${new Date(r.created_at).toLocaleDateString('en-GB')}</td>
-        <td>${statusBadge}</td>
-        <td class="${r.status === 'active' ? 'amount' : 'trial'}">${r.status === 'active' ? '£' + r.commission.toFixed(2) : '£0.00 (trial)'}</td>
-      </tr>`;
+      html += '<tr>' +
+        '<td>' + (r.business_name || r.slug) + '</td>' +
+        '<td>' + (r.plan === 'pro' ? 'Pro' : 'Starter') + '</td>' +
+        '<td>' + new Date(r.created_at).toLocaleDateString('en-GB') + '</td>' +
+        '<td>' + statusBadge + '</td>' +
+        '<td class="' + (r.status === 'active' ? 'amount' : 'trial') + '">' + (r.status === 'active' ? '£' + r.commission.toFixed(2) : '£0.00 (trial)') + '</td>' +
+      '</tr>';
     });
     html += '</table>';
     document.getElementById('referralsTable').innerHTML = html;
   }
-}
-
-function copyRefLink() {
-  const link = document.getElementById('refLink').textContent;
-  navigator.clipboard.writeText(link);
-  const btn = event.target;
-  btn.textContent = '✓ Copied!';
-  setTimeout(() => btn.textContent = '📋 Copy', 2000);
-}
-
-function openBankDetails() {
-  const code = new URLSearchParams(window.location.search).get('code') || 'unknown';
-  const subject = encodeURIComponent('Payout details - ' + code);
-  const body = encodeURIComponent('Hi Billy,\n\nHere are my bank details for affiliate payouts:\n\nAccount name: \nSort code: \nAccount number: \n\nMy affiliate code is: ' + code + '\n\nThanks!');
-  
-  // Try mailto first
-  const mailtoLink = 'mailto:billy@reviewlift.app?subject=' + subject + '&body=' + body;
-  
-  // Open in new tab (works even if mail client isn't set up — user sees the address)
-  const win = window.open(mailtoLink, '_blank');
-  
-  // If mailto didn't work after 1 second, show the email address
-  setTimeout(function() {
-    if (!win || win.closed) {
-      // Mail client might not have opened — show a fallback
-      alert('Please email your bank details to:\n\nbilly@reviewlift.app\n\nSubject: Payout details - ' + code + '\n\nInclude: Account name, Sort code, Account number');
-    }
-  }, 1000);
 }
 </script>
 </body>
