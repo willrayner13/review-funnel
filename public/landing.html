@@ -300,7 +300,16 @@
       border-radius: var(--r);
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       display: block;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
     }
+
+    .shot-card img:hover {
+  transform: scale(1.25);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  z-index: 10;
+  position: relative;
+}
     .shot-card-featured {
       transform: scale(1.06);
       z-index: 2;
