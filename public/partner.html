@@ -139,10 +139,20 @@
           Next payout: <strong id="nextPayoutDate">1st May 2026</strong>
           <span style="font-size:0.7rem;color:rgba(234,231,220,0.3);display:block;margin-top:2px;">Only includes customers who have completed trial and are paying</span>
         </span>
-<a class="bank-details-btn" id="bankDetailsLink" href="#" onclick="openBankDetails(); return false;">
+<button class="bank-details-btn" id="bankDetailsBtn" onclick="showBankForm()" style="background:none;border:none;cursor:pointer;font-family:inherit;">
   Submit bank details for payouts →
-</a>
+</button>
       </div>
+      <div id="bankForm" style="display:none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+  <p style="font-size:0.82rem;color:var(--cream-dim);margin-bottom:12px;">Enter your bank details below and we'll set up your payouts.</p>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <input id="bankName" type="text" placeholder="Your full name" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.85rem;">
+    <input id="bankSortCode" type="text" placeholder="Sort code (e.g. 12-34-56)" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.85rem;">
+    <input id="bankAccountNumber" type="text" placeholder="Account number" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.85rem;">
+    <button onclick="submitBankDetails()" id="bankSubmitBtn" style="background:var(--accent);color:#1A1A18;border:none;padding:11px 20px;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;">Send details →</button>
+  </div>
+  <p id="bankFormMsg" style="font-size:0.78rem;margin-top:10px;min-height:18px;"></p>
+</div>
     </div>
 
     <!-- Referral link -->
@@ -187,34 +197,60 @@ function copyRefLink() {
 }
 
 // Open bank details form
-function openBankDetails() {
-  var code = new URLSearchParams(window.location.search).get('code') || 'unknown';
-  var subject = encodeURIComponent('Payout details - ' + code);
-  var body = encodeURIComponent(
-    'Hi Billy,\n\n' +
-    'Here are my bank details for affiliate payouts:\n\n' +
-    'Account name: \n' +
-    'Sort code: \n' +
-    'Account number: \n\n' +
-    'My affiliate code is: ' + code + '\n\n' +
-    'Thanks!'
-  );
-  
-  var mailtoLink = 'mailto:billy@reviewlift.app?subject=' + subject + '&body=' + body;
-  window.location.href = mailtoLink;
+// Show bank details form
+function showBankForm() {
+  var form = document.getElementById('bankForm');
+  if (form.style.display === 'none' || !form.style.display) {
+    form.style.display = 'block';
+    document.getElementById('bankDetailsBtn').style.display = 'none';
+  }
 }
 
-if (!code) {
-  document.getElementById('mainContent').innerHTML =
-    '<span class="page-eyebrow">Affiliate Portal</span>' +
-    '<h1 class="page-title">Enter your code</h1>' +
-    '<p class="page-sub">Enter the affiliate code you were given to see your dashboard.</p>' +
-    '<div style="display:flex;gap:10px;max-width:400px;">' +
-    '<input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;color:var(--cream);font-family:\'DM Sans\',sans-serif;font-size:0.95rem;outline:none;">' +
-    '<button class="copy-btn" onclick="window.location=\'?code=\'+encodeURIComponent(document.getElementById(\'codeInput\').value.trim())" style="padding:14px 20px;font-size:0.95rem;">View Dashboard →</button>' +
-    '</div>';
-} else {
-  loadDashboard(code);
+// Submit bank details
+async function submitBankDetails() {
+  var btn = document.getElementById('bankSubmitBtn');
+  var msg = document.getElementById('bankFormMsg');
+  var name = document.getElementById('bankName').value.trim();
+  var sortCode = document.getElementById('bankSortCode').value.trim();
+  var accountNumber = document.getElementById('bankAccountNumber').value.trim();
+  var code = new URLSearchParams(window.location.search).get('code') || 'unknown';
+  
+  if (!name || !sortCode || !accountNumber) {
+    msg.textContent = 'Please fill in all fields.';
+    msg.style.color = '#D4897C';
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  
+  try {
+    var res = await fetch('/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        email: 'affiliate@reviewlift.app',
+        message: 'AFFILIATE BANK DETAILS\n\nAffiliate code: ' + code + '\nName: ' + name + '\nSort code: ' + sortCode + '\nAccount number: ' + accountNumber
+      })
+    });
+    var data = await res.json();
+    if (data.success) {
+      msg.textContent = '✓ Details sent! We\'ll set up your payouts.';
+      msg.style.color = '#8EC9A8';
+      document.getElementById('bankForm').innerHTML = '<p style="color:#8EC9A8;font-size:0.85rem;">✓ Bank details submitted. We\'ll be in touch before your first payout.</p>';
+    } else {
+      msg.textContent = 'Something went wrong. Please email billy@reviewlift.app';
+      msg.style.color = '#D4897C';
+      btn.disabled = false;
+      btn.textContent = 'Send details →';
+    }
+  } catch(e) {
+    msg.textContent = 'Could not send. Please email billy@reviewlift.app directly.';
+    msg.style.color = '#D4897C';
+    btn.disabled = false;
+    btn.textContent = 'Send details →';
+  }
 }
 
 async function loadDashboard(code) {
