@@ -495,7 +495,7 @@
 </div>
 
 <!-- Co-branded affiliate banner — only shows when ?ref= is present -->
-<div id="affiliateBanner" style="display:none; background: linear-gradient(135deg, #242422 0%, rgba(200,169,110,0.08) 100%); border-bottom: 1px solid rgba(200,169,110,0.2); padding: 20px 48px; text-align: center;">
+<div id="affiliateBanner" style="display:none; margin-top: 64px; background: linear-gradient(135deg, #242422 0%, rgba(200,169,110,0.08) 100%); border-bottom: 1px solid rgba(200,169,110,0.2); padding: 20px 48px; text-align: center;">
   <div style="max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
     <div style="display: flex; align-items: center; gap: 10px;">
       <div id="affiliateAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--accent-dim); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: var(--accent); flex-shrink: 0;"></div>
@@ -998,6 +998,10 @@ document.addEventListener('click', function(e){
       const banner = document.getElementById('affiliateBanner');
       if (!banner) return;
       banner.style.display = 'block';
+      
+      // Reduce hero padding since banner is now taking up space
+      const hero = document.querySelector('.hero');
+      if (hero) hero.style.paddingTop = '60px';
       
       document.getElementById('affiliateName').textContent = data.name;
       
