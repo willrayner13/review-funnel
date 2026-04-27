@@ -237,6 +237,163 @@
     .ds-step strong{font-size:0.875rem;font-weight:600;color:var(--cream);display:block;margin-bottom:2px;}
     .ds-step span{font-size:0.8rem;color:var(--cream-dim);}
 
+        /* ── PRODUCT SCREENSHOTS SECTION ── */
+    .screenshots-section {
+      padding: 80px 24px;
+      background: #242422;
+    }
+    .screenshots-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .screenshots-intro {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .screenshots-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      color: var(--cream);
+    }
+    .screenshots-sub {
+      font-size: 1rem;
+      color: var(--cream-dim);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Shot groups */
+    .shot-group {
+      margin-bottom: 0;
+    }
+    .shot-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: var(--accent);
+      display: block;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    /* Three shots in a row */
+    .shot-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .shot-card {
+      flex: 1;
+      max-width: 280px;
+      text-align: center;
+    }
+    .shot-card img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--r);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      display: block;
+    }
+    .shot-card-featured {
+      transform: scale(1.08);
+      z-index: 2;
+    }
+    .shot-card-featured img {
+      box-shadow: 0 12px 48px rgba(0,0,0,0.55);
+    }
+    .shot-caption {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      color: var(--cream-dim);
+      margin-top: 14px;
+    }
+
+    /* Divider between customer view and dashboard view */
+    .shot-divider {
+      text-align: center;
+      padding: 40px 0;
+      position: relative;
+    }
+    .shot-divider::before {
+      content: '';
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      top: 50%;
+      height: 1px;
+      background: rgba(200,169,110,0.2);
+    }
+    .shot-chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #242422;
+      border: 1px solid rgba(200,169,110,0.3);
+      color: var(--accent);
+      font-size: 1.2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Stat tiles (kept from old section) */
+    .stat-tiles {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+    }
+    .stat-tile {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 24px 20px;
+      text-align: center;
+      transition: all .2s;
+    }
+    .stat-tile:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-2px);
+    }
+    .tile-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tile-label {
+      font-size: 0.78rem;
+      color: var(--cream-dim);
+      line-height: 1.5;
+    }
+
+    /* Responsive: stack on mobile */
+    @media (max-width: 768px) {
+      .shot-row {
+        flex-direction: column;
+        gap: 32px;
+      }
+      .shot-card {
+        max-width: 340px;
+        width: 100%;
+      }
+      .shot-card-featured {
+        transform: none;
+      }
+      .stat-tiles {
+        grid-template-columns: 1fr;
+      }
+    }
+
     /* Big demo card — spacious, no trial CTA inside */
     .spotlight-card{
       background:var(--surface-2);border:1px solid var(--border-hi);
@@ -463,8 +620,8 @@
 <nav>
   <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
 <div class="nav-links">
-  <a href="#how-it-works">How it works</a>
-  <a href="#demo-section">Live demo</a>
+<a href="#screenshots">How it works</a>
+<a href="#demo-section">Live demo</a>
   <a href="#features">Features</a>
   <a href="#pricing">Pricing</a>
   <a href="/about">About</a>
@@ -482,8 +639,8 @@
 </nav>
 <!-- Mobile nav drawer -->
 <div class="nav-drawer" id="navDrawer">
-  <a href="#how-it-works" onclick="closeNav()">How it works</a>
-  <a href="#demo-section" onclick="closeNav()">Live demo</a>
+<a href="#screenshots" onclick="closeNav()">How it works</a>
+<a href="#demo-section" onclick="closeNav()">Live demo</a>
   <a href="#features" onclick="closeNav()">Features</a>
   <a href="#pricing" onclick="closeNav()">Pricing</a>
   <a href="/about">About</a>
@@ -546,84 +703,67 @@
 </div>
 
 <!-- ═══════════════════════════════════
-     INTERACTIVE STATS / CALCULATOR
+     PRODUCT SCREENSHOTS
 ═══════════════════════════════════ -->
-<section class="stats-section" id="stats-section">
-  <div class="stats-inner">
-    <div class="stats-intro reveal">
-      <span class="stats-eyebrow">The numbers</span>
-      <h2 class="stats-heading">One bad review costs more than you think</h2>
-      <p class="stats-sub">Use the calculator below to see exactly what negative reviews are costing your business — and what fixing them is worth.</p>
+<section class="screenshots-section" id="screenshots">
+  <div class="screenshots-inner">
+    
+    <div class="screenshots-intro reveal">
+      <h2 class="screenshots-heading">See exactly how it works</h2>
+      <p class="screenshots-sub">Simple for your customers. Powerful for you.</p>
     </div>
 
-    <div class="calc-card reveal">
-      <div class="calc-grid">
-        <!-- Sliders -->
-        <div class="calc-controls">
-          <div class="slider-group">
-            <label>Monthly customers</label>
-            <div class="slider-value-row">
-              <span class="slider-val" id="custVal">200</span>
-              <span style="font-size:0.72rem;color:var(--cream-dim)">per month</span>
-            </div>
-            <input type="range" id="custSlider" min="10" max="5000" value="200" oninput="calcUpdate()">
-          </div>
-
-          <div class="slider-group">
-            <label>Average job / order value</label>
-            <div class="slider-value-row">
-              <span class="slider-val" id="spendVal">£35</span>
-              <span style="font-size:0.72rem;color:var(--cream-dim)" id="spendUnit">per job/visit</span>
-            </div>
-            <input type="range" id="spendSlider" min="5" max="50000" value="100" oninput="calcUpdate()">
-          </div>
-
-          <div class="slider-group">
-            <label>Current Google rating</label>
-            <div class="slider-value-row">
-              <span class="slider-val" id="ratingVal">3.8 ★</span>
-              <span style="font-size:0.72rem;color:var(--cream-dim)">stars</span>
-            </div>
-            <input type="range" id="ratingSlider" min="1" max="5" step="0.1" value="3.8" oninput="calcUpdate()">
-          </div>
-
-          <p style="font-size:0.78rem;color:var(--cream-dim);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);">
-            Studies show businesses with 4.5+ stars see up to <strong style="color:var(--accent)">28% more new customers</strong> than those below 4.0, and a single negative review can deter an average of <strong style="color:var(--accent)">30 potential customers</strong>.
-          </p>
+    <!-- Subsection 1: Customer Experience -->
+    <div class="shot-group reveal">
+      <span class="shot-label">THE CUSTOMER EXPERIENCE</span>
+      <div class="shot-row">
+        <div class="shot-card">
+          <img src="/images/592shots_so.png" alt="A simple, branded question" loading="lazy">
+          <p class="shot-caption">A simple, branded question</p>
         </div>
-
-        <!-- Results -->
-        <div class="calc-results">
-          <div class="result-card highlight">
-            <div class="result-label">Customers lost to bad reviews / month</div>
-            <div class="result-value danger" id="lostCustomers">—</div>
-            <div class="result-sub" id="lostSub">Based on your rating and volume</div>
-          </div>
-
-          <div class="result-card highlight">
-            <div class="result-label">Revenue lost per month</div>
-            <div class="result-value danger" id="lostRevenue">—</div>
-            <div class="result-sub">Customers who choose a competitor instead</div>
-          </div>
-
-          <div class="result-card">
-            <div class="result-label">ReviewLift cost per month</div>
-            <div class="result-value accent">£9.99–£24.99</div>
-            <div class="result-sub">Less than one lost customer covers it</div>
-          </div>
-
-          <div class="result-card" style="border-color:rgba(106,158,127,0.3);background:linear-gradient(135deg,var(--surface-2),rgba(106,158,127,0.06));">
-            <div class="result-label">Potential revenue recovered / month</div>
-            <div class="result-value positive" id="recovered">—</div>
-            <div class="result-sub" id="recoveredSub">If your rating improves to 4.5+</div>
-          </div>
+        <div class="shot-card shot-card-featured">
+          <img src="/images/627shots_so.png" alt="Unhappy? Feedback stays private" loading="lazy">
+          <p class="shot-caption">Unhappy? Feedback stays private</p>
+        </div>
+        <div class="shot-card">
+          <img src="/images/482shots_so.png" alt="Happy? Straight to Google" loading="lazy">
+          <p class="shot-caption">Happy? Straight to Google</p>
         </div>
       </div>
-
-      <p class="calc-disclaimer">* Estimates based on industry research. Actual results vary by business type, location, and market. These figures are illustrative.</p>
     </div>
 
-    <!-- Static stat tiles -->
+    <!-- Divider between subsections -->
+    <div class="shot-divider reveal">
+      <span class="shot-chevron">⌄</span>
+    </div>
+
+    <!-- Subsection 2: Dashboard -->
+    <div class="shot-group reveal">
+      <span class="shot-label">YOUR DASHBOARD</span>
+      <div class="shot-row">
+        <div class="shot-card">
+          <img src="/images/641shots_so.png" alt="Track performance at a glance" loading="lazy">
+          <p class="shot-caption">Track performance at a glance</p>
+        </div>
+        <div class="shot-card shot-card-featured">
+          <img src="/images/699shots_so.png" alt="Send review requests by SMS or email" loading="lazy">
+          <p class="shot-caption">Send review requests by SMS or email</p>
+        </div>
+        <div class="shot-card">
+          <img src="/images/337shots_so.png" alt="AI-generated replies and private feedback in one place" loading="lazy">
+          <p class="shot-caption">AI replies and private feedback in one place</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     STAT TILES (KEPT FROM OLD SECTION)
+═══════════════════════════════════ -->
+<section class="stats-section" style="padding-top:0;">
+  <div class="stats-inner">
     <div class="stat-tiles">
       <div class="stat-tile reveal">
         <div class="tile-num" style="color:var(--danger)">30</div>
@@ -832,7 +972,7 @@
 
 <footer>
   <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
-  <div class="footer-links">    <a href="#pipeline">How it works</a>
+  <div class="footer-links">   <a href="#screenshots">How it works</a>
     <a href="#pricing">Pricing</a>
     <a href="/about">About</a>
       <a href="/blog">Blog</a>   <!-- ADD -->
