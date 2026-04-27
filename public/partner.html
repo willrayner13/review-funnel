@@ -58,17 +58,15 @@
     .empty-state .icon{font-size:2.5rem;display:block;margin-bottom:12px;}
 
     .payout-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:14px;}
-    .payout-item{}
     .payout-value{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--cream);}
     .payout-desc{font-size:0.78rem;color:var(--cream-dim);margin-top:4px;line-height:1.5;}
 
     .payout-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
     .next-payout{font-size:0.8rem;color:var(--cream-dim);}
     .next-payout strong{color:var(--cream);}
-    .bank-details-btn{font-size:0.8rem;color:var(--accent);font-weight:500;display:inline-flex;align-items:center;gap:4px;transition:color 0.2s;}
+    .bank-details-btn{font-size:0.8rem;color:var(--accent);font-weight:500;display:inline-flex;align-items:center;gap:4px;transition:color 0.2s;cursor:pointer;background:none;border:none;font-family:inherit;}
     .bank-details-btn:hover{color:#D4B87A;}
 
-    /* Earnings note — distinguishes trial from paid */
     .earnings-note{font-size:0.72rem;color:rgba(234,231,220,0.3);margin-top:4px;}
 
     @media(max-width:700px){
@@ -89,124 +87,49 @@
   <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
 </nav>
 
-<div class="page-body">
-  <div id="mainContent">
-    <span class="page-eyebrow">Affiliate Portal</span>
-    <h1 class="page-title" id="partnerName">Your Dashboard</h1>
-    <p class="page-sub" id="welcomeMsg">Track your referrals, conversions, and earnings.</p>
-
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-value" id="totalSignups">—</div>
-        <div class="metric-label">Total Signups</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="activeCustomers" style="color:#8EC9A8">—</div>
-        <div class="metric-label">Active Customers</div>
-        <div class="earnings-note">Paying customers only</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="monthlyEarnings" style="color:var(--accent)">—</div>
-        <div class="metric-label">Monthly Earnings</div>
-        <div class="earnings-note">From active customers</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="totalEarned" style="color:#8EC9A8">—</div>
-        <div class="metric-label">Pending This Month</div>
-        <div class="earnings-note">Paid on <span id="payoutDate">1st</span></div>
-      </div>
-    </div>
-
-    <!-- Payout info panel -->
-    <div class="panel" style="background:rgba(200,169,110,0.04);border-color:rgba(200,169,110,0.2);">
-      <h3>💳 How payouts work</h3>
-      <div class="payout-grid">
-        <div class="payout-item">
-          <div class="payout-value">Monthly</div>
-          <div class="payout-desc">Paid by bank transfer on the 1st of each month for the previous month's earnings</div>
-        </div>
-        <div class="payout-item">
-          <div class="payout-value">30%</div>
-          <div class="payout-desc">Commission on every <strong style="color:var(--cream);">paying</strong> customer you refer, every month</div>
-        </div>
-        <div class="payout-item">
-          <div class="payout-value">Recurring</div>
-          <div class="payout-desc">You earn as long as the customer stays on ReviewLift — not just once</div>
-        </div>
-      </div>
-      <div class="payout-footer">
-        <span class="next-payout">
-          Next payout: <strong id="nextPayoutDate">1st May 2026</strong>
-          <span style="font-size:0.7rem;color:rgba(234,231,220,0.3);display:block;margin-top:2px;">Only includes customers who have completed trial and are paying</span>
-        </span>
-<button class="bank-details-btn" id="bankDetailsBtn" onclick="showBankForm()" style="background:none;border:none;cursor:pointer;font-family:inherit;">
-  Submit bank details for payouts →
-</button>
-      </div>
-      <div id="bankForm" style="display:none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
-  <p style="font-size:0.82rem;color:var(--cream-dim);margin-bottom:12px;">Enter your bank details below and we'll set up your payouts.</p>
-  <div style="display:flex;flex-direction:column;gap:10px;">
-    <input id="bankName" type="text" placeholder="Your full name" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.85rem;">
-    <input id="bankSortCode" type="text" placeholder="Sort code (e.g. 12-34-56)" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.85rem;">
-    <input id="bankAccountNumber" type="text" placeholder="Account number" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.85rem;">
-    <button onclick="submitBankDetails()" id="bankSubmitBtn" style="background:var(--accent);color:#1A1A18;border:none;padding:11px 20px;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;">Send details →</button>
-  </div>
-  <p id="bankFormMsg" style="font-size:0.78rem;margin-top:10px;min-height:18px;"></p>
-</div>
-    </div>
-
-    <!-- Referral link -->
-    <div class="panel">
-      <h3>Your referral link</h3>
-      <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:0;">Share this link anywhere — website, email, social media. Anyone who signs up through it is tracked to you.</p>
-      <div class="ref-link-box">
-        <span id="refLink">—</span>
-        <button class="copy-btn" onclick="copyRefLink()">📋 Copy</button>
-      </div>
-      <p style="font-size:0.72rem;color:rgba(234,231,220,0.25);margin-top:6px;">Tip: Add <code style="color:var(--accent);">?ref=</code> to any page on reviewlift.app — it'll follow them through signup</p>
-    </div>
-
-    <!-- Referrals table -->
-    <div class="panel">
-      <h3>Your referrals</h3>
-      <div id="referralsTable">
-        <div class="empty-state"><span class="icon">📭</span><p>No referrals yet. Share your link to get started.</p></div>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="page-body" id="mainContent"></div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const code = params.get('code');
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
 
-// Calculate next payout date (1st of next month)
+  if (!code) {
+    // Show code entry form
+    document.getElementById('mainContent').innerHTML =
+      '<span class="page-eyebrow">Affiliate Portal</span>' +
+      '<h1 class="page-title">Enter your code</h1>' +
+      '<p class="page-sub">Enter the affiliate code you were given to see your dashboard.</p>' +
+      '<div style="display:flex;gap:10px;max-width:400px;">' +
+      '<input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;color:var(--cream);font-family:\'DM Sans\',sans-serif;font-size:0.95rem;outline:none;">' +
+      '<button class="copy-btn" onclick="window.location=\'?code=\'+encodeURIComponent(document.getElementById(\'codeInput\').value.trim())" style="padding:14px 20px;font-size:0.95rem;">View Dashboard →</button>' +
+      '</div>';
+    return;
+  }
+
+  // Load dashboard
+  loadDashboard(code);
+})();
+
 function getNextPayoutDate() {
-  const now = new Date();
-  let next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  var now = new Date();
+  var next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
   return next.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-// Copy referral link
 function copyRefLink() {
-  const link = document.getElementById('refLink').textContent;
+  var link = document.getElementById('refLink').textContent;
   navigator.clipboard.writeText(link);
-  const btn = event.target;
+  var btn = event.target;
   btn.textContent = '✓ Copied!';
   setTimeout(function() { btn.textContent = '📋 Copy'; }, 2000);
 }
 
-// Open bank details form
-// Show bank details form
 function showBankForm() {
-  var form = document.getElementById('bankForm');
-  if (form.style.display === 'none' || !form.style.display) {
-    form.style.display = 'block';
-    document.getElementById('bankDetailsBtn').style.display = 'none';
-  }
+  document.getElementById('bankForm').style.display = 'block';
+  document.getElementById('bankDetailsBtn').style.display = 'none';
 }
 
-// Submit bank details
 async function submitBankDetails() {
   var btn = document.getElementById('bankSubmitBtn');
   var msg = document.getElementById('bankFormMsg');
@@ -231,22 +154,22 @@ async function submitBankDetails() {
       body: JSON.stringify({
         name: name,
         email: 'affiliate@reviewlift.app',
-        message: 'AFFILIATE BANK DETAILS\n\nAffiliate code: ' + code + '\nName: ' + name + '\nSort code: ' + sortCode + '\nAccount number: ' + accountNumber
+        message: 'AFFILIATE BANK DETAILS\nAffiliate code: ' + code + '\nName: ' + name + '\nSort code: ' + sortCode + '\nAccount number: ' + accountNumber
       })
     });
     var data = await res.json();
     if (data.success) {
-      msg.textContent = '✓ Details sent! We\'ll set up your payouts.';
+      msg.textContent = '✓ Details sent!';
       msg.style.color = '#8EC9A8';
-      document.getElementById('bankForm').innerHTML = '<p style="color:#8EC9A8;font-size:0.85rem;">✓ Bank details submitted. We\'ll be in touch before your first payout.</p>';
+      document.getElementById('bankForm').innerHTML = '<p style="color:#8EC9A8;font-size:0.85rem;">✓ Bank details submitted. We\'ll be in touch.</p>';
     } else {
-      msg.textContent = 'Something went wrong. Please email billy@reviewlift.app';
+      msg.textContent = 'Error. Email billy@reviewlift.app';
       msg.style.color = '#D4897C';
       btn.disabled = false;
       btn.textContent = 'Send details →';
     }
   } catch(e) {
-    msg.textContent = 'Could not send. Please email billy@reviewlift.app directly.';
+    msg.textContent = 'Error. Email billy@reviewlift.app';
     msg.style.color = '#D4897C';
     btn.disabled = false;
     btn.textContent = 'Send details →';
@@ -255,50 +178,75 @@ async function submitBankDetails() {
 
 async function loadDashboard(code) {
   var res = await fetch('/affiliate-stats/' + code);
+  
   if (!res.ok) {
     document.getElementById('mainContent').innerHTML =
       '<span class="page-eyebrow">Affiliate Portal</span>' +
       '<h1 class="page-title">Not found</h1>' +
-      '<p class="page-sub">That affiliate code doesn\'t exist yet.</p>' +
-      '<p style="font-size:0.85rem;color:var(--cream-dim);">Your referral link: <code style="color:var(--accent);">' + window.location.origin + '?ref=' + code + '</code></p>';
+      '<p class="page-sub">That code doesn\'t exist yet. It activates when your first referral signs up.</p>' +
+      '<p style="font-size:0.85rem;color:var(--cream-dim);">Your link: <code style="color:var(--accent);">' + window.location.origin + '?ref=' + code + '</code></p>';
     return;
   }
+  
   var data = await res.json();
-  
-  document.getElementById('partnerName').textContent = data.partner_name || code;
-  document.getElementById('refLink').textContent = data.referral_link;
-  document.getElementById('totalSignups').textContent = data.total_signups || 0;
-  document.getElementById('activeCustomers').textContent = data.active_customers || 0;
-  document.getElementById('monthlyEarnings').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
-  document.getElementById('totalEarned').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
-  
   var payoutDate = getNextPayoutDate();
-  document.getElementById('nextPayoutDate').textContent = payoutDate;
-  document.getElementById('payoutDate').textContent = payoutDate;
   
+  var html =
+    '<span class="page-eyebrow">Affiliate Portal</span>' +
+    '<h1 class="page-title">' + (data.partner_name || code) + '</h1>' +
+    '<p class="page-sub">Track your referrals, conversions, and earnings.</p>' +
+    
+    '<div class="metrics-grid">' +
+    '<div class="metric-card"><div class="metric-value">' + (data.total_signups || 0) + '</div><div class="metric-label">Total Signups</div></div>' +
+    '<div class="metric-card"><div class="metric-value" style="color:#8EC9A8">' + (data.active_customers || 0) + '</div><div class="metric-label">Active Customers</div><div class="earnings-note">Paying customers only</div></div>' +
+    '<div class="metric-card"><div class="metric-value" style="color:var(--accent)">£' + (data.monthly_earnings || 0).toFixed(2) + '</div><div class="metric-label">Monthly Earnings</div><div class="earnings-note">From active customers</div></div>' +
+    '<div class="metric-card"><div class="metric-value" style="color:#8EC9A8">£' + (data.monthly_earnings || 0).toFixed(2) + '</div><div class="metric-label">Pending This Month</div><div class="earnings-note">Paid on ' + payoutDate + '</div></div>' +
+    '</div>' +
+    
+    // Payout panel
+    '<div class="panel" style="background:rgba(200,169,110,0.04);border-color:rgba(200,169,110,0.2);">' +
+    '<h3>💳 How payouts work</h3>' +
+    '<div class="payout-grid">' +
+    '<div><div class="payout-value">Monthly</div><div class="payout-desc">Paid by bank transfer on the 1st of each month</div></div>' +
+    '<div><div class="payout-value">30%</div><div class="payout-desc">Commission on every paying customer, every month</div></div>' +
+    '<div><div class="payout-value">Recurring</div><div class="payout-desc">You earn as long as the customer stays</div></div>' +
+    '</div>' +
+    '<div class="payout-footer">' +
+    '<span class="next-payout">Next payout: <strong>' + payoutDate + '</strong><span style="font-size:0.7rem;color:rgba(234,231,220,0.3);display:block;margin-top:2px;">Only includes paying customers</span></span>' +
+    '<button class="bank-details-btn" id="bankDetailsBtn" onclick="showBankForm()">Submit bank details for payouts →</button>' +
+    '</div>' +
+    '<div id="bankForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">' +
+    '<p style="font-size:0.82rem;color:var(--cream-dim);margin-bottom:12px;">Enter your bank details below.</p>' +
+    '<div style="display:flex;flex-direction:column;gap:10px;">' +
+    '<input id="bankName" type="text" placeholder="Your full name" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:\'DM Sans\',sans-serif;font-size:0.85rem;">' +
+    '<input id="bankSortCode" type="text" placeholder="Sort code (e.g. 12-34-56)" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:\'DM Sans\',sans-serif;font-size:0.85rem;">' +
+    '<input id="bankAccountNumber" type="text" placeholder="Account number" style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:\'DM Sans\',sans-serif;font-size:0.85rem;">' +
+    '<button onclick="submitBankDetails()" id="bankSubmitBtn" style="background:var(--accent);color:#1A1A18;border:none;padding:11px 20px;border-radius:6px;font-family:\'DM Sans\',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;">Send details →</button>' +
+    '</div>' +
+    '<p id="bankFormMsg" style="font-size:0.78rem;margin-top:10px;min-height:18px;"></p>' +
+    '</div>' +
+    '</div>' +
+    
+    // Referral link
+    '<div class="panel">' +
+    '<h3>Your referral link</h3>' +
+    '<p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:0;">Share this link anywhere. Anyone who signs up is tracked to you.</p>' +
+    '<div class="ref-link-box"><span id="refLink">' + data.referral_link + '</span><button class="copy-btn" onclick="copyRefLink()">📋 Copy</button></div>' +
+    '</div>';
+  
+  // Referrals table
   if (data.referrals && data.referrals.length > 0) {
-    var html = '<table><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr>';
+    html += '<div class="panel"><h3>Your referrals</h3><table><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr>';
     data.referrals.forEach(function(r) {
-      var statusBadge = '';
-      if (r.status === 'active') {
-        statusBadge = '<span class="status-badge status-active">✅ Paying</span>';
-      } else if (r.status === 'trial') {
-        statusBadge = '<span class="status-badge status-trial">🕐 Trial</span>';
-      } else {
-        statusBadge = '<span class="status-badge status-cancelled">✕ Cancelled</span>';
-      }
-      
-      html += '<tr>' +
-        '<td>' + (r.business_name || r.slug) + '</td>' +
-        '<td>' + (r.plan === 'pro' ? 'Pro' : 'Starter') + '</td>' +
-        '<td>' + new Date(r.created_at).toLocaleDateString('en-GB') + '</td>' +
-        '<td>' + statusBadge + '</td>' +
-        '<td class="' + (r.status === 'active' ? 'amount' : 'trial') + '">' + (r.status === 'active' ? '£' + r.commission.toFixed(2) : '£0.00 (trial)') + '</td>' +
-      '</tr>';
+      var badge = r.status === 'active' ? '<span class="status-badge status-active">✅ Paying</span>' :
+                  r.status === 'trial' ? '<span class="status-badge status-trial">🕐 Trial</span>' :
+                  '<span class="status-badge status-cancelled">✕ Cancelled</span>';
+      html += '<tr><td>' + (r.business_name || r.slug) + '</td><td>' + (r.plan === 'pro' ? 'Pro' : 'Starter') + '</td><td>' + new Date(r.created_at).toLocaleDateString('en-GB') + '</td><td>' + badge + '</td><td class="' + (r.status === 'active' ? 'amount' : 'trial') + '">' + (r.status === 'active' ? '£' + r.commission.toFixed(2) : '£0.00 (trial)') + '</td></tr>';
     });
-    html += '</table>';
-    document.getElementById('referralsTable').innerHTML = html;
+    html += '</table></div>';
   }
+  
+  document.getElementById('mainContent').innerHTML = html;
 }
 </script>
 </body>
