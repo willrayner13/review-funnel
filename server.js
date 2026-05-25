@@ -1176,7 +1176,6 @@ app.get("/report/:slug", async (req, res) => {
   const monthLabel = now.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
-  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0).toISOString();
   
   const { data: events } = await supabase.from("events")
     .select("event_type, rating, message, created_at")
@@ -1191,87 +1190,91 @@ app.get("/report/:slug", async (req, res) => {
   const thisClicks = thisMonthEvents.filter(e => e.event_type === "review_click").length;
   const lastPos = lastMonthEvents.filter(e => e.event_type === "positive").length;
   const lastNeg = lastMonthEvents.filter(e => e.event_type === "negative").length;
-  const lastClicks = lastMonthEvents.filter(e => e.event_type === "review_click").length;
-  
   const totalVisits = (events || []).filter(e => e.event_type === "visit").length;
   
-  // Rating average for this month
   const ratings = thisMonthEvents.filter(e => e.rating).map(e => e.rating);
   const avgRating = ratings.length ? (ratings.reduce((a,b) => a+b, 0) / ratings.length).toFixed(1) : "N/A";
   
-  // Recent feedback
-  const recentFeedback = thisMonthEvents.filter(e => e.event_type === "negative" && e.message).slice(0, 3);
+  const recentFeedback = thisMonthEvents.filter(e => e.event_type === "negative" && e.message).slice(0, 4);
   
-  const doc = new PDFDocument({ margin: 60, size: 'A4' });
+  const doc = new PDFDocument({ margin: 50, size: 'A4' });
   res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", `attachment; filename=${business.name.replace(/\s/g, '-')}-report-${now.toISOString().slice(0,7)}.pdf`);
+  res.setHeader("Content-Disposition", `attachment; filename=${(business.agency_name || business.name).replace(/\s/g, '-')}-Report-${now.toISOString().slice(0,7)}.pdf`);
   doc.pipe(res);
   
-  // ── HEADER BAR ──
-  doc.rect(0, 0, doc.page.width, 100).fill("#1A1A18");
-  doc.fill("#C8A96E").fontSize(24).font('Helvetica-Bold').text(business.agency_name || business.name, 60, 30, { align: "left" });
-  doc.fill("#EAE7DC").fontSize(11).font('Helvetica').text("Monthly Review Report", 60, 58, { align: "left" });
-  doc.fill("rgba(234,231,220,0.5)").fontSize(9).text(monthLabel, 60, 74, { align: "left" });
+  const brandName = business.agency_name || business.name;
+  const industry = business.industry || "local business";
   
-  // ── KEY METRICS ──
-  doc.fill("#1A1A18");
-  doc.rect(40, 130, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
-  doc.rect(195, 130, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
-  doc.rect(350, 130, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
-  doc.rect(40, 215, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
-  doc.rect(195, 215, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
-  doc.rect(350, 215, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
+  // ── HEADER ──
+  doc.rect(0, 0, doc.page.width, 120).fill("#121210");
+  // Gold accent line
+  doc.rect(0, 0, doc.page.width, 4).fill("#C8A96E");
   
-  // Card 1 — Reviews this month
-  doc.fill("#C8A96E").fontSize(28).font('Helvetica-Bold').text(String(thisPos), 55, 140);
-  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Reviews collected", 55, 175);
-  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("this month", 55, 187);
+  doc.fill("#C8A96E").fontSize(26).font('Helvetica-Bold').text(brandName, 50, 25);
+  doc.fill("#EAE7DC").fontSize(13).font('Helvetica').text("Monthly Reputation Report", 50, 56);
+  doc.fill("rgba(234,231,220,0.45)").fontSize(9).font('Helvetica').text(`${monthLabel}  ·  ${industry.charAt(0).toUpperCase() + industry.slice(1)}  ·  Confidential`, 50, 76);
   
-  // Card 2 — Feedback captured
-  doc.fill("#D4897C").fontSize(28).font('Helvetica-Bold').text(String(thisNeg), 210, 140);
-  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Feedback captured", 210, 175);
-  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("kept private", 210, 187);
+  // ── METRICS GRID ──
+  const cardW = 145, cardH = 78, startX = 50, startY = 145, gap = 12;
   
-  // Card 3 — Avg rating
-  doc.fill("#EAE7DC").fontSize(28).font('Helvetica-Bold').text(avgRating, 365, 140);
-  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Avg. rating", 365, 175);
-  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("this month", 365, 187);
+  const metrics = [
+    { value: String(thisPos), label: "Reviews collected", sub: "this month", color: "#C8A96E" },
+    { value: String(thisNeg), label: "Feedback captured", sub: "kept private", color: "#D4897C" },
+    { value: avgRating, label: "Average rating", sub: "this month", color: "#EAE7DC" },
+    { value: String(thisClicks), label: "Review clicks", sub: "sent to Google", color: "#6A9E7F" },
+    { value: String(totalVisits), label: "Total visits", sub: "all time", color: "#EAE7DC" },
+    { value: (() => { const c = thisPos - lastPos; return c >= 0 ? '+' + c : String(c); })(), label: "vs last month", sub: `was ${lastPos} reviews`, color: thisPos >= lastPos ? "#6A9E7F" : "#D4897C" }
+  ];
   
-  // Card 4 — Review clicks
-  doc.fill("#6A9E7F").fontSize(28).font('Helvetica-Bold').text(String(thisClicks), 55, 225);
-  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Review clicks", 55, 260);
-  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("sent to Google etc.", 55, 272);
+  metrics.forEach((m, i) => {
+    const col = i % 3;
+    const row = Math.floor(i / 3);
+    const x = startX + (col * (cardW + gap));
+    const y = startY + (row * (cardH + gap));
+    
+    // Card background — darker for readability
+    doc.rect(x, y, cardW, cardH).fill("#1E1E1C");
+    // Subtle border
+    doc.rect(x, y, cardW, cardH).stroke("rgba(200,169,110,0.15)");
+    
+    doc.fill(m.color).fontSize(26).font('Helvetica-Bold').text(m.value, x + 14, y + 10);
+    doc.fill("#CCCCCC").fontSize(8.5).font('Helvetica').text(m.label, x + 14, y + 42);
+    doc.fill("#888888").fontSize(7).font('Helvetica').text(m.sub, x + 14, y + 56);
+  });
   
-  // Card 5 — Total funnel visits
-  doc.fill("#EAE7DC").fontSize(28).font('Helvetica-Bold').text(String(totalVisits), 210, 225);
-  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Total visits", 210, 260);
-  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("all time", 210, 272);
-  
-  // Card 6 — vs last month
-  const change = thisPos - lastPos;
-  const changeStr = change >= 0 ? `+${change}` : String(change);
-  doc.fill(change >= 0 ? "#6A9E7F" : "#D4897C").fontSize(28).font('Helvetica-Bold').text(changeStr, 365, 225);
-  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("vs last month", 365, 260);
-  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text(`was ${lastPos} reviews`, 365, 272);
-  
-  // ── RECENT FEEDBACK SECTION ──
-  const feedbackY = 320;
-  doc.fill("#C8A96E").fontSize(11).font('Helvetica-Bold').text("RECENT PRIVATE FEEDBACK", 60, feedbackY);
-  doc.moveTo(60, feedbackY + 18).lineTo(535, feedbackY + 18).stroke("rgba(200,169,110,0.2)");
+  // ── RECENT FEEDBACK ──
+  const feedbackY = startY + (2 * (cardH + gap)) + 30;
+  doc.fill("#C8A96E").fontSize(11).font('Helvetica-Bold').text("RECENT FEEDBACK", 50, feedbackY);
+  doc.moveTo(50, feedbackY + 18).lineTo(545, feedbackY + 18).stroke("rgba(200,169,110,0.2)");
   
   if (recentFeedback.length > 0) {
-    let yPos = feedbackY + 30;
+    let yPos = feedbackY + 35;
     recentFeedback.forEach((f, i) => {
-      doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text(`"${f.message.substring(0, 120)}${f.message.length > 120 ? '...' : ''}"`, 60, yPos, { width: 475 });
-      yPos += 35;
+      // Card for each feedback
+      doc.rect(50, yPos - 4, 495, 38).fill("#1E1E1C").stroke("rgba(234,231,220,0.06)");
+      doc.fill("#BBBBBB").fontSize(8.5).font('Helvetica').text(`"${f.message.substring(0, 150)}${f.message.length > 150 ? '...' : ''}"`, 62, yPos + 3, { width: 470 });
+      yPos += 46;
     });
   } else {
-    doc.fill("rgba(234,231,220,0.3)").fontSize(9).font('Helvetica').text("No private feedback captured this month.", 60, feedbackY + 30);
+    doc.fill("#888888").fontSize(9).font('Helvetica').text("No private feedback captured this month.", 50, feedbackY + 35);
   }
   
+  // ── WHAT THIS MEANS ──
+  const insightY = feedbackY + (recentFeedback.length > 0 ? recentFeedback.length * 46 + 40 : 80);
+  
+  doc.fill("#C8A96E").fontSize(11).font('Helvetica-Bold').text("SUMMARY", 50, insightY);
+  doc.moveTo(50, insightY + 18).lineTo(545, insightY + 18).stroke("rgba(200,169,110,0.2)");
+  
+  let summaryText = `This month, ${brandName} collected ${thisPos} review${thisPos !== 1 ? 's' : ''}`;
+  if (thisNeg > 0) summaryText += ` and captured ${thisNeg} private feedback message${thisNeg !== 1 ? 's' : ''} before ${thisNeg === 1 ? 'it went' : 'they went'} public`;
+  summaryText += `. Total funnel visits: ${totalVisits}.`;
+  if (thisPos > 0 && thisClicks > 0) summaryText += ` ${thisClicks} customer${thisClicks !== 1 ? 's' : ''} clicked through to leave a review.`;
+  
+  doc.fill("#AAAAAA").fontSize(9).font('Helvetica').text(summaryText, 50, insightY + 30, { width: 495 });
+  
   // ── FOOTER ──
-  doc.fill("rgba(234,231,220,0.2)").fontSize(7).font('Helvetica')
-    .text(`Generated by ReviewLift on ${now.toLocaleDateString('en-GB')}`, 60, doc.page.height - 40, { align: "center" });
+  doc.fill("#666666").fontSize(7).font('Helvetica')
+    .text(`Generated by ReviewLift  ·  ${now.toLocaleDateString('en-GB')}  ·  For internal use`, 50, doc.page.height - 40, { align: "center" });
   
   doc.end();
 });
