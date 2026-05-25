@@ -15,6 +15,9 @@ const OpenAI = require("openai");
 const Stripe = require("stripe");
 const rateLimit = require("express-rate-limit");
 
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+
 const smsLimiter = rateLimit({ windowMs: 60 * 1000, max: 5 });
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
@@ -120,6 +123,8 @@ if (event.type === "checkout.session.completed") {
   res.json({ received: true });
 });
  
+
+
 
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 
@@ -319,6 +324,80 @@ app.post("/feedback", async (req, res) => {
   const { error } = await supabase.from("events").insert({ business_slug: business, event_type: "negative", message });
   if (error) return res.status(500).json(error);
   res.json({ success: true });
+});
+
+// ─── VOICE NOTE TRANSCRIPTION (Pro/Agency only) ──────────────────────────────
+app.post("/transcribe-voice/:slug", upload.single('audio'), async (req, res) => {
+  const { slug } = req.params;
+  
+  if (!req.file) {
+    return res.status(400).json({ error: "No audio file provided" });
+  }
+  
+  try {
+    const { data: business } = await supabase
+      .from("businesses")
+      .select("plan_type, subscription_active, name")
+      .eq("slug", slug)
+      .single();
+      
+    if (!business) return res.status(404).json({ error: "Business not found" });
+    
+    const isProOrAgency = business.subscription_active && 
+      (business.plan_type === "pro" || business.plan_type === "agency");
+    if (!isProOrAgency) {
+      return res.status(403).json({ error: "Pro or Agency plan required" });
+    }
+    
+    // Send to Whisper
+    const transcription = await openai.audio.transcriptions.create({
+      model: "whisper-1",
+      file: new File([req.file.buffer], 'audio.webm', { type: req.file.mimetype }),
+      language: "en"
+    });
+    
+    const text = transcription.text.trim();
+    
+    // Analyse sentiment
+    const sentiment = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "Is this customer feedback positive or negative? Reply with just one word: positive or negative." },
+        { role: "user", content: text }
+      ],
+      max_tokens: 5,
+      temperature: 0
+    });
+    
+    const sentimentResult = sentiment.choices[0].message.content.toLowerCase().trim();
+    
+    if (sentimentResult === "negative") {
+      // Store as private feedback
+      await supabase.from("events").insert({
+        business_slug: slug,
+        event_type: "negative",
+        message: `[Voice note] ${text}`,
+        created_at: new Date().toISOString()
+      });
+      
+      return res.json({ 
+        sentiment: "negative", 
+        transcription: text,
+        message: "Feedback saved privately"
+      });
+    }
+    
+    // Positive — return transcription ready to post
+    res.json({ 
+      sentiment: "positive", 
+      transcription: text,
+      message: "Ready to post as a review"
+    });
+    
+  } catch(err) {
+    console.error("Voice transcription error:", err.message);
+    res.status(500).json({ error: "Could not transcribe. Please try again." });
+  }
 });
 
 // ─── STATS ────────────────────────────────────────────────────────────────────

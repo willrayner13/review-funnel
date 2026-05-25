@@ -222,9 +222,21 @@
     </div>
 
     <!-- Step 3: Leave review prompt -->
+        <!-- Step 3: Leave review prompt -->
     <div id="reviewSection" style="display:none">
       <div style="font-size:2.5rem;margin-bottom:12px;">🌟</div>
       <h2>Thank you!</h2>
+      
+      <!-- Voice note option (demo mode) -->
+      <div id="voiceNoteSection" style="margin: 16px 0;">
+        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:12px;">Or leave a quick voice note instead of typing:</p>
+        <button id="recordBtn" onclick="startDemoRecording()" style="background:var(--surface-2);border:1px solid var(--border);color:var(--cream);padding:12px 20px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.9rem;">
+          🎤 Tap to record (30s max)
+        </button>
+        <span id="recordingTimer" style="display:none;font-size:0.8rem;color:var(--accent);margin-left:10px;">0:00</span>
+        <div id="voiceResult" style="margin-top:12px;"></div>
+      </div>
+      
       <div class="review-prompt">
         <p>We'd love it if you shared your experience online — it only takes a moment.</p>
         <button class="btn-full" onclick="showDemoCta()" style="background:var(--accent);color:#1A1A18;width:100%;justify-content:center;">
@@ -299,6 +311,61 @@
     `;
     document.getElementById("demoCta").style.display="block";
   }
+
+  // ── Demo voice note (simulated) ───────────────────────────────────────────────
+let demoMediaRecorder;
+let demoAudioChunks = [];
+let demoRecordingTimer;
+let demoSeconds = 0;
+
+async function startDemoRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    demoMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    demoAudioChunks = [];
+    
+    demoMediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) demoAudioChunks.push(e.data);
+    };
+    
+    demoMediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      // In demo mode, just simulate the result
+      document.getElementById("voiceResult").innerHTML = `
+        <div style="background:rgba(106,158,127,0.08);border:1px solid rgba(106,158,127,0.2);border-radius:8px;padding:14px;margin-bottom:12px;">
+          <p style="color:#8EC9A8;font-size:0.85rem;margin-bottom:8px;">✅ In the live version, your voice note would be transcribed and analysed by AI — positive feedback goes to Google, negative stays private.</p>
+        </div>`;
+      document.getElementById("recordBtn").style.display = "none";
+    };
+    
+    demoMediaRecorder.start();
+    document.getElementById("recordBtn").textContent = "⏹ Stop recording";
+    document.getElementById("recordBtn").onclick = stopDemoRecording;
+    document.getElementById("recordingTimer").style.display = "inline";
+    
+    demoSeconds = 0;
+    demoRecordingTimer = setInterval(() => {
+      demoSeconds++;
+      const mins = Math.floor(demoSeconds / 60);
+      const secs = demoSeconds % 60;
+      document.getElementById("recordingTimer").textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+      if (demoSeconds >= 30) stopDemoRecording();
+    }, 1000);
+    
+  } catch(e) {
+    document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed. Please allow it and try again.</p>';
+  }
+}
+
+function stopDemoRecording() {
+  if (demoMediaRecorder && demoMediaRecorder.state === "recording") {
+    demoMediaRecorder.stop();
+    clearInterval(demoRecordingTimer);
+    document.getElementById("recordBtn").textContent = "Processing...";
+    document.getElementById("recordBtn").disabled = true;
+    document.getElementById("recordingTimer").style.display = "none";
+  }
+}
 </script>
 </body>
 </html>
