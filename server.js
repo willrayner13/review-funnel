@@ -1931,4 +1931,5 @@ app.get("/partner-info/:code", async (req, res) => {
 // ─── EXPORT ───────────────────────────────────────────────────────────────────
 const serverless = require("serverless-http");
 module.exports = app;
-module.exports.handler = serverless(app);
+module.exports.handler = serverless(app);   
+ 
