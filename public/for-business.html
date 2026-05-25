@@ -533,8 +533,22 @@ async function load(){
   }
 
   // Show upgrade banner if on Starter trial
+    // Show upgrade banner if on Starter trial
   if(isTrial && currentPlan === "starter"){
     document.getElementById("upgradeBanner").style.display = "flex";
+  }
+
+  // Add report download button for agency users
+  if (currentPlan === "agency" && stats.subscription_active) {
+    const reportBtn = document.createElement("a");
+    reportBtn.href = "/report/" + slug;
+    reportBtn.style.cssText = "display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#1A1A18;padding:10px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.85rem;margin-bottom:20px;text-decoration:none;";
+    reportBtn.textContent = "📄 Download Monthly Report";
+    const dashBody = document.querySelector(".dash-body");
+    const firstSection = document.querySelector(".dash-section");
+    if (dashBody && firstSection) {
+      dashBody.insertBefore(reportBtn, firstSection);
+    }
   }
 
   // Show onboarding guide if not dismissed

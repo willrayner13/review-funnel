@@ -1158,6 +1158,62 @@ app.post("/update-agency-settings", async (req, res) => {
   res.json({ success: true });
 });
 
+// ─── MONTHLY REPORT (Agency only) ────────────────────────────────────────────
+const PDFDocument = require('pdfkit');
+
+app.get("/report/:slug", async (req, res) => {
+  if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const { data: business } = await supabase.from("businesses")
+    .select("name, plan_type, subscription_active, agency_name, agency_logo_url")
+    .eq("slug", req.params.slug).single();
+    
+  if (!business || business.plan_type !== "agency") {
+    return res.status(403).json({ error: "Agency plan required" });
+  }
+  
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+  
+  const { data: events } = await supabase.from("events")
+    .select("event_type, rating, created_at")
+    .eq("business_slug", req.params.slug);
+    
+  const thisMonth = (events || []).filter(e => e.created_at >= monthStart);
+  const lastMonth = (events || []).filter(e => e.created_at >= lastMonthStart && e.created_at < monthStart);
+  
+  const thisPos = thisMonth.filter(e => e.event_type === "positive").length;
+  const thisNeg = thisMonth.filter(e => e.event_type === "negative").length;
+  const lastPos = lastMonth.filter(e => e.event_type === "positive").length;
+  const lastNeg = lastMonth.filter(e => e.event_type === "negative").length;
+  
+  const doc = new PDFDocument({ margin: 50 });
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", `attachment; filename=reviewlift-report-${now.toISOString().slice(0,7)}.pdf`);
+  doc.pipe(res);
+  
+  // Header
+  if (business.agency_logo_url) {
+    // Could add logo here
+  }
+  doc.fontSize(22).text(business.agency_name || business.name, { align: "center" });
+  doc.fontSize(12).text(`Monthly Review Report — ${now.toLocaleString('en-GB', { month: 'long', year: 'numeric' })}`, { align: "center" });
+  doc.moveDown(2);
+  
+  // Metrics
+  doc.fontSize(14).text("Overview", { underline: true });
+  doc.moveDown(0.5);
+  doc.fontSize(11).text(`Reviews collected this month: ${thisPos}`);
+  doc.text(`Feedback captured this month: ${thisNeg}`);
+  doc.text(`Last month reviews: ${lastPos} (${thisPos > lastPos ? '+' : ''}${thisPos - lastPos} vs last month)`);
+  doc.text(`Last month feedback: ${lastNeg} (${lastNeg > thisNeg ? '↓' : '↑'} ${Math.abs(thisNeg - lastNeg)} vs last month)`);
+  doc.moveDown(2);
+  
+  doc.fontSize(10).fillColor("grey").text("Powered by ReviewLift", { align: "center" });
+  doc.end();
+});
+
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
 app.get("/partner-info/:code", async (req, res) => {
   const code = req.params.code;
