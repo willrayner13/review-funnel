@@ -1278,6 +1278,58 @@ app.get("/report/:slug", async (req, res) => {
   
   doc.end();
 });
+
+// ─── COMPETITOR ANALYSIS (Agency only) ──────────────────────────────────────
+app.post("/analyse-competitor", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const { data: business } = await supabase.from("businesses")
+    .select("plan_type, subscription_active")
+    .eq("slug", req.session.slug).single();
+    
+  if (!business || business.plan_type !== "agency") {
+    return res.status(403).json({ error: "Agency plan required. Upgrade at /billing" });
+  }
+  
+  const { competitor_name, reviews_text } = req.body;
+  if (!reviews_text || reviews_text.trim().length < 50) {
+    return res.status(400).json({ error: "Please paste at least a few reviews to analyse." });
+  }
+  
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `You are a competitive intelligence analyst for a small business. Analyse these customer reviews for a competitor${competitor_name ? ' called ' + competitor_name : ''}. Identify: 1) What customers love about them (top 2 strengths). 2) What customers complain about (top 2 weaknesses). 3) One specific, actionable opportunity for our client to win customers from them. Return JSON only: { "strengths": ["...","..."], "weaknesses": ["...","..."], "opportunity": "..." }`
+        },
+        {
+          role: "user",
+          content: reviews_text.substring(0, 3000)
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 400
+    });
+    
+    const content = completion.choices[0].message.content.trim();
+    let parsed;
+    try {
+      const cleaned = content.replace(/```json|```/g, '').trim();
+      parsed = JSON.parse(cleaned);
+    } catch(e) {
+      parsed = { strengths: ["Could not parse"], weaknesses: ["Could not parse"], opportunity: "Try again with more review text." };
+    }
+    
+    res.json(parsed);
+  } catch(err) {
+    console.error("Competitor analysis error:", err.message);
+    res.status(500).json({ error: "Analysis failed. Please try again." });
+  }
+});
+
+
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
 app.get("/partner-info/:code", async (req, res) => {
   const code = req.params.code;

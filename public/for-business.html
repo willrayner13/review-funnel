@@ -435,6 +435,33 @@
     </div>
   </div>
 
+    <!-- Competitor Analysis — Agency only -->
+  <div class="dash-section" id="competitorSection">
+    <div class="dash-section-title">Analyse a competitor</div>
+    <div id="competitorUnlocked" style="display:none">
+      <div class="panel">
+        <h3>See what your competitors are doing wrong</h3>
+        <p class="panel-desc">Paste some of their Google reviews below. AI will analyse them and tell you exactly where they're vulnerable — and how to win their customers.</p>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-size:0.8rem;color:var(--cream-dim);display:block;margin-bottom:6px;">Competitor name</label>
+          <input id="competitorName" type="text" placeholder="e.g. Riverside Dental Practice" style="margin-bottom:0;">
+        </div>
+        <div class="form-group">
+          <label style="font-size:0.8rem;color:var(--cream-dim);display:block;margin-bottom:6px;">Paste 5-10 of their Google reviews</label>
+          <textarea id="competitorReviews" placeholder="Copy and paste reviews from their Google Business Profile..." style="min-height:120px;"></textarea>
+        </div>
+        <button onclick="analyseCompetitor()" id="competitorBtn">Analyse Competitor</button>
+        <div id="competitorResults" style="margin-top:20px;"></div>
+      </div>
+    </div>
+    <div class="pro-lock-panel" id="competitorLocked" style="display:none">
+      <span class="lock-icon">🎯</span>
+      <h4>Competitor Review Analysis</h4>
+      <p>Paste a competitor's Google reviews and AI will tell you their weaknesses, their strengths, and exactly how to win their customers. Available on Agency plan.</p>
+      <a href="/billing">⭐ Upgrade to Agency</a>
+    </div>
+  </div>
+
 </div>
 
 <!-- Cancel subscription modal -->
@@ -536,6 +563,15 @@ async function load(){
     // Show upgrade banner if on Starter trial
   if(isTrial && currentPlan === "starter"){
     document.getElementById("upgradeBanner").style.display = "flex";
+  }
+
+  // Add report download button for agency users
+  if (currentPlan === "agency" && stats.subscription_active) {
+    document.getElementById("competitorUnlocked").style.display = "block";
+    document.getElementById("competitorLocked").style.display = "none";
+  } else {
+    document.getElementById("competitorUnlocked").style.display = "none";
+    document.getElementById("competitorLocked").style.display = "block";
   }
 
   // Add report download button for agency users
@@ -924,6 +960,58 @@ async function generateReplies(){
   btn.disabled = false; 
   btn.textContent = "Generate Replies";
 }
+
+async function analyseCompetitor() {
+  const name = document.getElementById("competitorName").value.trim();
+  const reviews = document.getElementById("competitorReviews").value.trim();
+  
+  if (!reviews || reviews.length < 50) {
+    showToast("Please paste at least a few reviews to analyse.", "error");
+    return;
+  }
+  
+  const btn = document.getElementById("competitorBtn");
+  btn.disabled = true;
+  btn.textContent = "Analysing...";
+  
+  const res = await fetch("/analyse-competitor", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ competitor_name: name, reviews_text: reviews })
+  });
+  const data = await res.json();
+  
+  if (data.error) {
+    showToast(data.error, "error");
+    btn.disabled = false;
+    btn.textContent = "Analyse Competitor";
+    return;
+  }
+  
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px;">';
+  
+  html += `<div style="background:rgba(106,158,127,0.06);border:1px solid rgba(106,158,127,0.2);border-radius:8px;padding:16px;">
+    <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#8EC9A8;margin-bottom:10px;">✅ Strengths</div>
+    ${data.strengths.map(s => `<p style="font-size:0.82rem;color:var(--cream-dim);margin-bottom:8px;line-height:1.5;">${s}</p>`).join('')}
+  </div>`;
+  
+  html += `<div style="background:rgba(192,103,90,0.06);border:1px solid rgba(192,103,90,0.2);border-radius:8px;padding:16px;">
+    <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#D4897C;margin-bottom:10px;">❌ Weaknesses</div>
+    ${data.weaknesses.map(w => `<p style="font-size:0.82rem;color:var(--cream-dim);margin-bottom:8px;line-height:1.5;">${w}</p>`).join('')}
+  </div>`;
+  
+  html += `<div style="background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.2);border-radius:8px;padding:16px;">
+    <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:10px;">💡 Your Opportunity</div>
+    <p style="font-size:0.82rem;color:var(--cream);line-height:1.6;">${data.opportunity}</p>
+  </div>`;
+  
+  html += '</div>';
+  
+  document.getElementById("competitorResults").innerHTML = html;
+  btn.disabled = false;
+  btn.textContent = "Analyse Competitor";
+}
+
 
 function copyAiReply(id){
   const textarea = document.getElementById(id);
