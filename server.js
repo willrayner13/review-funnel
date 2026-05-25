@@ -1242,6 +1242,93 @@ app.post("/api/hook/:slug", async (req, res) => {
   }
 });
 
+// ─── INVOICE HOOK: Paid invoice → QR code email ────────────────────────────
+app.post("/api/invoice-hook/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const { customer_name, customer_email, invoice_number, total_amount, status } = req.body;
+
+  if (!customer_email || !customer_name) {
+    return res.status(400).json({ error: "customer_name and customer_email are required" });
+  }
+
+  // Only process paid invoices
+  if (!status || (status.toLowerCase() !== "paid")) {
+    return res.status(200).json({ skipped: true, reason: "Not a paid invoice" });
+  }
+
+  try {
+    const { data: business, error } = await supabase
+      .from("businesses")
+      .select("name, review_link, plan_type, subscription_active")
+      .eq("slug", slug)
+      .single();
+
+    if (error || !business) return res.status(404).json({ error: "Business not found" });
+    
+    const isProOrAgency = business.subscription_active && 
+      (business.plan_type === "pro" || business.plan_type === "agency");
+    if (!isProOrAgency) {
+      return res.status(403).json({ error: "Pro or Agency plan required" });
+    }
+
+    // Generate QR code
+    const qrBuffer = await QRCode.toBuffer(business.review_link);
+    const qrBase64 = qrBuffer.toString('base64');
+
+    // Send email via Resend
+    await resend.emails.send({
+      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+      to: customer_email,
+      subject: `Thank you for your payment, ${customer_name}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+        <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,Helvetica,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+            <tr><td align="center">
+              <table width="500" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;overflow:hidden;max-width:500px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+                <tr><td style="background:#1E1E1C;padding:22px 28px;">
+                  <p style="margin:0;font-size:16px;font-weight:bold;color:#C8A96E;">⭐ ${business.name}</p>
+                </td></tr>
+                <tr><td style="padding:32px 28px 24px;">
+                  <h2 style="margin:0 0 10px;font-size:18px;color:#EAE7DC;">Thank you, ${customer_name}.</h2>
+                  <p style="margin:0 0 16px;font-size:14px;color:rgba(234,231,220,0.55);line-height:1.6;">We've received your payment${invoice_number ? ' for invoice ' + invoice_number : ''}${total_amount ? ' (' + total_amount + ')' : ''}. We really appreciate your business.</p>
+                  <p style="margin:0 0 8px;font-size:13px;color:rgba(234,231,220,0.4);">If we did a great job, we'd love a quick review — it only takes 30 seconds and helps us loads.</p>
+                  <div style="text-align:center;margin:20px 0;">
+                    <img src="data:image/png;base64,${qrBase64}" alt="QR Code" style="width:120px;height:120px;border-radius:8px;">
+                    <p style="margin:8px 0 0;font-size:11px;color:rgba(234,231,220,0.3);">Scan or click below</p>
+                  </div>
+                  <a href="${business.review_link}" style="display:block;background:#C8A96E;color:#1E1E1C;text-align:center;text-decoration:none;font-weight:bold;font-size:14px;padding:12px;border-radius:8px;">Leave a review →</a>
+                </td></tr>
+                <tr><td style="padding:16px 28px 20px;border-top:1px solid rgba(234,231,220,0.06);">
+                  <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.2);">Sent by ${business.name} · Powered by ReviewLift</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+      `,
+    });
+
+    // Log event
+    await supabase.from("events").insert({
+      business_slug: slug,
+      event_type: "invoice_email_sent",
+      message: `Invoice ${invoice_number || 'N/A'} for ${customer_name}`,
+      created_at: new Date().toISOString()
+    });
+
+    console.log(`Invoice email sent for ${slug} to ${customer_email}`);
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error("Invoice hook error:", err.message);
+    res.status(500).json({ error: "Could not send invoice email." });
+  }
+});
+
 // ─── SENTIMENT TRENDS (Pro/Agency only) ─────────────────────────────────────
 app.get("/sentiment/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
