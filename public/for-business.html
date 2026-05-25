@@ -536,7 +536,7 @@ async function load(){
   // Show/hide pro features
   // Pro access: only unlock email/AI if they are on the Pro plan (not Starter)
   // During trial, give Pro features if they signed up for Pro plan
-  const hasProFeatures = stats.subscription_active && (currentPlan === "pro");
+  const hasProFeatures = stats.subscription_active && (currentPlan === "pro" || currentPlan === "agency");
 
     if(hasProFeatures){
     document.getElementById("smsUnlocked").style.display   = "block";
