@@ -361,6 +361,24 @@
   <!-- Messaging -->
   <div class="dash-section">
     <div class="dash-section-title">Request Reviews</div>
+      <!-- AI Send Intelligence — Pro/Agency only -->
+  <div class="dash-section" id="sendIntelSection">
+    <div class="dash-section-title">Send Intelligence</div>
+    <div id="sendIntelUnlocked" style="display:none">
+      <div class="panel">
+        <h3>🤖 AI-powered send recommendations</h3>
+        <p class="panel-desc" id="sendIntelMessage">Loading your analytics...</p>
+        <div id="sendIntelInsight" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.2);border-radius:8px;margin-bottom:14px;"></div>
+        <p style="font-size:0.7rem;color:rgba(234,231,220,0.25);" id="sendIntelSource"></p>
+      </div>
+    </div>
+    <div class="pro-lock-panel" id="sendIntelLocked" style="display:none">
+      <span class="lock-icon">🤖</span>
+      <h4>AI Send Intelligence</h4>
+      <p>AI analyses your review request data to recommend the best channel and time for each customer. Upgrade to Pro to unlock.</p>
+      <a href="/billing">⭐ Upgrade to Pro</a>
+    </div>
+  </div>
     <!-- SMS — Pro only -->
 <!-- SMS — Pro only -->
 <div id="smsUnlocked" style="display:none">
@@ -582,6 +600,9 @@ async function load(){
     document.getElementById("sentimentUnlocked").style.display = "block";
     document.getElementById("sentimentLocked").style.display = "none";
     loadSentimentTrends();
+    document.getElementById("sendIntelUnlocked").style.display = "block";
+  document.getElementById("sendIntelLocked").style.display = "none";
+  loadSendIntelligence();
   } else {
     document.getElementById("smsUnlocked").style.display   = "none";
     document.getElementById("smsLocked").style.display     = "block";
@@ -591,6 +612,8 @@ async function load(){
     document.getElementById("aiLocked").style.display      = "block";
     document.getElementById("sentimentUnlocked").style.display = "none";
     document.getElementById("sentimentLocked").style.display = "block";
+      document.getElementById("sendIntelUnlocked").style.display = "none";
+  document.getElementById("sendIntelLocked").style.display = "block";
   }
 
   // Show upgrade banner if on Starter trial
@@ -1064,6 +1087,40 @@ async function generateReplies(){
   }
   btn.disabled = false; 
   btn.textContent = "Generate Replies";
+}
+
+async function loadSendIntelligence() {
+  try {
+    const now = new Date();
+    const res = await fetch("/predict-channel/" + slug, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        appointment_hour: now.getHours(), 
+        appointment_day: now.getDay(),
+        service_type: null 
+      })
+    });
+    const data = await res.json();
+    const r = data.recommendation;
+    
+    document.getElementById("sendIntelMessage").textContent = 
+      data.data_source === 'industry_benchmark' 
+        ? `Based on AI analytics for your industry. Predictions personalise after 20 review requests.`
+        : `Based on ${data.sends_analysed} review requests you've sent.`;
+    
+    document.getElementById("sendIntelInsight").innerHTML = `
+      <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);">${r.predicted_conversion_rate}%</div>
+      <div>
+        <p style="font-size:0.85rem;color:var(--cream);margin-bottom:2px;"><strong>${r.recommended_channel.toUpperCase()}</strong> is your best channel</p>
+        <p style="font-size:0.78rem;color:var(--cream-dim);">Best window: ${r.best_window} · Confidence: ${r.confidence}</p>
+      </div>`;
+    
+    document.getElementById("sendIntelSource").textContent = 
+      `Powered by AI analytics${data.data_source === 'industry_benchmark' ? ' · Industry benchmarks from published studies' : ' · Based on your actual send data'}`;
+  } catch(e) {
+    document.getElementById("sendIntelMessage").textContent = "Could not load analytics.";
+  }
 }
 
 async function analyseCompetitor() {

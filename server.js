@@ -710,7 +710,15 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
     const message = `Hi! Thanks for visiting ${data.name} today. We'd love to know how it went - takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
     await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: normalisedPhone, body: message });
 
-    await supabase.from("events").insert({ business_slug: slug, event_type: "sms_sent" });
+    const now = new Date();
+await supabase.from("events").insert({ 
+  business_slug: slug, 
+  event_type: "sms_sent",
+  channel: "sms",
+  sent_at: now.toISOString(),
+  appointment_hour: now.getHours(),
+  appointment_day: now.getDay()
+});
 
     res.json({ success: true });
   } catch (err) {
@@ -865,6 +873,18 @@ app.post("/send-email", async (req, res) => {
         </html>
       `,
     });
+    
+    // Log the email send event
+    const now = new Date();
+    await supabase.from("events").insert({ 
+      business_slug: slug, 
+      event_type: "email_sent",
+      channel: "email",
+      sent_at: now.toISOString(),
+      appointment_hour: now.getHours(),
+      appointment_day: now.getDay()
+    });
+    
     res.json({ success: true });
   } catch (err) {
     console.log("Email error:", err.message);
@@ -1226,12 +1246,19 @@ app.post("/api/hook/:slug", async (req, res) => {
     });
 
     // Log the event
-    await supabase.from("events").insert({
-      business_slug: slug,
-      event_type: "sms_sent",
-      message: `Webhook: ${service || "appointment"} for ${customer_name}`,
-      created_at: new Date().toISOString()
-    });
+    const hookNow = new Date();
+const apptDate = appointment_time ? new Date(appointment_time) : hookNow;
+await supabase.from("events").insert({
+  business_slug: slug,
+  event_type: "sms_sent",
+  channel: "sms",
+  sent_at: hookNow.toISOString(),
+  appointment_hour: apptDate.getHours(),
+  appointment_day: apptDate.getDay(),
+  service_type: service || null,
+  message: `Webhook: ${service || "appointment"} for ${customer_name}`,
+  created_at: hookNow.toISOString()
+});
 
     console.log(`Webhook SMS sent for ${slug} to ${normalisedPhone}`);
     res.json({ success: true, message });
@@ -1697,6 +1724,147 @@ app.get("/cron/reputation-scores", async (req, res) => {
   }
   
   res.json({ saved: count });
+});
+
+// ─── CRON: Mark conversions for sent review requests ──────────────────────────
+app.get("/cron/mark-conversions", async (req, res) => {
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  
+  const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+  
+  // Find all sends in last 48 hours that haven't been marked yet
+  const { data: sends } = await supabase
+    .from("events")
+    .select("id, business_slug, sent_at")
+    .in("event_type", ["sms_sent", "email_sent"])
+    .is("converted", null)
+    .gte("sent_at", fortyEightHoursAgo);
+    
+  if (!sends || sends.length === 0) return res.json({ marked: 0 });
+  
+  let count = 0;
+  for (const send of sends) {
+    const sentDate = new Date(send.sent_at);
+    const cutoffDate = new Date(sentDate.getTime() + 48 * 60 * 60 * 1000).toISOString();
+    const nowCheck = new Date();
+    
+    if (nowCheck > new Date(sentDate.getTime() + 48 * 60 * 60 * 1000)) {
+      // 48 hours have passed — check if any response happened
+      const { data: responses } = await supabase
+        .from("events")
+        .select("id")
+        .eq("business_slug", send.business_slug)
+        .in("event_type", ["positive", "negative"])
+        .gte("created_at", send.sent_at)
+        .lte("created_at", cutoffDate)
+        .limit(1);
+        
+      await supabase.from("events")
+        .update({ converted: responses && responses.length > 0 })
+        .eq("id", send.id);
+      count++;
+    }
+  }
+  
+  res.json({ marked: count });
+});
+
+// ─── AI CHANNEL PREDICTION ──────────────────────────────────────────────────
+app.post("/predict-channel/:slug", async (req, res) => {
+  if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const { appointment_hour, appointment_day, service_type } = req.body;
+  const slug = req.params.slug;
+  
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("plan_type, subscription_active, industry")
+    .eq("slug", slug)
+    .single();
+    
+  const isProOrAgency = business?.subscription_active && 
+    (business?.plan_type === "pro" || business?.plan_type === "agency");
+  if (!isProOrAgency) return res.status(403).json({ error: "Pro or Agency plan required" });
+  
+  // Get their actual send data
+  const { data: sends } = await supabase
+    .from("events")
+    .select("channel, appointment_hour, appointment_day, service_type, converted")
+    .in("event_type", ["sms_sent", "email_sent"])
+    .eq("business_slug", slug)
+    .not("converted", "is", null)
+    .order("sent_at", { ascending: false })
+    .limit(100);
+    
+  const sendCount = sends?.length || 0;
+  
+  // Industry benchmark defaults
+  const industryDefaults = {
+    'dentist': { bestChannel: 'sms', bestWindow: '10am-12pm, next day', smsRate: 22, emailRate: 8 },
+    'plumber': { bestChannel: 'email', bestWindow: '8am-10am, next morning', smsRate: 18, emailRate: 14 },
+    'electrician': { bestChannel: 'sms', bestWindow: '8am-10am, next day', smsRate: 20, emailRate: 10 },
+    'salon': { bestChannel: 'sms', bestWindow: '2pm-4pm, same day', smsRate: 24, emailRate: 7 },
+    'builder': { bestChannel: 'email', bestWindow: '2-3 days after completion', smsRate: 12, emailRate: 16 },
+    'restaurant': { bestChannel: 'sms', bestWindow: '6pm-8pm, same evening', smsRate: 19, emailRate: 5 },
+    'gym': { bestChannel: 'sms', bestWindow: '6pm-8pm, same day', smsRate: 21, emailRate: 9 },
+    'cleaner': { bestChannel: 'sms', bestWindow: '10am-12pm, next day', smsRate: 20, emailRate: 8 },
+    'accountant': { bestChannel: 'email', bestWindow: '2pm-4pm, next day', smsRate: 10, emailRate: 15 },
+    'solicitor': { bestChannel: 'email', bestWindow: '10am-12pm, next day', smsRate: 8, emailRate: 14 },
+    'estate-agent': { bestChannel: 'email', bestWindow: '2pm-4pm, next day', smsRate: 11, emailRate: 13 },
+    'vet': { bestChannel: 'sms', bestWindow: '10am-12pm, next day', smsRate: 22, emailRate: 9 },
+    'physio': { bestChannel: 'sms', bestWindow: '2pm-4pm, same day', smsRate: 21, emailRate: 10 },
+    'other': { bestChannel: 'sms', bestWindow: '10am-2pm, next day', smsRate: 18, emailRate: 10 }
+  };
+  
+  const defaults = industryDefaults[business?.industry] || industryDefaults['other'];
+  
+  if (sendCount < 20) {
+    return res.json({
+      recommendation: {
+        recommended_channel: defaults.bestChannel,
+        confidence: 'industry data',
+        best_window: defaults.bestWindow,
+        predicted_conversion_rate: defaults.bestChannel === 'sms' ? defaults.smsRate : defaults.emailRate
+      },
+      data_source: 'industry_benchmark',
+      sends_analysed: sendCount,
+      message: `AI analytics based on ${business?.industry || 'industry'} data. Predictions personalise after 20 requests.`
+    });
+  }
+  
+  // Calculate actual conversion rates from their data
+  const smsSends = sends.filter(s => s.channel === 'sms');
+  const emailSends = sends.filter(s => s.channel === 'email');
+  const smsConv = smsSends.filter(s => s.converted).length;
+  const emailConv = emailSends.filter(s => s.converted).length;
+  const smsRate = smsSends.length > 0 ? Math.round((smsConv / smsSends.length) * 100) : defaults.smsRate;
+  const emailRate = emailSends.length > 0 ? Math.round((emailConv / emailSends.length) * 100) : defaults.emailRate;
+  
+  // Find best performing hour
+  const hourPerformance = {};
+  sends.forEach(s => {
+    if (!hourPerformance[s.appointment_hour]) hourPerformance[s.appointment_hour] = { sms: 0, smsConv: 0, email: 0, emailConv: 0 };
+    if (s.channel === 'sms') { hourPerformance[s.appointment_hour].sms++; if (s.converted) hourPerformance[s.appointment_hour].smsConv++; }
+    else { hourPerformance[s.appointment_hour].email++; if (s.converted) hourPerformance[s.appointment_hour].emailConv++; }
+  });
+  
+  const bestChannel = smsRate >= emailRate ? 'sms' : 'email';
+  const bestRate = Math.max(smsRate, emailRate);
+  
+  res.json({
+    recommendation: {
+      recommended_channel: bestChannel,
+      confidence: sendCount > 50 ? 'high' : 'moderate',
+      best_window: 'Based on your data',
+      predicted_conversion_rate: bestRate,
+      sms_conversion_rate: smsRate,
+      email_conversion_rate: emailRate
+    },
+    data_source: 'your_data',
+    sends_analysed: sendCount
+  });
 });
 
 // ─── SUGGEST REVIEW (Copy & Go) ──────────────────────────────────────────────

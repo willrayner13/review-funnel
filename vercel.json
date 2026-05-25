@@ -6,6 +6,10 @@
     {
       "path": "/cron/reputation-scores",
       "schedule": "0 8 1 * *"
+    },
+    {
+      "path": "/cron/mark-conversions",
+      "schedule": "0 * * * *"
     }
   ]
 }
