@@ -1071,6 +1071,45 @@ app.post("/api/hook/:slug", async (req, res) => {
   }
 });
 
+// ─── SENTIMENT TRENDS (Pro/Agency only) ─────────────────────────────────────
+app.get("/sentiment/:slug", async (req, res) => {
+  if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("plan_type, subscription_active")
+    .eq("slug", req.params.slug)
+    .single();
+    
+  if (!business) return res.status(404).json({ error: "Business not found" });
+  
+  const isProOrAgency = business.subscription_active && 
+    (business.plan_type === "pro" || business.plan_type === "agency");
+    
+  if (!isProOrAgency) {
+    return res.status(403).json({ error: "Pro or Agency plan required for AI insights." });
+  }
+  
+  // Get last 30 days of negative feedback
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const { data: feedback } = await supabase
+    .from("events")
+    .select("message, created_at")
+    .eq("business_slug", req.params.slug)
+    .eq("event_type", "negative")
+    .gte("created_at", thirtyDaysAgo.toISOString())
+    .order("created_at", { ascending: false });
+  
+  const messages = (feedback || []).map(f => f.message).filter(Boolean);
+  
+  res.json({ 
+    count: messages.length,
+    messages: messages 
+  });
+});
+
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
 app.get("/partner-info/:code", async (req, res) => {
   const code = req.params.code;

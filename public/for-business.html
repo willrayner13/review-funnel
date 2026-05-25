@@ -396,6 +396,28 @@
     </div>
   </div>
 
+    <!-- AI Sentiment Trends — Pro/Agency only -->
+  <div class="dash-section" id="sentimentSection">
+    <div class="dash-section-title">What your customers are telling you</div>
+    <div id="sentimentUnlocked" style="display:none">
+      <div class="panel" id="sentimentPanel">
+        <h3>AI-powered feedback insights</h3>
+        <div id="sentimentContent">
+          <div style="text-align:center;padding:20px;">
+            <div class="loader"></div>
+            <p style="margin-top:12px;font-size:0.85rem;color:var(--cream-dim);">Analysing your feedback...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pro-lock-panel" id="sentimentLocked" style="display:none">
+      <span class="lock-icon">🔍</span>
+      <h4>AI Sentiment Trends</h4>
+      <p>See what your customers are really saying. AI analyses all your private feedback and surfaces the patterns that matter — so you know exactly what to fix.</p>
+      <a href="/billing">⭐ Upgrade to Pro</a>
+    </div>
+  </div>
+
 </div>
 
 <!-- Cancel subscription modal -->
@@ -472,13 +494,16 @@ async function load(){
   // During trial, give Pro features if they signed up for Pro plan
   const hasProFeatures = stats.subscription_active && (currentPlan === "pro");
 
-  if(hasProFeatures){
+    if(hasProFeatures){
     document.getElementById("smsUnlocked").style.display   = "block";
     document.getElementById("smsLocked").style.display     = "none";
     document.getElementById("emailUnlocked").style.display = "block";
     document.getElementById("emailLocked").style.display   = "none";
     document.getElementById("aiUnlocked").style.display    = "block";
     document.getElementById("aiLocked").style.display      = "none";
+    document.getElementById("sentimentUnlocked").style.display = "block";
+    document.getElementById("sentimentLocked").style.display = "none";
+    loadSentimentTrends();
   } else {
     document.getElementById("smsUnlocked").style.display   = "none";
     document.getElementById("smsLocked").style.display     = "block";
@@ -486,6 +511,8 @@ async function load(){
     document.getElementById("emailLocked").style.display   = "block";
     document.getElementById("aiUnlocked").style.display    = "none";
     document.getElementById("aiLocked").style.display      = "block";
+    document.getElementById("sentimentUnlocked").style.display = "none";
+    document.getElementById("sentimentLocked").style.display = "block";
   }
 
   // Show upgrade banner if on Starter trial
@@ -735,6 +762,62 @@ async function load(){
     }
   });
 }
+
+async function loadSentimentTrends() {
+  try {
+    const res = await fetch("/sentiment/" + slug);
+    const data = await res.json();
+    
+    if (!data.count || data.count < 3) {
+      document.getElementById("sentimentContent").innerHTML = `
+        <div style="text-align:center;padding:20px;">
+          <p style="font-size:0.9rem;color:var(--cream-dim);">
+            📝 ${data.count === 0 ? 'No' : data.count} feedback message${data.count === 1 ? '' : 's'} collected${data.count > 0 ? ' so far' : ' yet'}.
+            ${data.count < 3 ? '<br><span style="font-size:0.8rem;color:rgba(234,231,220,0.3);">Collect 3 or more to unlock AI insights.</span>' : ''}
+          </p>
+        </div>`;
+      return;
+    }
+    
+    const completion = await fetch("/generate-reply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        review: `ANALYSIS_MODE: You are analysing private customer feedback for a small business. Here are the feedback messages from the last 30 days:\n\n${data.messages.join('\n\n')}\n\nIdentify the top 2-3 themes or patterns. For each theme, write one short summary sentence (max 12 words) describing what customers are saying, and one short piece of advice (max 12 words) on how to fix it. Return as JSON: { "themes": [ { "issue": "...", "advice": "..." } ] }. Do not include any other text or markdown.`
+      })
+    });
+    
+    const result = await completion.json();
+    
+    if (result.error || !result.reply) {
+      document.getElementById("sentimentContent").innerHTML = `<p style="color:var(--cream-dim);font-size:0.85rem;">Could not analyse feedback right now. Try again later.</p>`;
+      return;
+    }
+    
+    let themes;
+    try {
+      const cleaned = result.reply.replace(/```json|```/g, '').trim();
+      themes = JSON.parse(cleaned).themes;
+    } catch(e) {
+      document.getElementById("sentimentContent").innerHTML = `<div style="padding:16px;background:var(--surface-2);border-radius:8px;"><p style="font-size:0.85rem;color:var(--cream-dim);line-height:1.7;">${result.reply.replace(/\n/g, '<br>')}</p></div>`;
+      return;
+    }
+    
+    let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+    themes.forEach(t => {
+      html += `<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px 18px;"><div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:1.2rem;flex-shrink:0;">💬</span><div><p style="font-size:0.85rem;color:var(--cream);font-weight:500;margin-bottom:4px;">${t.issue}</p><p style="font-size:0.78rem;color:var(--accent);">💡 ${t.advice}</p></div></div></div>`;
+    });
+    html += '</div>';
+    html += `<p style="font-size:0.7rem;color:rgba(234,231,220,0.25);margin-top:12px;">Based on ${data.count} feedback messages from the last 30 days</p>`;
+    
+    document.getElementById("sentimentContent").innerHTML = html;
+    
+  } catch(e) {
+    document.getElementById("sentimentContent").innerHTML = `<p style="color:var(--cream-dim);font-size:0.85rem;">Could not load insights. Please try again.</p>`;
+  }
+}
+
+
 
 function dismissSoftwareSetup(){
   localStorage.setItem("rl_software_setup_dismissed","1");
