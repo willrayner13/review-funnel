@@ -325,10 +325,10 @@ app.get("/stats/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
 
   const { data: businessData } = await supabase
-    .from("businesses")
-    .select("name, subscription_active, plan_type, trial_ends_at, review_link")
-    .eq("slug", req.params.slug)
-    .single();
+  .from("businesses")
+  .select("name, subscription_active, plan_type, trial_ends_at, review_link, industry, current_software")
+  .eq("slug", req.params.slug)
+  .single();
   if (!businessData) return res.status(404).json({ error: "Business not found" });
 
   const { data } = await supabase
@@ -345,6 +345,8 @@ app.get("/stats/:slug", async (req, res) => {
     business_name: businessData.name,
     review_link: businessData.review_link,
     account_lapsed: !businessData.subscription_active,
+    industry: businessData.industry,
+current_software: businessData.current_software,
   };
 
   let ratingTotal = 0;
@@ -975,6 +977,97 @@ app.get("/affiliate-stats/:code", async (req, res) => {
     monthly_earnings: monthlyEarnings,
     referrals
   });
+});
+
+// ─── WEBHOOK: Automated review request trigger ──────────────────────────────
+app.post("/api/hook/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const { customer_name, customer_phone, service, staff_name, appointment_time } = req.body;
+
+  if (!customer_name || !customer_phone) {
+    return res.status(400).json({ error: "customer_name and customer_phone are required" });
+  }
+
+  try {
+    // Look up business
+    const { data: business, error } = await supabase
+      .from("businesses")
+      .select("name, industry, plan_type, review_link")
+      .eq("slug", slug)
+      .single();
+
+    if (error || !business) {
+      return res.status(404).json({ error: "Business not found" });
+    }
+
+    // Only pro or agency plans
+    if (business.plan_type !== "pro" && business.plan_type !== "agency") {
+      return res.status(403).json({ 
+        error: "Webhook access requires Pro or Agency plan. Upgrade at /billing" 
+      });
+    }
+
+    // Build the AI prompt
+    const industry = business.industry || "local service";
+    const businessName = business.name;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You write friendly, human-sounding SMS review requests on behalf of small businesses. Keep it under 160 characters. Sound like the business owner wrote it personally, not a marketing tool. Never use exclamation marks excessively. Always end with a short review link placeholder: [LINK]. Use British English spelling."
+        },
+        {
+          role: "user",
+          content: `Write an SMS from a ${industry} business called ${businessName} to a customer called ${customer_name} who just had '${service || "their appointment"}' done${staff_name ? " by " + staff_name : ""}. Ask them to leave a review.`
+        }
+      ],
+      temperature: 0.8,
+      max_tokens: 100
+    });
+
+    let message = completion.choices[0].message.content.trim();
+    
+    // Replace [LINK] with actual review funnel URL
+    const reviewUrl = `${process.env.BASE_URL}/r/${slug}`;
+    message = message.replace("[LINK]", reviewUrl);
+    
+    // Enforce 160 char limit for SMS
+    if (message.length > 160) {
+      message = message.substring(0, 157) + "...";
+    }
+
+    // Normalise and validate phone
+    const normalisedPhone = normalisePhone(customer_phone);
+    if (!normalisedPhone.startsWith("+44")) {
+      return res.status(400).json({ 
+        error: "UK phone numbers only (+44 or 07...). International support coming soon." 
+      });
+    }
+
+    // Send via Twilio
+    await twilioClient.messages.create({
+      from: process.env.TWILIO_PHONE,
+      to: normalisedPhone,
+      body: message
+    });
+
+    // Log the event
+    await supabase.from("events").insert({
+      business_slug: slug,
+      event_type: "sms_sent",
+      message: `Webhook: ${service || "appointment"} for ${customer_name}`,
+      created_at: new Date().toISOString()
+    });
+
+    console.log(`Webhook SMS sent for ${slug} to ${normalisedPhone}`);
+    res.json({ success: true, message });
+
+  } catch (err) {
+    console.error("Webhook error:", err.message);
+    res.status(500).json({ error: "Could not send review request. Please check your webhook configuration." });
+  }
 });
 
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────

@@ -303,6 +303,15 @@
         </div>
       </div>
     </div>
+        <div class="panel">
+      <h3>🔗 Webhook URL — Auto-send review requests</h3>
+      <p class="panel-desc">Paste this URL into your booking system's webhook or notification settings. ReviewLift will automatically send a personalised review request after every completed appointment.</p>
+      <div class="input-row">
+        <input id="webhookUrl" readonly>
+        <button onclick="copyWebhook()">Copy <span class="flash" id="webhookCopyFlash">✓</span></button>
+      </div>
+      <p style="font-size:0.72rem; color: rgba(234,231,220,0.25); margin-top: 8px;" id="webhookGuide"></p>
+    </div>
     <div class="panel">
       <h3>Embed button code</h3>
       <p class="panel-desc">Paste this HTML snippet into your website or booking confirmation page to add a "Leave us a review" button.</p>
@@ -488,6 +497,31 @@ async function load(){
   document.getElementById("qr").src             = "/qr-download/"+slug;
   document.getElementById("qrDownload").href    = "/qr-download/"+slug;
 
+    // Webhook URL
+  const webhookUrl = window.location.origin + "/api/hook/" + slug;
+  document.getElementById("webhookUrl").value = webhookUrl;
+  
+  // Show software-specific guide if they selected one during signup
+  const software = stats.current_software || '';
+  const softwareGuides = {
+    'fresha': "📘 Fresha users: Go to Settings → Notifications → Webhooks → paste your URL.",
+    'booksy': "📘 Booksy users: Go to Settings → Integrations → Webhooks → paste your URL.",
+    'calendly': "📘 Calendly users: Go to Integrations → Webhooks → Add Subscription → paste your URL.",
+    'acuity': "📘 Acuity users: Go to Settings → Notifications → Webhooks → paste your URL.",
+    'square': "📘 Square users: Use Square's API settings or connect via Zapier.",
+    'simplybook': "📘 SimplyBook.me users: Go to Settings → Notifications → Webhooks → paste your URL.",
+    'setmore': "📘 Setmore users: Go to Settings → Integrations → Webhooks → paste your URL.",
+    'soe-exact': "📘 Soe Exact users: Go to Settings → Integrations → Webhooks → paste your URL.",
+    'cliniko': "📘 Cliniko users: Go to Settings → Integrations → Webhooks → paste your URL.",
+    'jane': "📘 Jane App users: Go to Settings → Integrations → Webhooks → paste your URL.",
+    'timely': "📘 Timely users: Go to Settings → Integrations → Webhooks → paste your URL.",
+    'zapier': "📘 Zapier users: Use our Zapier integration to connect any app. Search 'ReviewLift' in Zapier.",
+    'none': "💡 Tip: Even without booking software, you can trigger ReviewLift automatically via Zapier or send SMS requests manually from the panel above.",
+    'other': "📘 Your booking system likely supports webhooks. Check your settings for 'Webhooks', 'Integrations', or 'Notifications' to paste your URL."
+  };
+  const guide = softwareGuides[software] || softwareGuides['other'];
+  document.getElementById("webhookGuide").textContent = guide;
+
   const list = document.getElementById("negativeList");
   if(stats.feedback && stats.feedback.length > 0){
     list.innerHTML = "";
@@ -531,6 +565,13 @@ function copyLink(){
   const link = document.getElementById("reviewLink");
   link.select(); navigator.clipboard.writeText(link.value);
   const f = document.getElementById("copyFlash");
+  f.classList.add("show"); setTimeout(()=>f.classList.remove("show"), 2000);
+}
+
+function copyWebhook(){
+  const link = document.getElementById("webhookUrl");
+  link.select(); navigator.clipboard.writeText(link.value);
+  const f = document.getElementById("webhookCopyFlash");
   f.classList.add("show"); setTimeout(()=>f.classList.remove("show"), 2000);
 }
 
