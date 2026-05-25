@@ -259,7 +259,6 @@
       <p class="stars-hint">Tap a star to rate</p>
     </div>
 
-    <!-- Step 3a: Leave review — NORMAL (active subscription) -->
         <!-- Step 3a: Leave review — NORMAL (active subscription) -->
     <div id="reviewSection" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
@@ -275,8 +274,23 @@
         <div id="voiceResult" style="margin-top:12px;"></div>
       </div>
       
+      <!-- Copy & Go suggestion -->
+      <div id="copyGoSection" style="margin: 16px 0;">
+        <div id="suggestionLoading" style="text-align:center;padding:16px;">
+          <p style="font-size:0.85rem;color:var(--cream-dim);">Writing your review...</p>
+        </div>
+        <div id="suggestionReady" style="display:none;">
+          <p style="font-size:0.8rem;color:var(--accent);margin-bottom:8px;">Here's a review you could leave — feel free to edit it:</p>
+          <textarea id="suggestionText" style="min-height:80px;font-size:0.9rem;margin-bottom:10px;"></textarea>
+          <button onclick="copyAndGo()" id="copyGoBtn" style="background:var(--accent);color:#1A1A18;border:none;padding:12px 20px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;width:100%;">
+            📋 Copy & open Google
+          </button>
+          <p style="font-size:0.7rem;color:rgba(234,231,220,0.3);text-align:center;margin-top:8px;">Paste it into Google and hit post — takes 10 seconds</p>
+        </div>
+      </div>
+      
       <div class="review-prompt">
-        <p>Would you share your experience online? It only takes a moment.</p>
+        <p>Prefer to write your own review?</p>
         <button onclick="leaveReview()">Leave a Review →</button>
       </div>
     </div>
@@ -529,6 +543,59 @@ async function transcribeAudio(blob) {
   }
   
   document.getElementById("recordBtn").style.display = "none";
+}
+
+// ── Copy & Go review suggestion ───────────────────────────────────────────────
+let selectedRating = 0;
+
+// Modify the rate() function to store the rating
+const originalRate = rate;
+rate = function(stars) {
+  selectedRating = stars;
+  originalRate(stars);
+  if (stars >= 4 && !isLapsed) {
+    loadSuggestion(stars);
+  }
+};
+
+async function loadSuggestion(stars) {
+  try {
+    const res = await fetch("/suggest-review/" + window.slug, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rating: stars, service: window.service || null })
+    });
+    const data = await res.json();
+    
+    if (data.suggestion) {
+      document.getElementById("suggestionLoading").style.display = "none";
+      document.getElementById("suggestionReady").style.display = "block";
+      document.getElementById("suggestionText").value = data.suggestion;
+    }
+  } catch(e) {
+    document.getElementById("suggestionLoading").innerHTML = 
+      '<p style="font-size:0.85rem;color:var(--cream-dim);">Ready to leave a review below.</p>';
+  }
+}
+
+function copyAndGo() {
+  const text = document.getElementById("suggestionText").value;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById("copyGoBtn");
+    btn.textContent = "✓ Copied! Google is opening...";
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+    setTimeout(() => {
+      fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug: window.slug})});
+      window.open(window.reviewLink, "_blank");
+    }, 600);
+  }).catch(() => {
+    // Fallback
+    const textarea = document.getElementById("suggestionText");
+    textarea.select();
+    document.execCommand("copy");
+    window.open(window.reviewLink, "_blank");
+  });
 }
 
 // ── Set business name ─────────────────────────────────────────────────────────

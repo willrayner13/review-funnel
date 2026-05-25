@@ -287,10 +287,12 @@ app.get("/r/:business", async (req, res) => {
   res.send(`
     <html>
       <script>
-        window.businessName   = "${data.name.replace(/"/g, '\\"')}";
-        window.slug           = "${slug}";
-        window.reviewLink     = "${(data.review_link || "").replace(/"/g, '\\"')}";
-        window.accountLapsed  = ${isLapsed};
+window.businessName   = "${data.name.replace(/"/g, '\\"')}";
+window.slug           = "${slug}";
+window.reviewLink     = "${(data.review_link || "").replace(/"/g, '\\"')}";
+window.accountLapsed  = ${isLapsed};
+window.industry       = "${(data.industry || 'local business').replace(/"/g, '\\"')}";
+window.service        = "${(req.query.service || '').replace(/"/g, '\\"')}";
       </script>
       ${page}
     </html>
@@ -1608,6 +1610,43 @@ app.get("/cron/reputation-scores", async (req, res) => {
   }
   
   res.json({ saved: count });
+});
+
+// ─── SUGGEST REVIEW (Copy & Go) ──────────────────────────────────────────────
+app.post("/suggest-review/:slug", async (req, res) => {
+  const { rating, service } = req.body;
+  
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("name, industry")
+    .eq("slug", req.params.slug)
+    .single();
+    
+  if (!business) return res.status(404).json({ error: "Business not found" });
+  
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You write short, authentic-sounding Google reviews on behalf of customers. Write in first person. Sound like a real person, not marketing copy. 2-3 sentences max. Never use words like fantastic, amazing, or incredible. Sound natural and specific. Use British English."
+        },
+        {
+          role: "user",
+          content: `Write a ${rating}-star Google review for a customer who visited ${business.name}, a ${business.industry || 'local'} business.${service ? ' The service they had was: ' + service + '.' : ''} Make it sound genuine, conversational, and specific.`
+        }
+      ],
+      temperature: 0.8,
+      max_tokens: 150
+    });
+    
+    const suggestion = completion.choices[0].message.content.trim();
+    res.json({ suggestion });
+  } catch(err) {
+    console.error("Review suggestion error:", err.message);
+    res.status(500).json({ error: "Could not generate suggestion." });
+  }
 });
 
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
