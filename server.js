@@ -39,8 +39,9 @@ function isTrialActive(business) {
 }
 
 // Pro access: subscription must be active AND on pro plan
+// Pro/Agency access: subscription must be active AND on pro or agency plan
 function hasProAccess(business) {
-  return business.subscription_active && (business.plan_type === "pro");
+  return business.subscription_active && (business.plan_type === "pro" || business.plan_type === "agency");
 }
 
 // Normalise UK phone numbers — handles 07..., 7..., +44..., 00...
@@ -72,7 +73,7 @@ if (event.type === "checkout.session.completed") {
     const customer = sess.customer;
 
     try {
-      const mrr = plan === "pro" ? 24.99 : 9.99;
+      const mrr = plan === "pro" ? 24.99 : plan === "agency" ? 79 : 9.99;
       await supabase
         .from("businesses")
         .update({ subscription_active: true, plan_type: plan, stripe_customer: customer, subscribed_at: new Date().toISOString(), mrr })
@@ -587,9 +588,10 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
 // Env vars: Starter_subscription and Pro_subscription (set in Vercel)
 app.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
-  const priceId = plan === "pro"
-    ? process.env.Pro_subscription
-    : process.env.Starter_subscription;
+  let priceId;
+  if (plan === "pro") priceId = process.env.Pro_subscription;
+  else if (plan === "agency") priceId = process.env.Agency_subscription;
+  else priceId = process.env.Starter_subscription;
 
   if (!priceId) {
     console.error("Missing price ID. Check Starter_subscription and Pro_subscription env vars.");
@@ -975,9 +977,11 @@ app.get("/affiliate-stats/:code", async (req, res) => {
     return b.subscription_active && b.trial_ends_at && new Date(b.trial_ends_at) > now;
   });
   
-  const monthlyEarnings = paying.reduce((sum, b) => {
-    return sum + (b.plan_type === 'pro' ? 24.99 * 0.3 : 9.99 * 0.3);
-  }, 0);
+const monthlyEarnings = paying.reduce((sum, b) => {
+  let rate = 0.3;
+  let price = b.plan_type === 'pro' ? 24.99 : b.plan_type === 'agency' ? 79 : 9.99;
+  return sum + (price * rate);
+}, 0);
   
   const referrals = businesses.map(b => {
     let status = 'cancelled';
@@ -988,8 +992,8 @@ app.get("/affiliate-stats/:code", async (req, res) => {
     }
     
     const commission = status === 'active' 
-      ? (b.plan_type === 'pro' ? 24.99 * 0.3 : 9.99 * 0.3) 
-      : 0;
+  ? ((b.plan_type === 'pro' ? 24.99 : b.plan_type === 'agency' ? 79 : 9.99) * 0.3)
+  : 0;
     
     return {
       business_name: b.name,
@@ -1140,6 +1144,18 @@ app.get("/sentiment/:slug", async (req, res) => {
     count: messages.length,
     messages: messages 
   });
+});
+
+// ─── UPDATE AGENCY SETTINGS ──────────────────────────────────────────────────
+app.post("/update-agency-settings", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  const { agency_name, agency_logo_url } = req.body;
+  const { error } = await supabase
+    .from("businesses")
+    .update({ agency_name: agency_name || null, agency_logo_url: agency_logo_url || null })
+    .eq("slug", req.session.slug);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
 });
 
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
