@@ -375,7 +375,7 @@ current_software: businessData.current_software,
 // ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
 app.post("/create-business", async (req, res) => {
   try {
-    const { name, email, review, password } = req.body;
+    const { name, email, review, password, referral, industry, currentSoftware } = req.body;
     const { referral } = req.body; 
     if (!password) return res.status(400).json({ error: "Password is required." });
     if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
@@ -390,7 +390,7 @@ app.post("/create-business", async (req, res) => {
     const trialEnd = new Date();
     trialEnd.setDate(trialEnd.getDate() + 14);
  
-  const { error } = await supabase.from("businesses").insert({
+const { error } = await supabase.from("businesses").insert({
   name,
   email,
   review_link: review,
@@ -399,7 +399,9 @@ app.post("/create-business", async (req, res) => {
   plan_type: "starter",
   subscription_active: false,
   trial_ends_at: trialEnd.toISOString(),
-  referred_by: referral || null,   // ✅ ADD THIS
+  referred_by: referral || null,
+  industry: industry || null,
+  current_software: currentSoftware || null,
 });
  
     if (error) {

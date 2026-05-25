@@ -92,8 +92,54 @@
     <h2>Create your account</h2>
     <p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial · Card required · £0 charged until day 15</p>
 
-    <div class="form-group"><label>Business name</label><input id="name" type="text" placeholder="e.g. The Coffee House"></div>
-    <div class="form-group"><label>Business email</label><input id="email" type="email" placeholder="you@yourbusiness.com"></div>
+<div class="form-group"><label>Business name</label><input id="name" type="text" placeholder="e.g. The Coffee House"></div>
+
+<!-- NEW: Industry selection -->
+<div class="form-group">
+  <label>Your industry</label>
+  <select id="industry" style="width:100%; padding:13px 16px; background:var(--surface-3); border:1px solid var(--border-hover); border-radius:8px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:1rem; -webkit-appearance:none; appearance:none; cursor:pointer;">
+    <option value="">Select your industry...</option>
+    <option value="dentist">🦷 Dentist</option>
+    <option value="plumber">🔧 Plumber / Heating</option>
+    <option value="electrician">⚡ Electrician</option>
+    <option value="salon">💇 Hair / Beauty Salon</option>
+    <option value="builder">🏗️ Builder / Construction</option>
+    <option value="restaurant">🍽️ Restaurant / Café</option>
+    <option value="gym">🏋️ Gym / Fitness</option>
+    <option value="cleaner">🧹 Cleaning Service</option>
+    <option value="accountant">📊 Accountant</option>
+    <option value="solicitor">⚖️ Solicitor / Legal</option>
+    <option value="estate-agent">🏠 Estate Agent</option>
+    <option value="vet">🐾 Veterinary</option>
+    <option value="physio">💪 Physiotherapy / Health</option>
+    <option value="other">Other</option>
+  </select>
+</div>
+
+<!-- NEW: Current software -->
+<div class="form-group">
+  <label>What software do you currently use for bookings?</label>
+  <select id="currentSoftware" style="width:100%; padding:13px 16px; background:var(--surface-3); border:1px solid var(--border-hover); border-radius:8px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:1rem; -webkit-appearance:none; appearance:none; cursor:pointer;">
+    <option value="">Select your software...</option>
+    <option value="soe-exact">Soe Exact (Dental)</option>
+    <option value="fresha">Fresha</option>
+    <option value="booksy">Booksy</option>
+    <option value="calendly">Calendly</option>
+    <option value="acuity">Acuity Scheduling</option>
+    <option value="square">Square Appointments</option>
+    <option value="simplybook">SimplyBook.me</option>
+    <option value="setmore">Setmore</option>
+    <option value="cliniko">Cliniko</option>
+    <option value="jane">Jane App</option>
+    <option value="timely">Timely</option>
+    <option value="zapier">Zapier (I'll connect manually)</option>
+    <option value="none">I don't use booking software</option>
+    <option value="other">Other</option>
+  </select>
+  <p class="helper-text">We'll show you how to connect it in 2 minutes after signup.</p>
+</div>
+
+<div class="form-group"><label>Business email</label><input id="email" type="email" placeholder="you@yourbusiness.com"></div>
     <div class="form-group">
       <label>Your review link</label>
       <div class="review-link-row">
@@ -261,8 +307,10 @@ function getCookie(name) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return match ? match[2] : null;
 }
+const industry = document.getElementById('industry').value;
+const currentSoftware = document.getElementById('currentSoftware').value;
 const referral = getCookie('rl_ref') || sessionStorage.getItem('referral_code') || '';
-const res  = await fetch("/create-business", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name, email, review, password, referral}) });
+const res  = await fetch("/create-business", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name, email, review, password, referral, industry, currentSoftware}) });
   const data = await res.json();
 
   if(data.success){

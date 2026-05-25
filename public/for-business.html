@@ -261,6 +261,13 @@
     <button class="upgrade-banner-btn" onclick="upgradeToProTrial()">⭐ Upgrade to Pro free</button>
   </div>
 
+    <!-- Software-specific setup guide — shown on first visit for new signups -->
+  <div class="onboarding-banner" id="softwareSetupBanner" style="display:none; border-color: rgba(106,158,127,0.25); background: linear-gradient(135deg,var(--surface) 0%,rgba(106,158,127,0.04) 100%);">
+    <div class="onboarding-title" id="softwareSetupTitle">🔌 Connect your booking system</div>
+    <p class="onboarding-sub" id="softwareSetupBody">Loading your setup guide...</p>
+    <div id="softwareSetupSteps" style="margin-bottom: 18px;"></div>
+    <button class="onboarding-dismiss" onclick="dismissSoftwareSetup()">Got it, dismiss this ✕</button>
+  </div>
 
   <!-- Metrics -->
   <div class="dash-section">
@@ -522,6 +529,174 @@ async function load(){
   const guide = softwareGuides[software] || softwareGuides['other'];
   document.getElementById("webhookGuide").textContent = guide;
 
+    // Show software-specific setup guide on first visit
+  const softwareSetupGuides = {
+    'soe-exact': {
+      title: '🔌 Connect Soe Exact to ReviewLift',
+      body: 'You\'re using Soe Exact. Here\'s your 2-minute setup to start receiving reviews automatically:',
+      steps: [
+        'Log into your Soe Exact dashboard',
+        'Go to Settings → Integrations → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Appointment Completed" as the trigger event',
+        'Save — you\'re done. ReviewLift will now send a personalised SMS after every appointment.'
+      ]
+    },
+    'fresha': {
+      title: '🔌 Connect Fresha to ReviewLift',
+      body: 'You\'re using Fresha. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into your Fresha account',
+        'Go to Settings → Notifications → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Enable "Appointment Completed" trigger',
+        'Save — done. Every completed appointment triggers a personalised review request.'
+      ]
+    },
+    'booksy': {
+      title: '🔌 Connect Booksy to ReviewLift',
+      body: 'You\'re using Booksy. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into your Booksy account',
+        'Go to Settings → Integrations → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Booking Completed" as the event',
+        'Save — done. Review requests go out automatically.'
+      ]
+    },
+    'calendly': {
+      title: '🔌 Connect Calendly to ReviewLift',
+      body: 'You\'re using Calendly. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into Calendly',
+        'Go to Integrations → Webhooks → Add Subscription',
+        'Paste your ReviewLift webhook URL',
+        'Select "invitee.created" or "invitee_no_show" as the event',
+        'Save — done. ReviewLift will follow up after every meeting.'
+      ]
+    },
+    'acuity': {
+      title: '🔌 Connect Acuity Scheduling to ReviewLift',
+      body: 'You\'re using Acuity. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into Acuity Scheduling',
+        'Go to Settings → Notifications → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Appointment Completed" trigger',
+        'Save — done.'
+      ]
+    },
+    'square': {
+      title: '🔌 Connect Square Appointments to ReviewLift',
+      body: 'Square requires a slightly different approach. Here\'s how:',
+      steps: [
+        'Log into your Square Dashboard',
+        'Go to Apps → Square Appointments → Settings',
+        'Under Notifications, look for "Webhook URL"',
+        'Paste your ReviewLift webhook URL',
+        'If Square doesn\'t support direct webhooks, connect via Zapier in 2 minutes — search "ReviewLift" in Zapier.'
+      ]
+    },
+    'simplybook': {
+      title: '🔌 Connect SimplyBook.me to ReviewLift',
+      body: 'You\'re using SimplyBook.me. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into SimplyBook.me admin',
+        'Go to Settings → Notifications → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Booking Completed" trigger',
+        'Save — done.'
+      ]
+    },
+    'setmore': {
+      title: '🔌 Connect Setmore to ReviewLift',
+      body: 'You\'re using Setmore. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into Setmore',
+        'Go to Settings → Integrations → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Appointment Completed" event',
+        'Save — done.'
+      ]
+    },
+    'cliniko': {
+      title: '🔌 Connect Cliniko to ReviewLift',
+      body: 'You\'re using Cliniko. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into Cliniko',
+        'Go to Settings → Integrations → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Appointment Completed" trigger',
+        'Save — done. Review requests go out after every appointment.'
+      ]
+    },
+    'jane': {
+      title: '🔌 Connect Jane App to ReviewLift',
+      body: 'You\'re using Jane App. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into Jane',
+        'Go to Settings → Integrations → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Appointment Completed" trigger',
+        'Save — done.'
+      ]
+    },
+    'timely': {
+      title: '🔌 Connect Timely to ReviewLift',
+      body: 'You\'re using Timely. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into Timely',
+        'Go to Settings → Integrations → Webhooks',
+        'Paste your ReviewLift webhook URL',
+        'Select "Booking Completed" event',
+        'Save — done.'
+      ]
+    },
+    'zapier': {
+      title: '🔌 Connect via Zapier to ReviewLift',
+      body: 'You selected Zapier. Here\'s your 2-minute setup:',
+      steps: [
+        'Log into Zapier',
+        'Click "Create Zap"',
+        'Choose your booking app as the trigger → "Appointment Completed"',
+        'Choose "Webhook" as the action → POST → paste your ReviewLift webhook URL',
+        'Done. Works with 5,000+ apps.'
+      ]
+    },
+    'none': {
+      title: '🚀 Get started with ReviewLift',
+      body: 'No booking software? No problem. Here\'s how to start collecting reviews:',
+      steps: [
+        'Download your QR code above — print it and place it on your counter, receipts, or van',
+        'Copy your review link — add it to your email signature and invoices',
+        'Send SMS requests manually from your dashboard to recent customers',
+        'Want automation later? Connect via Zapier or any webhook-supported booking system.'
+      ]
+    },
+    'other': {
+      title: '🔌 Connect your booking system to ReviewLift',
+      body: 'Most booking systems support webhooks. Here\'s the general setup:',
+      steps: [
+        'Log into your booking system',
+        'Look for Settings → Integrations → Webhooks (or "Notifications")',
+        'Paste your ReviewLift webhook URL',
+        'Set the trigger to "Appointment Completed" or similar',
+        'Save — done. If you can\'t find it, email us and we\'ll help.'
+      ]
+    }
+  };
+
+  const setup = softwareSetupGuides[software] || softwareSetupGuides['other'];
+  if (!localStorage.getItem("rl_software_setup_dismissed")) {
+    document.getElementById("softwareSetupTitle").textContent = setup.title;
+    document.getElementById("softwareSetupBody").textContent = setup.body;
+    let stepsHtml = '<ol style="padding-left:20px;font-size:0.82rem;color:var(--cream-dim);line-height:1.8;">';
+    setup.steps.forEach(s => { stepsHtml += `<li>${s}</li>`; });
+    stepsHtml += '</ol>';
+    document.getElementById("softwareSetupSteps").innerHTML = stepsHtml;
+    document.getElementById("softwareSetupBanner").style.display = "block";
+  }
+
   const list = document.getElementById("negativeList");
   if(stats.feedback && stats.feedback.length > 0){
     list.innerHTML = "";
@@ -559,6 +734,11 @@ async function load(){
       }
     }
   });
+}
+
+function dismissSoftwareSetup(){
+  localStorage.setItem("rl_software_setup_dismissed","1");
+  document.getElementById("softwareSetupBanner").style.display="none";
 }
 
 function copyLink(){
