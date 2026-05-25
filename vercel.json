@@ -1,5 +1,11 @@
 {
   "routes": [
     { "src": "/(.*)", "dest": "/api/index.js" }
+  ],
+  "crons": [
+    {
+      "path": "/cron/reputation-scores",
+      "schedule": "0 8 1 * *"
+    }
   ]
 }

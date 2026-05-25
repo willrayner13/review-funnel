@@ -1463,6 +1463,153 @@ app.post("/analyse-competitor", async (req, res) => {
 });
 
 
+// ─── REPUTATION SCORE ───────────────────────────────────────────────────────
+app.get("/reputation/:slug", async (req, res) => {
+  if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const slug = req.params.slug;
+  const now = new Date();
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  
+  const { data: events } = await supabase
+    .from("events")
+    .select("event_type, rating, created_at")
+    .eq("business_slug", slug);
+    
+  if (!events || events.length === 0) {
+    // Get last month's score if available
+    const { data: lastScore } = await supabase
+      .from("reputation_scores")
+      .select("score")
+      .eq("business_slug", slug)
+      .order("recorded_at", { ascending: false })
+      .limit(1)
+      .single();
+      
+    return res.json({ 
+      score: 0, 
+      last_month_score: lastScore?.score || null,
+      breakdown: { rating: 0, velocity: 0, feedback: 25, activity: 0 },
+      message: "Not enough data yet. Start collecting reviews to build your score."
+    });
+  }
+  
+  // 1. Average star rating (40 points)
+  const ratings = events.filter(e => e.rating).map(e => e.rating);
+  const avgRating = ratings.length ? ratings.reduce((a,b) => a + b, 0) / ratings.length : 0;
+  const ratingScore = Math.round((avgRating / 5) * 40);
+  
+  // 2. Review velocity (20 points)
+  const thisMonthPos = events.filter(e => e.event_type === "positive" && e.created_at >= thisMonthStart).length;
+  const lastMonthPos = events.filter(e => e.event_type === "positive" && e.created_at >= lastMonthStart && e.created_at < thisMonthStart).length;
+  let velocityScore = 0;
+  if (lastMonthPos === 0 && thisMonthPos > 0) velocityScore = 20;
+  else if (lastMonthPos === 0 && thisMonthPos === 0) velocityScore = 10;
+  else if (thisMonthPos >= lastMonthPos) velocityScore = 20;
+  else if (thisMonthPos >= lastMonthPos * 0.5) velocityScore = 10;
+  else velocityScore = 0;
+  
+  // 3. Negative feedback ratio (25 points)
+  const totalVisits = events.filter(e => e.event_type === "visit").length || 1;
+  const negativeEvents = events.filter(e => e.event_type === "negative").length;
+  const ratio = negativeEvents / totalVisits;
+  let feedbackScore = 25;
+  if (ratio > 0.15) feedbackScore = 5;
+  else if (ratio > 0.05) feedbackScore = 15;
+  
+  // 4. Response activity (15 points)
+  const recentActivity = events.filter(e => 
+    (e.event_type === "sms_sent" || e.event_type === "invoice_email_sent") && 
+    e.created_at >= thirtyDaysAgo
+  ).length;
+  let activityScore = 0;
+  if (recentActivity >= 10) activityScore = 15;
+  else if (recentActivity >= 1) activityScore = 8;
+  
+  const totalScore = ratingScore + velocityScore + feedbackScore + activityScore;
+  
+  // Get last month's score
+  const { data: lastScore } = await supabase
+    .from("reputation_scores")
+    .select("score")
+    .eq("business_slug", slug)
+    .order("recorded_at", { ascending: false })
+    .limit(1)
+    .single();
+  
+  res.json({
+    score: totalScore,
+    last_month_score: lastScore?.score || null,
+    breakdown: {
+      rating: ratingScore,
+      velocity: velocityScore,
+      feedback: feedbackScore,
+      activity: activityScore
+    }
+  });
+});
+
+// ─── CRON: Snapshot reputation scores monthly ───────────────────────────────
+app.get("/cron/reputation-scores", async (req, res) => {
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  
+  const { data: businesses } = await supabase
+    .from("businesses")
+    .select("slug")
+    .eq("subscription_active", true);
+    
+  if (!businesses) return res.json({ saved: 0 });
+  
+  let count = 0;
+  for (const biz of businesses) {
+    // Replicate the scoring logic (simplified for cron)
+    const { data: events } = await supabase
+      .from("events")
+      .select("event_type, rating, created_at")
+      .eq("business_slug", biz.slug);
+      
+    if (!events || events.length === 0) continue;
+    
+    const ratings = events.filter(e => e.rating).map(e => e.rating);
+    const avgRating = ratings.length ? ratings.reduce((a,b) => a + b, 0) / ratings.length : 0;
+    const ratingScore = Math.round((avgRating / 5) * 40);
+    
+    const now = new Date();
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+    
+    const thisMonthPos = events.filter(e => e.event_type === "positive" && e.created_at >= thisMonthStart).length;
+    const lastMonthPos = events.filter(e => e.event_type === "positive" && e.created_at >= lastMonthStart && e.created_at < thisMonthStart).length;
+    let velocityScore = lastMonthPos === 0 && thisMonthPos > 0 ? 20 : lastMonthPos === 0 ? 10 : thisMonthPos >= lastMonthPos ? 20 : thisMonthPos >= lastMonthPos * 0.5 ? 10 : 0;
+    
+    const totalVisits = events.filter(e => e.event_type === "visit").length || 1;
+    const negativeEvents = events.filter(e => e.event_type === "negative").length;
+    const ratio = negativeEvents / totalVisits;
+    let feedbackScore = ratio > 0.15 ? 5 : ratio > 0.05 ? 15 : 25;
+    
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const recentActivity = events.filter(e => (e.event_type === "sms_sent" || e.event_type === "invoice_email_sent") && e.created_at >= thirtyDaysAgo).length;
+    let activityScore = recentActivity >= 10 ? 15 : recentActivity >= 1 ? 8 : 0;
+    
+    const totalScore = ratingScore + velocityScore + feedbackScore + activityScore;
+    
+    await supabase.from("reputation_scores").insert({
+      business_slug: biz.slug,
+      score: totalScore,
+      breakdown: { rating: ratingScore, velocity: velocityScore, feedback: feedbackScore, activity: activityScore },
+      recorded_at: new Date().toISOString()
+    });
+    count++;
+  }
+  
+  res.json({ saved: count });
+});
+
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
 app.get("/partner-info/:code", async (req, res) => {
   const code = req.params.code;

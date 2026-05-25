@@ -269,6 +269,22 @@
     <button class="onboarding-dismiss" onclick="dismissSoftwareSetup()">Got it, dismiss this ✕</button>
   </div>
 
+    <!-- Reputation Score -->
+  <div class="dash-section" style="margin-bottom:28px;">
+    <div id="reputationCard" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 32px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+      <div style="text-align:center;flex-shrink:0;">
+        <div id="repScore" style="font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;line-height:1;color:var(--accent);">—</div>
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--cream-dim);margin-top:4px;">Reputation Score</div>
+        <div id="repTrend" style="font-size:0.75rem;margin-top:6px;"></div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div style="display:flex;flex-direction:column;gap:10px;" id="repBreakdown">
+          <div style="font-size:0.8rem;color:var(--cream-dim);">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Metrics -->
   <div class="dash-section">
     <div class="dash-section-title">Overview</div>
@@ -525,6 +541,8 @@ async function load(){
   document.getElementById("positive").innerText = stats.positive ?? 0;
   document.getElementById("negative").innerText = stats.negative ?? 0;
   document.getElementById("reviews").innerText  = stats.reviews  ?? 0;
+    // Load reputation score
+  loadReputationScore();
 
   // Plan badge
   const badge = document.getElementById("planBadge");
@@ -881,6 +899,67 @@ async function loadSentimentTrends() {
     
   } catch(e) {
     document.getElementById("sentimentContent").innerHTML = `<p style="color:var(--cream-dim);font-size:0.85rem;">Could not load insights. Please try again.</p>`;
+  }
+}
+
+async function loadReputationScore() {
+  try {
+    const res = await fetch("/reputation/" + slug);
+    const data = await res.json();
+    
+    const score = data.score;
+    const lastMonth = data.last_month_score;
+    const b = data.breakdown;
+    
+    let scoreColor = "#D4897C";
+    if (score >= 75) scoreColor = "#8EC9A8";
+    else if (score >= 50) scoreColor = "#C8A96E";
+    
+    document.getElementById("repScore").textContent = score;
+    document.getElementById("repScore").style.color = scoreColor;
+    
+    if (lastMonth !== null && lastMonth !== undefined) {
+      const diff = score - lastMonth;
+      const trendEl = document.getElementById("repTrend");
+      if (diff > 0) {
+        trendEl.innerHTML = `<span style="color:#8EC9A8;">↑ ${diff} points</span> from last month`;
+      } else if (diff < 0) {
+        trendEl.innerHTML = `<span style="color:#D4897C;">↓ ${Math.abs(diff)} points</span> from last month`;
+      } else {
+        trendEl.innerHTML = `<span style="color:var(--cream-dim);">No change</span> from last month`;
+      }
+    }
+    
+    const bars = [
+      { label: "Rating", value: b.rating, max: 40, tip: "Based on your average star rating" },
+      { label: "Velocity", value: b.velocity, max: 20, tip: "How consistently you collect reviews" },
+      { label: "Feedback", value: b.feedback, max: 25, tip: "Low negative feedback ratio" },
+      { label: "Activity", value: b.activity, max: 15, tip: "SMS & email review requests sent" }
+    ];
+    
+    let html = '';
+    bars.forEach(bar => {
+      const pct = (bar.value / bar.max) * 100;
+      let barColor = "#D4897C";
+      if (pct >= 75) barColor = "#8EC9A8";
+      else if (pct >= 40) barColor = "#C8A96E";
+      
+      html += `
+        <div style="position:relative;" title="${bar.tip}">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+            <span style="font-size:0.72rem;color:var(--cream-dim);">${bar.label}</span>
+            <span style="font-size:0.72rem;color:var(--cream-dim);">${bar.value}/${bar.max}</span>
+          </div>
+          <div style="background:var(--surface-2);border-radius:4px;height:6px;overflow:hidden;">
+            <div style="background:${barColor};height:100%;width:${pct}%;border-radius:4px;transition:width 0.5s ease;"></div>
+          </div>
+        </div>`;
+    });
+    
+    document.getElementById("repBreakdown").innerHTML = html;
+    
+  } catch(e) {
+    document.getElementById("repScore").textContent = "—";
   }
 }
 
