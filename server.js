@@ -710,7 +710,7 @@ app.post("/send-sms", smsLimiter, async (req, res) => {
     const message = `Hi! Thanks for visiting ${data.name} today. We'd love to know how it went - takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
     await twilioClient.messages.create({ from: process.env.TWILIO_PHONE, to: normalisedPhone, body: message });
 
-    const now = new Date();
+
 await supabase.from("events").insert({ 
   business_slug: slug, 
   event_type: "sms_sent",
