@@ -368,21 +368,38 @@
   </div>
 
   <!-- AI Replies — Pro lock if not pro -->
+  <!-- AI Replies — Three-Tone (Pro/Agency only) -->
   <div class="dash-section">
     <div class="dash-section-title">AI Review Replies</div>
     <div id="aiUnlocked" style="display:none">
       <div class="panel">
-        <h3>Paste a customer review to generate a reply</h3>
+        <h3>Paste a customer review to generate replies</h3>
         <textarea id="reviewText" placeholder="e.g. Great food but the wait was a bit long..."></textarea>
-        <button onclick="generateReply()" id="aiBtn" style="margin-top:4px;">Generate Reply</button>
-        <div style="height:14px;"></div>
-        <textarea id="aiReply" placeholder="Your AI-generated reply will appear here..." readonly></textarea>
+        <button onclick="generateReplies()" id="aiBtn" style="margin-top:8px;">Generate Replies</button>
+        <div style="height:20px;"></div>
+        <div id="aiReplies" style="display:grid; grid-template-columns: repeat(3,1fr); gap:14px;">
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;">
+            <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:8px;">Professional</div>
+            <textarea id="aiProfessional" placeholder="Formal and polished..." readonly style="min-height:100px;font-size:0.85rem;margin-bottom:0;"></textarea>
+            <button onclick="copyAiReply('aiProfessional')" style="margin-top:8px;width:100%;justify-content:center;font-size:0.78rem;padding:8px;">📋 Copy</button>
+          </div>
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;">
+            <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:8px;">Warm & Personal</div>
+            <textarea id="aiWarm" placeholder="Friendly and human..." readonly style="min-height:100px;font-size:0.85rem;margin-bottom:0;"></textarea>
+            <button onclick="copyAiReply('aiWarm')" style="margin-top:8px;width:100%;justify-content:center;font-size:0.78rem;padding:8px;">📋 Copy</button>
+          </div>
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:16px;">
+            <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:8px;">Short & Punchy</div>
+            <textarea id="aiPunchy" placeholder="Brief and confident..." readonly style="min-height:100px;font-size:0.85rem;margin-bottom:0;"></textarea>
+            <button onclick="copyAiReply('aiPunchy')" style="margin-top:8px;width:100%;justify-content:center;font-size:0.78rem;padding:8px;">📋 Copy</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="pro-lock-panel" id="aiLocked" style="display:none">
       <span class="lock-icon">🤖</span>
       <h4>AI Review Reply Generator</h4>
-      <p>Paste any customer review and get a polished, professional reply in seconds using GPT-4. Saves hours every week. Upgrade to Pro to unlock.</p>
+      <p>Paste any customer review and get three reply options — professional, warm, or punchy. Pick the one that matches your brand voice. Upgrade to Pro to unlock.</p>
       <a href="/billing">⭐ Upgrade to Pro</a>
     </div>
   </div>
@@ -860,15 +877,45 @@ async function sendEmail(){
   btn.disabled=false; btn.textContent="Send Email";
 }
 
-async function generateReply(){
+async function generateReplies(){
   const review = document.getElementById("reviewText").value.trim();
   if(!review){ showToast("Please paste a review first.", "error"); return; }
-  const btn = document.getElementById("aiBtn"); btn.disabled=true; btn.textContent="Generating...";
-  const res = await fetch("/generate-reply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({review})});
+  const btn = document.getElementById("aiBtn"); 
+  btn.disabled = true; 
+  btn.textContent = "Generating...";
+  
+  // Show loading state
+  document.getElementById("aiProfessional").value = "Generating...";
+  document.getElementById("aiWarm").value = "Generating...";
+  document.getElementById("aiPunchy").value = "Generating...";
+  
+  const res = await fetch("/generate-reply", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({review})
+  });
   const data = await res.json();
-  if(data.error){ showToast(data.error, "error"); }
-  else { document.getElementById("aiReply").value = data.reply; showToast("Reply generated! ✓", "success"); }
-  btn.disabled=false; btn.textContent="Generate Reply";
+  
+  if(data.error){ 
+    showToast(data.error, "error"); 
+    document.getElementById("aiProfessional").value = "";
+    document.getElementById("aiWarm").value = "";
+    document.getElementById("aiPunchy").value = "";
+  } else {
+    document.getElementById("aiProfessional").value = data.professional || "";
+    document.getElementById("aiWarm").value = data.warm || "";
+    document.getElementById("aiPunchy").value = data.punchy || "";
+    showToast("Replies generated! ✓", "success");
+  }
+  btn.disabled = false; 
+  btn.textContent = "Generate Replies";
+}
+
+function copyAiReply(id){
+  const textarea = document.getElementById(id);
+  textarea.select();
+  navigator.clipboard.writeText(textarea.value);
+  showToast("Copied! ✓", "success");
 }
 
 function logout(){ window.location="/logout"; }

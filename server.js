@@ -766,6 +766,7 @@ app.post("/contact", async (req, res) => {
 });
 
 // ─── AI REVIEW REPLY (Pro only) ───────────────────────────────────────────────
+// ─── AI REVIEW REPLY — Three-Tone (Pro/Agency only) ──────────────────────────
 app.post("/generate-reply", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
   const { review } = req.body;
@@ -773,16 +774,47 @@ app.post("/generate-reply", async (req, res) => {
   try {
     const { data: business, error } = await supabase.from("businesses").select("plan_type, trial_ends_at, subscription_active").eq("slug", slug).single();
     if (error || !business) return res.status(404).json({ error: "Business not found" });
-    if (!hasProAccess(business)) return res.status(403).json({ error: "Pro plan required" });
+    
+    const isProOrAgency = business.subscription_active && (business.plan_type === "pro" || business.plan_type === "agency");
+    if (!isProOrAgency) return res.status(403).json({ error: "Pro or Agency plan required" });
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You are a friendly professional business owner replying to customer reviews. Write a polite, warm, and helpful reply. Keep it concise — 2-4 sentences. Do not start with 'Thank you for your review'." },
-        { role: "user", content: `Write a reply to this customer review:\n\n${review}` },
+        { 
+          role: "system", 
+          content: `Generate three different replies to this customer review. Each reply should be from the business owner's perspective. Return JSON only, no markdown, in this format: { "professional": "...", "warm": "...", "punchy": "..." }
+
+professional: formal, polished, 2-3 sentences. Warm and respectful but professional tone.
+warm: friendly and personal, feels like a real human wrote it, 2-3 sentences. Use conversational British English.
+punchy: short, confident, 1-2 sentences max. Casual and direct.
+
+Do not start any reply with "Thank you for your review".` 
+        },
+        { role: "user", content: `Write replies to this customer review:\n\n${review}` },
       ],
+      temperature: 0.8,
+      max_tokens: 400
     });
-    res.json({ reply: completion.choices[0].message.content });
+    
+    let parsed;
+    try {
+      const cleaned = completion.choices[0].message.content.replace(/```json|```/g, '').trim();
+      parsed = JSON.parse(cleaned);
+    } catch(e) {
+      // Fallback: return raw text
+      return res.json({ 
+        professional: "Could not generate reply. Please try again.",
+        warm: "Could not generate reply. Please try again.",
+        punchy: "Could not generate reply. Please try again."
+      });
+    }
+    
+    res.json({ 
+      professional: parsed.professional || parsed.Professional || "",
+      warm: parsed.warm || parsed.Warm || "",
+      punchy: parsed.punchy || parsed.Punchy || ""
+    });
   } catch (err) {
     console.log("OpenAI error:", err.status, err.message);
     if (err.status === 429 || (err.message && err.message.includes("quota"))) {
