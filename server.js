@@ -337,7 +337,7 @@ app.post("/transcribe-voice/:slug", upload.single('audio'), async (req, res) => 
   try {
     const { data: business } = await supabase
       .from("businesses")
-      .select("plan_type, subscription_active, name")
+      .select("plan_type, subscription_active, name, industry")
       .eq("slug", slug)
       .single();
       
@@ -353,25 +353,79 @@ app.post("/transcribe-voice/:slug", upload.single('audio'), async (req, res) => 
     const transcription = await openai.audio.transcriptions.create({
       model: "whisper-1",
       file: new File([req.file.buffer], 'audio.webm', { type: req.file.mimetype }),
-      language: "en"
+      language: "en",
+      prompt: `This is a customer leaving feedback for ${business.name}, a ${business.industry || 'local'} business. They are speaking casually.`
     });
     
     const text = transcription.text.trim();
     
-    // Analyse sentiment
+    if (!text || text.length < 2) {
+      return res.json({ 
+        sentiment: "unclear", 
+        transcription: "(could not understand audio)",
+        message: "Please try again"
+      });
+    }
+    
+    // Detailed sentiment analysis with business context
     const sentiment = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "Is this customer feedback positive or negative? Reply with just one word: positive or negative." },
-        { role: "user", content: text }
+        { 
+          role: "system", 
+          content: `You are analysing customer feedback for ${business.name}, a ${business.industry || 'local'} business. 
+          
+Classify the sentiment as one of: "very_positive", "positive", "neutral", "negative", "very_negative".
+
+Rules:
+- "very_positive": enthusiastic praise, mentions specific good things, says they'll return/recommend (e.g. "absolutely loved it, best service ever, will definitely come back")
+- "positive": generally happy, satisfied, says things were good (e.g. "it was good, happy with the service, no complaints")
+- "neutral": mixed or matter-of-fact with no strong emotion either way (e.g. "it was fine, average, okay")
+- "negative": clearly unhappy, complaining, mentions specific problems (e.g. "not happy, disappointing, could be better")
+- "very_negative": angry, outraged, says they'll never return, warns others (e.g. "terrible, awful, never coming back, do not recommend")
+
+Key guidance:
+- If the customer says anything indicating satisfaction (good, great, happy, loved, recommend, return, defo, definitely), classify as at least "positive"
+- Only classify as negative if there is clear dissatisfaction or a complaint
+- "Neutral" is for truly mixed feedback with equal positive and negative elements
+- Casual positive language like "loved it", "defo coming back", "spot on", "sound", "class" = very_positive
+- Casual negative language like "not great", "bit rubbish", "wasn't impressed" = negative
+
+Reply with JSON only: { "sentiment": "positive", "confidence": "high", "reasoning": "brief explanation in 10 words or less" }`
+        },
+        { 
+          role: "user", 
+          content: `Customer said: "${text}"`
+        }
       ],
-      max_tokens: 5,
+      max_tokens: 150,
       temperature: 0
     });
     
-    const sentimentResult = sentiment.choices[0].message.content.toLowerCase().trim();
+    let result;
+    try {
+      const cleaned = sentiment.choices[0].message.content.replace(/```json|```/g, '').trim();
+      result = JSON.parse(cleaned);
+    } catch(e) {
+      // Fallback: simple keyword check
+      const lowerText = text.toLowerCase();
+      const positiveWords = ['great', 'good', 'love', 'excellent', 'happy', 'brilliant', 'fantastic', 'amazing', 'wonderful', 'best', 'perfect', 'recommend', 'defo', 'definitely', 'outstanding', 'spot on', 'class', 'sound', 'pleased', 'satisfied', 'impressed', 'coming back', 'return'];
+      const negativeWords = ['bad', 'terrible', 'awful', 'horrible', 'poor', 'disappointed', 'unhappy', 'rubbish', 'worst', 'hate', 'never again', 'avoid', 'complaint', 'not good', 'not happy', 'not great', 'wasn\'t', 'wouldn\'t', 'couldn\'t', 'didn\'t'];
+      
+      const posCount = positiveWords.filter(w => lowerText.includes(w)).length;
+      const negCount = negativeWords.filter(w => lowerText.includes(w)).length;
+      
+      const isPositive = posCount > negCount;
+      result = {
+        sentiment: isPositive ? "positive" : "negative",
+        confidence: "low",
+        reasoning: "Fallback keyword analysis"
+      };
+    }
     
-    if (sentimentResult === "negative") {
+    const isNegative = result.sentiment === "negative" || result.sentiment === "very_negative";
+    
+    if (isNegative) {
       // Store as private feedback
       await supabase.from("events").insert({
         business_slug: slug,
@@ -387,7 +441,7 @@ app.post("/transcribe-voice/:slug", upload.single('audio'), async (req, res) => 
       });
     }
     
-    // Positive — return transcription ready to post
+    // Positive, very_positive, or neutral — send to Google
     res.json({ 
       sentiment: "positive", 
       transcription: text,
