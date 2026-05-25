@@ -1165,7 +1165,7 @@ app.get("/report/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
   
   const { data: business } = await supabase.from("businesses")
-    .select("name, plan_type, subscription_active, agency_name, agency_logo_url")
+    .select("name, plan_type, subscription_active, agency_name, agency_logo_url, industry")
     .eq("slug", req.params.slug).single();
     
   if (!business || business.plan_type !== "agency") {
@@ -1173,47 +1173,108 @@ app.get("/report/:slug", async (req, res) => {
   }
   
   const now = new Date();
+  const monthLabel = now.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0).toISOString();
   
   const { data: events } = await supabase.from("events")
-    .select("event_type, rating, created_at")
-    .eq("business_slug", req.params.slug);
+    .select("event_type, rating, message, created_at")
+    .eq("business_slug", req.params.slug)
+    .order("created_at", { ascending: false });
     
-  const thisMonth = (events || []).filter(e => e.created_at >= monthStart);
-  const lastMonth = (events || []).filter(e => e.created_at >= lastMonthStart && e.created_at < monthStart);
+  const thisMonthEvents = (events || []).filter(e => e.created_at >= monthStart);
+  const lastMonthEvents = (events || []).filter(e => e.created_at >= lastMonthStart && e.created_at < monthStart);
   
-  const thisPos = thisMonth.filter(e => e.event_type === "positive").length;
-  const thisNeg = thisMonth.filter(e => e.event_type === "negative").length;
-  const lastPos = lastMonth.filter(e => e.event_type === "positive").length;
-  const lastNeg = lastMonth.filter(e => e.event_type === "negative").length;
+  const thisPos = thisMonthEvents.filter(e => e.event_type === "positive").length;
+  const thisNeg = thisMonthEvents.filter(e => e.event_type === "negative").length;
+  const thisClicks = thisMonthEvents.filter(e => e.event_type === "review_click").length;
+  const lastPos = lastMonthEvents.filter(e => e.event_type === "positive").length;
+  const lastNeg = lastMonthEvents.filter(e => e.event_type === "negative").length;
+  const lastClicks = lastMonthEvents.filter(e => e.event_type === "review_click").length;
   
-  const doc = new PDFDocument({ margin: 50 });
+  const totalVisits = (events || []).filter(e => e.event_type === "visit").length;
+  
+  // Rating average for this month
+  const ratings = thisMonthEvents.filter(e => e.rating).map(e => e.rating);
+  const avgRating = ratings.length ? (ratings.reduce((a,b) => a+b, 0) / ratings.length).toFixed(1) : "N/A";
+  
+  // Recent feedback
+  const recentFeedback = thisMonthEvents.filter(e => e.event_type === "negative" && e.message).slice(0, 3);
+  
+  const doc = new PDFDocument({ margin: 60, size: 'A4' });
   res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", `attachment; filename=reviewlift-report-${now.toISOString().slice(0,7)}.pdf`);
+  res.setHeader("Content-Disposition", `attachment; filename=${business.name.replace(/\s/g, '-')}-report-${now.toISOString().slice(0,7)}.pdf`);
   doc.pipe(res);
   
-  // Header
-  if (business.agency_logo_url) {
-    // Could add logo here
+  // ── HEADER BAR ──
+  doc.rect(0, 0, doc.page.width, 100).fill("#1A1A18");
+  doc.fill("#C8A96E").fontSize(24).font('Helvetica-Bold').text(business.agency_name || business.name, 60, 30, { align: "left" });
+  doc.fill("#EAE7DC").fontSize(11).font('Helvetica').text("Monthly Review Report", 60, 58, { align: "left" });
+  doc.fill("rgba(234,231,220,0.5)").fontSize(9).text(monthLabel, 60, 74, { align: "left" });
+  
+  // ── KEY METRICS ──
+  doc.fill("#1A1A18");
+  doc.rect(40, 130, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
+  doc.rect(195, 130, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
+  doc.rect(350, 130, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
+  doc.rect(40, 215, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
+  doc.rect(195, 215, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
+  doc.rect(350, 215, 140, 70).fill("#242422").stroke("rgba(200,169,110,0.2)");
+  
+  // Card 1 — Reviews this month
+  doc.fill("#C8A96E").fontSize(28).font('Helvetica-Bold').text(String(thisPos), 55, 140);
+  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Reviews collected", 55, 175);
+  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("this month", 55, 187);
+  
+  // Card 2 — Feedback captured
+  doc.fill("#D4897C").fontSize(28).font('Helvetica-Bold').text(String(thisNeg), 210, 140);
+  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Feedback captured", 210, 175);
+  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("kept private", 210, 187);
+  
+  // Card 3 — Avg rating
+  doc.fill("#EAE7DC").fontSize(28).font('Helvetica-Bold').text(avgRating, 365, 140);
+  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Avg. rating", 365, 175);
+  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("this month", 365, 187);
+  
+  // Card 4 — Review clicks
+  doc.fill("#6A9E7F").fontSize(28).font('Helvetica-Bold').text(String(thisClicks), 55, 225);
+  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Review clicks", 55, 260);
+  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("sent to Google etc.", 55, 272);
+  
+  // Card 5 — Total funnel visits
+  doc.fill("#EAE7DC").fontSize(28).font('Helvetica-Bold').text(String(totalVisits), 210, 225);
+  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("Total visits", 210, 260);
+  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text("all time", 210, 272);
+  
+  // Card 6 — vs last month
+  const change = thisPos - lastPos;
+  const changeStr = change >= 0 ? `+${change}` : String(change);
+  doc.fill(change >= 0 ? "#6A9E7F" : "#D4897C").fontSize(28).font('Helvetica-Bold').text(changeStr, 365, 225);
+  doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text("vs last month", 365, 260);
+  doc.fill("rgba(234,231,220,0.4)").fontSize(7).text(`was ${lastPos} reviews`, 365, 272);
+  
+  // ── RECENT FEEDBACK SECTION ──
+  const feedbackY = 320;
+  doc.fill("#C8A96E").fontSize(11).font('Helvetica-Bold').text("RECENT PRIVATE FEEDBACK", 60, feedbackY);
+  doc.moveTo(60, feedbackY + 18).lineTo(535, feedbackY + 18).stroke("rgba(200,169,110,0.2)");
+  
+  if (recentFeedback.length > 0) {
+    let yPos = feedbackY + 30;
+    recentFeedback.forEach((f, i) => {
+      doc.fill("#EAE7DC").fontSize(9).font('Helvetica').text(`"${f.message.substring(0, 120)}${f.message.length > 120 ? '...' : ''}"`, 60, yPos, { width: 475 });
+      yPos += 35;
+    });
+  } else {
+    doc.fill("rgba(234,231,220,0.3)").fontSize(9).font('Helvetica').text("No private feedback captured this month.", 60, feedbackY + 30);
   }
-  doc.fontSize(22).text(business.agency_name || business.name, { align: "center" });
-  doc.fontSize(12).text(`Monthly Review Report — ${now.toLocaleString('en-GB', { month: 'long', year: 'numeric' })}`, { align: "center" });
-  doc.moveDown(2);
   
-  // Metrics
-  doc.fontSize(14).text("Overview", { underline: true });
-  doc.moveDown(0.5);
-  doc.fontSize(11).text(`Reviews collected this month: ${thisPos}`);
-  doc.text(`Feedback captured this month: ${thisNeg}`);
-  doc.text(`Last month reviews: ${lastPos} (${thisPos > lastPos ? '+' : ''}${thisPos - lastPos} vs last month)`);
-  doc.text(`Last month feedback: ${lastNeg} (${lastNeg > thisNeg ? '↓' : '↑'} ${Math.abs(thisNeg - lastNeg)} vs last month)`);
-  doc.moveDown(2);
+  // ── FOOTER ──
+  doc.fill("rgba(234,231,220,0.2)").fontSize(7).font('Helvetica')
+    .text(`Generated by ReviewLift on ${now.toLocaleDateString('en-GB')}`, 60, doc.page.height - 40, { align: "center" });
   
-  doc.fontSize(10).fillColor("grey").text("Powered by ReviewLift", { align: "center" });
   doc.end();
 });
-
 // ─── PARTNER INFO (for co-branded landing page) ───────────────────────────────
 app.get("/partner-info/:code", async (req, res) => {
   const code = req.params.code;
