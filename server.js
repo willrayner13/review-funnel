@@ -2541,7 +2541,8 @@ app.get("/wall-preview/:slug", async (req, res) => {
 });
 
 
-app.get("/milestone-image/:slug/:number", async (req, res) => {
+// ─── MILESTONE PREVIEW IMAGE (HTML-based, works everywhere) ───────────────────
+app.get("/milestone-preview/:slug/:number", async (req, res) => {
   const { slug, number } = req.params;
   const milestoneNum = parseInt(number);
   
@@ -2553,64 +2554,85 @@ app.get("/milestone-image/:slug/:number", async (req, res) => {
     
   const businessName = business?.name || "Our Business";
   
-  // Create canvas 1200x630 (standard social share size)
-  const width = 1200;
-  const height = 630;
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext('2d');
-  
-  // Background
-  ctx.fillStyle = '#1A1A18';
-  ctx.fillRect(0, 0, width, height);
-  
-  // Gold accent line at top
-  ctx.fillStyle = '#C8A96E';
-  ctx.fillRect(0, 0, width, 4);
-  
-  // Milestone number
-  ctx.font = `bold ${width * 0.12}px "Syne", "Helvetica Neue", "Arial", sans-serif`;
-  ctx.fillStyle = '#C8A96E';
-  ctx.textAlign = 'center';
-  ctx.fillText(milestoneNum.toString(), width / 2, height * 0.35);
-  
-  // Label
-  ctx.font = `400 ${width * 0.018}px "DM Sans", "Arial", sans-serif`;
-  ctx.fillStyle = 'rgba(234,231,220,0.45)';
-  ctx.fillText('⭐ GOOGLE REVIEWS ⭐', width / 2, height * 0.48);
-  
-  // Business name
-  ctx.font = `600 ${width * 0.032}px "Syne", "Helvetica Neue", "Arial", sans-serif`;
-  ctx.fillStyle = '#EAE7DC';
-  
-  // Truncate long names
-  let displayName = businessName;
-  if (displayName.length > 35) {
-    displayName = displayName.substring(0, 32) + '...';
-  }
-  ctx.fillText(displayName, width / 2, height * 0.58);
-  
-  // Stars
-  ctx.font = `${width * 0.028}px "Arial", sans-serif`;
-  ctx.fillStyle = '#C8A96E';
-  ctx.fillText('★★★★★', width / 2, height * 0.68);
-  
-  // Powered by
-  ctx.font = `${width * 0.014}px "DM Sans", "Arial", sans-serif`;
-  ctx.fillStyle = 'rgba(234,231,220,0.25)';
-  ctx.fillText('Powered by ReviewLift', width / 2, height * 0.88);
-  
-  // Set response headers
-  res.setHeader('Content-Type', 'image/png');
-  res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
-  
-  canvas.createPNGStream().pipe(res);
+  // Return an HTML page that looks like an image (works as og:image)
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          margin: 0;
+          background: #1A1A18;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 1200px;
+          height: 630px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .container {
+          text-align: center;
+          padding: 40px;
+          width: 100%;
+        }
+        .milestone {
+          font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 120px;
+          font-weight: 800;
+          color: #C8A96E;
+          line-height: 1;
+          margin-bottom: 16px;
+        }
+        .label {
+          font-size: 14px;
+          letter-spacing: 4px;
+          color: rgba(234,231,220,0.45);
+          margin-bottom: 24px;
+        }
+        .business {
+          font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 36px;
+          font-weight: 700;
+          color: #EAE7DC;
+          margin-bottom: 24px;
+        }
+        .stars {
+          font-size: 28px;
+          letter-spacing: 8px;
+          color: #C8A96E;
+          margin: 24px 0;
+        }
+        .powered {
+          font-size: 12px;
+          color: rgba(234,231,220,0.25);
+          margin-top: 40px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="milestone">${milestoneNum}</div>
+        <div class="label">⭐ GOOGLE REVIEWS ⭐</div>
+        <div class="business">${escapeHtml(businessName)}</div>
+        <div class="stars">★★★★★</div>
+        <div class="powered">Powered by ReviewLift</div>
+      </div>
+    </body>
+    </html>
+  `);
 });
 
-// Update the milestone preview route to use the PNG
-app.get("/milestone-preview/:slug/:number", async (req, res) => {
-  // Redirect to the PNG version for better social sharing
-  res.redirect(`/milestone-image/${req.params.slug}/${req.params.number}`);
+// Keep the original /milestone-image route as a fallback (just redirect)
+app.get("/milestone-image/:slug/:number", async (req, res) => {
+  res.redirect(`/milestone-preview/${req.params.slug}/${req.params.number}`);
 });
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 // ─── REPUTATION SCORE ───────────────────────────────────────────────────────
 app.get("/reputation/:slug", async (req, res) => {
