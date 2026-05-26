@@ -14,7 +14,7 @@ const twilio = require("twilio");
 const OpenAI = require("openai");
 const Stripe = require("stripe");
 const rateLimit = require("express-rate-limit");
-const { createCanvas } = require('canvas');
+
 
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
