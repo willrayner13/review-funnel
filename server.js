@@ -2035,35 +2035,6 @@ app.get("/milestone/:slug/:number", async (req, res) => {
   `);
 });
 
-// ─── MILESTONE PREVIEW IMAGE (for social sharing) ───────────────────
-app.get("/milestone-preview/:slug/:number", async (req, res) => {
-  const { slug, number } = req.params;
-  
-  const { data: business } = await supabase
-    .from("businesses")
-    .select("name")
-    .eq("slug", slug)
-    .single();
-    
-  const businessName = business?.name || "Our business";
-  
-  // Simple HTML page that looks like an image (works as og:image)
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head><meta charset="UTF-8"></head>
-    <body style="margin:0;background:#1A1A18;display:flex;align-items:center;justify-content:center;width:1200px;height:630px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-      <div style="text-align:center;padding:40px;">
-        <div style="font-size:5rem;font-weight:800;color:#C8A96E;">${number}</div>
-        <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(234,231,220,0.45);margin:10px 0;">GOOGLE REVIEWS</div>
-        <div style="font-size:2rem;font-weight:700;color:#EAE7DC;margin:20px 0;">${businessName}</div>
-        <div style="font-size:1.5rem;letter-spacing:5px;color:#C8A96E;margin:20px 0;">★★★★★</div>
-        <div style="font-size:0.8rem;color:rgba(234,231,220,0.35);margin-top:30px;">Powered by ReviewLift</div>
-      </div>
-    </body>
-    </html>
-  `);
-});
 
 // ─── NFC CARD ORDER ──────────────────────────────────────────────────────
 
