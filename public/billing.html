@@ -80,6 +80,10 @@
       .page-body { padding: 32px 16px 60px; }
       .plans-row { grid-template-columns: 1fr; }
       .action-row { flex-direction: column; }
+      .billing-card div[style*="display:grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
     }
   </style>
 </head>
@@ -116,15 +120,30 @@
   </div>
 
   <div class="billing-card">
-    <span class="billing-card-label">What's included in Pro</span>
-    <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:8px;">
-      <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Everything in Starter</li>
-      <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>AI review reply generator (GPT-4)</li>
-      <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>SMS review requests to customers</li>
-      <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Email review campaigns</li>
-      <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Advanced analytics & feedback summaries</li>
-    </ul>
+  <span class="billing-card-label">Plan features</span>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div>
+      <h4 style="margin-bottom:12px;">Pro features (£24.99/mo)</h4>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Everything in Starter</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>AI review reply generator</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>SMS review requests</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Email review campaigns</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Send Intelligence AI</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="margin-bottom:12px;">Agency features (£79/mo)</h4>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Everything in Pro</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>White-label branding</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Up to 10 client accounts</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Monthly PDF reports</li>
+        <li style="font-size:0.875rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;"><span style="color:var(--accent);font-weight:700;">✓</span>Competitor analysis</li>
+      </ul>
+    </div>
   </div>
+</div>
 </div>
 
 <div class="modal-overlay" id="cancelModal" onclick="handleModalOverlay(event,'cancelModal')">
@@ -210,26 +229,44 @@ async function init(){
   // KEY: render different buttons based on whether a cancellation is already pending
   renderActionRow(isActive, isCancelPending);
 
-  document.getElementById("plansRow").innerHTML = `
-    <div class="plan-option ${currentPlan==='starter'?'current-plan':''}">
-      <div class="plan-option-name">Starter</div>
-      <div class="plan-option-price"><sup>£</sup>9.99<span>/mo</span></div>
-      <ul class="plan-option-features">
-        <li>Smart review funnel</li><li>Analytics dashboard</li>
-        <li>QR code generator</li><li>Private feedback capture</li>
-      </ul>
-      ${currentPlan==='starter'?'<button disabled>Current plan</button>':'<button onclick="changePlan(\'starter\')">Switch to Starter</button>'}
-    </div>
-    <div class="plan-option ${currentPlan==='pro'?'current-plan':''}">
-      <div class="plan-option-name">Pro</div>
-      <div class="plan-option-price"><sup>£</sup>24.99<span>/mo</span></div>
-      <ul class="plan-option-features">
-        <li>Everything in Starter</li><li>AI reply generator</li>
-        <li>SMS & email requests</li><li>Advanced analytics</li>
-      </ul>
-      ${currentPlan==='pro'?'<button disabled>Current plan</button>':'<button onclick="changePlan(\'pro\')" style="background:var(--accent);color:#1A1A18;border-color:var(--accent);">⭐ Upgrade to Pro</button>'}
-    </div>
-  `;
+ document.getElementById("plansRow").innerHTML = `
+  <div class="plan-option ${currentPlan==='starter'?'current-plan':''}">
+    <div class="plan-option-name">Starter</div>
+    <div class="plan-option-price"><sup>£</sup>9.99<span>/mo</span></div>
+    <ul class="plan-option-features">
+      <li>Smart review funnel</li>
+      <li>Analytics dashboard</li>
+      <li>QR code generator</li>
+      <li>Private feedback capture</li>
+    </ul>
+    ${currentPlan==='starter'?'<button disabled>Current plan</button>':'<button onclick="changePlan(\'starter\')">Switch to Starter</button>'}
+  </div>
+  <div class="plan-option ${currentPlan==='pro'?'current-plan':''}">
+    <div class="plan-option-name">Pro</div>
+    <div class="plan-option-price"><sup>£</sup>24.99<span>/mo</span></div>
+    <ul class="plan-option-features">
+      <li>Everything in Starter</li>
+      <li>AI reply generator</li>
+      <li>SMS & email requests</li>
+      <li>Advanced analytics</li>
+      <li>Send Intelligence</li>
+    </ul>
+    ${currentPlan==='pro'?'<button disabled>Current plan</button>':'<button onclick="changePlan(\'pro\')" style="background:var(--accent);color:#1A1A18;border-color:var(--accent);">⭐ Upgrade to Pro</button>'}
+  </div>
+  <div class="plan-option ${currentPlan==='agency'?'current-plan':''}">
+    <div class="plan-option-name">Agency</div>
+    <div class="plan-option-price"><sup>£</sup>79<span>/mo</span></div>
+    <ul class="plan-option-features">
+      <li>Everything in Pro</li>
+      <li>White-label branding</li>
+      <li>Up to 10 clients</li>
+      <li>Monthly PDF reports</li>
+      <li>Competitor analysis</li>
+      <li>30% commission</li>
+    </ul>
+    ${currentPlan==='agency'?'<button disabled>Current plan</button>':'<button onclick="changePlan(\'agency\')" style="background:var(--accent);color:#1A1A18;border-color:var(--accent);">🚀 Upgrade to Agency</button>'}
+  </div>
+`;
 }
 init();
 

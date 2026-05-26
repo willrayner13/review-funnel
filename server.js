@@ -483,6 +483,7 @@ app.get("/stats/:slug", async (req, res) => {
     account_lapsed: !businessData.subscription_active,
     industry: businessData.industry,
 current_software: businessData.current_software,
+plan_type: businessData.plan_type,
   };
 
   let ratingTotal = 0;

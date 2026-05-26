@@ -385,6 +385,12 @@
       line-height: 1.5;
     }
 
+    @media (min-width: 901px) {
+  .pricing-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
     /* ── MOBILE: smaller images, single column ── */
     @media (max-width: 768px) {
       .screenshots-section {
@@ -618,6 +624,10 @@
       footer{flex-direction:column;align-items:flex-start;padding:32px 24px;}
       .stats-section{padding:80px 24px;}
       .calc-card{padding:32px 24px;}
+
+       .pricing-grid {
+    grid-template-columns: 1fr !important;
+  }
     }
     @media(max-width:500px){
       .features-grid{grid-template-columns:1fr;}
@@ -923,33 +933,67 @@
   <p style="text-align:center;font-size:0.68rem;color:rgba(234,231,220,0.18);margin-top:20px;padding:0 24px;">Based on early customers and beta testers. Results vary by business type, location, and usage.</p>
 </section>
 
-<!-- PRICING -->
 <section id="pricing">
   <div class="section-wrap">
     <div class="section-tag reveal" style="justify-content:center;">Pricing</div>
     <h2 class="section-heading reveal" style="text-align:center;max-width:100%;margin-bottom:12px;">Honest, simple pricing</h2>
     <p class="section-sub reveal" style="text-align:center;max-width:100%;margin-bottom:48px;">No contracts. No hidden fees. Cancel any time.</p>
-    <div class="pricing-grid reveal">
+    <div class="pricing-grid" style="grid-template-columns:repeat(3,1fr);">
+      
+      <!-- Starter -->
       <div class="price-card">
         <div class="price-name">Starter</div>
         <div class="price-amount"><sup>£</sup>9.99<span>/mo</span></div>
         <p class="price-desc">Everything you need to start collecting more reviews and capturing feedback privately.</p>
-        <ul class="price-features"><li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li></ul>
+        <ul class="price-features">
+          <li>Smart review funnel page</li>
+          <li>Analytics dashboard</li>
+          <li>QR code generator</li>
+          <li>Private feedback capture</li>
+          <li>Review link embedding</li>
+        </ul>
         <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
       </div>
+      
+      <!-- Pro -->
       <div class="price-card highlighted">
         <div class="price-badge">POPULAR</div>
         <div class="price-name">Pro</div>
         <div class="price-amount"><sup>£</sup>24.99<span>/mo</span></div>
         <p class="price-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</p>
-        <ul class="price-features"><li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li></ul>
+        <ul class="price-features">
+          <li>Everything in Starter</li>
+          <li>AI review reply generator</li>
+          <li>SMS review requests</li>
+          <li>Email review campaigns</li>
+          <li>Advanced analytics</li>
+          <li>Feedback AI summaries</li>
+          <li>Send Intelligence (AI channel prediction)</li>
+        </ul>
         <a href="/admin"><button class="price-cta gold">Start free trial</button></a>
       </div>
+      
+      <!-- Agency -->
+      <div class="price-card">
+        <div class="price-name">Agency</div>
+        <div class="price-amount"><sup>£</sup>79<span>/mo</span></div>
+        <p class="price-desc">White-label ReviewLift for agencies managing multiple clients.</p>
+        <ul class="price-features">
+          <li>Everything in Pro</li>
+          <li>Up to 10 client accounts</li>
+          <li>White-label branding</li>
+          <li>Monthly PDF reports</li>
+          <li>Competitor analysis</li>
+          <li>30% affiliate commission</li>
+          <li>Client management dashboard</li>
+        </ul>
+        <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
+      </div>
+      
     </div>
-    <p class="pricing-note reveal">Enter your card today · £0 charged for 14 days · Cancel before day 14 to pay nothing</p>
+    <p class="pricing-note reveal" style="text-align:center;margin-top:20px;">Enter your card today · £0 charged for 14 days · Cancel before day 14 to pay nothing</p>
   </div>
 </section>
-
 <!-- FINAL CTA — redesigned -->
 <section class="cta-section reveal">
   <div class="cta-inner">
