@@ -1887,10 +1887,10 @@ app.get("/milestone/:slug/:number", async (req, res) => {
     return res.status(404).send("Milestone not found");
   }
   
-  // Get business data
+  // Get business data (including agency info)
   const { data: business } = await supabase
     .from("businesses")
-    .select("name, review_link, agency_name")
+    .select("name, review_link, agency_name, agency_logo_url")
     .eq("slug", slug)
     .single();
     
@@ -1898,14 +1898,18 @@ app.get("/milestone/:slug/:number", async (req, res) => {
     return res.status(404).send("Business not found");
   }
   
+  // Check if this is an agency account with white-label enabled
+  const isWhiteLabel = business.agency_name && business.agency_name.trim().length > 0;
+  const displayName = isWhiteLabel ? business.agency_name : business.name;
+  const footerBrand = isWhiteLabel ? business.agency_name : "ReviewLift";
+  const footerLink = isWhiteLabel ? `${process.env.BASE_URL}?ref=${slug}` : process.env.BASE_URL;
+  const reviewLink = business.review_link || `${process.env.BASE_URL}/r/${slug}`;
+  
   // Increment view count (optional)
   await supabase
     .from("businesses")
     .update({ milestone_page_views: supabase.sql`milestone_page_views + 1` })
     .eq("slug", slug);
-  
-  const displayName = business.agency_name || business.name;
-  const reviewLink = business.review_link || `${process.env.BASE_URL}/r/${slug}`;
   
   res.send(`
     <!DOCTYPE html>
@@ -1915,7 +1919,7 @@ app.get("/milestone/:slug/:number", async (req, res) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${displayName} — ${milestoneNum} ⭐ Reviews</title>
       <meta property="og:title" content="${displayName} — ${milestoneNum} Google Reviews">
-      <meta property="og:description" content="${displayName} has collected ${milestoneNum} 5-star reviews from happy customers. Powered by ReviewLift.">
+      <meta property="og:description" content="${displayName} has collected ${milestoneNum} 5-star reviews from happy customers.${isWhiteLabel ? '' : ' Powered by ReviewLift.'}">
       <meta property="og:image" content="${process.env.BASE_URL}/milestone-preview/${slug}/${milestoneNum}">
       <meta property="og:url" content="${process.env.BASE_URL}/milestone/${slug}/${milestoneNum}">
       <meta property="og:type" content="website">
@@ -2014,7 +2018,7 @@ app.get("/milestone/:slug/:number", async (req, res) => {
         <div class="card">
           <div class="milestone-number">${milestoneNum}</div>
           <div class="milestone-label">⭐ GOOGLE REVIEWS ⭐</div>
-          <div class="business-name">${displayName}</div>
+          <div class="business-name">${escapeHtml(displayName)}</div>
           <div class="stars">★★★★★</div>
           <div class="message">
             ${milestoneNum === 10 ? "Our first big milestone! Thanks to everyone who took a moment to share their experience." :
@@ -2027,14 +2031,13 @@ app.get("/milestone/:slug/:number", async (req, res) => {
           <a href="${reviewLink}" class="btn">Leave a review →</a>
         </div>
         <div class="footer">
-          Powered by <a href="${process.env.BASE_URL}?ref=milestone">ReviewLift</a>
+          Powered by <a href="${footerLink}">${escapeHtml(footerBrand)}</a>
         </div>
       </div>
     </body>
     </html>
   `);
 });
-
 
 // ─── NFC CARD ORDER ──────────────────────────────────────────────────────
 
@@ -2240,16 +2243,22 @@ app.post("/admin/mark-card-shipped", async (req, res) => {
 app.get("/wall/:slug", async (req, res) => {
   const { slug } = req.params;
   
-  // Get business data
+  // Get business data (including agency info)
   const { data: business } = await supabase
     .from("businesses")
-    .select("name, agency_name")
+    .select("name, agency_name, agency_logo_url")
     .eq("slug", slug)
     .single();
     
   if (!business) {
     return res.status(404).send("Business not found");
   }
+  
+  // Check if this is an agency account with white-label enabled
+  const isWhiteLabel = business.agency_name && business.agency_name.trim().length > 0;
+  const displayName = isWhiteLabel ? business.agency_name : business.name;
+  const footerBrand = isWhiteLabel ? business.agency_name : "ReviewLift";
+  const footerLink = isWhiteLabel ? `${process.env.BASE_URL}?ref=${slug}` : process.env.BASE_URL;
   
   // Get positive events with messages
   const { data: events } = await supabase
@@ -2291,7 +2300,6 @@ app.get("/wall/:slug", async (req, res) => {
     avgRating = (sum / ratings.length).toFixed(1);
   }
   
-  const displayName = business.agency_name || business.name;
   const hasReviews = reviews.length >= 3;
   
   res.send(`
@@ -2416,7 +2424,7 @@ app.get("/wall/:slug", async (req, res) => {
     <body>
       <div class="container">
         <div class="header">
-          <div class="business-name">${displayName}</div>
+          <div class="business-name">${escapeHtml(displayName)}</div>
           <div class="rating-summary">
             <span class="stars">★★★★★</span> ★ ${avgRating} · ${totalPositive} happy customers
           </div>
@@ -2439,12 +2447,11 @@ app.get("/wall/:slug", async (req, res) => {
         </div>
         
         <div class="footer">
-          Powered by <a href="${process.env.BASE_URL}?ref=wall">ReviewLift</a> — Collect more reviews for your business
+          Powered by <a href="${footerLink}">${escapeHtml(footerBrand)}</a> — Collect more reviews for your business
         </div>
       </div>
       
       <script>
-        // Intersection Observer for fade-in animation
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -2458,7 +2465,6 @@ app.get("/wall/:slug", async (req, res) => {
     </html>
   `);
 });
-
 // Helper function for relative dates
 function getRelativeDate(dateString) {
   const date = new Date(dateString);
