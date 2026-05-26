@@ -304,6 +304,116 @@ app.post("/positive", async (req, res) => {
   const { slug } = req.body;
   const { error } = await supabase.from("events").insert({ business_slug: slug, event_type: "positive" });
   if (error) return res.status(500).json(error);
+  
+  // ─── MILESTONE CHECK ──────────────────────────────────────────────
+  try {
+    // Count total positive events
+    const { count, error: countError } = await supabase
+      .from("events")
+      .select("*", { count: "exact", head: true })
+      .eq("business_slug", slug)
+      .eq("event_type", "positive");
+    
+    if (!countError && count) {
+      const milestones = [10, 25, 50, 100, 250, 500];
+      const matchedMilestone = milestones.find(m => m === count);
+      
+      if (matchedMilestone) {
+        // Get business data
+        const { data: business } = await supabase
+          .from("businesses")
+          .select("name, email, last_milestone_sent, review_link, plan_type")
+          .eq("slug", slug)
+          .single();
+        
+        if (business && matchedMilestone > (business.last_milestone_sent || 0)) {
+          // Generate AI congratulation message
+          const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              { 
+                role: "system", 
+                content: "You write short, celebratory messages for small business owners who have just hit a Google review milestone. Enthusiastic but genuine. 2 sentences max. Never use exclamation marks excessively." 
+              },
+              { 
+                role: "user", 
+                content: `${business.name} just collected their ${matchedMilestone}th Google review using ReviewLift. Write a congratulations message for the business owner.` 
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 80
+          });
+          
+          const congratsMessage = completion.choices[0].message.content.trim();
+          
+          // Generate milestone page URL
+          const milestoneUrl = `${process.env.BASE_URL}/milestone/${slug}/${matchedMilestone}`;
+          
+          // Send celebration email via Resend
+          await resend.emails.send({
+            from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+            to: business.email,
+            subject: `🎉 You just hit ${matchedMilestone} reviews, ${business.name}!`,
+            html: `
+              <!DOCTYPE html>
+              <html>
+              <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+              <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,Helvetica,sans-serif;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+                  <tr><td align="center">
+                    <table width="540" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+                      <tr><td style="background:#1E1E1C;padding:22px 32px;">
+                        <p style="margin:0;font-family:Arial,sans-serif;font-size:17px;font-weight:bold;color:#C8A96E;">⭐ ReviewLift</p>
+                      </td></tr>
+                      <tr><td style="padding:32px 32px 24px;text-align:center;">
+                        <div style="font-family:'Syne',Arial,sans-serif;font-size:4rem;font-weight:800;color:#C8A96E;line-height:1;">${matchedMilestone}</div>
+                        <div style="font-size:0.9rem;color:rgba(234,231,220,0.45);letter-spacing:2px;margin-bottom:20px;">GOOGLE REVIEWS AND COUNTING</div>
+                        
+                        <div style="background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.15);border-radius:12px;padding:20px;margin:20px 0;">
+                          <p style="margin:0;font-size:1rem;color:#EAE7DC;line-height:1.6;">"${congratsMessage}"</p>
+                        </div>
+                        
+                        <!-- Shareable graphic card -->
+                        <div style="background:#1A1A18;border:1px solid rgba(200,169,110,0.3);border-radius:16px;padding:32px;margin:24px 0;text-align:center;">
+                          <div style="font-family:'Syne',Arial,sans-serif;font-size:0.8rem;font-weight:700;color:#C8A96E;letter-spacing:2px;margin-bottom:12px;">${business.name.toUpperCase()}</div>
+                          <div style="font-family:'Syne',Arial,sans-serif;font-size:3.5rem;font-weight:800;color:#EAE7DC;line-height:1.1;">${matchedMilestone} ⭐ Reviews</div>
+                          <div style="font-size:0.8rem;color:rgba(234,231,220,0.35);margin-top:12px;">And growing — powered by ReviewLift</div>
+                        </div>
+                        
+                        <p style="font-size:0.85rem;color:rgba(234,231,220,0.55);line-height:1.6;margin:20px 0;">Share this on Instagram, Facebook, or your website to show customers how trusted you are.</p>
+                        
+                        <div style="margin:24px 0;">
+                          <div style="background:var(--surface-3);border-radius:8px;padding:12px;margin-bottom:12px;">
+                            <code style="font-size:0.7rem;color:#C8A96E;word-break:break-all;">${milestoneUrl}</code>
+                          </div>
+                          <a href="${milestoneUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:0.9rem;padding:12px 28px;border-radius:8px;">Share your milestone →</a>
+                        </div>
+                        
+                        <a href="${process.env.BASE_URL}/for-business" style="display:inline-block;background:transparent;color:#C8A96E;text-decoration:none;font-size:0.85rem;border:1px solid rgba(200,169,110,0.3);padding:10px 24px;border-radius:8px;">View your dashboard</a>
+                      </td></tr>
+                      <tr><td style="padding:16px 32px 24px;border-top:1px solid rgba(234,231,220,0.06);text-align:center;">
+                        <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.2);">Powered by ReviewLift · Keep collecting those 5-star reviews</p>
+                      </td></tr>
+                    </table>
+                  </td></tr>
+                </table>
+              </body>
+              </html>
+            `
+          });
+          
+          // Update last_milestone_sent
+          await supabase
+            .from("businesses")
+            .update({ last_milestone_sent: matchedMilestone })
+            .eq("slug", slug);
+        }
+      }
+    }
+  } catch (milestoneErr) {
+    console.error("Milestone error (non-fatal):", milestoneErr.message);
+  }
+  
   res.json({ success: true });
 });
 
@@ -472,19 +582,20 @@ app.get("/stats/:slug", async (req, res) => {
     .select("event_type, rating, message")
     .eq("business_slug", req.params.slug);
 
-  const stats = {
-    visits: 0, positive: 0, negative: 0, reviews: 0,
-    rating_avg: 0, rating_count: 0, rating_distribution: {}, feedback: [],
-    subscription_active: businessData.subscription_active,
-    plan_type: businessData.plan_type,
-    trial_ends_at: businessData.trial_ends_at,
-    business_name: businessData.name,
-    review_link: businessData.review_link,
-    account_lapsed: !businessData.subscription_active,
-    industry: businessData.industry,
-current_software: businessData.current_software,
-plan_type: businessData.plan_type,
-  };
+const stats = {
+  visits: 0, positive: 0, negative: 0, reviews: 0,
+  rating_avg: 0, rating_count: 0, rating_distribution: {}, feedback: [],
+  subscription_active: businessData.subscription_active,
+  plan_type: businessData.plan_type,
+  trial_ends_at: businessData.trial_ends_at,
+  business_name: businessData.name,
+  review_link: businessData.review_link,
+  account_lapsed: !businessData.subscription_active,
+  industry: businessData.industry,
+  current_software: businessData.current_software,
+  nfc_card_ordered: businessData.nfc_card_ordered || false,
+  nfc_card_tracking_number: businessData.nfc_card_tracking_number || null
+};
 
   let ratingTotal = 0;
   const ratingDist = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
@@ -507,6 +618,34 @@ plan_type: businessData.plan_type,
   stats.conversion_rate = stats.visits ? ((stats.positive / stats.visits) * 100).toFixed(1) : 0;
   stats.negative_rate = stats.visits ? ((stats.negative / stats.visits) * 100).toFixed(1) : 0;
   res.json(stats);
+});
+
+// Add to server.js
+app.get("/admin-nfc", (req, res) => {
+  // Simple password protection
+  const { key } = req.query;
+  if (key !== process.env.ADMIN_SECRET) {
+    return res.status(401).send("Unauthorized");
+  }
+  
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head><title>NFC Order Admin</title></head>
+    <body style="background:#1A1A18;color:#EAE7DC;font-family:sans-serif;padding:40px;">
+      <h1>📦 NFC Card Orders</h1>
+      <div id="orders"></div>
+      <script>
+        async function loadOrders() {
+          const res = await fetch('/admin/nfc-orders?key=${req.query.key}');
+          const orders = await res.json();
+          // Display orders with "Mark Shipped" buttons
+        }
+        loadOrders();
+      </script>
+    </body>
+    </html>
+  `);
 });
 
 // ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
@@ -1578,6 +1717,669 @@ app.post("/analyse-competitor", async (req, res) => {
   }
 });
 
+// ─── PUBLIC MILESTONE PAGE ─────────────────────────────────────────
+app.get("/milestone/:slug/:number", async (req, res) => {
+  const { slug, number } = req.params;
+  const milestoneNum = parseInt(number);
+  
+  // Validate milestone number
+  const validMilestones = [10, 25, 50, 100, 250, 500];
+  if (!validMilestones.includes(milestoneNum)) {
+    return res.status(404).send("Milestone not found");
+  }
+  
+  // Get business data
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("name, review_link, agency_name")
+    .eq("slug", slug)
+    .single();
+    
+  if (!business) {
+    return res.status(404).send("Business not found");
+  }
+  
+  // Increment view count (optional)
+  await supabase
+    .from("businesses")
+    .update({ milestone_page_views: supabase.sql`milestone_page_views + 1` })
+    .eq("slug", slug);
+  
+  const displayName = business.agency_name || business.name;
+  const reviewLink = business.review_link || `${process.env.BASE_URL}/r/${slug}`;
+  
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${displayName} — ${milestoneNum} ⭐ Reviews</title>
+      <meta property="og:title" content="${displayName} — ${milestoneNum} Google Reviews">
+      <meta property="og:description" content="${displayName} has collected ${milestoneNum} 5-star reviews from happy customers. Powered by ReviewLift.">
+      <meta property="og:image" content="${process.env.BASE_URL}/milestone-preview/${slug}/${milestoneNum}">
+      <meta property="og:url" content="${process.env.BASE_URL}/milestone/${slug}/${milestoneNum}">
+      <meta property="og:type" content="website">
+      <meta name="twitter:card" content="summary_large_image">
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          background: #1A1A18;
+          color: #EAE7DC;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+        }
+        .container {
+          max-width: 560px;
+          width: 100%;
+          text-align: center;
+        }
+        .card {
+          background: #242422;
+          border: 1px solid rgba(200,169,110,0.25);
+          border-radius: 24px;
+          padding: 48px 32px;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .milestone-number {
+          font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 5rem;
+          font-weight: 800;
+          color: #C8A96E;
+          line-height: 1;
+          margin-bottom: 8px;
+        }
+        .milestone-label {
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          letter-spacing: 3px;
+          color: rgba(234,231,220,0.45);
+          margin-bottom: 24px;
+        }
+        .business-name {
+          font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 1.6rem;
+          font-weight: 700;
+          margin-bottom: 16px;
+        }
+        .stars {
+          font-size: 2rem;
+          letter-spacing: 8px;
+          color: #C8A96E;
+          margin: 24px 0;
+        }
+        .message {
+          font-size: 1rem;
+          color: rgba(234,231,220,0.65);
+          line-height: 1.7;
+          margin: 24px 0;
+        }
+        .btn {
+          display: inline-block;
+          background: #C8A96E;
+          color: #1A1A18;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 1rem;
+          padding: 14px 32px;
+          border-radius: 40px;
+          margin-top: 16px;
+          transition: transform 0.2s, background 0.2s;
+        }
+        .btn:hover {
+          background: #D4B87A;
+          transform: translateY(-2px);
+        }
+        .footer {
+          margin-top: 24px;
+          font-size: 0.7rem;
+          color: rgba(234,231,220,0.25);
+        }
+        .footer a {
+          color: #C8A96E;
+          text-decoration: none;
+        }
+        @media (max-width: 500px) {
+          .card { padding: 32px 20px; }
+          .milestone-number { font-size: 3.5rem; }
+          .business-name { font-size: 1.3rem; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <div class="milestone-number">${milestoneNum}</div>
+          <div class="milestone-label">⭐ GOOGLE REVIEWS ⭐</div>
+          <div class="business-name">${displayName}</div>
+          <div class="stars">★★★★★</div>
+          <div class="message">
+            ${milestoneNum === 10 ? "Our first big milestone! Thanks to everyone who took a moment to share their experience." :
+              milestoneNum === 25 ? "Twenty-five happy customers and counting. Your feedback means the world to us." :
+              milestoneNum === 50 ? "50 reviews! Every single one helps us serve you better. Thank you." :
+              milestoneNum === 100 ? "Triple digits! A hundred thank-yous to our amazing community." :
+              milestoneNum === 250 ? "A quarter of a thousand reviews. We're humbled by your trust." :
+              "500 reviews! Half a thousand happy customers. We couldn't do it without you."}
+          </div>
+          <a href="${reviewLink}" class="btn">Leave a review →</a>
+        </div>
+        <div class="footer">
+          Powered by <a href="${process.env.BASE_URL}?ref=milestone">ReviewLift</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// ─── MILESTONE PREVIEW IMAGE (for social sharing) ───────────────────
+app.get("/milestone-preview/:slug/:number", async (req, res) => {
+  const { slug, number } = req.params;
+  
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("name")
+    .eq("slug", slug)
+    .single();
+    
+  const businessName = business?.name || "Our business";
+  
+  // Simple HTML page that looks like an image (works as og:image)
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"></head>
+    <body style="margin:0;background:#1A1A18;display:flex;align-items:center;justify-content:center;width:1200px;height:630px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+      <div style="text-align:center;padding:40px;">
+        <div style="font-size:5rem;font-weight:800;color:#C8A96E;">${number}</div>
+        <div style="font-size:0.8rem;letter-spacing:3px;color:rgba(234,231,220,0.45);margin:10px 0;">GOOGLE REVIEWS</div>
+        <div style="font-size:2rem;font-weight:700;color:#EAE7DC;margin:20px 0;">${businessName}</div>
+        <div style="font-size:1.5rem;letter-spacing:5px;color:#C8A96E;margin:20px 0;">★★★★★</div>
+        <div style="font-size:0.8rem;color:rgba(234,231,220,0.35);margin-top:30px;">Powered by ReviewLift</div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// ─── NFC CARD ORDER ──────────────────────────────────────────────────────
+
+// Create checkout for NFC card (one-time payment)
+app.post("/create-nfc-checkout", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
+  
+  const { shipping_address } = req.body;
+  const slug = req.session.slug;
+  
+  if (!shipping_address || shipping_address.trim().length < 10) {
+    return res.status(400).json({ error: "Please enter a full shipping address" });
+  }
+  
+  const priceId = process.env.NFC_CARD_PRICE_ID;
+  if (!priceId) {
+    console.error("Missing NFC_CARD_PRICE_ID env var");
+    return res.status(500).json({ error: "Pricing configuration error" });
+  }
+  
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: "payment",
+      success_url: `${process.env.BASE_URL}/nfc-success?slug=${slug}`,
+      cancel_url: `${process.env.BASE_URL}/for-business`,
+      metadata: { 
+        slug: slug,
+        shipping_address: shipping_address,
+        product: "nfc_card"
+      },
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("NFC checkout error:", err.message);
+    res.status(500).json({ error: "Could not create checkout" });
+  }
+});
+
+// NFC success page (after payment)
+app.get("/nfc-success", async (req, res) => {
+  const { slug } = req.query;
+  
+  if (!slug) {
+    return res.redirect("/for-business");
+  }
+  
+  // Mark that card was ordered in database
+  await supabase
+    .from("businesses")
+    .update({ 
+      nfc_card_ordered: true,
+      nfc_card_order_date: new Date().toISOString()
+    })
+    .eq("slug", slug);
+  
+  // Send email notification to you (billy@reviewlift.app)
+  try {
+    const { data: business } = await supabase
+      .from("businesses")
+      .select("name, shipping_address, email")
+      .eq("slug", slug)
+      .single();
+    
+    await resend.emails.send({
+      from: `ReviewLift Orders <orders@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+      to: "billy@reviewlift.app",
+      subject: `📦 New NFC Card Order — ${business?.name || slug}`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;padding:24px;">
+          <h2 style="color:#C8A96E;">📦 New NFC Card Order</h2>
+          <p><strong>Business:</strong> ${business?.name || slug}</p>
+          <p><strong>Slug:</strong> ${slug}</p>
+          <p><strong>Business email:</strong> ${business?.email || "Not found"}</p>
+          <p><strong>Shipping address:</strong></p>
+          <div style="background:#f5f5f3;padding:16px;border-radius:8px;margin:12px 0;white-space:pre-line;">${business?.shipping_address || "Not saved"}</div>
+          <p><strong>Order date:</strong> ${new Date().toLocaleString()}</p>
+          <hr style="margin:20px 0;">
+          <h3>📋 Action items:</h3>
+          <ol style="margin-left:20px;">
+            <li>Order 1x NFC card from GoToTags or Seritag (50p-£1)</li>
+            <li>Program URL: https://www.reviewlift.app/r/${slug}</li>
+            <li>Post in padded envelope to the address above</li>
+            <li>Update order status in dashboard admin panel</li>
+          </ol>
+          <p style="margin-top:20px;color:#666;">You've made £9.99 - cost ~£2 = ~£8 profit</p>
+        </div>
+      `
+    });
+  } catch (emailErr) {
+    console.error("NFC order notification email failed:", emailErr.message);
+  }
+  
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>NFC Card Ordered — ReviewLift</title>
+      <link rel="stylesheet" href="/style.css">
+      <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+        .container { max-width: 480px; text-align: center; }
+        .icon { font-size: 3rem; display: block; margin-bottom: 20px; }
+        h2 { margin-bottom: 8px; }
+        p { color: var(--cream-dim); margin-bottom: 24px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; }
+        .btn { display: inline-block; background: var(--accent); color: #1A1A18; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <span class="icon">📦</span>
+          <h2>NFC Card Ordered!</h2>
+          <p>Your tap-to-review card will be shipped within 2 business days.<br><br>You'll receive an email with tracking information once it's on its way.</p>
+          <a href="/for-business" class="btn">Back to Dashboard →</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// Update shipping address (for existing orders or corrections)
+app.post("/update-shipping-address", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
+  
+  const { shipping_address } = req.body;
+  const slug = req.session.slug;
+  
+  if (!shipping_address || shipping_address.trim().length < 10) {
+    return res.status(400).json({ error: "Please enter a full shipping address" });
+  }
+  
+  const { error } = await supabase
+    .from("businesses")
+    .update({ shipping_address: shipping_address.trim() })
+    .eq("slug", slug);
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  
+  res.json({ success: true });
+});
+
+// Admin: Mark card as shipped (add tracking)
+app.post("/admin/mark-card-shipped", async (req, res) => {
+  // Simple admin key check (you can make this more secure)
+  const { admin_key, slug, tracking_number } = req.body;
+  
+  if (admin_key !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  
+  const { error } = await supabase
+    .from("businesses")
+    .update({ nfc_card_tracking_number: tracking_number })
+    .eq("slug", slug);
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  
+  // Send shipping confirmation email to business owner
+  try {
+    const { data: business } = await supabase
+      .from("businesses")
+      .select("name, email")
+      .eq("slug", slug)
+      .single();
+      
+    if (business && business.email) {
+      await resend.emails.send({
+        from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+        to: business.email,
+        subject: `📮 Your ReviewLift NFC card is on its way!`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:520px;padding:24px;">
+            <h2 style="color:#C8A96E;">Your tap-to-review card has shipped!</h2>
+            <p>Good news — your ReviewLift NFC card is on its way to you.</p>
+            ${tracking_number ? `<p><strong>Tracking number:</strong> ${tracking_number}</p>` : ''}
+            <p>Once it arrives, simply place it on your counter or reception desk. Customers tap it with their phone and they're guided to leave a review.</p>
+            <div style="background:#f5f5f3;padding:16px;border-radius:8px;margin:20px 0;">
+              <p style="margin:0;font-size:0.85rem;">💡 <strong>Pro tip:</strong> Pair your NFC card with the QR code on your dashboard for maximum review collection.</p>
+            </div>
+            <a href="${process.env.BASE_URL}/for-business" style="display:inline-block;background:#C8A96E;color:#1A1A18;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Go to Dashboard</a>
+          </div>
+        `
+      });
+    }
+  } catch (emailErr) {
+    console.error("Shipping notification email failed:", emailErr.message);
+  }
+  
+  res.json({ success: true });
+});
+
+// ─── PUBLIC REVIEW WALL ─────────────────────────────────────────────
+app.get("/wall/:slug", async (req, res) => {
+  const { slug } = req.params;
+  
+  // Get business data
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("name, agency_name")
+    .eq("slug", slug)
+    .single();
+    
+  if (!business) {
+    return res.status(404).send("Business not found");
+  }
+  
+  // Get positive events with messages
+  const { data: events } = await supabase
+    .from("events")
+    .select("message, created_at")
+    .eq("business_slug", slug)
+    .eq("event_type", "positive")
+    .not("message", "is", null)
+    .gt("message", "")
+    .order("created_at", { ascending: false });
+  
+  // Filter messages with at least 10 characters
+  const reviews = (events || [])
+    .filter(e => e.message && e.message.trim().length >= 10)
+    .map(e => ({
+      message: e.message.trim(),
+      date: e.created_at,
+      relativeDate: getRelativeDate(e.created_at)
+    }));
+  
+  // Get stats
+  const { count: totalPositive } = await supabase
+    .from("events")
+    .select("*", { count: "exact", head: true })
+    .eq("business_slug", slug)
+    .eq("event_type", "positive");
+  
+  // Calculate average rating from rating events
+  const { data: ratings } = await supabase
+    .from("events")
+    .select("rating")
+    .eq("business_slug", slug)
+    .eq("event_type", "rating")
+    .not("rating", "is", null);
+    
+  let avgRating = 0;
+  if (ratings && ratings.length > 0) {
+    const sum = ratings.reduce((a, b) => a + (b.rating || 0), 0);
+    avgRating = (sum / ratings.length).toFixed(1);
+  }
+  
+  const displayName = business.agency_name || business.name;
+  const hasReviews = reviews.length >= 3;
+  
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${displayName} — Customer Reviews</title>
+      <meta property="og:title" content="${displayName} — What our customers say">
+      <meta property="og:description" content="★ ${avgRating} average from ${totalPositive} real customer reviews">
+      <meta property="og:image" content="${process.env.BASE_URL}/wall-preview/${slug}">
+      <meta property="og:url" content="${process.env.BASE_URL}/wall/${slug}">
+      <meta property="og:type" content="website">
+      <meta name="twitter:card" content="summary_large_image">
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          background: #1A1A18;
+          color: #EAE7DC;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 60px 24px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 48px;
+        }
+        .business-name {
+          font-family: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 2.5rem;
+          font-weight: 800;
+          margin-bottom: 8px;
+        }
+        .rating-summary {
+          font-size: 1.1rem;
+          color: #C8A96E;
+          margin-top: 8px;
+        }
+        .stars {
+          font-size: 1.2rem;
+          letter-spacing: 4px;
+          color: #C8A96E;
+        }
+        .review-grid {
+          column-count: 2;
+          column-gap: 24px;
+        }
+        .review-card {
+          background: #242422;
+          border: 1px solid rgba(200,169,110,0.15);
+          border-radius: 16px;
+          padding: 24px;
+          margin-bottom: 24px;
+          break-inside: avoid;
+          transition: transform 0.2s, border-color 0.2s;
+        }
+        .review-card:hover {
+          border-color: rgba(200,169,110,0.35);
+        }
+        .review-stars {
+          font-size: 0.9rem;
+          letter-spacing: 3px;
+          color: #C8A96E;
+          margin-bottom: 12px;
+        }
+        .review-message {
+          font-size: 0.95rem;
+          color: rgba(234,231,220,0.8);
+          line-height: 1.6;
+          margin-bottom: 12px;
+        }
+        .review-date {
+          font-size: 0.7rem;
+          color: rgba(234,231,220,0.35);
+        }
+        .placeholder {
+          text-align: center;
+          padding: 60px 20px;
+          background: #242422;
+          border-radius: 16px;
+          border: 1px solid rgba(200,169,110,0.15);
+        }
+        .placeholder-icon {
+          font-size: 3rem;
+          margin-bottom: 16px;
+        }
+        .placeholder p {
+          color: rgba(234,231,220,0.45);
+        }
+        .footer {
+          text-align: center;
+          margin-top: 48px;
+          padding-top: 24px;
+          border-top: 1px solid rgba(200,169,110,0.1);
+          font-size: 0.75rem;
+          color: rgba(234,231,220,0.3);
+        }
+        .footer a {
+          color: #C8A96E;
+          text-decoration: none;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .review-card {
+          animation: fadeIn 0.5s ease forwards;
+          opacity: 0;
+        }
+        @media (max-width: 700px) {
+          .review-grid { column-count: 1; }
+          .business-name { font-size: 1.8rem; }
+          .container { padding: 40px 20px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="business-name">${displayName}</div>
+          <div class="rating-summary">
+            <span class="stars">★★★★★</span> ★ ${avgRating} · ${totalPositive} happy customers
+          </div>
+        </div>
+        
+        <div class="review-grid" id="reviewGrid">
+          ${hasReviews ? reviews.map((review, i) => `
+            <div class="review-card" style="animation-delay: ${i * 0.03}s">
+              <div class="review-stars">★★★★★</div>
+              <div class="review-message">"${escapeHtml(review.message)}"</div>
+              <div class="review-date">${review.relativeDate}</div>
+            </div>
+          `).join('') : `
+            <div class="placeholder">
+              <div class="placeholder-icon">💬</div>
+              <p>Reviews will appear here as customers leave feedback.</p>
+              <p style="font-size:0.8rem;margin-top:8px;">Be the first to leave a review!</p>
+            </div>
+          `}
+        </div>
+        
+        <div class="footer">
+          Powered by <a href="${process.env.BASE_URL}?ref=wall">ReviewLift</a> — Collect more reviews for your business
+        </div>
+      </div>
+      
+      <script>
+        // Intersection Observer for fade-in animation
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+            }
+          });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.review-card').forEach(card => observer.observe(card));
+      </script>
+    </body>
+    </html>
+  `);
+});
+
+// Helper function for relative dates
+function getRelativeDate(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) return "today";
+  if (diffDays === 1) return "yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+  return `${Math.floor(diffDays / 365)} years ago`;
+}
+
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ─── REVIEW WALL PREVIEW IMAGE (for social sharing) ─────────────────
+app.get("/wall-preview/:slug", async (req, res) => {
+  const { slug } = req.params;
+  
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("name")
+    .eq("slug", slug)
+    .single();
+    
+  const businessName = business?.name || "Our customers";
+  
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"></head>
+    <body style="margin:0;background:#1A1A18;display:flex;align-items:center;justify-content:center;width:1200px;height:630px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+      <div style="text-align:center;padding:40px;">
+        <div style="font-size:0.8rem;letter-spacing:3px;color:#C8A96E;">CUSTOMER REVIEWS</div>
+        <div style="font-size:2rem;font-weight:800;color:#EAE7DC;margin:20px 0;">${businessName}</div>
+        <div style="font-size:1.5rem;letter-spacing:5px;color:#C8A96E;margin:20px 0;">★★★★★</div>
+        <div style="font-size:0.9rem;color:rgba(234,231,220,0.45);">Real feedback from real customers</div>
+        <div style="font-size:0.7rem;color:rgba(234,231,220,0.25);margin-top:30px;">Powered by ReviewLift</div>
+      </div>
+    </body>
+    </html>
+  `);
+});
 
 // ─── REPUTATION SCORE ───────────────────────────────────────────────────────
 app.get("/reputation/:slug", async (req, res) => {

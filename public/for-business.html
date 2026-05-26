@@ -358,6 +358,121 @@
     </div>
   </div>
 
+  <!-- Review Wall -->
+<div class="dash-section">
+  <div class="dash-section-title">Your Review Wall</div>
+  <div class="panel">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div style="flex:1;">
+        <h3>📋 Share your customer love</h3>
+        <p class="panel-desc">A public page showing all your positive customer feedback. Updates automatically as new reviews come in.</p>
+        <div class="input-row" style="margin-bottom:8px;">
+          <input id="wallUrl" readonly value="https://www.reviewlift.app/wall/${slug}">
+          <button onclick="copyWallUrl()">Copy <span class="flash" id="wallCopyFlash">✓</span></button>
+        </div>
+        <p style="font-size:0.72rem;color:rgba(234,231,220,0.3);">Share this link on social media, add it to your email signature, or link from your website.</p>
+        <div style="margin-top:12px;">
+          <a href="/wall/${slug}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid rgba(200,169,110,0.3);border-radius:6px;padding:8px 16px;font-size:0.8rem;color:var(--accent);text-decoration:none;">View your Review Wall →</a>
+        </div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:8px;padding:12px;text-align:center;min-width:120px;">
+        <div style="font-size:2rem;">📋</div>
+        <div style="font-size:0.7rem;color:var(--cream-dim);">Live wall</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function copyWallUrl(){
+  const input = document.getElementById("wallUrl");
+  input.select();
+  navigator.clipboard.writeText(input.value);
+  const flash = document.getElementById("wallCopyFlash");
+  flash.classList.add("show");
+  setTimeout(() => flash.classList.remove("show"), 2000);
+}
+</script>
+
+  <!-- AI Send Intelligence — Pro/Agency only -->
+  </div>
+
+<!-- NFC Tap-to-Review Card -->
+<div class="dash-section" id="nfcCardSection">
+  <div class="dash-section-title">Tap-to-Review Card</div>
+  
+  <!-- Card not ordered yet -->
+  <div id="nfcCardUpsell" style="display:none">
+    <div class="panel" style="background:linear-gradient(135deg, var(--surface) 0%, rgba(200,169,110,0.04) 100%); border-color: rgba(200,169,110,0.25);">
+      <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;">
+        <div style="flex-shrink:0;">
+          <img src="/images/nfc-card-preview.png" alt="NFC Tap-to-Review Card" style="width:180px; border-radius:12px; border:1px solid rgba(200,169,110,0.2);">
+        </div>
+        <div style="flex:1;">
+          <h3 style="margin-bottom:8px;">📱 Tap-to-Review NFC Card — £9.99 one-time</h3>
+          <p class="panel-desc" style="margin-bottom:12px;">A physical card customers tap with their phone to instantly leave a review. No typing URLs, no QR codes to find — just tap and rate.</p>
+          <ul style="list-style:none; margin-bottom:16px;">
+            <li style="font-size:0.8rem; color:var(--cream-dim); margin-bottom:6px;">✓ Premium dark charcoal card with gold foil branding</li>
+            <li style="font-size:0.8rem; color:var(--cream-dim); margin-bottom:6px;">✓ Pre-programmed with your unique review link</li>
+            <li style="font-size:0.8rem; color:var(--cream-dim); margin-bottom:6px;">✓ Works with iPhones and Android (no app needed)</li>
+            <li style="font-size:0.8rem; color:var(--cream-dim); margin-bottom:6px;">✓ Free shipping within the UK</li>
+          </ul>
+          <button onclick="openNfcModal()" class="btn-full" style="background:var(--accent); color:#1A1A18; max-width:220px; margin-top:8px;">💳 Order card — £9.99</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Card ordered, awaiting shipping -->
+  <div id="nfcCardOrdered" style="display:none">
+    <div class="panel">
+      <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <span style="font-size:2rem;">📦</span>
+        <div style="flex:1;">
+          <h3 style="margin-bottom:4px;">Card ordered — we're processing it!</h3>
+          <p class="panel-desc" style="margin-bottom:0;">Your tap-to-review card will be shipped within 2 business days. You'll receive an email with tracking information.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Card shipped with tracking -->
+  <div id="nfcCardShipped" style="display:none">
+    <div class="panel">
+      <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <span style="font-size:2rem;">✈️</span>
+        <div style="flex:1;">
+          <h3 style="margin-bottom:4px;">Your card is on the way!</h3>
+          <p class="panel-desc" id="nfcTrackingInfo">Tracking information will appear here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NFC Order Modal -->
+<div class="modal-overlay" id="nfcModal" onclick="handleModalOverlay(event, 'nfcModal')">
+  <div class="modal-box" style="max-width:500px;">
+    <button class="modal-close" onclick="closeModal('nfcModal')">✕</button>
+    <span class="modal-icon">📦</span>
+    <h3>Order your Tap-to-Review Card</h3>
+    <p style="margin-bottom:16px;">Enter your shipping address. We'll post your card within 2 business days.</p>
+    
+    <div class="form-group">
+      <label>Full name</label>
+      <input id="nfcFullName" type="text" placeholder="Your full name">
+    </div>
+    <div class="form-group">
+      <label>Shipping address</label>
+      <textarea id="nfcAddress" rows="3" placeholder="Street address, city, postcode, country" style="min-height:80px;"></textarea>
+      <p class="helper-text">UK addresses only. Free shipping.</p>
+    </div>
+    
+    <button onclick="orderNfcCard()" id="nfcOrderBtn" class="btn-full" style="background:var(--accent); color:#1A1A18; margin-top:8px;">Continue to payment (£9.99) →</button>
+    <p id="nfcModalMsg" style="font-size:0.75rem; color:#D4897C; margin-top:12px;"></p>
+  </div>
+</div>
+
   <!-- AI Send Intelligence — Pro/Agency only -->
   <div class="dash-section" id="sendIntelSection">
     <div class="dash-section-title">Send Intelligence</div>
@@ -579,6 +694,8 @@ async function load(){
   document.getElementById("reviews").innerText  = stats.reviews  ?? 0;
     // Load reputation score
   loadReputationScore();
+  loadNfcCardStatus();  // Add this line
+
 
   // Plan badge
   const badge = document.getElementById("planBadge");
@@ -1007,7 +1124,77 @@ async function loadReputationScore() {
   }
 }
 
+// NFC Card UI state
+async function loadNfcCardStatus() {
+  try {
+    const res = await fetch("/stats/" + slug);
+    const stats = await res.json();
+    
+    const cardOrdered = stats.nfc_card_ordered;
+    const trackingNumber = stats.nfc_card_tracking_number;
+    
+    if (trackingNumber) {
+      document.getElementById("nfcCardShipped").style.display = "block";
+      document.getElementById("nfcTrackingInfo").innerHTML = `Your card has shipped. Tracking: <strong>${trackingNumber}</strong>`;
+    } else if (cardOrdered) {
+      document.getElementById("nfcCardOrdered").style.display = "block";
+    } else {
+      document.getElementById("nfcCardUpsell").style.display = "block";
+    }
+  } catch(e) {
+    // Silent fail
+  }
+}
 
+function openNfcModal() {
+  const bizName = document.getElementById("bizName").innerText;
+  if (bizName && bizName !== "Loading...") {
+    document.getElementById("nfcFullName").value = bizName;
+  }
+  openModal("nfcModal");
+}
+
+async function orderNfcCard() {
+  const fullName = document.getElementById("nfcFullName").value.trim();
+  const address = document.getElementById("nfcAddress").value.trim();
+  
+  if (!fullName) {
+    document.getElementById("nfcModalMsg").textContent = "Please enter your full name.";
+    return;
+  }
+  
+  if (!address || address.length < 10) {
+    document.getElementById("nfcModalMsg").textContent = "Please enter your full shipping address.";
+    return;
+  }
+  
+  const fullAddress = `${fullName}\n${address}`;
+  
+  const btn = document.getElementById("nfcOrderBtn");
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+  
+  try {
+    const res = await fetch("/create-nfc-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ shipping_address: fullAddress })
+    });
+    const data = await res.json();
+    
+    if (data.url) {
+      window.location = data.url;
+    } else {
+      document.getElementById("nfcModalMsg").textContent = data.error || "Could not create order. Please try again.";
+      btn.disabled = false;
+      btn.textContent = "Continue to payment (£9.99) →";
+    }
+  } catch(e) {
+    document.getElementById("nfcModalMsg").textContent = "Something went wrong. Please try again.";
+    btn.disabled = false;
+    btn.textContent = "Continue to payment (£9.99) →";
+  }
+}
 
 function dismissSoftwareSetup(){
   localStorage.setItem("rl_software_setup_dismissed","1");
