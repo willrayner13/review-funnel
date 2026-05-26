@@ -14,6 +14,7 @@ const twilio = require("twilio");
 const OpenAI = require("openai");
 const Stripe = require("stripe");
 const rateLimit = require("express-rate-limit");
+const { createCanvas } = require('canvas');
 
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
@@ -620,9 +621,10 @@ const stats = {
   res.json(stats);
 });
 
-// Add to server.js
+// ─── NFC CARD ADMIN PANEL ──────────────────────────────────────────────────────
+
+// Admin page to view all NFC card orders
 app.get("/admin-nfc", (req, res) => {
-  // Simple password protection
   const { key } = req.query;
   if (key !== process.env.ADMIN_SECRET) {
     return res.status(401).send("Unauthorized");
@@ -630,22 +632,179 @@ app.get("/admin-nfc", (req, res) => {
   
   res.send(`
     <!DOCTYPE html>
-    <html>
-    <head><title>NFC Order Admin</title></head>
-    <body style="background:#1A1A18;color:#EAE7DC;font-family:sans-serif;padding:40px;">
-      <h1>📦 NFC Card Orders</h1>
-      <div id="orders"></div>
-      <script>
-        async function loadOrders() {
-          const res = await fetch('/admin/nfc-orders?key=${req.query.key}');
-          const orders = await res.json();
-          // Display orders with "Mark Shipped" buttons
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>NFC Card Orders — Admin</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          background: #1A1A18;
+          color: #EAE7DC;
+          padding: 40px 24px;
         }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #C8A96E; }
+        .sub { color: rgba(234,231,220,0.45); margin-bottom: 32px; }
+        .stats { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+        .stat-card { background: #242422; border: 1px solid rgba(200,169,110,0.2); border-radius: 12px; padding: 20px 28px; }
+        .stat-number { font-size: 2rem; font-weight: 800; color: #C8A96E; }
+        .stat-label { font-size: 0.75rem; color: rgba(234,231,220,0.45); margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; background: #242422; border-radius: 12px; overflow: hidden; }
+        th { text-align: left; padding: 16px; background: #1E1E1C; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #C8A96E; border-bottom: 1px solid rgba(200,169,110,0.2); }
+        td { padding: 16px; border-bottom: 1px solid rgba(234,231,220,0.06); font-size: 0.85rem; vertical-align: top; }
+        tr:hover { background: rgba(200,169,110,0.03); }
+        .status-pending { color: #C8A96E; }
+        .status-shipped { color: #8EC9A8; }
+        .btn-ship { background: #C8A96E; color: #1A1A18; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+        .btn-ship:hover { background: #D4B87A; }
+        .tracking-input { width: 140px; padding: 6px 8px; background: #2E2E2B; border: 1px solid rgba(234,231,220,0.15); border-radius: 6px; color: #EAE7DC; font-size: 0.75rem; }
+        .address { max-width: 250px; white-space: pre-wrap; font-size: 0.75rem; line-height: 1.5; color: rgba(234,231,220,0.7); }
+        .refresh-btn { background: transparent; border: 1px solid rgba(200,169,110,0.3); color: #C8A96E; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+        .refresh-btn:hover { background: rgba(200,169,110,0.1); }
+        @media (max-width: 800px) { td, th { padding: 12px; } .address { max-width: 180px; } }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>📦 NFC Card Orders</h1>
+        <p class="sub">Manage tap-to-review card orders — mark as shipped, add tracking numbers.</p>
+        
+        <div class="stats" id="stats"></div>
+        
+        <button class="refresh-btn" onclick="loadOrders()">⟳ Refresh</button>
+        
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr><th>Business</th><th>Email</th><th>Order Date</th><th>Shipping Address</th><th>Status</th><th>Tracking</th><th>Action</th></tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <script>
+        const ADMIN_KEY = "${req.query.key}";
+        
+        async function loadOrders() {
+          const res = await fetch('/admin/nfc-orders?key=' + ADMIN_KEY);
+          const data = await res.json();
+          
+          // Update stats
+          const statsHtml = \`
+            <div class="stat-card"><div class="stat-number">\${data.total}</div><div class="stat-label">Total Orders</div></div>
+            <div class="stat-card"><div class="stat-number">\${data.pending}</div><div class="stat-label">Pending Shipment</div></div>
+            <div class="stat-card"><div class="stat-number">\${data.shipped}</div><div class="stat-label">Shipped</div></div>
+            <div class="stat-card"><div class="stat-number">£\${data.total_revenue}</div><div class="stat-label">Total Revenue</div></div>
+          \`;
+          document.getElementById('stats').innerHTML = statsHtml;
+          
+          // Build table rows
+          let tableHtml = '';
+          data.orders.forEach(order => {
+            const statusClass = order.tracking_number ? 'status-shipped' : 'status-pending';
+            const statusText = order.tracking_number ? '✅ Shipped' : '⏳ Pending';
+            const trackingValue = order.tracking_number || '';
+            
+            tableHtml += \`
+              <tr>
+                <td><strong>\${escapeHtml(order.name)}</strong><br><span style="font-size:0.7rem;color:rgba(234,231,220,0.35);">\${order.slug}</span></td>
+                <td><a href="mailto:\${order.email}" style="color:#C8A96E;">\${order.email}</a></td>
+                <td>\${new Date(order.order_date).toLocaleDateString('en-GB')}</td>
+                <td class="address">\${escapeHtml(order.shipping_address || 'Not provided')}</td>
+                <td class="\${statusClass}">\${statusText}</td>
+                <td><input type="text" id="tracking_\${order.slug}" class="tracking-input" placeholder="Tracking #" value="\${trackingValue}"></td>
+                <td><button class="btn-ship" onclick="markShipped('\${order.slug}')">✈️ Mark Shipped</button></td>
+              </tr>
+            \`;
+          });
+          document.getElementById('ordersTable').innerHTML = tableHtml || '<tr><td colspan="7" style="text-align:center;padding:40px;">No orders yet</td></tr>';
+        }
+        
+        async function markShipped(slug) {
+          const trackingInput = document.getElementById('tracking_' + slug);
+          const trackingNumber = trackingInput.value.trim();
+          const btn = event.target;
+          
+          btn.disabled = true;
+          btn.textContent = 'Processing...';
+          
+          const res = await fetch('/admin/mark-card-shipped', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ admin_key: ADMIN_KEY, slug: slug, tracking_number: trackingNumber })
+          });
+          const data = await res.json();
+          
+          if (data.success) {
+            btn.textContent = '✅ Shipped!';
+            setTimeout(() => loadOrders(), 1000);
+          } else {
+            btn.textContent = '❌ Failed';
+            alert(data.error || 'Could not mark as shipped');
+            setTimeout(() => { btn.disabled = false; btn.textContent = '✈️ Mark Shipped'; }, 2000);
+          }
+        }
+        
+        function escapeHtml(text) {
+          if (!text) return '';
+          return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        
         loadOrders();
       </script>
     </body>
     </html>
   `);
+});
+
+// API endpoint to get all NFC orders (for admin panel)
+app.get("/admin/nfc-orders", async (req, res) => {
+  const { key } = req.query;
+  if (key !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  
+  const { data: orders, error } = await supabase
+    .from("businesses")
+    .select("slug, name, email, shipping_address, nfc_card_ordered, nfc_card_order_date, nfc_card_tracking_number")
+    .eq("nfc_card_ordered", true)
+    .order("nfc_card_order_date", { ascending: false });
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  
+  let totalRevenue = 0;
+  let pending = 0;
+  let shipped = 0;
+  
+  const processedOrders = orders.map(order => {
+    const hasTracking = order.nfc_card_tracking_number && order.nfc_card_tracking_number.length > 0;
+    if (hasTracking) shipped++;
+    else pending++;
+    totalRevenue += 9.99;
+    
+    return {
+      slug: order.slug,
+      name: order.name,
+      email: order.email,
+      shipping_address: order.shipping_address,
+      order_date: order.nfc_card_order_date,
+      tracking_number: order.nfc_card_tracking_number
+    };
+  });
+  
+  res.json({
+    total: orders.length,
+    pending,
+    shipped,
+    total_revenue: totalRevenue.toFixed(2),
+    orders: processedOrders
+  });
 });
 
 // ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
@@ -2379,6 +2538,78 @@ app.get("/wall-preview/:slug", async (req, res) => {
     </body>
     </html>
   `);
+});
+
+
+app.get("/milestone-image/:slug/:number", async (req, res) => {
+  const { slug, number } = req.params;
+  const milestoneNum = parseInt(number);
+  
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("name")
+    .eq("slug", slug)
+    .single();
+    
+  const businessName = business?.name || "Our Business";
+  
+  // Create canvas 1200x630 (standard social share size)
+  const width = 1200;
+  const height = 630;
+  const canvas = createCanvas(width, height);
+  const ctx = canvas.getContext('2d');
+  
+  // Background
+  ctx.fillStyle = '#1A1A18';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Gold accent line at top
+  ctx.fillStyle = '#C8A96E';
+  ctx.fillRect(0, 0, width, 4);
+  
+  // Milestone number
+  ctx.font = `bold ${width * 0.12}px "Syne", "Helvetica Neue", "Arial", sans-serif`;
+  ctx.fillStyle = '#C8A96E';
+  ctx.textAlign = 'center';
+  ctx.fillText(milestoneNum.toString(), width / 2, height * 0.35);
+  
+  // Label
+  ctx.font = `400 ${width * 0.018}px "DM Sans", "Arial", sans-serif`;
+  ctx.fillStyle = 'rgba(234,231,220,0.45)';
+  ctx.fillText('⭐ GOOGLE REVIEWS ⭐', width / 2, height * 0.48);
+  
+  // Business name
+  ctx.font = `600 ${width * 0.032}px "Syne", "Helvetica Neue", "Arial", sans-serif`;
+  ctx.fillStyle = '#EAE7DC';
+  
+  // Truncate long names
+  let displayName = businessName;
+  if (displayName.length > 35) {
+    displayName = displayName.substring(0, 32) + '...';
+  }
+  ctx.fillText(displayName, width / 2, height * 0.58);
+  
+  // Stars
+  ctx.font = `${width * 0.028}px "Arial", sans-serif`;
+  ctx.fillStyle = '#C8A96E';
+  ctx.fillText('★★★★★', width / 2, height * 0.68);
+  
+  // Powered by
+  ctx.font = `${width * 0.014}px "DM Sans", "Arial", sans-serif`;
+  ctx.fillStyle = 'rgba(234,231,220,0.25)';
+  ctx.fillText('Powered by ReviewLift', width / 2, height * 0.88);
+  
+  // Set response headers
+  res.setHeader('Content-Type', 'image/png');
+  res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
+  
+  canvas.createPNGStream().pipe(res);
+});
+
+// Update the milestone preview route to use the PNG
+app.get("/milestone-preview/:slug/:number", async (req, res) => {
+  // Redirect to the PNG version for better social sharing
+  res.redirect(`/milestone-image/${req.params.slug}/${req.params.number}`);
 });
 
 // ─── REPUTATION SCORE ───────────────────────────────────────────────────────
