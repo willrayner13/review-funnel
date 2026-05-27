@@ -187,6 +187,82 @@
     }
     .content-section.active { display: block; }
 
+    /* DYNAMIC AMBIENT BACKGROUNDS */
+    .content-section {
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient glow overlay for each section */
+    #overviewSection::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -20%;
+      width: 80%;
+      height: 80%;
+      background: radial-gradient(ellipse, rgba(200,169,110,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 50%;
+    }
+
+    #funnelStudioSection::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 70%;
+      height: 70%;
+      background: radial-gradient(ellipse, rgba(200,169,110,0.08) 0%, rgba(59,130,246,0.03) 70%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #aiLabSection::before {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      right: -10%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(ellipse, rgba(139,92,246,0.1) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #assetsSection::before {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: -5%;
+      width: 50%;
+      height: 50%;
+      background: radial-gradient(ellipse, rgba(106,158,127,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Ensure content appears above glows */
+    .content-section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Subtle grain texture overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.3;
+    }
+    
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -377,15 +453,6 @@
     .qr-area { display: flex; align-items: flex-start; gap: 24px; }
     #qr { width: 130px; height: 130px; border: 1px solid var(--border); border-radius: 8px; }
 
-    /* Fix for AI Tools content visibility */
-
-
-/* Fix for Review Wall content */
-#reviewWallSection .panel,
-#widgetSection .panel {
-  display: block !important;
-}
-
     /* ── MOBILE ── */
     @media (max-width: 768px) {
       .sidebar { display: none; }
@@ -432,33 +499,33 @@
     </div>
     
     <nav class="sidebar-nav">
-      <div class="nav-item active" data-nav="dashboard">
-        <i class="ti ti-home"></i>
-        <span>Dashboard</span>
+      <div class="nav-item active" data-nav="overview">
+        <i class="ti ti-dashboard"></i>
+        <span>Overview</span>
       </div>
-      <div class="nav-item" data-nav="reviews">
-        <i class="ti ti-star"></i>
-        <span>Reviews</span>
+      <div class="nav-item" data-nav="funnel-studio">
+        <i class="ti ti-palette"></i>
+        <span>Funnel Studio</span>
       </div>
-      <div class="nav-item" data-nav="ai-tools">
-        <i class="ti ti-robot"></i>
-        <span>AI Tools</span>
+      <div class="nav-item" data-nav="customers">
+        <i class="ti ti-users"></i>
+        <span>Customers</span>
       </div>
-      <div class="nav-item" data-nav="integrations">
-        <i class="ti ti-plug"></i>
-        <span>Integrations</span>
+      <div class="nav-item" data-nav="campaigns">
+        <i class="ti ti-send"></i>
+        <span>Campaigns</span>
       </div>
-      <div class="nav-item" data-nav="review-wall">
-        <i class="ti ti-layout-grid"></i>
-        <span>Review Wall</span>
+      <div class="nav-item" data-nav="ai-lab">
+        <i class="ti ti-brain"></i>
+        <span>AI Lab</span>
       </div>
-      <div class="nav-item" data-nav="widget">
-        <i class="ti ti-code"></i>
-        <span>Website Widget</span>
+      <div class="nav-item" data-nav="assets">
+        <i class="ti ti-package"></i>
+        <span>Assets</span>
       </div>
-      <div class="nav-item" data-nav="nfc-card">
-        <i class="ti ti-device-sim"></i>
-        <span>📱 NFC Card</span>
+      <div class="nav-item" data-nav="analytics">
+        <i class="ti ti-chart-line"></i>
+        <span>Analytics</span>
       </div>
       <div class="nav-item" data-nav="settings">
         <i class="ti ti-settings"></i>
@@ -492,9 +559,8 @@
       </div>
     </div>
 
-        <!-- DASHBOARD SECTION -->
-    <div id="dashboardSection" class="content-section active">
-      <!-- Reputation Hero -->
+    <!-- OVERVIEW SECTION -->
+    <div id="overviewSection" class="content-section active">
       <div class="rep-hero">
         <div class="rep-score">
           <div class="rep-score-value" id="heroScore">—</div>
@@ -503,57 +569,229 @@
         <div class="rep-bars" id="heroBars"></div>
       </div>
 
-      <!-- Stats Row -->
       <div class="stats-row">
         <div class="stat-tile">
           <div class="stat-header"><i class="ti ti-eye"></i></div>
           <div class="stat-number" id="statVisits">—</div>
           <div class="stat-label">Total visits</div>
-          <div class="stat-change" id="statVisitsChange"></div>
         </div>
         <div class="stat-tile">
           <div class="stat-header"><i class="ti ti-thumb-up"></i></div>
           <div class="stat-number" id="statPositive">—</div>
           <div class="stat-label">Positive ratings</div>
-          <div class="stat-change" id="statPositiveChange"></div>
         </div>
         <div class="stat-tile">
           <div class="stat-header"><i class="ti ti-star"></i></div>
           <div class="stat-number" id="statReviews">—</div>
           <div class="stat-label">Reviews captured</div>
-          <div class="stat-change" id="statReviewsChange"></div>
         </div>
         <div class="stat-tile">
           <div class="stat-header"><i class="ti ti-message"></i></div>
           <div class="stat-number" id="statNegative">—</div>
-          <div class="stat-label">Negative feedback</div>
-          <div class="stat-change" id="statNegativeChange"></div>
+          <div class="stat-label">Feedback captured</div>
         </div>
       </div>
 
-      <!-- Feature Tiles Grid -->
+      <!-- Customer Journey Map -->
+      <div class="panel" style="margin-bottom:32px; overflow-x:auto;">
+        <h3 style="margin-bottom:20px;">📊 Customer Journey</h3>
+        <div style="display:flex; align-items:center; justify-content:space-between; min-width:600px;">
+          <div style="text-align:center; flex:1;">
+            <div style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
+              <i class="ti ti-eye" style="color:var(--accent);"></i>
+            </div>
+            <div style="font-size:0.7rem; color:var(--cream-dim);">Visit</div>
+            <div class="journey-count" id="journeyVisits" style="font-size:1.2rem; font-weight:700;">0</div>
+          </div>
+          <i class="ti ti-arrow-right" style="color:var(--accent); font-size:1.2rem;"></i>
+          <div style="text-align:center; flex:1;">
+            <div style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
+              <i class="ti ti-star" style="color:var(--accent);"></i>
+            </div>
+            <div style="font-size:0.7rem; color:var(--cream-dim);">Rating</div>
+            <div class="journey-count" id="journeyRatings" style="font-size:1.2rem; font-weight:700;">0</div>
+          </div>
+          <i class="ti ti-arrow-right" style="color:var(--accent); font-size:1.2rem;"></i>
+          <div style="text-align:center; flex:1;">
+            <div style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
+              <i class="ti ti-click" style="color:var(--accent);"></i>
+            </div>
+            <div style="font-size:0.7rem; color:var(--cream-dim);">Review Click</div>
+            <div class="journey-count" id="journeyClicks" style="font-size:1.2rem; font-weight:700;">0</div>
+          </div>
+          <i class="ti ti-arrow-right" style="color:var(--accent); font-size:1.2rem;"></i>
+          <div style="text-align:center; flex:1;">
+            <div style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
+              <i class="ti ti-brand-google" style="color:var(--accent);"></i>
+            </div>
+            <div style="font-size:0.7rem; color:var(--cream-dim);">Review Posted</div>
+            <div class="journey-count" id="journeyPosted" style="font-size:1.2rem; font-weight:700;">0</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; height:4px; background:var(--surface-2); border-radius:2px; overflow:hidden;">
+          <div id="journeyProgress" style="width:0%; height:100%; background:var(--accent); transition:width 0.5s ease;"></div>
+        </div>
+      </div>
+
       <div class="features-grid" id="featuresGrid"></div>
 
-      <!-- Recent Activity Feed -->
       <div class="activity-list">
         <div class="activity-header">📋 Recent activity</div>
         <div id="activityList"></div>
       </div>
 
-      <!-- Hidden chart canvas for Chart.js (prevents error) -->
       <canvas id="ratingChart" style="display: none;"></canvas>
     </div>
 
+    <!-- FUNNEL STUDIO SECTION -->
+    <div id="funnelStudioSection" class="content-section">
+      <div class="funnel-studio-header">
+        <h2 style="margin-bottom: 8px;">Funnel Studio</h2>
+        <p style="color: var(--cream-dim); margin-bottom: 32px;">Design how customers experience your review funnel</p>
+      </div>
+      
+      <span id="funnelUrlDisplay" style="display:none;"></span>
+      
+      <div id="funnelStudioProFeatures" style="display:none;">
+        <div style="display:grid; grid-template-columns: 280px 1fr 260px; gap: 24px;">
+          
+          <div style="background:var(--surface-2); border-radius:16px; padding:20px;">
+            <h4 style="margin-bottom:16px;">Templates</h4>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px;">
+              <div onclick="selectTemplate('classic')" class="template-option-compact" data-template="classic" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer; background:var(--surface);">
+                <div style="width:40px;height:40px;background:#1A1A18;border-radius:6px;"></div>
+                <span>Classic Dark</span>
+              </div>
+              <div onclick="selectTemplate('bright')" class="template-option-compact" data-template="bright" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
+                <div style="width:40px;height:40px;background:#FFFFFF;border-radius:6px;"></div>
+                <span>Bright Light</span>
+              </div>
+              <div onclick="selectTemplate('medical')" class="template-option-compact" data-template="medical" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
+                <div style="width:40px;height:40px;background:#F8FAFC;border-radius:6px;"></div>
+                <span>Medical Clean</span>
+              </div>
+              <div onclick="selectTemplate('bold')" class="template-option-compact" data-template="bold" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
+                <div style="width:40px;height:40px;background:var(--accent);border-radius:6px;"></div>
+                <span>Bold Accent</span>
+              </div>
+              <div onclick="selectTemplate('luxury')" class="template-option-compact" data-template="luxury" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
+                <div style="width:40px;height:40px;background:#0A0A0A;border-radius:6px;"></div>
+                <span>Luxury Dark</span>
+              </div>
+            </div>
+            
+            <h4 style="margin-bottom:12px;">Branding</h4>
+            <input type="url" id="funnelLogoUrl" placeholder="Logo URL" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:12px;">
+            <div style="display:flex; gap:8px; margin-bottom:20px;">
+              <input type="color" id="funnelAccentColor" value="#C8A96E" style="width:50px;height:40px;border-radius:6px;">
+              <div style="display:flex; gap:4px;">
+                <div onclick="setAccentColor('#C8A96E')" style="width:24px;height:24px;border-radius:4px;background:#C8A96E;cursor:pointer;"></div>
+                <div onclick="setAccentColor('#3B82F6')" style="width:24px;height:24px;border-radius:4px;background:#3B82F6;cursor:pointer;"></div>
+                <div onclick="setAccentColor('#10B981')" style="width:24px;height:24px;border-radius:4px;background:#10B981;cursor:pointer;"></div>
+                <div onclick="setAccentColor('#8B5CF6')" style="width:24px;height:24px;border-radius:4px;background:#8B5CF6;cursor:pointer;"></div>
+              </div>
+            </div>
+            
+            <h4 style="margin-bottom:8px;">Messaging</h4>
+            <input type="text" id="funnelHeadline" placeholder="Headline" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:8px;">
+            <input type="text" id="funnelHappyLabel" placeholder="Happy button" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:8px;">
+            <input type="text" id="funnelUnhappyLabel" placeholder="Unhappy button" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:16px;">
+            
+            <button onclick="saveFunnelSettings()" class="btn-full" style="background:var(--accent);color:#1A1A18;">Save Changes</button>
+            <div id="funnelMsg" style="margin-top:8px;font-size:0.75rem;"></div>
+          </div>
+          
+          <div>
+            <div style="display:flex; gap:12px; margin-bottom:16px; justify-content:center;">
+              <button onclick="setPreviewDevice('mobile')" id="mobileViewBtn" style="background:var(--accent);color:#1A1A18;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;">📱 Mobile</button>
+              <button onclick="setPreviewDevice('desktop')" id="desktopViewBtn" style="background:var(--surface-2);color:var(--cream-dim);border:1px solid var(--border);border-radius:8px;padding:8px 16px;cursor:pointer;">💻 Desktop</button>
+            </div>
+            
+            <div id="mobilePreview" style="display:block; max-width:380px; margin:0 auto;">
+              <div style="background:var(--surface-2); border-radius:32px; padding:16px; box-shadow:0 20px 40px rgba(0,0,0,0.4);">
+                <div style="background:#000; border-radius:28px; overflow:hidden;">
+                  <iframe id="funnelPreviewMobile" style="width:100%; height:560px; border:none; background:#fff;"></iframe>
+                </div>
+              </div>
+            </div>
+            
+            <div id="desktopPreview" style="display:none;">
+              <div style="background:var(--surface-2); border-radius:16px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+                <iframe id="funnelPreviewDesktop" style="width:100%; height:500px; border:none; border-radius:12px; background:#fff;"></iframe>
+              </div>
+            </div>
+          </div>
+          
+          <div style="background:linear-gradient(135deg, var(--surface-2) 0%, rgba(200,169,110,0.05) 100%); border-radius:16px; padding:20px; border:1px solid rgba(200,169,110,0.15);">
+            <i class="ti ti-brain" style="font-size:1.5rem; color:var(--accent); margin-bottom:12px; display:block;"></i>
+            <h4 style="margin-bottom:8px;">AI Insights</h4>
+            <p style="font-size:0.8rem; color:var(--cream-dim); margin-bottom:16px;">Based on 1,247 successful review funnels</p>
+            
+            <div style="margin-bottom:16px;">
+              <div style="font-size:0.7rem; color:var(--accent); margin-bottom:4px;">⭐ Conversion tip</div>
+              <p style="font-size:0.75rem; color:var(--cream-dim);">"Great experience!" converts 23% better than generic text</p>
+            </div>
+            
+            <div style="margin-bottom:16px;">
+              <div style="font-size:0.7rem; color:var(--accent); margin-bottom:4px;">🎨 Colour psychology</div>
+              <p style="font-size:0.75rem; color:var(--cream-dim);">Gold accents increase trust signals by 18%</p>
+            </div>
+            
+            <div>
+              <div style="font-size:0.7rem; color:var(--accent); margin-bottom:4px;">📱 Mobile optimisation</div>
+              <p style="font-size:0.75rem; color:var(--cream-dim);">Your funnel looks great on mobile — 94% of visitors use phones</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="funnelStudioUpgradePrompt" style="display:none;" class="pro-lock-panel">
+        <i class="ti ti-palette" style="font-size:2.5rem;color:var(--accent);margin-bottom:16px;display:block;"></i>
+        <h4 style="margin-bottom:12px;">Funnel Studio — Pro Feature</h4>
+        <p style="margin-bottom:20px;">Choose from 5 templates, add your logo, match your brand colours, and customise every word of your review funnel.</p>
+        <ul style="text-align:left;max-width:300px;margin:0 auto 24px auto;">
+          <li>✓ 5 professional templates</li>
+          <li>✓ Your logo and brand colours</li>
+          <li>✓ Custom headlines and buttons</li>
+          <li>✓ AI translation to 8+ languages</li>
+        </ul>
+        <a href="/billing" class="btn-full" style="display:inline-block;max-width:200px;">Upgrade to Pro →</a>
+      </div>
+    </div>
 
-    <!-- REVIEWS SECTION (existing SMS + email) -->
-    <div id="reviewsSection" class="content-section">
-      <h2 style="margin-bottom: 20px;">Request Reviews</h2>
+    <!-- CUSTOMERS SECTION -->
+    <div id="customersSection" class="content-section">
+      <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
+      
+      <div class="panel">
+        <h3>⭐ Public Review Wall</h3>
+        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">A public page showing all your positive customer feedback. Updates automatically.</p>
+        <div class="input-row" style="margin-bottom:12px;">
+          <input id="wallUrl" readonly style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:12px;">
+          <button onclick="copyWallUrl()" style="background:var(--accent);color:#1A1A18;border:none;border-radius:6px;padding:0 20px;">Copy</button>
+        </div>
+        <a href="#" id="wallPreviewLink" target="_blank" class="btn-full" style="display:inline-block;text-align:center;text-decoration:none;max-width:200px;">View your Review Wall →</a>
+      </div>
+      
+      <div class="panel">
+        <h3>🔒 Private Feedback</h3>
+        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Complaints and concerns that never reached public review sites.</p>
+        <div id="privateFeedbackList" style="max-height:300px;overflow-y:auto;">
+          <p style="color:var(--cream-dim);font-size:0.85rem;">Loading feedback...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMPAIGNS SECTION -->
+    <div id="campaignsSection" class="content-section">
+      <h2 style="margin-bottom: 20px;">Review Campaigns</h2>
+      
       <div id="smsUnlocked" style="display:none">
         <div class="panel">
-          <h3>Send SMS request</h3>
-          <p class="panel-desc" style="font-size:0.78rem;color:rgba(234,231,220,0.35);margin-bottom:14px;">Send a personalised text directly to a customer's phone. 🇬🇧 UK numbers only.</p>
+          <h3>📱 Send SMS request</h3>
+          <p style="font-size:0.78rem;color:var(--cream-dim);margin-bottom:14px;">Send a personalised text directly to a customer's phone. 🇬🇧 UK numbers only.</p>
           <div class="input-row">
-            <input id="customerPhone" type="tel" placeholder="e.g. 07700 900000 or +447700900000">
+            <input id="customerPhone" type="tel" placeholder="e.g. 07700 900000">
             <button onclick="sendSMS()">Send SMS</button>
           </div>
         </div>
@@ -564,9 +802,10 @@
         <p>Upgrade to Pro to unlock SMS review requests.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
+      
       <div id="emailUnlocked" style="display:none">
         <div class="panel">
-          <h3>Send email request</h3>
+          <h3>📧 Send email request</h3>
           <div class="input-row">
             <input id="customerEmail" type="email" placeholder="Customer email address">
             <button onclick="sendEmail()">Send Email</button>
@@ -581,16 +820,16 @@
       </div>
     </div>
 
-         <!-- AI TOOLS SECTION -->
-    <div id="aiToolsSection" class="content-section">
-      <h2 style="margin-bottom: 20px;">AI Tools</h2>
+    <!-- AI LAB SECTION -->
+    <div id="aiLabSection" class="content-section">
+      <h2 style="margin-bottom: 20px;">AI Lab</h2>
+      <p style="color:var(--cream-dim);margin-bottom:28px;">Intelligent tools powered by GPT-4o-mini</p>
       
-      <!-- AI Reply Generator -->
       <div id="aiUnlocked" style="display:none">
         <div class="panel">
           <h3>🤖 AI Review Reply Generator</h3>
           <textarea id="reviewText" placeholder="Paste a customer review here..." style="min-height:90px;width:100%;padding:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;color:var(--cream);margin-bottom:12px;"></textarea>
-          <button onclick="generateReplies()" id="aiBtn" class="btn-full" style="width:auto;">Generate Replies</button>
+          <button onclick="generateRepliesStreaming()" id="aiBtn" class="btn-full" style="width:auto;">Generate Replies</button>
           <div id="aiReplies" style="display:grid; grid-template-columns: repeat(3,1fr); gap:14px; margin-top:20px;">
             <div><div style="color:var(--accent);margin-bottom:6px;">Professional</div><textarea id="aiProfessional" readonly style="width:100%;min-height:80px;background:var(--surface-3);border-radius:6px;padding:10px;"></textarea><button onclick="copyAiReply('aiProfessional')" style="margin-top:6px;">Copy</button></div>
             <div><div style="color:var(--accent);margin-bottom:6px;">Warm & Personal</div><textarea id="aiWarm" readonly style="width:100%;min-height:80px;background:var(--surface-3);border-radius:6px;padding:10px;"></textarea><button onclick="copyAiReply('aiWarm')" style="margin-top:6px;">Copy</button></div>
@@ -605,36 +844,33 @@
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
       
-      <!-- Sentiment Trends -->
       <div id="sentimentUnlocked" style="display:none">
         <div class="panel">
-          <h3>📊 AI Sentiment Trends</h3>
+          <h3>📊 Sentiment Trends</h3>
           <div id="sentimentContent"><p>Loading...</p></div>
         </div>
       </div>
       <div id="sentimentLocked" class="pro-lock-panel" style="display:none">
         <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
-        <h4>AI Sentiment Trends</h4>
+        <h4>Sentiment Trends</h4>
         <p>Upgrade to Pro to see what your customers are saying.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
       
-      <!-- Send Intelligence -->
       <div id="sendIntelUnlocked" style="display:none">
         <div class="panel">
-          <h3>🧠 AI Send Intelligence</h3>
+          <h3>🧠 Send Intelligence</h3>
           <p id="sendIntelMessage">Loading analytics...</p>
           <div id="sendIntelInsight"></div>
         </div>
       </div>
       <div id="sendIntelLocked" class="pro-lock-panel" style="display:none">
         <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
-        <h4>AI Send Intelligence</h4>
+        <h4>Send Intelligence</h4>
         <p>Upgrade to Pro to see channel recommendations.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
       
-      <!-- Competitor Analysis -->
       <div id="competitorUnlocked" style="display:none">
         <div class="panel">
           <h3>🎯 Competitor Analysis</h3>
@@ -650,96 +886,89 @@
         <p>Upgrade to Agency to analyse competitors.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
-    </div>     
-     
-
-
-    <!-- INTEGRATIONS SECTION -->
-    <div id="integrationsSection" class="content-section">
-      <h2 style="margin-bottom: 20px;">Integrations</h2>
-      <div class="panel">
-        <h3>🔗 Webhook URL</h3>
-        <p class="panel-desc">Paste this URL into your booking system's webhook settings.</p>
-        <div class="input-row"><input id="webhookUrl" readonly><button onclick="copyWebhook()">Copy</button></div>
-      </div>
-      <div class="panel">
-        <h3>📄 Invoice Integration</h3>
-        <p class="panel-desc">Connect Xero or QuickBooks to auto-send QR codes on payment.</p>
-        <div class="input-row"><input id="invoiceWebhookUrl" readonly><button onclick="copyInvoiceWebhook()">Copy</button></div>
-      </div>
-      <div class="panel">
-        <h3>📘 Booking Software Setup</h3>
-        <p id="webhookGuide" style="font-size:0.85rem;color:var(--cream-dim);">Select a booking system during signup to see setup instructions.</p>
-      </div>
     </div>
 
-    <!-- REVIEW WALL SECTION -->
-    <!-- REVIEW WALL SECTION -->
-    <div id="reviewWallSection" class="content-section">
-      <h2 style="margin-bottom: 20px;">Your Review Wall</h2>
-      <div class="panel">
-        <p>A public page showing all your positive customer feedback. Updates automatically.</p>
-        <div class="input-row" style="margin:16px 0;"><input id="wallUrl" readonly style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:12px;"><button onclick="copyWallUrl()" style="background:var(--accent);color:#1A1A18;border:none;border-radius:6px;padding:0 20px;">Copy</button></div>
-        <a href="#" id="wallPreviewLink" target="_blank" class="btn-full" style="display:inline-block;text-align:center;text-decoration:none;">View your Review Wall →</a>
-      </div>
-    </div>
-
-        <!-- NFC TAP-TO-REVIEW CARD SECTION -->
-    <div id="nfcCardSection" class="content-section">
-      <h2 style="margin-bottom: 20px;">Tap-to-Review Card</h2>
-      <div class="panel">
-        <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;">
-          <div style="flex-shrink:0;">
-            <div style="width:120px;height:80px;background:linear-gradient(135deg,#1A1A18,#2E2E2B);border-radius:8px;border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:2rem;">📱</div>
+    <!-- ASSETS SECTION -->
+    <div id="assetsSection" class="content-section">
+      <h2 style="margin-bottom: 20px;">Assets Gallery</h2>
+      <p style="color:var(--cream-dim);margin-bottom:28px;">Everything you need to collect reviews — all in one place.</p>
+      
+      <div class="assets-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
+        <div class="panel" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:80px;height:80px;background:linear-gradient(135deg,#1A1A18,#2E2E2B);border-radius:12px;border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:16px;">📱</div>
+          <h3 style="margin-bottom:8px;">NFC Tap Card</h3>
+          <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Physical card — tap to review</p>
+          <div id="nfcCardUpsellAssets">
+            <button onclick="openNfcModal()" class="btn-full" style="background:var(--accent);color:#1A1A18;padding:10px 20px;">Order — £9.99</button>
           </div>
-          <div style="flex:1;">
-            <h3 style="margin-bottom:8px;">📱 Tap-to-Review NFC Card — £9.99 one-time</h3>
-            <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:12px;">A physical card customers tap with their phone to instantly leave a review.</p>
-            <div id="nfcCardUpsell">
-              <button onclick="openNfcModal()" class="btn-full" style="background:var(--accent); color:#1A1A18; max-width:220px;">💳 Order card — £9.99</button>
-            </div>
-            <div id="nfcCardOrdered" style="display:none;">
-              <p style="color:var(--success);">✅ Card ordered! We'll ship it within 2 business days.</p>
-            </div>
-            <div id="nfcCardShipped" style="display:none;">
-              <p style="color:var(--accent);">✈️ Your card has shipped! <span id="nfcTrackingInfo"></span></p>
-            </div>
+          <div id="nfcCardOrderedAssets" style="display:none;">
+            <p style="color:var(--success);font-size:0.8rem;">✅ Ordered! Ships in 2 days.</p>
           </div>
         </div>
+        
+        <div class="panel" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:80px;height:80px;background:var(--surface-2);border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:16px;">📲</div>
+          <h3 style="margin-bottom:8px;">QR Code</h3>
+          <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Print-ready for counters and receipts</p>
+          <a href="/qr-download" class="btn-full" style="display:inline-block;background:var(--accent);color:#1A1A18;padding:10px 20px;text-decoration:none;">Download QR →</a>
+        </div>
+        
+        <div class="panel" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:80px;height:80px;background:var(--surface-2);border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:16px;">💻</div>
+          <h3 style="margin-bottom:8px;">Website Widget</h3>
+          <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Embed a review button on your site</p>
+          <button onclick="copyEmbedCode()" class="btn-full" style="background:var(--accent);color:#1A1A18;padding:10px 20px;">Copy embed code →</button>
+        </div>
+        
+        <div class="panel" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+          <div style="width:80px;height:80px;background:var(--surface-2);border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:16px;">🔗</div>
+          <h3 style="margin-bottom:8px;">Direct Review Link</h3>
+          <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Share anywhere — email, social, text</p>
+          <input id="assetReviewLink" readonly style="width:100%;padding:8px;background:var(--surface-3);border-radius:6px;font-size:0.7rem;margin-bottom:10px;">
+          <button onclick="copyAssetReviewLink()" class="btn-full" style="background:var(--accent);color:#1A1A18;padding:8px 16px;">Copy link →</button>
+        </div>
+      </div>
+      
+      <div class="panel" style="margin-top:20px;">
+        <h3>🔌 Integrations</h3>
+        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Connect your booking system or invoice software.</p>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.7rem;color:var(--cream-dim);">Webhook URL (for bookings)</label>
+          <div class="input-row" style="margin-top:4px;"><input id="webhookUrl" readonly><button onclick="copyWebhook()">Copy</button></div>
+        </div>
+        <div>
+          <label style="font-size:0.7rem;color:var(--cream-dim);">Invoice Webhook (for paid invoices)</label>
+          <div class="input-row" style="margin-top:4px;"><input id="invoiceWebhookUrl" readonly><button onclick="copyInvoiceWebhook()">Copy</button></div>
+        </div>
       </div>
     </div>
 
-       <!-- WEBSITE WIDGET SECTION -->
-    <div id="widgetSection" class="content-section">
-      <h2 style="margin-bottom: 20px;">Website Widget</h2>
+    <!-- ANALYTICS SECTION -->
+    <div id="analyticsSection" class="content-section">
+      <h2 style="margin-bottom: 20px;">Analytics</h2>
+      <p style="color:var(--cream-dim);margin-bottom:28px;">Track your reputation growth over time.</p>
+      
       <div class="panel">
-        <h3>📋 Your Review Link</h3>
-        <div class="input-row" style="margin-bottom: 16px;">
-          <input id="reviewLink" readonly style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; color:var(--cream);">
-          <button onclick="copyReviewLink()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:0 20px; cursor:pointer;">Copy</button>
-        </div>
-        
-        <h3 style="margin-top: 24px;">🔗 Webhook URL</h3>
-        <p class="panel-desc">Paste this URL into your booking system's webhook settings.</p>
-        <div class="input-row" style="margin-bottom: 16px;">
-          <input id="webhookUrl" readonly style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; color:var(--cream);">
-          <button onclick="copyWebhook()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:0 20px; cursor:pointer;">Copy</button>
-        </div>
-        
-        <h3 style="margin-top: 24px;">📄 Invoice Integration</h3>
-        <p class="panel-desc">Connect Xero or QuickBooks to auto-send QR codes on payment.</p>
-        <div class="input-row">
-          <input id="invoiceWebhookUrl" readonly style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; color:var(--cream);">
-          <button onclick="copyInvoiceWebhook()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:0 20px; cursor:pointer;">Copy</button>
-        </div>
-        
-        <h3 style="margin-top: 24px;">📘 Booking Software Setup</h3>
-        <p id="webhookGuide" style="font-size:0.85rem; color:var(--cream-dim);">Select a booking system during signup to see setup instructions.</p>
-        
-        <h3 style="margin-top: 24px;">💻 Embed Button Code</h3>
-        <p class="panel-desc">Paste this HTML into your website to add a "Leave us a review" button.</p>
-        <textarea id="embedCode" readonly style="width:100%; min-height:80px; background:var(--surface-2); border-radius:6px; padding:10px; font-family:monospace; color:var(--accent);"></textarea>
-        <button onclick="copyEmbedCode()" class="btn-full" style="margin-top:10px;">Copy Code</button>
+        <h3>⭐ Rating Distribution</h3>
+        <canvas id="ratingChartAnalytics" style="width:100%;max-height:300px;"></canvas>
+      </div>
+      
+      <div class="panel" id="proAnalyticsPreview" style="display:none;">
+        <h3>📈 Review Growth</h3>
+        <canvas id="growthChart" style="width:100%;max-height:200px;"></canvas>
+      </div>
+      
+      <div id="reputationHeatmap" style="display:none;" class="panel">
+        <h3>🔥 Reputation Heatmap</h3>
+        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Review sentiment by day and time</p>
+        <div id="heatmapContainer" style="display:grid; grid-template-columns:repeat(7,1fr); gap:8px;"></div>
+      </div>
+
+      <div id="analyticsUpgradePrompt" style="display:block;" class="pro-lock-panel">
+        <i class="ti ti-chart-line" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
+        <h4>Advanced Analytics</h4>
+        <p>Upgrade to Pro for detailed growth charts, conversion tracking, and exportable reports.</p>
+        <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
     </div>
 
@@ -747,7 +976,6 @@
     <div id="settingsSection" class="content-section">
       <h2 style="margin-bottom: 20px;">Settings</h2>
       
-      <!-- Business details -->
       <div class="panel">
         <h3>🏢 Business details</h3>
         <div class="form-group" style="margin-bottom:12px;">
@@ -759,176 +987,32 @@
           <input id="reviewLinkInput" type="url" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);">
         </div>
         <button onclick="saveBizDetails()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Save changes</button>
-        <p id="bizMsg" style="margin-top:8px; font-size:0.8rem;"></p>
       </div>
       
-      <!-- Change password -->
       <div class="panel">
         <h3>🔐 Change password</h3>
         <input id="currentPw" type="password" placeholder="Current password" style="width:100%; margin-bottom:8px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);"><br>
         <input id="newPw" type="password" placeholder="New password" style="width:100%; margin-bottom:8px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);"><br>
         <input id="confirmPw" type="password" placeholder="Confirm new password" style="width:100%; margin-bottom:12px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);">
         <button onclick="changePassword()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Update password</button>
-        <p id="pwMsg" style="margin-top:8px; font-size:0.8rem;"></p>
-      </div>
-
-       <!-- Funnel Customisation -->
-<div class="panel" id="funnelEditor">
-  <h3>🎨 Customise your review funnel</h3>
-  
-  <!-- Show this to all users - basic info -->
-  <div id="funnelBasicInfo">
-    <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Your review funnel is live at: <code id="funnelUrlDisplay" style="background:var(--surface-2);padding:4px 8px;border-radius:6px;color:var(--accent);word-break:break-all;"></code></p>
-  </div>
-  
-  <!-- Show this ONLY to Pro/Agency users -->
-  <div id="funnelProFeatures" style="display:none;">
-    <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:20px;">Change how your review funnel looks — choose a template, add your logo, and customise the text.</p>
-    
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-      <!-- Left: Controls -->
-      <div>
-        <!-- Template Picker -->
-        <div style="margin-bottom:20px;">
-          <label style="display:block;margin-bottom:8px;font-weight:600;">Template</label>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
-            <div onclick="selectTemplate('classic')" class="template-option" data-template="classic" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-              <div style="width:100%;height:40px;background:#1A1A18;border-radius:6px;margin-bottom:4px;"></div>
-              <span style="font-size:0.7rem;">Classic</span>
-            </div>
-            <div onclick="selectTemplate('bright')" class="template-option" data-template="bright" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-              <div style="width:100%;height:40px;background:#FFFFFF;border-radius:6px;margin-bottom:4px;"></div>
-              <span style="font-size:0.7rem;">Bright</span>
-            </div>
-            <div onclick="selectTemplate('medical')" class="template-option" data-template="medical" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-              <div style="width:100%;height:40px;background:#F8FAFC;border-radius:6px;margin-bottom:4px;"></div>
-              <span style="font-size:0.7rem;">Medical</span>
-            </div>
-            <div onclick="selectTemplate('bold')" class="template-option" data-template="bold" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-              <div style="width:100%;height:40px;background:var(--accent);border-radius:6px;margin-bottom:4px;"></div>
-              <span style="font-size:0.7rem;">Bold</span>
-            </div>
-            <div onclick="selectTemplate('luxury')" class="template-option" data-template="luxury" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-              <div style="width:100%;height:40px;background:#0A0A0A;border-radius:6px;margin-bottom:4px;"></div>
-              <span style="font-size:0.7rem;">Luxury</span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Logo URL -->
-        <div style="margin-bottom:16px;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Logo URL</label>
-          <input type="url" id="funnelLogoUrl" placeholder="https://your-site.com/logo.png" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-          <p class="helper-text" style="font-size:0.7rem;">Upload an image and paste the URL here. Max height 60px.</p>
-        </div>
-        
-        <!-- Accent Colour -->
-        <div style="margin-bottom:16px;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Accent colour</label>
-          <div style="display:flex;gap:10px;align-items:center;">
-            <input type="color" id="funnelAccentColor" value="#C8A96E" style="width:50px;height:40px;border-radius:6px;cursor:pointer;">
-            <div style="display:flex;gap:6px;">
-              <div onclick="setAccentColor('#C8A96E')" style="width:28px;height:28px;border-radius:6px;background:#C8A96E;cursor:pointer;"></div>
-              <div onclick="setAccentColor('#3B82F6')" style="width:28px;height:28px;border-radius:6px;background:#3B82F6;cursor:pointer;"></div>
-              <div onclick="setAccentColor('#10B981')" style="width:28px;height:28px;border-radius:6px;background:#10B981;cursor:pointer;"></div>
-              <div onclick="setAccentColor('#8B5CF6')" style="width:28px;height:28px;border-radius:6px;background:#8B5CF6;cursor:pointer;"></div>
-              <div onclick="setAccentColor('#EF4444')" style="width:28px;height:28px;border-radius:6px;background:#EF4444;cursor:pointer;"></div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Custom Text -->
-        <div style="margin-bottom:16px;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Headline</label>
-          <input type="text" id="funnelHeadline" placeholder="How was your experience at {business name}?" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-        </div>
-        <div style="margin-bottom:16px;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Happy button label</label>
-          <input type="text" id="funnelHappyLabel" placeholder="Great experience!" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-        </div>
-        <div style="margin-bottom:16px;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Unhappy button label</label>
-          <input type="text" id="funnelUnhappyLabel" placeholder="Could be better" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-        </div>
-        <div style="margin-bottom:16px;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Thank you message</label>
-          <textarea id="funnelThankyouMessage" rows="2" placeholder="Thanks for your feedback — it means a lot to us." style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);"></textarea>
-        </div>
-        
-        <!-- Language (Pro/Agency) -->
-        <div id="languageSettings" style="margin-bottom:16px;display:none;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Language <span style="color:var(--accent);font-size:0.7rem;">(Pro/Agency)</span></label>
-          <select id="funnelLanguage" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="pl">Polish</option>
-            <option value="ur">Urdu</option>
-            <option value="pa">Punjabi</option>
-            <option value="ar">Arabic</option>
-          </select>
-          <p class="helper-text" style="font-size:0.7rem;">Your funnel will be translated automatically by AI.</p>
-        </div>
-        
-        <!-- Custom Domain (Agency only) -->
-        <div id="domainSettings" style="margin-bottom:16px;display:none;">
-          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Custom domain <span style="color:var(--accent);font-size:0.7rem;">(Agency)</span></label>
-          <input type="text" id="funnelCustomDomain" placeholder="reviews.yourbusiness.co.uk" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-          <p class="helper-text" style="font-size:0.7rem;">Point a CNAME record from your domain to reviewlift.app, then enter it here.</p>
-        </div>
-        
-        <button onclick="saveFunnelSettings()" class="btn-full" style="background:var(--accent);color:#1A1A18;margin-top:8px;">Save & Preview</button>
-        <div id="funnelMsg" style="margin-top:8px;font-size:0.8rem;"></div>
       </div>
       
-      <!-- Right: Live Preview -->
-      <div>
-        <label style="display:block;margin-bottom:8px;font-weight:600;">Live preview</label>
-        <div style="background:var(--surface-2);border-radius:12px;padding:12px;border:1px solid var(--border);">
-          <iframe id="funnelPreview" style="width:100%;height:500px;border:none;border-radius:8px;background:#fff;"></iframe>
-        </div>
-        <p class="helper-text" style="font-size:0.7rem;margin-top:8px;">Your funnel updates live when you click Save.</p>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Show this to Starter users -->
-  <div id="funnelUpgradePrompt" style="display:none;" class="pro-lock-panel">
-    <i class="ti ti-palette" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
-    <h4 style="margin-bottom:8px;">Customise your review funnel</h4>
-    <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Choose from 5 templates, add your logo, match your brand colours, and customise every word of your review funnel.</p>
-    <ul style="text-align:left;max-width:280px;margin:0 auto 20px auto;font-size:0.8rem;color:var(--cream-dim);">
-      <li>✓ 5 professional templates</li>
-      <li>✓ Your logo and brand colours</li>
-      <li>✓ Custom headlines and buttons</li>
-      <li>✓ AI translation to 8+ languages</li>
-    </ul>
-    <a href="/billing" class="btn-full" style="display:inline-block;background:var(--accent);color:#1A1A18;text-decoration:none;">Upgrade to Pro →</a>
-  </div>
-</div>
-      
-
-      <!-- WhatsApp Alerts (Pro only) -->
       <div id="whatsappSettings" style="display:none;">
         <div class="panel">
           <h3>📱 WhatsApp Alerts</h3>
           <label style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
             <input type="checkbox" id="whatsappAlertsToggle"> Send me a WhatsApp alert for every complaint
           </label>
-          <input id="whatsappNumber" type="tel" placeholder="Your WhatsApp number (e.g. 07700900000)" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px;">
-          <button onclick="saveWhatsAppSettings()" class="btn-full" style="margin-top:10px; background:var(--accent); color:#1A1A18;">Save WhatsApp settings</button>
-          <p class="panel-desc" style="margin-top:8px;">You'll get an instant WhatsApp message with the complaint, category, and a ready-to-send response — within 60 seconds.</p>
+          <input id="whatsappNumber" type="tel" placeholder="Your WhatsApp number" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px;">
+          <button onclick="saveWhatsAppSettings()" class="btn-full" style="margin-top:10px; background:var(--accent); color:#1A1A18;">Save</button>
         </div>
       </div>
       
-      <!-- Danger zone -->
       <div class="panel" style="border-color: rgba(192,103,90,0.3);">
         <h3 style="color: #D4897C;">⚠️ Danger zone</h3>
-        <p style="font-size:0.85rem; margin-bottom:16px;">Cancel your subscription and lose access to your dashboard.</p>
         <button onclick="confirmCancel()" class="btn-full" style="background:transparent; border:1px solid #D4897C; color:#D4897C;">Cancel subscription</button>
       </div>
-      </div> <!-- closing tag for settingsSection -->
+    </div>
   </main>
 </div>
 
@@ -977,14 +1061,14 @@ let pollingInterval = null;
 
 // ========== SIDEBAR NAVIGATION ==========
 const navIdMap = {
-  'dashboard': 'dashboardSection',
-  'reviews': 'reviewsSection',
-  'ai-tools': 'aiToolsSection',
-  'integrations': 'integrationsSection',
-  'review-wall': 'reviewWallSection',
-  'widget': 'widgetSection',
+  'overview': 'overviewSection',
+  'funnel-studio': 'funnelStudioSection',
+  'customers': 'customersSection',
+  'campaigns': 'campaignsSection',
+  'ai-lab': 'aiLabSection',
+  'assets': 'assetsSection',
+  'analytics': 'analyticsSection',
   'settings': 'settingsSection',
-  'nfc-card': 'nfcCardSection',  // Add this
 };
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -992,19 +1076,15 @@ document.querySelectorAll('.nav-item').forEach(item => {
     const target = item.dataset.nav;
     const sectionId = navIdMap[target];
     if (!sectionId) return;
-
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     item.classList.add('active');
-
     document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
-
     const section = document.getElementById(sectionId);
     if (section) section.classList.add('active');
-
     window.location.hash = target;
   });
 });
-// Handle hash on load
+
 function handleHash() {
   const hash = window.location.hash.slice(1);
   if (hash) {
@@ -1044,16 +1124,20 @@ function updateTicker(events) {
 
 function copyReviewLink() {
   const input = document.getElementById("reviewLink");
-  input.select();
-  navigator.clipboard.writeText(input.value);
-  showToast("Copied!", "success");
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    showToast("Copied!", "success");
+  }
 }
 
 function copyEmbedCode() {
   const input = document.getElementById("embedCode");
-  input.select();
-  navigator.clipboard.writeText(input.value);
-  showToast("Copied!", "success");
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    showToast("Copied!", "success");
+  }
 }
 
 function confirmCancel() {
@@ -1061,7 +1145,6 @@ function confirmCancel() {
 }
 
 function saveWhatsAppSettings() {
-  // Implement WhatsApp settings save
   showToast("WhatsApp settings saved (feature coming soon)", "success");
 }
 
@@ -1071,34 +1154,31 @@ async function loadDashboardData() {
   if(!res.ok) return;
   const stats = await res.json();
   
-  // Update sidebar business name
   document.getElementById("sidebarBizName").innerText = stats.business_name || slug;
   document.getElementById("sidebarPlanName").innerText = stats.plan_type === "pro" ? "Pro" : stats.plan_type === "agency" ? "Agency" : "Starter";
   document.getElementById("upgradeLink").style.display = stats.plan_type === "agency" ? "none" : "flex";
   document.getElementById("reviewLink").value = window.location.origin + "/r/" + slug;
   updateGreeting(stats.business_name);
   
-  // Update stats row
   document.getElementById("statVisits").innerText = stats.visits ?? 0;
   document.getElementById("statPositive").innerText = stats.positive ?? 0;
   document.getElementById("statReviews").innerText = stats.reviews ?? 0;
   document.getElementById("statNegative").innerText = stats.negative ?? 0;
   
-  // Load reputation score
+  document.getElementById('journeyVisits').innerText = stats.visits || 0;
+  document.getElementById('journeyRatings').innerText = stats.rating_count || 0;
+  document.getElementById('journeyClicks').innerText = stats.reviews || 0;
+  const postedRate = stats.visits ? ((stats.reviews / stats.visits) * 100).toFixed(0) : 0;
+  document.getElementById('journeyPosted').innerText = postedRate + '%';
+  document.getElementById('journeyProgress').style.width = postedRate + '%';
+  
   loadReputationScore();
-
   loadFunnelSettings();
   
-  // Update ticker with recent events
   if (stats.recent_events) updateTicker(stats.recent_events);
-  
-  // Build feature tiles
   buildFeatureTiles(stats);
-  
-  // Load activity feed
   loadActivityFeed();
   
-  // Update other UI elements
   const reviewLink = window.location.origin+"/r/"+slug;
   document.getElementById("wallUrl").value = reviewLink;
   document.getElementById("wallPreviewLink").href = "/wall/"+slug;
@@ -1108,7 +1188,6 @@ async function loadDashboardData() {
   document.getElementById("bizNameInput").value = stats.business_name || "";
   document.getElementById("reviewLinkInput").value = stats.review_link || "";
   
-  // Show/hide pro features based on plan
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");
   document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none";
   document.getElementById("smsLocked").style.display = hasPro ? "none" : "block";
@@ -1121,17 +1200,13 @@ async function loadDashboardData() {
   document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none";
   document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block";
   
-  // WhatsApp settings only for Pro/Agency
   if (hasPro) document.getElementById("whatsappSettings").style.display = "block";
   
-  // Load AI features if unlocked
   if (hasPro) {
     loadSentimentTrends();
     loadSendIntelligence();
   }
   
-  // Chart
-   // Chart - only if canvas exists
   if(chartInstance){ chartInstance.destroy(); chartInstance = null; }
   const canvas = document.getElementById("ratingChart");
   const ctx = canvas?.getContext("2d");
@@ -1145,22 +1220,23 @@ async function loadDashboardData() {
   }
   lastStats = stats;
 }
+
 function buildFeatureTiles(stats) {
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");
   const isAgency = stats.plan_type === "agency";
   
   const tiles = [
-    { id: "sms", name: "SMS Review Requests", icon: "ti-message", desc: "Send review requests via text", stat: `${stats.sms_sent_this_month || 0} sent this month`, nav: "reviews", locked: !hasPro, lockMsg: "Upgrade to Pro" },
-    { id: "email", name: "Email Campaigns", icon: "ti-mail", desc: "Send review requests via email", stat: `${stats.email_sent_this_month || 0} sent this month`, nav: "reviews", locked: !hasPro, lockMsg: "Upgrade to Pro" },
-    { id: "ai", name: "AI Reply Generator", icon: "ti-sparkles", desc: "Generate replies to reviews", stat: `${stats.ai_replies_generated || 0} replies this month`, nav: "ai-tools", locked: !hasPro, lockMsg: "Upgrade to Pro" },
-    { id: "webhook", name: "Webhook Integration", icon: "ti-webhook", desc: "Auto-send review requests", stat: stats.webhook_configured ? "Connected" : "Not set up", nav: "integrations", locked: false },
-    { id: "reviewWall", name: "Review Wall", icon: "ti-layout-grid", desc: "Share customer love", stat: `${stats.positive || 0} reviews displayed`, nav: "review-wall", locked: false },
-    { id: "widget", name: "Website Widget", icon: "ti-code", desc: "Embed on your site", stat: "Copy code to install", nav: "widget", locked: false },
-    { id: "sentiment", name: "Sentiment Trends", icon: "ti-chart-dots", desc: "AI analysis of feedback", stat: `${stats.feedback_themes || 0} themes identified`, nav: "ai-tools", locked: !hasPro, lockMsg: "Upgrade to Pro" },
+    { id: "sms", name: "SMS Review Requests", icon: "ti-message", desc: "Send review requests via text", stat: `${stats.sms_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro" },
+    { id: "email", name: "Email Campaigns", icon: "ti-mail", desc: "Send review requests via email", stat: `${stats.email_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro" },
+    { id: "ai", name: "AI Reply Generator", icon: "ti-sparkles", desc: "Generate replies to reviews", stat: `${stats.ai_replies_generated || 0} replies this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" },
+    { id: "webhook", name: "Webhook Integration", icon: "ti-webhook", desc: "Auto-send review requests", stat: stats.webhook_configured ? "Connected" : "Not set up", nav: "assets", locked: false },
+    { id: "reviewWall", name: "Review Wall", icon: "ti-layout-grid", desc: "Share customer love", stat: `${stats.positive || 0} reviews displayed`, nav: "customers", locked: false },
+    { id: "widget", name: "Website Widget", icon: "ti-code", desc: "Embed on your site", stat: "Copy code to install", nav: "assets", locked: false },
+    { id: "sentiment", name: "Sentiment Trends", icon: "ti-chart-dots", desc: "AI analysis of feedback", stat: `${stats.feedback_themes || 0} themes identified`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" },
     { id: "whatsapp", name: "WhatsApp Alerts", icon: "ti-brand-whatsapp", desc: "Instant complaint alerts", stat: stats.whatsapp_enabled ? "Active" : "Off", nav: "settings", locked: !hasPro, lockMsg: "Upgrade to Pro" },
-    { id: "competitor", name: "Competitor Analysis", icon: "ti-spy", desc: "See competitor weaknesses", stat: `Last run: ${stats.last_competitor_analysis || 'Never'}`, nav: "ai-tools", locked: !isAgency, lockMsg: "Upgrade to Agency" },
-    { id: "voice", name: "Voice Reviews", icon: "ti-microphone", desc: "Collect voice feedback", stat: `${stats.voice_notes || 0} received this month`, nav: "ai-tools", locked: !hasPro, lockMsg: "Upgrade to Pro" },
-    { id: "sendIntel", name: "Send Intelligence", icon: "ti-brain", desc: "AI channel prediction", stat: `${stats.send_intel_rate || 0}% avg conversion`, nav: "ai-tools", locked: !hasPro, lockMsg: "Upgrade to Pro" }
+    { id: "competitor", name: "Competitor Analysis", icon: "ti-spy", desc: "See competitor weaknesses", stat: `Last run: ${stats.last_competitor_analysis || 'Never'}`, nav: "ai-lab", locked: !isAgency, lockMsg: "Upgrade to Agency" },
+    { id: "voice", name: "Voice Reviews", icon: "ti-microphone", desc: "Collect voice feedback", stat: `${stats.voice_notes || 0} received this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" },
+    { id: "sendIntel", name: "Send Intelligence", icon: "ti-brain", desc: "AI channel prediction", stat: `${stats.send_intel_rate || 0}% avg conversion`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" }
   ];
   
   const grid = document.getElementById("featuresGrid");
@@ -1179,7 +1255,6 @@ function buildFeatureTiles(stats) {
     </div>
   `).join('');
   
-  // Add hover effect for locked tiles
   document.querySelectorAll('.feature-tile.locked').forEach(tile => {
     tile.addEventListener('mouseenter', () => { tile.querySelector('.lock-overlay').style.opacity = '1'; });
     tile.addEventListener('mouseleave', () => { tile.querySelector('.lock-overlay').style.opacity = '0'; });
@@ -1191,7 +1266,6 @@ function navigateTo(nav) {
   if (targetNav) targetNav.click();
 }
 
-// ========== ACTIVITY FEED ==========
 async function loadActivityFeed() {
   const res = await fetch("/stats/"+slug);
   if(!res.ok) return;
@@ -1234,7 +1308,6 @@ function getRelativeTime(dateStr) {
   return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
 }
 
-// ========== REPUTATION SCORE ==========
 async function loadReputationScore() {
   try {
     const res = await fetch("/reputation/" + slug);
@@ -1284,93 +1357,80 @@ async function orderNfcCard() {
   else { showToast(data.error || "Could not create order", "error"); btn.disabled = false; btn.textContent = "Continue to payment (£9.99) →"; }
 }
 
-async function loadNfcCardStatus() {
-  const res = await fetch("/stats/"+slug);
-  const stats = await res.json();
-  if (stats.nfc_card_tracking_number) {
-    document.getElementById("nfcCardUpsell").style.display = "none";
-    document.getElementById("nfcCardShipped").style.display = "block";
-    document.getElementById("nfcTrackingInfo").innerHTML = `Tracking: ${stats.nfc_card_tracking_number}`;
-  } else if (stats.nfc_card_ordered) {
-    document.getElementById("nfcCardUpsell").style.display = "none";
-    document.getElementById("nfcCardOrdered").style.display = "block";
-  }
-}
-
-// ========== START POLLING ==========
 function startPolling() {
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(async () => {
     const res = await fetch("/stats/"+slug);
     if(!res.ok) return;
     const newStats = await res.json();
-    // Update stats if changed
     document.getElementById("statVisits").innerText = newStats.visits ?? 0;
     document.getElementById("statPositive").innerText = newStats.positive ?? 0;
     document.getElementById("statReviews").innerText = newStats.reviews ?? 0;
     document.getElementById("statNegative").innerText = newStats.negative ?? 0;
     if (newStats.recent_events) updateTicker(newStats.recent_events);
-    loadActivityFeed(); // Refresh activity feed
+    loadActivityFeed();
     loadReputationScore();
   }, 30000);
 }
-
-// ========== PRESERVE EXISTING FUNCTIONS ==========
-// All original functions (checkSession, load, sendSMS, sendEmail, generateReplies, etc.)
-// are preserved and work exactly as before. They are included in the full deployment file.
 
 async function checkSession(){
   const res = await fetch("/session");
   const data = await res.json();
   if(!data.loggedIn){ window.location="/login"; return; }
   slug = data.slug;
-  
-  // Set preview iframe src
-  const previewIframe = document.getElementById('funnelPreview');
-  if (previewIframe) {
-    previewIframe.src = `/r/${slug}?preview=true`;
-  }
-  
   await loadDashboardData();
   startPolling();
   handleHash();
 }
 checkSession();
 
-// Copy functions
 function copyWallUrl() {
   const input = document.getElementById("wallUrl");
-  input.select();
-  navigator.clipboard.writeText(input.value);
-  showToast("Copied!", "success");
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    showToast("Copied!", "success");
+  }
 }
-function copyEmbedCode() {
-  const input = document.getElementById("embedCode");
-  input.select();
-  navigator.clipboard.writeText(input.value);
-  showToast("Copied!", "success");
-}
+
 function copyWebhook() {
   const input = document.getElementById("webhookUrl");
-  input.select();
-  navigator.clipboard.writeText(input.value);
-  showToast("Copied!", "success");
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    showToast("Copied!", "success");
+  }
 }
+
 function copyInvoiceWebhook() {
   const input = document.getElementById("invoiceWebhookUrl");
-  input.select();
-  navigator.clipboard.writeText(input.value);
-  showToast("Copied!", "success");
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    showToast("Copied!", "success");
+  }
 }
+
+function copyAssetReviewLink() {
+  const input = document.getElementById("assetReviewLink");
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    showToast("Copied!", "success");
+  }
+}
+
 function copyAiReply(id){
   const textarea = document.getElementById(id);
-  textarea.select();
-  navigator.clipboard.writeText(textarea.value);
-  showToast("Copied!", "success");
+  if (textarea) {
+    textarea.select();
+    navigator.clipboard.writeText(textarea.value);
+    showToast("Copied!", "success");
+  }
 }
+
 function logout(){ window.location="/logout"; }
 
-// SMS, Email, AI functions (preserved)
 async function sendSMS(){
   const phone = document.getElementById("customerPhone")?.value.trim();
   if(!phone){ showToast("Please enter a phone number.", "error"); return; }
@@ -1381,6 +1441,7 @@ async function sendSMS(){
   else { showToast("SMS failed: " + (data.error||"Check your Twilio credentials."), "error"); }
   btn.disabled=false; btn.textContent="Send SMS";
 }
+
 async function sendEmail(){
   const email = document.getElementById("customerEmail")?.value.trim();
   if(!email){ showToast("Please enter an email address.", "error"); return; }
@@ -1391,20 +1452,7 @@ async function sendEmail(){
   else { showToast(data.error || "Email failed.", "error"); }
   btn.disabled=false; btn.textContent="Send Email";
 }
-async function generateReplies(){
-  const review = document.getElementById("reviewText")?.value.trim();
-  if(!review){ showToast("Please paste a review first.", "error"); return; }
-  const btn = document.getElementById("aiBtn"); 
-  btn.disabled = true; btn.textContent = "Generating...";
-  document.getElementById("aiProfessional").value = "Generating...";
-  document.getElementById("aiWarm").value = "Generating...";
-  document.getElementById("aiPunchy").value = "Generating...";
-  const res = await fetch("/generate-reply", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({review}) });
-  const data = await res.json();
-  if(data.error){ showToast(data.error, "error"); document.getElementById("aiProfessional").value = ""; document.getElementById("aiWarm").value = ""; document.getElementById("aiPunchy").value = ""; }
-  else { document.getElementById("aiProfessional").value = data.professional || ""; document.getElementById("aiWarm").value = data.warm || ""; document.getElementById("aiPunchy").value = data.punchy || ""; showToast("Replies generated! ✓", "success"); }
-  btn.disabled = false; btn.textContent = "Generate Replies";
-}
+
 async function loadSentimentTrends() {
   try {
     const res = await fetch("/sentiment/" + slug);
@@ -1415,6 +1463,7 @@ async function loadSentimentTrends() {
     document.getElementById("sentimentContent").innerHTML = `<div>${result.reply || "Analysis complete"}</div>`;
   } catch(e) { document.getElementById("sentimentContent").innerHTML = `<p>Could not load insights.</p>`; }
 }
+
 async function loadSendIntelligence() {
   try {
     const now = new Date();
@@ -1425,11 +1474,12 @@ async function loadSendIntelligence() {
     document.getElementById("sendIntelInsight").innerHTML = `<div style="display:flex;align-items:center;gap:14px;"><div style="font-size:2rem;font-weight:800;color:var(--accent);">${r.predicted_conversion_rate}%</div><div><strong>${r.recommended_channel.toUpperCase()}</strong> is best<br>Best window: ${r.best_window}</div></div>`;
   } catch(e) { document.getElementById("sendIntelMessage").innerHTML = "Could not load analytics."; }
 }
+
 async function analyseCompetitor() {
   const name = document.getElementById("competitorName")?.value.trim();
   const reviews = document.getElementById("competitorReviews")?.value.trim();
   if (!reviews || reviews.length < 50) { showToast("Please paste at least a few reviews.", "error"); return; }
-  const btn = document.getElementById("competitorBtn"); btn.disabled = true; btn.textContent = "Analysing...";
+  const btn = event.target; btn.disabled = true; btn.textContent = "Analysing...";
   const res = await fetch("/analyse-competitor", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ competitor_name: name, reviews_text: reviews }) });
   const data = await res.json();
   if (data.error) { showToast(data.error, "error"); btn.disabled = false; btn.textContent = "Analyse Competitor"; return; }
@@ -1440,6 +1490,7 @@ async function analyseCompetitor() {
   document.getElementById("competitorResults").innerHTML = html;
   btn.disabled = false; btn.textContent = "Analyse Competitor";
 }
+
 async function saveBizDetails(){
   const name = document.getElementById("bizNameInput").value.trim();
   const reviewLink = document.getElementById("reviewLinkInput").value.trim();
@@ -1449,6 +1500,7 @@ async function saveBizDetails(){
   if(data.success){ showToast("Saved!", "success"); document.getElementById("sidebarBizName").innerText = name; }
   else { showToast("Could not save", "error"); }
 }
+
 async function changePassword(){
   const current = document.getElementById("currentPw").value;
   const newPw = document.getElementById("newPw").value;
@@ -1461,15 +1513,18 @@ async function changePassword(){
   if(data.success){ showToast("Password updated", "success"); document.getElementById("currentPw").value = ""; document.getElementById("newPw").value = ""; document.getElementById("confirmPw").value = ""; }
   else { showToast(data.error || "Could not update", "error"); }
 }
+
 function showToast(message, type){
   const t = document.getElementById("toast");
   t.textContent = type === "success" ? "✓ " + message : "✕ " + message;
   t.className = `toast ${type} show`;
   setTimeout(() => t.classList.remove("show"), 4000);
 }
+
 function openModal(id){ document.getElementById(id).classList.add("open"); document.body.style.overflow="hidden"; }
 function closeModal(id){ document.getElementById(id).classList.remove("open"); document.body.style.overflow=""; }
 function handleModalOverlay(e, id){ if(e.target === document.getElementById(id)) closeModal(id); }
+
 async function doCancel(){
   const btn = document.getElementById("confirmCancelBtn");
   btn.disabled = true; btn.textContent = "Cancelling...";
@@ -1480,13 +1535,6 @@ async function doCancel(){
   else { showToast("Could not cancel", "error"); }
   btn.disabled = false; btn.textContent = "Yes, cancel";
 }
-async function upgradeToProTrial(){
-  const btn=event.target; btn.disabled=true; btn.textContent="Upgrading...";
-  const res=await fetch("/upgrade-plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:"pro"})});
-  const data=await res.json();
-  if(data.success){ showToast("Upgraded to Pro!", "success"); setTimeout(()=>window.location.reload(),1500); }
-  else { showToast(data.error||"Could not upgrade", "error"); btn.disabled=false; btn.textContent="⭐ Upgrade to Pro free"; }
-}
 
 // Funnel customisation functions
 let currentFunnelSettings = {};
@@ -1495,9 +1543,9 @@ async function loadFunnelSettings() {
   const res = await fetch("/stats/"+slug);
   const stats = await res.json();
   
-  // Always show the funnel URL to everyone
   const funnelUrl = window.location.origin + "/r/" + slug;
-  document.getElementById('funnelUrlDisplay').textContent = funnelUrl;
+  const funnelUrlDisplay = document.getElementById('funnelUrlDisplay');
+  if (funnelUrlDisplay) funnelUrlDisplay.textContent = funnelUrl;
   
   currentFunnelSettings = {
     funnel_template: stats.funnel_template || 'classic',
@@ -1511,77 +1559,163 @@ async function loadFunnelSettings() {
     funnel_language: stats.funnel_language || 'en'
   };
   
-  // Check if user has Pro or Agency plan
   const hasPro = stats.plan_type === 'pro' || stats.plan_type === 'agency';
   const isAgency = stats.plan_type === 'agency';
   
-  if (hasPro) {
-    // Show full customisation interface
-    document.getElementById('funnelProFeatures').style.display = 'block';
-    document.getElementById('funnelUpgradePrompt').style.display = 'none';
+  const proFeatures = document.getElementById('funnelStudioProFeatures');
+  const upgradePrompt = document.getElementById('funnelStudioUpgradePrompt');
+  
+  if (hasPro && proFeatures && upgradePrompt) {
+    proFeatures.style.display = 'block';
+    upgradePrompt.style.display = 'none';
     
-    // Populate all the customisation fields
-    document.getElementById('funnelLogoUrl').value = currentFunnelSettings.funnel_logo_url;
-    document.getElementById('funnelAccentColor').value = currentFunnelSettings.funnel_accent_color;
-    document.getElementById('funnelHeadline').value = currentFunnelSettings.funnel_headline;
-    document.getElementById('funnelHappyLabel').value = currentFunnelSettings.funnel_happy_label;
-    document.getElementById('funnelUnhappyLabel').value = currentFunnelSettings.funnel_unhappy_label;
-    document.getElementById('funnelThankyouMessage').value = currentFunnelSettings.funnel_thankyou_message;
-    document.getElementById('funnelCustomDomain').value = currentFunnelSettings.funnel_custom_domain;
-    document.getElementById('funnelLanguage').value = currentFunnelSettings.funnel_language;
+    const logoUrl = document.getElementById('funnelLogoUrl');
+    const accentColor = document.getElementById('funnelAccentColor');
+    const headline = document.getElementById('funnelHeadline');
+    const happyLabel = document.getElementById('funnelHappyLabel');
+    const unhappyLabel = document.getElementById('funnelUnhappyLabel');
+    const thankyouMessage = document.getElementById('funnelThankyouMessage');
+    const customDomain = document.getElementById('funnelCustomDomain');
+    const language = document.getElementById('funnelLanguage');
     
-    // Highlight selected template
-    document.querySelectorAll('.template-option').forEach(opt => {
-      if(opt.dataset.template === currentFunnelSettings.funnel_template) {
-        opt.style.borderColor = 'var(--accent)';
-      } else {
-        opt.style.borderColor = 'transparent';
-      }
-    });
+    if (logoUrl) logoUrl.value = currentFunnelSettings.funnel_logo_url;
+    if (accentColor) accentColor.value = currentFunnelSettings.funnel_accent_color;
+    if (headline) headline.value = currentFunnelSettings.funnel_headline;
+    if (happyLabel) happyLabel.value = currentFunnelSettings.funnel_happy_label;
+    if (unhappyLabel) unhappyLabel.value = currentFunnelSettings.funnel_unhappy_label;
+    if (thankyouMessage) thankyouMessage.value = currentFunnelSettings.funnel_thankyou_message;
+    if (customDomain) customDomain.value = currentFunnelSettings.funnel_custom_domain;
+    if (language) language.value = currentFunnelSettings.funnel_language;
     
-    // Show/hide language and domain based on plan
-    document.getElementById('languageSettings').style.display = hasPro ? 'block' : 'none';
-    document.getElementById('domainSettings').style.display = isAgency ? 'block' : 'none';
-    
-    // Load the preview iframe
-    const previewIframe = document.getElementById('funnelPreview');
-    if (previewIframe) {
-      previewIframe.src = '/r/' + slug + '?preview=true';
-    }
+    const previewMobile = document.getElementById('funnelPreviewMobile');
+    const previewDesktop = document.getElementById('funnelPreviewDesktop');
+    if (previewMobile) previewMobile.src = '/r/' + slug + '?preview=true&t=' + Date.now();
+    if (previewDesktop) previewDesktop.src = '/r/' + slug + '?preview=true&t=' + Date.now();
+  } else if (upgradePrompt && proFeatures) {
+    proFeatures.style.display = 'none';
+    upgradePrompt.style.display = 'block';
+  }
+}
+
+let currentDevice = 'mobile';
+
+function setPreviewDevice(device) {
+  currentDevice = device;
+  const mobilePreview = document.getElementById('mobilePreview');
+  const desktopPreview = document.getElementById('desktopPreview');
+  const mobileBtn = document.getElementById('mobileViewBtn');
+  const desktopBtn = document.getElementById('desktopViewBtn');
+  
+  if (device === 'mobile') {
+    if (mobilePreview) mobilePreview.style.display = 'block';
+    if (desktopPreview) desktopPreview.style.display = 'none';
+    if (mobileBtn) { mobileBtn.style.background = 'var(--accent)'; mobileBtn.style.color = '#1A1A18'; }
+    if (desktopBtn) { desktopBtn.style.background = 'var(--surface-2)'; desktopBtn.style.color = 'var(--cream-dim)'; }
   } else {
-    // Show upgrade prompt
-    document.getElementById('funnelProFeatures').style.display = 'none';
-    document.getElementById('funnelUpgradePrompt').style.display = 'block';
+    if (mobilePreview) mobilePreview.style.display = 'none';
+    if (desktopPreview) desktopPreview.style.display = 'block';
+    if (desktopBtn) { desktopBtn.style.background = 'var(--accent)'; desktopBtn.style.color = '#1A1A18'; }
+    if (mobileBtn) { mobileBtn.style.background = 'var(--surface-2)'; mobileBtn.style.color = 'var(--cream-dim)'; }
   }
 }
 
 function selectTemplate(template) {
   currentFunnelSettings.funnel_template = template;
-  document.querySelectorAll('.template-option').forEach(opt => {
-    opt.style.borderColor = opt.dataset.template === template ? 'var(--accent)' : 'transparent';
+  document.querySelectorAll('.template-option-compact').forEach(opt => {
+    if (opt) opt.style.borderColor = opt.dataset.template === template ? 'var(--accent)' : 'transparent';
   });
 }
 
+// Helper functions for FAB buttons
+function goToAILab() {
+  const aiLabNav = document.querySelector('.nav-item[data-nav="ai-lab"]');
+  if (aiLabNav) aiLabNav.click();
+  closeFab();
+}
+
+function copyReviewLinkAndClose() {
+  copyReviewLink();
+  closeFab();
+}
+
 function setAccentColor(color) {
-  document.getElementById('funnelAccentColor').value = color;
+  const accentInput = document.getElementById('funnelAccentColor');
+  if (accentInput) accentInput.value = color;
+}
+
+async function generateRepliesStreaming() {
+  const review = document.getElementById("reviewText")?.value.trim();
+  if (!review) { showToast("Please paste a review first.", "error"); return; }
+  
+  const btn = document.getElementById("aiBtn");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Generating...";
+  }
+  
+  const profTextarea = document.getElementById("aiProfessional");
+  const warmTextarea = document.getElementById("aiWarm");
+  const punchyTextarea = document.getElementById("aiPunchy");
+  
+  if (profTextarea) profTextarea.value = "✦";
+  if (warmTextarea) warmTextarea.value = "✦";
+  if (punchyTextarea) punchyTextarea.value = "✦";
+  
+  try {
+    const res = await fetch("/generate-reply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ review })
+    });
+    const data = await res.json();
+    
+    if (data.error) {
+      showToast(data.error, "error");
+      if (profTextarea) profTextarea.value = "";
+      if (warmTextarea) warmTextarea.value = "";
+      if (punchyTextarea) punchyTextarea.value = "";
+    } else {
+      if (profTextarea) await streamToTextarea(profTextarea, data.professional || "");
+      if (warmTextarea) await streamToTextarea(warmTextarea, data.warm || "");
+      if (punchyTextarea) await streamToTextarea(punchyTextarea, data.punchy || "");
+      showToast("Replies generated! ✓", "success");
+    }
+  } catch (e) {
+    showToast("Something went wrong", "error");
+  }
+  
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = "Generate Replies";
+  }
+}
+
+async function streamToTextarea(textarea, text) {
+  textarea.value = "";
+  const chars = text.split('');
+  for (let i = 0; i < chars.length; i++) {
+    textarea.value += chars[i];
+    textarea.scrollTop = textarea.scrollHeight;
+    await new Promise(r => setTimeout(r, 8 + Math.random() * 12));
+  }
 }
 
 async function saveFunnelSettings() {
   const btn = event.target;
   const msg = document.getElementById('funnelMsg');
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
+  if (btn) btn.disabled = true;
+  if (btn) btn.textContent = 'Saving...';
   
   const data = {
     funnel_template: currentFunnelSettings.funnel_template,
-    funnel_logo_url: document.getElementById('funnelLogoUrl').value.trim(),
-    funnel_accent_color: document.getElementById('funnelAccentColor').value,
-    funnel_headline: document.getElementById('funnelHeadline').value.trim(),
-    funnel_happy_label: document.getElementById('funnelHappyLabel').value.trim(),
-    funnel_unhappy_label: document.getElementById('funnelUnhappyLabel').value.trim(),
-    funnel_thankyou_message: document.getElementById('funnelThankyouMessage').value.trim(),
-    funnel_custom_domain: document.getElementById('funnelCustomDomain').value.trim(),
-    funnel_language: document.getElementById('funnelLanguage').value
+    funnel_logo_url: document.getElementById('funnelLogoUrl')?.value.trim() || '',
+    funnel_accent_color: document.getElementById('funnelAccentColor')?.value || '#C8A96E',
+    funnel_headline: document.getElementById('funnelHeadline')?.value.trim() || '',
+    funnel_happy_label: document.getElementById('funnelHappyLabel')?.value.trim() || '',
+    funnel_unhappy_label: document.getElementById('funnelUnhappyLabel')?.value.trim() || '',
+    funnel_thankyou_message: document.getElementById('funnelThankyouMessage')?.value.trim() || '',
+    funnel_custom_domain: document.getElementById('funnelCustomDomain')?.value.trim() || '',
+    funnel_language: document.getElementById('funnelLanguage')?.value || 'en'
   };
   
   try {
@@ -1594,27 +1728,72 @@ async function saveFunnelSettings() {
     
     if (result.success) {
       showToast("Funnel updated! Preview reloading...", "success");
-      document.getElementById('funnelPreview').src = '/r/' + slug + '?preview=true&t=' + Date.now();
-      msg.textContent = '✓ Changes saved successfully';
-      msg.style.color = '#8EC9A8';
-      setTimeout(() => { msg.textContent = ''; }, 3000);
+      const previewMobile = document.getElementById('funnelPreviewMobile');
+      const previewDesktop = document.getElementById('funnelPreviewDesktop');
+      if (previewMobile) previewMobile.src = '/r/' + slug + '?preview=true&t=' + Date.now();
+      if (previewDesktop) previewDesktop.src = '/r/' + slug + '?preview=true&t=' + Date.now();
+      if (msg) { msg.textContent = '✓ Changes saved successfully'; msg.style.color = '#8EC9A8'; }
+      setTimeout(() => { if (msg) msg.textContent = ''; }, 3000);
     } else {
       showToast(result.error || "Could not save settings", "error");
-      msg.textContent = result.error || 'Error saving settings';
-      msg.style.color = '#D4897C';
+      if (msg) { msg.textContent = result.error || 'Error saving settings'; msg.style.color = '#D4897C'; }
     }
   } catch(e) {
     showToast("Something went wrong", "error");
-    msg.textContent = 'Error saving settings';
-    msg.style.color = '#D4897C';
+    if (msg) { msg.textContent = 'Error saving settings'; msg.style.color = '#D4897C'; }
   }
   
-  btn.disabled = false;
-  btn.textContent = 'Save & Preview';
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = 'Save & Preview';
+  }
 }
 
-// Add to loadDashboardData function
-// Add: loadFunnelSettings();
+// Floating Action Button
+const fabMain = document.getElementById('fabMain');
+const fabMenu = document.getElementById('fabMenu');
+let fabOpen = false;
+
+if (fabMain) {
+  fabMain.addEventListener('click', () => {
+    fabOpen = !fabOpen;
+    if (fabMenu) fabMenu.style.display = fabOpen ? 'flex' : 'none';
+    fabMain.style.transform = fabOpen ? 'rotate(45deg)' : 'rotate(0deg)';
+  });
+}
+
+function closeFab() {
+  fabOpen = false;
+  if (fabMenu) fabMenu.style.display = 'none';
+  if (fabMain) fabMain.style.transform = 'rotate(0deg)';
+}
+
+document.addEventListener('click', (e) => {
+  if (fabOpen && fabMain && fabMenu && !fabMain.contains(e.target) && !fabMenu.contains(e.target)) {
+    closeFab();
+  }
+});
 </script>
+
+<!-- Floating Action Button HTML -->
+<div id="fab" style="position:fixed; bottom:32px; right:32px; z-index:1000;">
+  <button id="fabMain" style="width:56px; height:56px; border-radius:28px; background:var(--accent); border:none; cursor:pointer; box-shadow:0 8px 24px rgba(200,169,110,0.3); transition:all 0.2s;">
+    <i class="ti ti-plus" style="font-size:1.8rem; color:#1A1A18;"></i>
+  </button>
+  <div id="fabMenu" style="position:absolute; bottom:70px; right:0; display:none; flex-direction:column; gap:12px;">
+    <button onclick="window.location.href='/admin'" style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
+      <i class="ti ti-send"></i> Send campaign
+    </button>
+    <button onclick="goToAILab()" style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
+      <i class="ti ti-robot"></i> Generate AI replies
+    </button>
+    <button onclick="openNfcModal()" style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
+      <i class="ti ti-device-sim"></i> Order NFC card
+    </button>
+    <button onclick="copyReviewLinkAndClose()" style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
+      <i class="ti ti-link"></i> Copy review link
+    </button>
+  </div>
+</div>
 </body>
 </html>
