@@ -682,56 +682,89 @@
       </div>
     </div>
 
-    <!-- WEBSITE WIDGET SECTION -->
+       <!-- WEBSITE WIDGET SECTION -->
     <div id="widgetSection" class="content-section">
       <h2 style="margin-bottom: 20px;">Website Widget</h2>
       <div class="panel">
-        <h3>Embed button code</h3>
-        <p class="panel-desc">Paste this HTML snippet into your website to add a "Leave us a review" button.</p>
-        <textarea id="embedCode" readonly style="width:100%;min-height:80px;background:var(--surface-2);border-radius:6px;padding:10px;font-family:monospace;"></textarea>
-        <button onclick="copyEmbedCode()" style="margin-top:10px;" class="btn-full">Copy Code</button>
+        <h3>📋 Your Review Link</h3>
+        <div class="input-row" style="margin-bottom: 16px;">
+          <input id="reviewLink" readonly style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; color:var(--cream);">
+          <button onclick="copyReviewLink()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:0 20px; cursor:pointer;">Copy</button>
+        </div>
+        
+        <h3 style="margin-top: 24px;">🔗 Webhook URL</h3>
+        <p class="panel-desc">Paste this URL into your booking system's webhook settings.</p>
+        <div class="input-row" style="margin-bottom: 16px;">
+          <input id="webhookUrl" readonly style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; color:var(--cream);">
+          <button onclick="copyWebhook()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:0 20px; cursor:pointer;">Copy</button>
+        </div>
+        
+        <h3 style="margin-top: 24px;">📄 Invoice Integration</h3>
+        <p class="panel-desc">Connect Xero or QuickBooks to auto-send QR codes on payment.</p>
+        <div class="input-row">
+          <input id="invoiceWebhookUrl" readonly style="background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:12px; color:var(--cream);">
+          <button onclick="copyInvoiceWebhook()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:0 20px; cursor:pointer;">Copy</button>
+        </div>
+        
+        <h3 style="margin-top: 24px;">📘 Booking Software Setup</h3>
+        <p id="webhookGuide" style="font-size:0.85rem; color:var(--cream-dim);">Select a booking system during signup to see setup instructions.</p>
+        
+        <h3 style="margin-top: 24px;">💻 Embed Button Code</h3>
+        <p class="panel-desc">Paste this HTML into your website to add a "Leave us a review" button.</p>
+        <textarea id="embedCode" readonly style="width:100%; min-height:80px; background:var(--surface-2); border-radius:6px; padding:10px; font-family:monospace; color:var(--accent);"></textarea>
+        <button onclick="copyEmbedCode()" class="btn-full" style="margin-top:10px;">Copy Code</button>
       </div>
     </div>
 
     <!-- SETTINGS SECTION -->
     <div id="settingsSection" class="content-section">
       <h2 style="margin-bottom: 20px;">Settings</h2>
+      
+      <!-- Business details -->
       <div class="panel">
-        <h3>Business details</h3>
-        <div class="form-group"><label>Business name</label><input id="bizNameInput" type="text" style="width:100%;margin-bottom:10px;"></div>
-        <div class="form-group"><label>Google review link</label><input id="reviewLinkInput" type="url" style="width:100%;margin-bottom:10px;"></div>
-        <button onclick="saveBizDetails()" class="btn-full">Save changes</button>
-        <p id="bizMsg" style="margin-top:8px;"></p>
+        <h3>🏢 Business details</h3>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="display:block; margin-bottom:6px; font-size:0.8rem;">Business name</label>
+          <input id="bizNameInput" type="text" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);">
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="display:block; margin-bottom:6px; font-size:0.8rem;">Google review link</label>
+          <input id="reviewLinkInput" type="url" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);">
+        </div>
+        <button onclick="saveBizDetails()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Save changes</button>
+        <p id="bizMsg" style="margin-top:8px; font-size:0.8rem;"></p>
       </div>
+      
+      <!-- Change password -->
       <div class="panel">
-        <h3>Change password</h3>
-        <input id="currentPw" type="password" placeholder="Current password" style="width:100%;margin-bottom:8px;padding:10px;background:var(--surface-2);border-radius:6px;"><br>
-        <input id="newPw" type="password" placeholder="New password" style="width:100%;margin-bottom:8px;padding:10px;background:var(--surface-2);border-radius:6px;"><br>
-        <input id="confirmPw" type="password" placeholder="Confirm new password" style="width:100%;margin-bottom:12px;padding:10px;background:var(--surface-2);border-radius:6px;">
-        <button onclick="changePassword()" class="btn-full">Update password</button>
-        <p id="pwMsg" style="margin-top:8px;"></p>
+        <h3>🔐 Change password</h3>
+        <input id="currentPw" type="password" placeholder="Current password" style="width:100%; margin-bottom:8px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);"><br>
+        <input id="newPw" type="password" placeholder="New password" style="width:100%; margin-bottom:8px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);"><br>
+        <input id="confirmPw" type="password" placeholder="Confirm new password" style="width:100%; margin-bottom:12px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);">
+        <button onclick="changePassword()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Update password</button>
+        <p id="pwMsg" style="margin-top:8px; font-size:0.8rem;"></p>
       </div>
-      <!-- WhatsApp Alerts (Pro) -->
+      
+      <!-- WhatsApp Alerts (Pro only) -->
       <div id="whatsappSettings" style="display:none;">
         <div class="panel">
           <h3>📱 WhatsApp Alerts</h3>
-          <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <label style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
             <input type="checkbox" id="whatsappAlertsToggle"> Send me a WhatsApp alert for every complaint
           </label>
-          <input id="whatsappNumber" type="tel" placeholder="Your WhatsApp number (e.g. 07700900000)" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;">
-          <button onclick="saveWhatsAppSettings()" class="btn-full" style="margin-top:10px;">Save WhatsApp settings</button>
+          <input id="whatsappNumber" type="tel" placeholder="Your WhatsApp number (e.g. 07700900000)" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px;">
+          <button onclick="saveWhatsAppSettings()" class="btn-full" style="margin-top:10px; background:var(--accent); color:#1A1A18;">Save WhatsApp settings</button>
           <p class="panel-desc" style="margin-top:8px;">You'll get an instant WhatsApp message with the complaint, category, and a ready-to-send response — within 60 seconds.</p>
         </div>
       </div>
+      
+      <!-- Danger zone -->
+      <div class="panel" style="border-color: rgba(192,103,90,0.3);">
+        <h3 style="color: #D4897C;">⚠️ Danger zone</h3>
+        <p style="font-size:0.85rem; margin-bottom:16px;">Cancel your subscription and lose access to your dashboard.</p>
+        <button onclick="confirmCancel()" class="btn-full" style="background:transparent; border:1px solid #D4897C; color:#D4897C;">Cancel subscription</button>
+      </div>
     </div>
-  </main>
-</div>
-
-<!-- Modals and Toast (preserved from original) -->
-<div class="modal-overlay" id="cancelModal" onclick="handleModalOverlay(event, 'cancelModal')">
-  <div class="modal-box"><button class="modal-close" onclick="closeModal('cancelModal')">✕</button><span class="modal-icon">⚠️</span><h3>Are you sure you want to cancel?</h3><p>You'll lose access to your dashboard and funnel.</p><div class="modal-btns"><button onclick="closeModal('cancelModal')">Keep subscription</button><button class="btn-danger-solid" onclick="doCancel()">Yes, cancel</button></div></div>
-</div>
-<div class="toast" id="toast"></div>
 
 <script>
 let slug;
@@ -792,6 +825,29 @@ function updateTicker(events) {
   tickerEl.innerHTML = messages.join(' · ');
 }
 
+function copyReviewLink() {
+  const input = document.getElementById("reviewLink");
+  input.select();
+  navigator.clipboard.writeText(input.value);
+  showToast("Copied!", "success");
+}
+
+function copyEmbedCode() {
+  const input = document.getElementById("embedCode");
+  input.select();
+  navigator.clipboard.writeText(input.value);
+  showToast("Copied!", "success");
+}
+
+function confirmCancel() {
+  openModal("cancelModal");
+}
+
+function saveWhatsAppSettings() {
+  // Implement WhatsApp settings save
+  showToast("WhatsApp settings saved (feature coming soon)", "success");
+}
+
 // ========== LOAD DASHBOARD DATA ==========
 async function loadDashboardData() {
   const res = await fetch("/stats/"+slug);
@@ -802,6 +858,7 @@ async function loadDashboardData() {
   document.getElementById("sidebarBizName").innerText = stats.business_name || slug;
   document.getElementById("sidebarPlanName").innerText = stats.plan_type === "pro" ? "Pro" : stats.plan_type === "agency" ? "Agency" : "Starter";
   document.getElementById("upgradeLink").style.display = stats.plan_type === "agency" ? "none" : "flex";
+  document.getElementById("reviewLink").value = window.location.origin + "/r/" + slug;
   updateGreeting(stats.business_name);
   
   // Update stats row

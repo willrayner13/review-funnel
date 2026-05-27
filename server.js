@@ -583,6 +583,16 @@ app.get("/stats/:slug", async (req, res) => {
     .select("event_type, rating, message")
     .eq("business_slug", req.params.slug);
 
+    // Add recent_events to the stats response
+const { data: recentEvents } = await supabase
+  .from("events")
+  .select("event_type, created_at")
+  .eq("business_slug", req.params.slug)
+  .order("created_at", { ascending: false })
+  .limit(10);
+
+stats.recent_events = recentEvents || [];
+
 const stats = {
   visits: 0, positive: 0, negative: 0, reviews: 0,
   rating_avg: 0, rating_count: 0, rating_distribution: {}, feedback: [],
