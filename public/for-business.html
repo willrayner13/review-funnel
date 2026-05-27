@@ -869,8 +869,6 @@ async function loadDashboardData() {
   }
   lastStats = stats;
 }
-
-// ========== BUILD FEATURE TILES ==========
 function buildFeatureTiles(stats) {
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");
   const isAgency = stats.plan_type === "agency";
