@@ -772,119 +772,143 @@
         <p id="pwMsg" style="margin-top:8px; font-size:0.8rem;"></p>
       </div>
 
-            <!-- Funnel Customisation -->
-      <div class="panel" id="funnelEditor">
-        <h3>🎨 Customise your review funnel</h3>
-        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:20px;">Change how your review funnel looks — choose a template, add your logo, and customise the text.</p>
-        
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-          <!-- Left: Controls -->
-          <div>
-            <!-- Template Picker -->
-            <div style="margin-bottom:20px;">
-              <label style="display:block;margin-bottom:8px;font-weight:600;">Template</label>
-              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
-                <div onclick="selectTemplate('classic')" class="template-option" data-template="classic" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-                  <div style="width:100%;height:40px;background:#1A1A18;border-radius:6px;margin-bottom:4px;"></div>
-                  <span style="font-size:0.7rem;">Classic</span>
-                </div>
-                <div onclick="selectTemplate('bright')" class="template-option" data-template="bright" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-                  <div style="width:100%;height:40px;background:#FFFFFF;border-radius:6px;margin-bottom:4px;"></div>
-                  <span style="font-size:0.7rem;">Bright</span>
-                </div>
-                <div onclick="selectTemplate('medical')" class="template-option" data-template="medical" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-                  <div style="width:100%;height:40px;background:#F8FAFC;border-radius:6px;margin-bottom:4px;"></div>
-                  <span style="font-size:0.7rem;">Medical</span>
-                </div>
-                <div onclick="selectTemplate('bold')" class="template-option" data-template="bold" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-                  <div style="width:100%;height:40px;background:var(--accent);border-radius:6px;margin-bottom:4px;"></div>
-                  <span style="font-size:0.7rem;">Bold</span>
-                </div>
-                <div onclick="selectTemplate('luxury')" class="template-option" data-template="luxury" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
-                  <div style="width:100%;height:40px;background:#0A0A0A;border-radius:6px;margin-bottom:4px;"></div>
-                  <span style="font-size:0.7rem;">Luxury</span>
-                </div>
-              </div>
+       <!-- Funnel Customisation -->
+<div class="panel" id="funnelEditor">
+  <h3>🎨 Customise your review funnel</h3>
+  
+  <!-- Show this to all users - basic info -->
+  <div id="funnelBasicInfo">
+    <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Your review funnel is live at: <code id="funnelUrlDisplay" style="background:var(--surface-2);padding:4px 8px;border-radius:6px;color:var(--accent);word-break:break-all;"></code></p>
+  </div>
+  
+  <!-- Show this ONLY to Pro/Agency users -->
+  <div id="funnelProFeatures" style="display:none;">
+    <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:20px;">Change how your review funnel looks — choose a template, add your logo, and customise the text.</p>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <!-- Left: Controls -->
+      <div>
+        <!-- Template Picker -->
+        <div style="margin-bottom:20px;">
+          <label style="display:block;margin-bottom:8px;font-weight:600;">Template</label>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
+            <div onclick="selectTemplate('classic')" class="template-option" data-template="classic" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
+              <div style="width:100%;height:40px;background:#1A1A18;border-radius:6px;margin-bottom:4px;"></div>
+              <span style="font-size:0.7rem;">Classic</span>
             </div>
-            
-            <!-- Logo URL -->
-            <div style="margin-bottom:16px;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Logo URL</label>
-              <input type="url" id="funnelLogoUrl" placeholder="https://your-site.com/logo.png" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-              <p class="helper-text" style="font-size:0.7rem;">Upload an image and paste the URL here. Max height 60px.</p>
+            <div onclick="selectTemplate('bright')" class="template-option" data-template="bright" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
+              <div style="width:100%;height:40px;background:#FFFFFF;border-radius:6px;margin-bottom:4px;"></div>
+              <span style="font-size:0.7rem;">Bright</span>
             </div>
-            
-            <!-- Accent Colour -->
-            <div style="margin-bottom:16px;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Accent colour</label>
-              <div style="display:flex;gap:10px;align-items:center;">
-                <input type="color" id="funnelAccentColor" value="#C8A96E" style="width:50px;height:40px;border-radius:6px;cursor:pointer;">
-                <div style="display:flex;gap:6px;">
-                  <div onclick="setAccentColor('#C8A96E')" style="width:28px;height:28px;border-radius:6px;background:#C8A96E;cursor:pointer;"></div>
-                  <div onclick="setAccentColor('#3B82F6')" style="width:28px;height:28px;border-radius:6px;background:#3B82F6;cursor:pointer;"></div>
-                  <div onclick="setAccentColor('#10B981')" style="width:28px;height:28px;border-radius:6px;background:#10B981;cursor:pointer;"></div>
-                  <div onclick="setAccentColor('#8B5CF6')" style="width:28px;height:28px;border-radius:6px;background:#8B5CF6;cursor:pointer;"></div>
-                  <div onclick="setAccentColor('#EF4444')" style="width:28px;height:28px;border-radius:6px;background:#EF4444;cursor:pointer;"></div>
-                </div>
-              </div>
+            <div onclick="selectTemplate('medical')" class="template-option" data-template="medical" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
+              <div style="width:100%;height:40px;background:#F8FAFC;border-radius:6px;margin-bottom:4px;"></div>
+              <span style="font-size:0.7rem;">Medical</span>
             </div>
-            
-            <!-- Custom Text -->
-            <div style="margin-bottom:16px;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Headline</label>
-              <input type="text" id="funnelHeadline" placeholder="How was your experience at {business name}?" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+            <div onclick="selectTemplate('bold')" class="template-option" data-template="bold" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
+              <div style="width:100%;height:40px;background:var(--accent);border-radius:6px;margin-bottom:4px;"></div>
+              <span style="font-size:0.7rem;">Bold</span>
             </div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Happy button label</label>
-              <input type="text" id="funnelHappyLabel" placeholder="Great experience!" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+            <div onclick="selectTemplate('luxury')" class="template-option" data-template="luxury" style="text-align:center;padding:8px;border-radius:8px;cursor:pointer;border:2px solid transparent;">
+              <div style="width:100%;height:40px;background:#0A0A0A;border-radius:6px;margin-bottom:4px;"></div>
+              <span style="font-size:0.7rem;">Luxury</span>
             </div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Unhappy button label</label>
-              <input type="text" id="funnelUnhappyLabel" placeholder="Could be better" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-            </div>
-            <div style="margin-bottom:16px;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Thank you message</label>
-              <textarea id="funnelThankyouMessage" rows="2" placeholder="Thanks for your feedback — it means a lot to us." style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);"></textarea>
-            </div>
-            
-            <!-- Language (Pro/Agency) -->
-            <div id="languageSettings" style="margin-bottom:16px;display:none;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Language <span style="color:var(--accent);font-size:0.7rem;">(Pro/Agency)</span></label>
-              <select id="funnelLanguage" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="pl">Polish</option>
-                <option value="ur">Urdu</option>
-                <option value="pa">Punjabi</option>
-                <option value="ar">Arabic</option>
-              </select>
-              <p class="helper-text" style="font-size:0.7rem;">Your funnel will be translated automatically by AI.</p>
-            </div>
-            
-            <!-- Custom Domain (Agency only) -->
-            <div id="domainSettings" style="margin-bottom:16px;display:none;">
-              <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Custom domain <span style="color:var(--accent);font-size:0.7rem;">(Agency)</span></label>
-              <input type="text" id="funnelCustomDomain" placeholder="reviews.yourbusiness.co.uk" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
-              <p class="helper-text" style="font-size:0.7rem;">Point a CNAME record from your domain to reviewlift.app, then enter it here.</p>
-            </div>
-            
-            <button onclick="saveFunnelSettings()" class="btn-full" style="background:var(--accent);color:#1A1A18;margin-top:8px;">Save & Preview</button>
-            <div id="funnelMsg" style="margin-top:8px;font-size:0.8rem;"></div>
-          </div>
-          
-          <!-- Right: Live Preview -->
-          <div>
-            <label style="display:block;margin-bottom:8px;font-weight:600;">Live preview</label>
-            <div style="background:var(--surface-2);border-radius:12px;padding:12px;border:1px solid var(--border);">
-              <iframe id="funnelPreview" style="width:100%;height:500px;border:none;border-radius:8px;background:#fff;"></iframe>
-            </div>
-            <p class="helper-text" style="font-size:0.7rem;margin-top:8px;">Your funnel updates live when you click Save.</p>
           </div>
         </div>
+        
+        <!-- Logo URL -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Logo URL</label>
+          <input type="url" id="funnelLogoUrl" placeholder="https://your-site.com/logo.png" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+          <p class="helper-text" style="font-size:0.7rem;">Upload an image and paste the URL here. Max height 60px.</p>
+        </div>
+        
+        <!-- Accent Colour -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Accent colour</label>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input type="color" id="funnelAccentColor" value="#C8A96E" style="width:50px;height:40px;border-radius:6px;cursor:pointer;">
+            <div style="display:flex;gap:6px;">
+              <div onclick="setAccentColor('#C8A96E')" style="width:28px;height:28px;border-radius:6px;background:#C8A96E;cursor:pointer;"></div>
+              <div onclick="setAccentColor('#3B82F6')" style="width:28px;height:28px;border-radius:6px;background:#3B82F6;cursor:pointer;"></div>
+              <div onclick="setAccentColor('#10B981')" style="width:28px;height:28px;border-radius:6px;background:#10B981;cursor:pointer;"></div>
+              <div onclick="setAccentColor('#8B5CF6')" style="width:28px;height:28px;border-radius:6px;background:#8B5CF6;cursor:pointer;"></div>
+              <div onclick="setAccentColor('#EF4444')" style="width:28px;height:28px;border-radius:6px;background:#EF4444;cursor:pointer;"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Custom Text -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Headline</label>
+          <input type="text" id="funnelHeadline" placeholder="How was your experience at {business name}?" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Happy button label</label>
+          <input type="text" id="funnelHappyLabel" placeholder="Great experience!" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Unhappy button label</label>
+          <input type="text" id="funnelUnhappyLabel" placeholder="Could be better" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Thank you message</label>
+          <textarea id="funnelThankyouMessage" rows="2" placeholder="Thanks for your feedback — it means a lot to us." style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);"></textarea>
+        </div>
+        
+        <!-- Language (Pro/Agency) -->
+        <div id="languageSettings" style="margin-bottom:16px;display:none;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Language <span style="color:var(--accent);font-size:0.7rem;">(Pro/Agency)</span></label>
+          <select id="funnelLanguage" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="pl">Polish</option>
+            <option value="ur">Urdu</option>
+            <option value="pa">Punjabi</option>
+            <option value="ar">Arabic</option>
+          </select>
+          <p class="helper-text" style="font-size:0.7rem;">Your funnel will be translated automatically by AI.</p>
+        </div>
+        
+        <!-- Custom Domain (Agency only) -->
+        <div id="domainSettings" style="margin-bottom:16px;display:none;">
+          <label style="display:block;margin-bottom:6px;font-size:0.8rem;">Custom domain <span style="color:var(--accent);font-size:0.7rem;">(Agency)</span></label>
+          <input type="text" id="funnelCustomDomain" placeholder="reviews.yourbusiness.co.uk" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;border:1px solid var(--border);color:var(--cream);">
+          <p class="helper-text" style="font-size:0.7rem;">Point a CNAME record from your domain to reviewlift.app, then enter it here.</p>
+        </div>
+        
+        <button onclick="saveFunnelSettings()" class="btn-full" style="background:var(--accent);color:#1A1A18;margin-top:8px;">Save & Preview</button>
+        <div id="funnelMsg" style="margin-top:8px;font-size:0.8rem;"></div>
       </div>
       
+      <!-- Right: Live Preview -->
+      <div>
+        <label style="display:block;margin-bottom:8px;font-weight:600;">Live preview</label>
+        <div style="background:var(--surface-2);border-radius:12px;padding:12px;border:1px solid var(--border);">
+          <iframe id="funnelPreview" style="width:100%;height:500px;border:none;border-radius:8px;background:#fff;"></iframe>
+        </div>
+        <p class="helper-text" style="font-size:0.7rem;margin-top:8px;">Your funnel updates live when you click Save.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Show this to Starter users -->
+  <div id="funnelUpgradePrompt" style="display:none;" class="pro-lock-panel">
+    <i class="ti ti-palette" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
+    <h4 style="margin-bottom:8px;">Customise your review funnel</h4>
+    <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Choose from 5 templates, add your logo, match your brand colours, and customise every word of your review funnel.</p>
+    <ul style="text-align:left;max-width:280px;margin:0 auto 20px auto;font-size:0.8rem;color:var(--cream-dim);">
+      <li>✓ 5 professional templates</li>
+      <li>✓ Your logo and brand colours</li>
+      <li>✓ Custom headlines and buttons</li>
+      <li>✓ AI translation to 8+ languages</li>
+    </ul>
+    <a href="/billing" class="btn-full" style="display:inline-block;background:var(--accent);color:#1A1A18;text-decoration:none;">Upgrade to Pro →</a>
+  </div>
+</div>
+      
+
       <!-- WhatsApp Alerts (Pro only) -->
       <div id="whatsappSettings" style="display:none;">
         <div class="panel">
@@ -1471,6 +1495,10 @@ async function loadFunnelSettings() {
   const res = await fetch("/stats/"+slug);
   const stats = await res.json();
   
+  // Always show the funnel URL to everyone
+  const funnelUrl = window.location.origin + "/r/" + slug;
+  document.getElementById('funnelUrlDisplay').textContent = funnelUrl;
+  
   currentFunnelSettings = {
     funnel_template: stats.funnel_template || 'classic',
     funnel_logo_url: stats.funnel_logo_url || '',
@@ -1483,29 +1511,48 @@ async function loadFunnelSettings() {
     funnel_language: stats.funnel_language || 'en'
   };
   
-  document.getElementById('funnelLogoUrl').value = currentFunnelSettings.funnel_logo_url;
-  document.getElementById('funnelAccentColor').value = currentFunnelSettings.funnel_accent_color;
-  document.getElementById('funnelHeadline').value = currentFunnelSettings.funnel_headline;
-  document.getElementById('funnelHappyLabel').value = currentFunnelSettings.funnel_happy_label;
-  document.getElementById('funnelUnhappyLabel').value = currentFunnelSettings.funnel_unhappy_label;
-  document.getElementById('funnelThankyouMessage').value = currentFunnelSettings.funnel_thankyou_message;
-  document.getElementById('funnelCustomDomain').value = currentFunnelSettings.funnel_custom_domain;
-  document.getElementById('funnelLanguage').value = currentFunnelSettings.funnel_language;
-  
-  // Highlight selected template
-  document.querySelectorAll('.template-option').forEach(opt => {
-    if(opt.dataset.template === currentFunnelSettings.funnel_template) {
-      opt.style.borderColor = 'var(--accent)';
-    } else {
-      opt.style.borderColor = 'transparent';
-    }
-  });
-  
-  // Show/hide language and domain based on plan
+  // Check if user has Pro or Agency plan
   const hasPro = stats.plan_type === 'pro' || stats.plan_type === 'agency';
   const isAgency = stats.plan_type === 'agency';
-  document.getElementById('languageSettings').style.display = hasPro ? 'block' : 'none';
-  document.getElementById('domainSettings').style.display = isAgency ? 'block' : 'none';
+  
+  if (hasPro) {
+    // Show full customisation interface
+    document.getElementById('funnelProFeatures').style.display = 'block';
+    document.getElementById('funnelUpgradePrompt').style.display = 'none';
+    
+    // Populate all the customisation fields
+    document.getElementById('funnelLogoUrl').value = currentFunnelSettings.funnel_logo_url;
+    document.getElementById('funnelAccentColor').value = currentFunnelSettings.funnel_accent_color;
+    document.getElementById('funnelHeadline').value = currentFunnelSettings.funnel_headline;
+    document.getElementById('funnelHappyLabel').value = currentFunnelSettings.funnel_happy_label;
+    document.getElementById('funnelUnhappyLabel').value = currentFunnelSettings.funnel_unhappy_label;
+    document.getElementById('funnelThankyouMessage').value = currentFunnelSettings.funnel_thankyou_message;
+    document.getElementById('funnelCustomDomain').value = currentFunnelSettings.funnel_custom_domain;
+    document.getElementById('funnelLanguage').value = currentFunnelSettings.funnel_language;
+    
+    // Highlight selected template
+    document.querySelectorAll('.template-option').forEach(opt => {
+      if(opt.dataset.template === currentFunnelSettings.funnel_template) {
+        opt.style.borderColor = 'var(--accent)';
+      } else {
+        opt.style.borderColor = 'transparent';
+      }
+    });
+    
+    // Show/hide language and domain based on plan
+    document.getElementById('languageSettings').style.display = hasPro ? 'block' : 'none';
+    document.getElementById('domainSettings').style.display = isAgency ? 'block' : 'none';
+    
+    // Load the preview iframe
+    const previewIframe = document.getElementById('funnelPreview');
+    if (previewIframe) {
+      previewIframe.src = '/r/' + slug + '?preview=true';
+    }
+  } else {
+    // Show upgrade prompt
+    document.getElementById('funnelProFeatures').style.display = 'none';
+    document.getElementById('funnelUpgradePrompt').style.display = 'block';
+  }
 }
 
 function selectTemplate(template) {
