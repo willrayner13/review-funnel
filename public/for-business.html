@@ -881,34 +881,28 @@
       <div class="panel"><h3>🔐 Change password</h3><input id="currentPw" type="password" placeholder="Current password" style="width:100%; margin-bottom:8px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);"><br><input id="newPw" type="password" placeholder="New password" style="width:100%; margin-bottom:8px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);"><br><input id="confirmPw" type="password" placeholder="Confirm new password" style="width:100%; margin-bottom:12px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);"><button onclick="changePassword()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Update password</button></div>
       
       <!-- Complaint Alerts Section -->
-      <div class="panel">
-        <h3>📱 Instant Complaint Alerts</h3>
-        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Get notified immediately when a customer leaves negative feedback — so you can fix issues before they become public reviews.</p>
-        <div style="margin-bottom:16px;">
-          <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-            <input type="checkbox" id="complaintAlertsEnabled"> Enable instant alerts
-          </label>
-          <div id="alertMethods" style="margin-left:24px; display:none;">
-            <label style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-              <input type="checkbox" id="alertWhatsapp"> WhatsApp (free)
-            </label>
-            <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-              <input type="checkbox" id="alertSms"> SMS (£0.03 per message)
-            </label>
-            <div id="whatsappNumberField" style="margin-bottom:12px; display:none;">
-              <label style="font-size:0.75rem; color:var(--cream-dim);">WhatsApp number</label>
-              <input type="tel" id="alertWhatsappNumber" placeholder="e.g. 07700900000" style="width:100%; padding:10px; margin-top:4px; background:var(--surface-2); border-radius:6px; border:1px solid var(--border); color:var(--cream);">
-            </div>
-            <div id="smsNumberField" style="margin-bottom:12px; display:none;">
-              <label style="font-size:0.75rem; color:var(--cream-dim);">SMS number</label>
-              <input type="tel" id="alertSmsNumber" placeholder="e.g. 07700900000" style="width:100%; padding:10px; margin-top:4px; background:var(--surface-2); border-radius:6px; border:1px solid var(--border); color:var(--cream);">
-              <p style="font-size:0.65rem; color:rgba(234,231,220,0.3); margin-top:4px;">You'll be charged £0.03 per SMS. Only UK numbers supported.</p>
-            </div>
-          </div>
-        </div>
-        <button onclick="saveAlertSettings()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Save alert settings</button>
-        <div id="alertSettingsMsg" style="margin-top:8px; font-size:0.75rem;"></div>
+      <!-- Complaint Alerts Section -->
+<div class="panel">
+  <h3>📱 Instant Complaint Alerts</h3>
+  <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Get notified immediately when a customer leaves negative feedback — so you can fix issues before they become public reviews.</p>
+  <div style="margin-bottom:16px;">
+    <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+      <input type="checkbox" id="complaintAlertsEnabled"> Enable instant alerts
+    </label>
+    <div id="alertMethods" style="margin-left:24px; display:none;">
+      <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+        <input type="checkbox" id="alertWhatsapp"> WhatsApp
+      </label>
+      <div id="whatsappNumberField" style="margin-bottom:16px; display:none;">
+        <label style="font-size:0.75rem; color:var(--cream-dim);">WhatsApp number (with country code)</label>
+        <input type="tel" id="alertWhatsappNumber" placeholder="e.g. 447700900000" style="width:100%; padding:10px; margin-top:4px; background:var(--surface-2); border-radius:6px; border:1px solid var(--border); color:var(--cream);">
+        <p style="font-size:0.65rem; color:rgba(234,231,220,0.3); margin-top:4px;">We'll send alerts to this number via WhatsApp.</p>
       </div>
+    </div>
+  </div>
+  <button onclick="saveAlertSettings()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Save alert settings</button>
+  <div id="alertSettingsMsg" style="margin-top:8px; font-size:0.75rem;"></div>
+</div>
       
       <div class="panel danger-zone"><h3 style="color: #D4897C;">⚠️ Cancel subscription</h3><p style="font-size:0.85rem; margin-bottom:16px;">Permanently cancel your account and lose access to your dashboard.</p><button onclick="confirmCancel()" class="btn-full" style="background:transparent; border:1px solid #D4897C; color:#D4897C;">Cancel subscription</button></div>
     </div>
@@ -1003,9 +997,7 @@ function handleModalOverlay(e, id){ if(e.target === document.getElementById(id))
 const alertsEnabled = document.getElementById('complaintAlertsEnabled');
 const alertMethods = document.getElementById('alertMethods');
 const whatsappCheckbox = document.getElementById('alertWhatsapp');
-const smsCheckbox = document.getElementById('alertSms');
 const whatsappField = document.getElementById('whatsappNumberField');
-const smsField = document.getElementById('smsNumberField');
 
 if (alertsEnabled) {
   alertsEnabled.addEventListener('change', () => {
@@ -1017,12 +1009,6 @@ if (whatsappCheckbox) {
     whatsappField.style.display = whatsappCheckbox.checked ? 'block' : 'none';
   });
 }
-if (smsCheckbox) {
-  smsCheckbox.addEventListener('change', () => {
-    smsField.style.display = smsCheckbox.checked ? 'block' : 'none';
-  });
-}
-
 async function saveAlertSettings() {
   const btn = event.target;
   const msg = document.getElementById('alertSettingsMsg');
@@ -1032,11 +1018,9 @@ async function saveAlertSettings() {
   const data = {
     alert_enabled: alertsEnabled?.checked || false,
     alert_methods: {
-      whatsapp: whatsappCheckbox?.checked || false,
-      sms: smsCheckbox?.checked || false
+      whatsapp: whatsappCheckbox?.checked || false
     },
-    owner_whatsapp: document.getElementById('alertWhatsappNumber')?.value.trim() || '',
-    owner_sms: document.getElementById('alertSmsNumber')?.value.trim() || ''
+    owner_whatsapp: document.getElementById('alertWhatsappNumber')?.value.trim() || ''
   };
   
   try {
