@@ -844,18 +844,33 @@ let lastStats = null;
 let pollingInterval = null;
 
 // ========== SIDEBAR NAVIGATION ==========
+const navIdMap = {
+  'dashboard': 'dashboardSection',
+  'reviews': 'reviewsSection',
+  'ai-tools': 'aiToolsSection',
+  'integrations': 'integrationsSection',
+  'review-wall': 'reviewWallSection',
+  'widget': 'widgetSection',
+  'settings': 'settingsSection'
+};
+
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => {
     const target = item.dataset.nav;
+    const sectionId = navIdMap[target];
+    if (!sectionId) return;
+
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
     item.classList.add('active');
+
     document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
-    document.getElementById(`${target}Section`).classList.add('active');
-    // Update URL hash for deep linking
+
+    const section = document.getElementById(sectionId);
+    if (section) section.classList.add('active');
+
     window.location.hash = target;
   });
 });
-
 // Handle hash on load
 function handleHash() {
   const hash = window.location.hash.slice(1);
