@@ -882,22 +882,18 @@
       
       <!-- Complaint Alerts Section -->
       <!-- Complaint Alerts Section -->
+<!-- Complaint Alerts Section - SMS Version -->
 <div class="panel">
   <h3>📱 Instant Complaint Alerts</h3>
-  <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Get notified immediately when a customer leaves negative feedback — so you can fix issues before they become public reviews.</p>
+  <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Get an SMS immediately when a customer leaves negative feedback — so you can fix issues before they become public reviews.</p>
   <div style="margin-bottom:16px;">
     <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-      <input type="checkbox" id="complaintAlertsEnabled"> Enable instant alerts
+      <input type="checkbox" id="complaintAlertsEnabled"> Enable SMS alerts
     </label>
-    <div id="alertMethods" style="margin-left:24px; display:none;">
-      <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-        <input type="checkbox" id="alertWhatsapp"> WhatsApp
-      </label>
-      <div id="whatsappNumberField" style="margin-bottom:16px; display:none;">
-        <label style="font-size:0.75rem; color:var(--cream-dim);">WhatsApp number (with country code)</label>
-        <input type="tel" id="alertWhatsappNumber" placeholder="e.g. 447700900000" style="width:100%; padding:10px; margin-top:4px; background:var(--surface-2); border-radius:6px; border:1px solid var(--border); color:var(--cream);">
-        <p style="font-size:0.65rem; color:rgba(234,231,220,0.3); margin-top:4px;">We'll send alerts to this number via WhatsApp.</p>
-      </div>
+    <div id="alertPhoneField" style="margin-left:24px; display:none;">
+      <label style="font-size:0.75rem; color:var(--cream-dim);">Your mobile number (UK)</label>
+      <input type="tel" id="alertPhoneNumber" placeholder="e.g. 07700900000" style="width:100%; padding:10px; margin-top:4px; background:var(--surface-2); border-radius:6px; border:1px solid var(--border); color:var(--cream);">
+      <p style="font-size:0.65rem; color:rgba(234,231,220,0.3); margin-top:4px;">We'll send you an SMS whenever a customer submits negative feedback. Standard network rates may apply.</p>
     </div>
   </div>
   <button onclick="saveAlertSettings()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Save alert settings</button>
@@ -993,22 +989,16 @@ function openModal(id){ document.getElementById(id).classList.add("open"); docum
 function closeModal(id){ document.getElementById(id).classList.remove("open"); document.body.style.overflow=""; }
 function handleModalOverlay(e, id){ if(e.target === document.getElementById(id)) closeModal(id); }
 
-// ========== ALERT SETTINGS ==========
+// ========== SMS ALERT SETTINGS ==========
 const alertsEnabled = document.getElementById('complaintAlertsEnabled');
-const alertMethods = document.getElementById('alertMethods');
-const whatsappCheckbox = document.getElementById('alertWhatsapp');
-const whatsappField = document.getElementById('whatsappNumberField');
+const alertPhoneField = document.getElementById('alertPhoneField');
 
 if (alertsEnabled) {
   alertsEnabled.addEventListener('change', () => {
-    alertMethods.style.display = alertsEnabled.checked ? 'block' : 'none';
+    alertPhoneField.style.display = alertsEnabled.checked ? 'block' : 'none';
   });
 }
-if (whatsappCheckbox) {
-  whatsappCheckbox.addEventListener('change', () => {
-    whatsappField.style.display = whatsappCheckbox.checked ? 'block' : 'none';
-  });
-}
+
 async function saveAlertSettings() {
   const btn = event.target;
   const msg = document.getElementById('alertSettingsMsg');
@@ -1017,10 +1007,7 @@ async function saveAlertSettings() {
   
   const data = {
     alert_enabled: alertsEnabled?.checked || false,
-    alert_methods: {
-      whatsapp: whatsappCheckbox?.checked || false
-    },
-    owner_whatsapp: document.getElementById('alertWhatsappNumber')?.value.trim() || ''
+    alert_phone: document.getElementById('alertPhoneNumber')?.value.trim() || ''
   };
   
   try {

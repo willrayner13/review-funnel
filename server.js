@@ -479,38 +479,39 @@ app.post("/feedback", async (req, res) => {
   const { error } = await supabase.from("events").insert({ business_slug: business, event_type: "negative", message });
   if (error) return res.status(500).json(error);
   
-  // ─── SEND ALERT TO BUSINESS OWNER ───
+  // ─── SEND SMS ALERT TO BUSINESS OWNER ───
   try {
+    // Get business details including alert settings
     const { data: businessData } = await supabase
       .from("businesses")
-      .select("name, owner_whatsapp, owner_sms, alert_methods, alert_enabled")
+      .select("name, alert_enabled, alert_phone, subscription_active, plan_type")
       .eq("slug", business)
       .single();
     
-    if (businessData && businessData.alert_enabled) {
+    // Only send if alerts are enabled and they have a phone number
+    if (businessData && businessData.alert_enabled && businessData.alert_phone) {
       const shortMessage = message.length > 100 ? message.substring(0, 97) + "..." : message;
-      const alertText = `⚠️ COMPLAINT from a customer at ${businessData.name}: "${shortMessage}" - Log in to your dashboard to respond: ${process.env.BASE_URL}/for-business`;
+      const businessName = businessData.name || "a customer";
       
-      if (businessData.alert_methods?.whatsapp && businessData.owner_whatsapp) {
-        // Send WhatsApp via Twilio (requires Twilio WhatsApp beta or Business API)
-        // For now, send as SMS to WhatsApp number (users have WhatsApp enabled on that number)
-        await twilioClient.messages.create({
-          from: process.env.TWILIO_WHATSAPP_FROM || `whatsapp:${process.env.TWILIO_PHONE}`,
-          to: `whatsapp:${normalisePhone(businessData.owner_whatsapp)}`,
-          body: alertText
-        }).catch(e => console.log("WhatsApp alert failed:", e.message));
-      }
+      const alertText = `⚠️ COMPLAINT from ${businessName}: "${shortMessage}"\n\nLog in to respond: ${process.env.BASE_URL}/for-business`;
       
-      if (businessData.alert_methods?.sms && businessData.owner_sms) {
+      // Send SMS via Twilio
+      const normalisedPhone = normalisePhone(businessData.alert_phone);
+      
+      if (normalisedPhone.startsWith('+44')) {
         await twilioClient.messages.create({
           from: process.env.TWILIO_PHONE,
-          to: normalisePhone(businessData.owner_sms),
+          to: normalisedPhone,
           body: alertText
-        }).catch(e => console.log("SMS alert failed:", e.message));
+        });
+        console.log(`Alert SMS sent to ${normalisedPhone} for complaint from ${business}`);
+      } else {
+        console.log(`Invalid UK number for alerts: ${normalisedPhone}`);
       }
     }
   } catch (alertErr) {
-    console.error("Alert sending failed (non-fatal):", alertErr.message);
+    // Don't fail the request if alert fails - just log it
+    console.error("Alert SMS failed (non-fatal):", alertErr.message);
   }
   
   res.json({ success: true });
@@ -648,11 +649,11 @@ Reply with JSON only: { "sentiment": "positive", "confidence": "high", "reasonin
 app.get("/stats/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
 
-  const { data: businessData } = await supabase
-    .from("businesses")
-    .select("name, subscription_active, plan_type, trial_ends_at, review_link, industry, current_software, nfc_card_ordered, nfc_card_tracking_number")
-    .eq("slug", req.params.slug)
-    .single();
+const { data: businessData } = await supabase
+  .from("businesses")
+  .select("name, subscription_active, plan_type, trial_ends_at, review_link, industry, current_software, nfc_card_ordered, nfc_card_tracking_number, alert_enabled, alert_phone")
+  .eq("slug", req.params.slug)
+  .single();
     
   if (!businessData) return res.status(404).json({ error: "Business not found" });
 
@@ -1398,14 +1399,22 @@ app.post("/billing-portal", async (req, res) => {
   }
 });
 
-// ─── UPDATE BUSINESS DETAILS ──────────────────────────────────────────────────
 app.post("/update-business", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
-  const { name, review_link } = req.body;
+  const { name, review_link, alert_enabled, alert_phone } = req.body;
   if (!name || name.trim().length < 1) return res.status(400).json({ error: "Business name required" });
+  
+  const updateData = { 
+    name: name.trim(), 
+    review_link: review_link || "" 
+  };
+  
+  if (alert_enabled !== undefined) updateData.alert_enabled = alert_enabled;
+  if (alert_phone !== undefined) updateData.alert_phone = alert_phone;
+  
   const { error } = await supabase
     .from("businesses")
-    .update({ name: name.trim(), review_link: review_link || "" })
+    .update(updateData)
     .eq("slug", req.session.slug);
   if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
