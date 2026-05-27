@@ -586,7 +586,7 @@
       </div>
     </div>
 
-       <!-- AI TOOLS SECTION -->
+         <!-- AI TOOLS SECTION -->
     <div id="aiToolsSection" class="content-section">
       <h2 style="margin-bottom: 20px;">AI Tools</h2>
       
@@ -655,14 +655,8 @@
         <p>Upgrade to Agency to analyse competitors.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
-    </div> <!-- Send Intelligence -->
+    </div>     
      
-      <div class="pro-lock-panel" id="sendIntelLocked" style="display:none">
-        <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
-        <h4>AI Send Intelligence</h4>
-        <p>Upgrade to Pro to see channel recommendations.</p>
-        <a href="/billing" style="color:var(--accent);">Upgrade →</a>
-      </div>
     </div>
 
     <!-- INTEGRATIONS SECTION -->
@@ -802,7 +796,45 @@
         <p style="font-size:0.85rem; margin-bottom:16px;">Cancel your subscription and lose access to your dashboard.</p>
         <button onclick="confirmCancel()" class="btn-full" style="background:transparent; border:1px solid #D4897C; color:#D4897C;">Cancel subscription</button>
       </div>
+      </div> <!-- closing tag for settingsSection -->
+  </main>
+</div>
+
+<!-- NFC Order Modal -->
+<div class="modal-overlay" id="nfcModal" onclick="handleModalOverlay(event, 'nfcModal')">
+  <div class="modal-box" style="max-width:500px;">
+    <button class="modal-close" onclick="closeModal('nfcModal')">✕</button>
+    <span class="modal-icon">📦</span>
+    <h3>Order your Tap-to-Review Card</h3>
+    <p style="margin-bottom:16px;">Enter your shipping address. We'll post your card within 2 business days.</p>
+    <div class="form-group"><label>Full name</label><input id="nfcFullName" type="text" placeholder="Your full name" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;"></div>
+    <div class="form-group"><label>Shipping address</label><textarea id="nfcAddress" rows="3" placeholder="Street address, city, postcode, country" style="width:100%;min-height:80px;background:var(--surface-2);border-radius:6px;"></textarea></div>
+    <button onclick="orderNfcCard()" id="nfcOrderBtn" class="btn-full" style="background:var(--accent); color:#1A1A18;">Continue to payment (£9.99) →</button>
+    <p id="nfcModalMsg" style="font-size:0.75rem; color:#D4897C; margin-top:12px;"></p>
+  </div>
+</div>
+
+<!-- Cancel subscription modal -->
+<div class="modal-overlay" id="cancelModal" onclick="handleModalOverlay(event, 'cancelModal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('cancelModal')">✕</button>
+    <span class="modal-icon">⚠️</span>
+    <h3>Cancel your subscription?</h3>
+    <p>You'll keep full access until the end of your current billing period. After that, your funnel page will stop working and you'll lose access to your dashboard.</p>
+    <ul style="font-size:0.82rem;color:var(--cream-dim);line-height:1.8;padding-left:18px;margin-bottom:8px;">
+      <li>Your review funnel will stop collecting responses</li>
+      <li>Customers scanning your QR code will see an error</li>
+      <li>All your analytics data will be inaccessible</li>
+    </ul>
+    <p style="color:rgba(234,231,220,0.4);font-size:0.78rem;">You can resubscribe at any time and your data will still be there.</p>
+    <div class="modal-btns">
+      <button onclick="closeModal('cancelModal')" style="background:var(--surface-2);color:var(--cream);border-color:var(--border-hover);">Keep my plan</button>
+      <button class="btn-danger-solid" onclick="doCancel()" id="confirmCancelBtn">Yes, cancel</button>
     </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 let slug;
