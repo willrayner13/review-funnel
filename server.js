@@ -478,6 +478,41 @@ app.post("/feedback", async (req, res) => {
   const { business, message } = req.body;
   const { error } = await supabase.from("events").insert({ business_slug: business, event_type: "negative", message });
   if (error) return res.status(500).json(error);
+  
+  // ─── SEND ALERT TO BUSINESS OWNER ───
+  try {
+    const { data: businessData } = await supabase
+      .from("businesses")
+      .select("name, owner_whatsapp, owner_sms, alert_methods, alert_enabled")
+      .eq("slug", business)
+      .single();
+    
+    if (businessData && businessData.alert_enabled) {
+      const shortMessage = message.length > 100 ? message.substring(0, 97) + "..." : message;
+      const alertText = `⚠️ COMPLAINT from a customer at ${businessData.name}: "${shortMessage}" - Log in to your dashboard to respond: ${process.env.BASE_URL}/for-business`;
+      
+      if (businessData.alert_methods?.whatsapp && businessData.owner_whatsapp) {
+        // Send WhatsApp via Twilio (requires Twilio WhatsApp beta or Business API)
+        // For now, send as SMS to WhatsApp number (users have WhatsApp enabled on that number)
+        await twilioClient.messages.create({
+          from: process.env.TWILIO_WHATSAPP_FROM || `whatsapp:${process.env.TWILIO_PHONE}`,
+          to: `whatsapp:${normalisePhone(businessData.owner_whatsapp)}`,
+          body: alertText
+        }).catch(e => console.log("WhatsApp alert failed:", e.message));
+      }
+      
+      if (businessData.alert_methods?.sms && businessData.owner_sms) {
+        await twilioClient.messages.create({
+          from: process.env.TWILIO_PHONE,
+          to: normalisePhone(businessData.owner_sms),
+          body: alertText
+        }).catch(e => console.log("SMS alert failed:", e.message));
+      }
+    }
+  } catch (alertErr) {
+    console.error("Alert sending failed (non-fatal):", alertErr.message);
+  }
+  
   res.json({ success: true });
 });
 
