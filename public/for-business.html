@@ -1157,7 +1157,10 @@ async function loadDashboardData() {
   document.getElementById("sidebarBizName").innerText = stats.business_name || slug;
   document.getElementById("sidebarPlanName").innerText = stats.plan_type === "pro" ? "Pro" : stats.plan_type === "agency" ? "Agency" : "Starter";
   document.getElementById("upgradeLink").style.display = stats.plan_type === "agency" ? "none" : "flex";
-  document.getElementById("reviewLink").value = window.location.origin + "/r/" + slug;
+ const reviewLinkElement = document.getElementById("reviewLink");
+if (reviewLinkElement) {
+  reviewLinkElement.value = window.location.origin + "/r/" + slug;
+}
   updateGreeting(stats.business_name);
   
   document.getElementById("statVisits").innerText = stats.visits ?? 0;
