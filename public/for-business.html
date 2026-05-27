@@ -883,7 +883,7 @@
           <div>
             <label style="display:block;margin-bottom:8px;font-weight:600;">Live preview</label>
             <div style="background:var(--surface-2);border-radius:12px;padding:12px;border:1px solid var(--border);">
-              <iframe id="funnelPreview" src="/r/${slug}?preview=true" style="width:100%;height:500px;border:none;border-radius:8px;background:#fff;"></iframe>
+              <iframe id="funnelPreview" style="width:100%;height:500px;border:none;border-radius:8px;background:#fff;"></iframe>
             </div>
             <p class="helper-text" style="font-size:0.7rem;margin-top:8px;">Your funnel updates live when you click Save.</p>
           </div>
@@ -1304,6 +1304,13 @@ async function checkSession(){
   const data = await res.json();
   if(!data.loggedIn){ window.location="/login"; return; }
   slug = data.slug;
+  
+  // Set preview iframe src
+  const previewIframe = document.getElementById('funnelPreview');
+  if (previewIframe) {
+    previewIframe.src = `/r/${slug}?preview=true`;
+  }
+  
   await loadDashboardData();
   startPolling();
   handleHash();
