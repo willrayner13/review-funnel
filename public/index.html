@@ -520,6 +520,125 @@ if(t && window.businessName) t.innerText = window.businessName;
 
 // Apply funnel customisation on load
 applyFunnelCustomisation();
+
+
+
+
+window.addEventListener('message', (event) => {
+  // Only accept messages from the same origin
+  if (event.origin !== window.location.origin) return;
+  
+  if (event.data?.type === 'FUNNEL_PREVIEW_UPDATE') {
+    const s = event.data.settings;
+    
+    // Update accent colour
+    if (s.accentColor) {
+      document.documentElement.style.setProperty('--accent', s.accentColor);
+      // Also update any buttons that use accent colour directly
+      const accentButtons = document.querySelectorAll('.review-prompt button, #feedbackBox button, #copyGoBtn, #recordBtn');
+      accentButtons.forEach(btn => {
+        if (btn) btn.style.backgroundColor = s.accentColor;
+      });
+    }
+    
+    // Update template class
+    if (s.template) {
+      // Remove existing template classes
+      const templateClasses = ['template-classic', 'template-bright', 'template-medical', 'template-bold', 'template-luxury'];
+      templateClasses.forEach(cls => document.body.classList.remove(cls));
+      document.body.classList.add(`template-${s.template}`);
+    }
+    
+    // Update headline
+    const headlineEl = document.getElementById('mainHeadline');
+    if (headlineEl && s.headline && s.headline.trim() !== '') {
+      headlineEl.textContent = s.headline;
+    } else if (headlineEl && window.businessName) {
+      headlineEl.textContent = `How was your experience at ${window.businessName}?`;
+    }
+    
+    // Update happy button label
+    const happyBtn = document.getElementById('happyLabel');
+    if (happyBtn && s.happyLabel && s.happyLabel.trim() !== '') {
+      happyBtn.textContent = s.happyLabel;
+    } else if (happyBtn) {
+      happyBtn.textContent = 'Great experience!';
+    }
+    
+    // Update unhappy button label
+    const unhappyBtn = document.getElementById('unhappyLabel');
+    if (unhappyBtn && s.unhappyLabel && s.unhappyLabel.trim() !== '') {
+      unhappyBtn.textContent = s.unhappyLabel;
+    } else if (unhappyBtn) {
+      unhappyBtn.textContent = 'Could be better';
+    }
+    
+    // Update logo
+    if (s.logoUrl && s.logoUrl.trim() !== '') {
+      let logoEl = document.querySelector('.funnel-logo');
+      if (!logoEl) {
+        const img = document.createElement('img');
+        img.className = 'funnel-logo';
+        img.style.cssText = 'max-height:60px; max-width:200px; margin:0 auto 20px; display:block;';
+        const funnelCard = document.querySelector('.funnel-card');
+        if (funnelCard) funnelCard.prepend(img);
+        logoEl = document.querySelector('.funnel-logo');
+      }
+      if (logoEl) logoEl.src = s.logoUrl;
+    } else {
+      // Remove logo if URL is empty
+      const logoEl = document.querySelector('.funnel-logo');
+      if (logoEl) logoEl.remove();
+    }
+  }
+});
+
+// Also listen for initial load to apply any custom settings from window variables
+document.addEventListener('DOMContentLoaded', () => {
+  // Apply template from window variable if set
+  if (window.funnelTemplate) {
+    const templateClasses = ['template-classic', 'template-bright', 'template-medical', 'template-bold', 'template-luxury'];
+    templateClasses.forEach(cls => document.body.classList.remove(cls));
+    document.body.classList.add(`template-${window.funnelTemplate}`);
+  }
+  
+  // Apply accent colour
+  if (window.funnelAccentColor) {
+    document.documentElement.style.setProperty('--accent', window.funnelAccentColor);
+  }
+  
+  // Apply headline
+  if (window.funnelHeadline && window.funnelHeadline.trim() !== '') {
+    const headlineEl = document.getElementById('mainHeadline');
+    if (headlineEl) headlineEl.textContent = window.funnelHeadline;
+  }
+  
+  // Apply button labels
+  if (window.funnelHappyLabel && window.funnelHappyLabel.trim() !== '') {
+    const happyLabel = document.getElementById('happyLabel');
+    if (happyLabel) happyLabel.textContent = window.funnelHappyLabel;
+  }
+  
+  if (window.funnelUnhappyLabel && window.funnelUnhappyLabel.trim() !== '') {
+    const unhappyLabel = document.getElementById('unhappyLabel');
+    if (unhappyLabel) unhappyLabel.textContent = window.funnelUnhappyLabel;
+  }
+  
+  // Apply logo
+  if (window.funnelLogoUrl && window.funnelLogoUrl.trim() !== '') {
+    let logoEl = document.querySelector('.funnel-logo');
+    if (!logoEl) {
+      const img = document.createElement('img');
+      img.className = 'funnel-logo';
+      img.style.cssText = 'max-height:60px; max-width:200px; margin:0 auto 20px; display:block;';
+      const funnelCard = document.querySelector('.funnel-card');
+      if (funnelCard) funnelCard.prepend(img);
+      logoEl = document.querySelector('.funnel-logo');
+    }
+    if (logoEl) logoEl.src = window.funnelLogoUrl;
+  }
+});
+
 </script>
 </body>
 </html>

@@ -149,6 +149,68 @@
       height: 100vh;
     }
 
+    /* Danger zone styling */
+.danger-zone {
+  border: 1px solid rgba(192,103,90,0.3) !important;
+  background: linear-gradient(135deg, var(--surface-2) 0%, rgba(192,103,90,0.05) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.danger-zone::before {
+  content: '⚠️ DANGER ZONE';
+  position: absolute;
+  top: 12px;
+  right: -30px;
+  background: #C0675A;
+  color: #1A1A18;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 4px 40px;
+  transform: rotate(35deg);
+  letter-spacing: 1px;
+}
+
+/* Feature tile hover effect */
+.feature-tile:not(.locked):hover {
+  border-color: rgba(200,169,110,0.4);
+  border-bottom: 2px solid var(--accent);
+}
+
+/* Skeleton loading */
+.skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.skeleton-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+.skeleton-text {
+  flex: 1;
+  height: 16px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+.skeleton-time {
+  width: 60px;
+  height: 12px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.3; }
+}
+
     /* ── TOP BAR ── */
     .top-bar {
       position: sticky;
@@ -164,6 +226,55 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+
+    /* Pulse dot for nav items */
+.nav-item.has-new::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.5; transform: translateY(-50%) scale(1.2); }
+}
+
+/* Activity ticker marquee animation */
+.activity-ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+}
+
+.activity-ticker-content {
+  display: inline-block;
+  animation: tickerScroll 20s linear infinite;
+  padding-right: 40px;
+}
+
+.activity-ticker:hover .activity-ticker-content {
+  animation-play-state: paused;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Pause animation when there are fewer than 3 items */
+.activity-ticker[data-items="1"] .activity-ticker-content,
+.activity-ticker[data-items="2"] .activity-ticker-content {
+  animation: none;
+  transform: none;
+}
+.nav-item { position: relative; }
     .greeting h2 { font-size: 1.25rem; font-weight: 600; color: var(--cream); }
     .greeting p { font-size: 0.75rem; color: var(--cream-dim); margin-top: 2px; }
     .activity-ticker {
@@ -464,6 +575,7 @@
       .rep-hero { flex-direction: column; text-align: center; }
       .rep-bar-item { flex-wrap: wrap; }
       .rep-bar-label { width: 100%; }
+      #navProgressBar { left: 0 !important; }
     }
 
     /* ── SIDEBAR COLLAPSE FOR TABLET ── */
@@ -554,10 +666,16 @@
         <p id="greetingBusiness">Loading...</p>
       </div>
       <div class="activity-ticker" id="activityTicker">
-        <i class="ti ti-rss" style="margin-right: 6px;"></i>
-        <span id="tickerText">Loading activity...</span>
-      </div>
+  <i class="ti ti-rss" style="margin-right: 6px; flex-shrink: 0;"></i>
+  <div style="flex: 1; overflow: hidden; position: relative;">
+    <div class="activity-ticker-content" id="tickerContent">
+      <span id="tickerText">Loading activity...</span>
     </div>
+  </div>
+</div>
+    </div>
+
+    <div id="navProgressBar" style="position:fixed; top:0; left:260px; height:2px; background:var(--accent); transition:width 0.3s ease, opacity 0.2s ease; opacity:0; z-index:200; pointer-events:none; width:0%;"></div>
 
     <!-- Hidden elements for JavaScript compatibility -->
 <input type="hidden" id="reviewLink">
@@ -660,92 +778,162 @@
         <div style="display:grid; grid-template-columns: 280px 1fr 260px; gap: 24px;">
           
           <div style="background:var(--surface-2); border-radius:16px; padding:20px;">
-            <h4 style="margin-bottom:16px;">Templates</h4>
-            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px;">
-              <div onclick="selectTemplate('classic')" class="template-option-compact" data-template="classic" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer; background:var(--surface);">
-                <div style="width:40px;height:40px;background:#1A1A18;border-radius:6px;"></div>
-                <span>Classic Dark</span>
-              </div>
-              <div onclick="selectTemplate('bright')" class="template-option-compact" data-template="bright" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
-                <div style="width:40px;height:40px;background:#FFFFFF;border-radius:6px;"></div>
-                <span>Bright Light</span>
-              </div>
-              <div onclick="selectTemplate('medical')" class="template-option-compact" data-template="medical" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
-                <div style="width:40px;height:40px;background:#F8FAFC;border-radius:6px;"></div>
-                <span>Medical Clean</span>
-              </div>
-              <div onclick="selectTemplate('bold')" class="template-option-compact" data-template="bold" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
-                <div style="width:40px;height:40px;background:var(--accent);border-radius:6px;"></div>
-                <span>Bold Accent</span>
-              </div>
-              <div onclick="selectTemplate('luxury')" class="template-option-compact" data-template="luxury" style="display:flex; align-items:center; gap:12px; padding:8px; border-radius:8px; cursor:pointer;">
-                <div style="width:40px;height:40px;background:#0A0A0A;border-radius:6px;"></div>
-                <span>Luxury Dark</span>
-              </div>
-            </div>
-            
-            <h4 style="margin-bottom:12px;">Branding</h4>
-            <input type="url" id="funnelLogoUrl" placeholder="Logo URL" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:12px;">
-            <div style="display:flex; gap:8px; margin-bottom:20px;">
-              <input type="color" id="funnelAccentColor" value="#C8A96E" style="width:50px;height:40px;border-radius:6px;">
-              <div style="display:flex; gap:4px;">
-                <div onclick="setAccentColor('#C8A96E')" style="width:24px;height:24px;border-radius:4px;background:#C8A96E;cursor:pointer;"></div>
-                <div onclick="setAccentColor('#3B82F6')" style="width:24px;height:24px;border-radius:4px;background:#3B82F6;cursor:pointer;"></div>
-                <div onclick="setAccentColor('#10B981')" style="width:24px;height:24px;border-radius:4px;background:#10B981;cursor:pointer;"></div>
-                <div onclick="setAccentColor('#8B5CF6')" style="width:24px;height:24px;border-radius:4px;background:#8B5CF6;cursor:pointer;"></div>
-              </div>
-            </div>
-            
-            <h4 style="margin-bottom:8px;">Messaging</h4>
-            <input type="text" id="funnelHeadline" placeholder="Headline" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:8px;">
-            <input type="text" id="funnelHappyLabel" placeholder="Happy button" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:8px;">
-            <input type="text" id="funnelUnhappyLabel" placeholder="Unhappy button" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:16px;">
-            
-            <button onclick="saveFunnelSettings()" class="btn-full" style="background:var(--accent);color:#1A1A18;">Save Changes</button>
-            <div id="funnelMsg" style="margin-top:8px;font-size:0.75rem;"></div>
-          </div>
+  <h4 style="margin-bottom:16px; font-family:'Syne',sans-serif;">🎨 Design your funnel</h4>
+  
+  <!-- Section 1: Templates -->
+  <div style="margin-bottom:24px;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+      <i class="ti ti-layout" style="color:var(--accent);"></i>
+      <h5 style="font-size:0.85rem; font-weight:600;">Template</h5>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div onclick="selectTemplate('classic')" class="template-option-compact" data-template="classic" style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; cursor:pointer; background:var(--surface); border:1px solid transparent;">
+        <div style="width:48px; height:48px; background:#1A1A18; border-radius:8px;"></div>
+        <div style="flex:1;"><div style="font-weight:600; font-size:0.85rem;">Classic Dark</div><div style="font-size:0.7rem; color:var(--cream-dim);">Clean and premium — the ReviewLift default</div></div>
+      </div>
+      <div onclick="selectTemplate('bright')" class="template-option-compact" data-template="bright" style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; cursor:pointer; border:1px solid transparent;">
+        <div style="width:48px; height:48px; background:#FFFFFF; border-radius:8px;"></div>
+        <div style="flex:1;"><div style="font-weight:600; font-size:0.85rem;">Bright Light</div><div style="font-size:0.7rem; color:var(--cream-dim);">Friendly and approachable — great for food and retail</div></div>
+      </div>
+      <div onclick="selectTemplate('medical')" class="template-option-compact" data-template="medical" style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; cursor:pointer; border:1px solid transparent;">
+        <div style="width:48px; height:48px; background:#F8FAFC; border-radius:8px;"></div>
+        <div style="flex:1;"><div style="font-weight:600; font-size:0.85rem;">Medical Clean</div><div style="font-size:0.7rem; color:var(--cream-dim);">Clinical and calm — ideal for healthcare</div></div>
+      </div>
+      <div onclick="selectTemplate('bold')" class="template-option-compact" data-template="bold" style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; cursor:pointer; border:1px solid transparent;">
+        <div style="width:48px; height:48px; background:var(--accent); border-radius:8px;"></div>
+        <div style="flex:1;"><div style="font-weight:600; font-size:0.85rem;">Bold Accent</div><div style="font-size:0.7rem; color:var(--cream-dim);">High impact — perfect for trades and gyms</div></div>
+      </div>
+      <div onclick="selectTemplate('luxury')" class="template-option-compact" data-template="luxury" style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; cursor:pointer; border:1px solid transparent;">
+        <div style="width:48px; height:48px; background:#0A0A0A; border-radius:8px;"></div>
+        <div style="flex:1;"><div style="font-weight:600; font-size:0.85rem;">Luxury Dark</div><div style="font-size:0.7rem; color:var(--cream-dim);">Minimal and elegant — for high-end services</div></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="height:1px; background:var(--border); margin:16px 0;"></div>
+  
+  <!-- Section 2: Branding -->
+  <div style="margin-bottom:24px;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+      <i class="ti ti-branding" style="color:var(--accent);"></i>
+      <h5 style="font-size:0.85rem; font-weight:600;">Branding</h5>
+    </div>
+    <label style="font-size:0.7rem; color:var(--cream-dim); display:block; margin-bottom:4px;">Logo URL</label>
+    <input type="url" id="funnelLogoUrl" placeholder="https://your-site.com/logo.png" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:6px; border:1px solid var(--border); color:var(--cream);">
+    <div id="logoPreview" style="display:none; margin-bottom:12px; text-align:center;">
+      <img id="logoPreviewImg" style="max-height:40px; max-width:100%;" alt="Logo preview">
+    </div>
+    <p class="helper-text" style="font-size:0.65rem; color:var(--cream-dim); margin-bottom:12px;">Paste a direct image URL (e.g. from your website)</p>
+    
+    <label style="font-size:0.7rem; color:var(--cream-dim); display:block; margin-bottom:4px;">Accent colour</label>
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+      <input type="color" id="funnelAccentColor" value="#C8A96E" style="width:50px; height:40px; border-radius:8px; cursor:pointer; background:var(--surface); border:1px solid var(--border);">
+      <div style="display:flex; gap:8px;">
+        <div onclick="setAccentColor('#C8A96E')" class="color-swatch" data-color="#C8A96E" style="width:32px; height:32px; border-radius:8px; background:#C8A96E; cursor:pointer;"></div>
+        <div onclick="setAccentColor('#3B82F6')" class="color-swatch" data-color="#3B82F6" style="width:32px; height:32px; border-radius:8px; background:#3B82F6; cursor:pointer;"></div>
+        <div onclick="setAccentColor('#10B981')" class="color-swatch" data-color="#10B981" style="width:32px; height:32px; border-radius:8px; background:#10B981; cursor:pointer;"></div>
+        <div onclick="setAccentColor('#8B5CF6')" class="color-swatch" data-color="#8B5CF6" style="width:32px; height:32px; border-radius:8px; background:#8B5CF6; cursor:pointer;"></div>
+        <div onclick="setAccentColor('#EF4444')" class="color-swatch" data-color="#EF4444" style="width:32px; height:32px; border-radius:8px; background:#EF4444; cursor:pointer;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="height:1px; background:var(--border); margin:16px 0;"></div>
+  
+  <!-- Section 3: Wording -->
+  <div style="margin-bottom:16px;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+      <i class="ti ti-edit" style="color:var(--accent);"></i>
+      <h5 style="font-size:0.85rem; font-weight:600;">Wording</h5>
+    </div>
+    <label style="font-size:0.7rem; color:var(--cream-dim); display:block; margin-bottom:4px;">Headline <span id="headlineCounter" style="color:var(--accent);">(0/60)</span></label>
+    <input type="text" id="funnelHeadline" placeholder="How was your experience?" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:12px; border:1px solid var(--border); color:var(--cream);" maxlength="60">
+    
+    <label style="font-size:0.7rem; color:var(--cream-dim); display:block; margin-bottom:4px;">Happy button</label>
+    <input type="text" id="funnelHappyLabel" placeholder="Great experience!" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:12px; border:1px solid var(--border); color:var(--cream);">
+    
+    <label style="font-size:0.7rem; color:var(--cream-dim); display:block; margin-bottom:4px;">Unhappy button</label>
+    <input type="text" id="funnelUnhappyLabel" placeholder="Could be better" style="width:100%; padding:10px; background:var(--surface); border-radius:8px; margin-bottom:16px; border:1px solid var(--border); color:var(--cream);">
+    
+    <button onclick="saveFunnelSettings()" class="btn-full" style="background:var(--accent);color:#1A1A18; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:8px;">💾 Save Changes</button>
+    <div id="funnelMsg" style="margin-top:12px; font-size:0.75rem;"></div>
+  </div>
+</div>
           
           <div>
             <div style="display:flex; gap:12px; margin-bottom:16px; justify-content:center;">
-              <button onclick="setPreviewDevice('mobile')" id="mobileViewBtn" style="background:var(--accent);color:#1A1A18;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;">📱 Mobile</button>
-              <button onclick="setPreviewDevice('desktop')" id="desktopViewBtn" style="background:var(--surface-2);color:var(--cream-dim);border:1px solid var(--border);border-radius:8px;padding:8px 16px;cursor:pointer;">💻 Desktop</button>
+              <div style="background:var(--surface-2); border-radius:40px; padding:4px; display:inline-flex; gap:4px; margin-bottom:20px;">
+  <button onclick="setPreviewDevice('mobile')" id="mobileViewBtn" style="background:var(--accent); color:#1A1A18; border:none; border-radius:32px; padding:8px 20px; font-size:0.85rem; cursor:pointer; transition:all 0.2s;">📱 Mobile</button>
+  <button onclick="setPreviewDevice('desktop')" id="desktopViewBtn" style="background:transparent; color:var(--cream-dim); border:none; border-radius:32px; padding:8px 20px; font-size:0.85rem; cursor:pointer; transition:all 0.2s;">💻 Desktop</button>
+</div>
+<p style="font-size:0.7rem; color:var(--cream-dim); margin-top:-8px; margin-bottom:16px;">Live preview — changes appear instantly</p>
             </div>
             
-            <div id="mobilePreview" style="display:block; max-width:380px; margin:0 auto;">
-              <div style="background:var(--surface-2); border-radius:32px; padding:16px; box-shadow:0 20px 40px rgba(0,0,0,0.4);">
-                <div style="background:#000; border-radius:28px; overflow:hidden;">
-                  <iframe id="funnelPreviewMobile" style="width:100%; height:560px; border:none; background:#fff;"></iframe>
-                </div>
-              </div>
-            </div>
+<div id="mobilePreview" style="display:block; max-width:360px; margin:0 auto;">
+  <div style="background:#1A1A18; border-radius:44px; padding:12px; box-shadow:0 20px 40px rgba(0,0,0,0.4);">
+    <div style="background:#000; border-radius:32px; overflow:hidden; position:relative;">
+      <!-- Notch -->
+      <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:140px; height:28px; background:#000; border-radius:0 0 20px 20px; z-index:10;"></div>
+      <div style="position:absolute; top:8px; left:50%; transform:translateX(-50%); width:100px; height:20px; background:#0A0A0A; border-radius:12px; z-index:11;"></div>
+      <iframe id="funnelPreviewMobile" style="width:100%; height:580px; border:none; background:#fff;"></iframe>
+    </div>
+  </div>
+</div>
             
-            <div id="desktopPreview" style="display:none;">
-              <div style="background:var(--surface-2); border-radius:16px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
-                <iframe id="funnelPreviewDesktop" style="width:100%; height:500px; border:none; border-radius:12px; background:#fff;"></iframe>
-              </div>
-            </div>
-          </div>
+<div id="desktopPreview" style="display:none;">
+  <div style="background:var(--surface-2); border-radius:12px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+    <!-- Browser chrome -->
+    <div style="background:var(--surface-3); padding:12px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border);">
+      <div style="display:flex; gap:6px;">
+        <div style="width:12px; height:12px; background:#ED6A5E; border-radius:50%;"></div>
+        <div style="width:12px; height:12px; background:#F5BD4F; border-radius:50%;"></div>
+        <div style="width:12px; height:12px; background:#61C454; border-radius:50%;"></div>
+      </div>
+      <div style="flex:1; background:var(--surface-2); border-radius:6px; padding:6px 12px; margin:0 12px;">
+        <div style="width:70%; height:4px; background:var(--cream-dim); border-radius:2px; opacity:0.3;"></div>
+      </div>
+    </div>
+    <iframe id="funnelPreviewDesktop" style="width:100%; height:480px; border:none; background:#fff;"></iframe>
+  </div>
+</div>
           
           <div style="background:linear-gradient(135deg, var(--surface-2) 0%, rgba(200,169,110,0.05) 100%); border-radius:16px; padding:20px; border:1px solid rgba(200,169,110,0.15);">
-            <i class="ti ti-brain" style="font-size:1.5rem; color:var(--accent); margin-bottom:12px; display:block;"></i>
-            <h4 style="margin-bottom:8px;">AI Insights</h4>
-            <p style="font-size:0.8rem; color:var(--cream-dim); margin-bottom:16px;">Based on 1,247 successful review funnels</p>
-            
-            <div style="margin-bottom:16px;">
-              <div style="font-size:0.7rem; color:var(--accent); margin-bottom:4px;">⭐ Conversion tip</div>
-              <p style="font-size:0.75rem; color:var(--cream-dim);">"Great experience!" converts 23% better than generic text</p>
-            </div>
-            
-            <div style="margin-bottom:16px;">
-              <div style="font-size:0.7rem; color:var(--accent); margin-bottom:4px;">🎨 Colour psychology</div>
-              <p style="font-size:0.75rem; color:var(--cream-dim);">Gold accents increase trust signals by 18%</p>
-            </div>
-            
-            <div>
-              <div style="font-size:0.7rem; color:var(--accent); margin-bottom:4px;">📱 Mobile optimisation</div>
-              <p style="font-size:0.75rem; color:var(--cream-dim);">Your funnel looks great on mobile — 94% of visitors use phones</p>
-            </div>
-          </div>
+  <i class="ti ti-brain" style="font-size:1.5rem; color:var(--accent); margin-bottom:12px; display:block;"></i>
+  <h4 style="margin-bottom:8px;">AI Insights</h4>
+  <p style="font-size:0.75rem; color:var(--cream-dim); margin-bottom:16px;">Based on 1,247 successful review funnels</p>
+  
+  <div style="background:rgba(200,169,110,0.06); border-radius:12px; padding:14px; margin-bottom:12px; border-left:3px solid var(--accent);">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+      <i class="ti ti-star" style="color:var(--accent); font-size:0.9rem;"></i>
+      <span style="font-size:0.7rem; font-weight:600; color:var(--accent);">Conversion tip</span>
+    </div>
+    <p style="font-size:0.75rem; color:var(--cream-dim);">"Great experience!" converts 23% better than generic text</p>
+  </div>
+  
+  <div style="background:rgba(200,169,110,0.06); border-radius:12px; padding:14px; margin-bottom:12px; border-left:3px solid var(--accent);">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+      <i class="ti ti-palette" style="color:var(--accent); font-size:0.9rem;"></i>
+      <span style="font-size:0.7rem; font-weight:600; color:var(--accent);">Colour psychology</span>
+    </div>
+    <p style="font-size:0.75rem; color:var(--cream-dim);">Gold accents increase trust signals by 18%</p>
+  </div>
+  
+  <div style="background:rgba(200,169,110,0.06); border-radius:12px; padding:14px; margin-bottom:16px; border-left:3px solid var(--accent);">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+      <i class="ti ti-device-mobile" style="color:var(--accent); font-size:0.9rem;"></i>
+      <span style="font-size:0.7rem; font-weight:600; color:var(--accent);">Mobile optimisation</span>
+    </div>
+    <p style="font-size:0.75rem; color:var(--cream-dim);">Your funnel looks great on mobile — 94% of visitors use phones</p>
+  </div>
+  
+  <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+    <div style="font-size:0.7rem; font-weight:600; color:var(--accent); margin-bottom:8px;">Your funnel link</div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <code id="funnelLinkDisplay" style="background:var(--surface-3); padding:8px 10px; border-radius:6px; font-size:0.65rem; color:var(--accent); flex:1; word-break:break-all;"></code>
+      <button onclick="copyFunnelLink()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:6px 12px; font-size:0.7rem; cursor:pointer;">Copy</button>
+    </div>
+  </div>
+</div>
         </div>
       </div>
       
@@ -798,6 +986,7 @@
             <input id="customerPhone" type="tel" placeholder="e.g. 07700 900000">
             <button onclick="sendSMS()">Send SMS</button>
           </div>
+          <p style="font-size:0.7rem; color:var(--cream-dim); margin-top:8px;" id="smsCounter">You've sent 0 requests this month</p>
         </div>
       </div>
       <div class="pro-lock-panel" id="smsLocked" style="display:none">
@@ -814,6 +1003,7 @@
             <input id="customerEmail" type="email" placeholder="Customer email address">
             <button onclick="sendEmail()">Send Email</button>
           </div>
+          <p style="font-size:0.7rem; color:var(--cream-dim); margin-top:8px;" id="emailCounter">You've sent 0 requests this month</p>
         </div>
       </div>
       <div class="pro-lock-panel" id="emailLocked" style="display:none">
@@ -834,11 +1024,36 @@
           <h3>🤖 AI Review Reply Generator</h3>
           <textarea id="reviewText" placeholder="Paste a customer review here..." style="min-height:90px;width:100%;padding:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;color:var(--cream);margin-bottom:12px;"></textarea>
           <button onclick="generateRepliesStreaming()" id="aiBtn" class="btn-full" style="width:auto;">Generate Replies</button>
-          <div id="aiReplies" style="display:grid; grid-template-columns: repeat(3,1fr); gap:14px; margin-top:20px;">
-            <div><div style="color:var(--accent);margin-bottom:6px;">Professional</div><textarea id="aiProfessional" readonly style="width:100%;min-height:80px;background:var(--surface-3);border-radius:6px;padding:10px;"></textarea><button onclick="copyAiReply('aiProfessional')" style="margin-top:6px;">Copy</button></div>
-            <div><div style="color:var(--accent);margin-bottom:6px;">Warm & Personal</div><textarea id="aiWarm" readonly style="width:100%;min-height:80px;background:var(--surface-3);border-radius:6px;padding:10px;"></textarea><button onclick="copyAiReply('aiWarm')" style="margin-top:6px;">Copy</button></div>
-            <div><div style="color:var(--accent);margin-bottom:6px;">Short & Punchy</div><textarea id="aiPunchy" readonly style="width:100%;min-height:80px;background:var(--surface-3);border-radius:6px;padding:10px;"></textarea><button onclick="copyAiReply('aiPunchy')" style="margin-top:6px;">Copy</button></div>
-          </div>
+          <div id="aiReplies" style="display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin-top:20px;">
+  <!-- Professional - Blue -->
+  <div style="background:var(--surface-2); border-radius:12px; overflow:hidden; border-left:3px solid #3B82F6;">
+    <div style="padding:12px 16px; background:rgba(59,130,246,0.1); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-weight:600; font-size:0.85rem;">🤵 Professional</span>
+      <button onclick="copyAiReply('aiProfessional')" style="background:transparent; border:none; color:var(--cream-dim); cursor:pointer;">📋 Copy</button>
+    </div>
+    <div id="aiProfessionalDisplay" style="padding:16px; font-size:0.85rem; line-height:1.6; color:var(--cream-dim); min-height:100px;"></div>
+  </div>
+  <!-- Warm - Green -->
+  <div style="background:var(--surface-2); border-radius:12px; overflow:hidden; border-left:3px solid #6A9E7F;">
+    <div style="padding:12px 16px; background:rgba(106,158,127,0.1); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-weight:600; font-size:0.85rem;">💚 Warm & Personal</span>
+      <button onclick="copyAiReply('aiWarm')" style="background:transparent; border:none; color:var(--cream-dim); cursor:pointer;">📋 Copy</button>
+    </div>
+    <div id="aiWarmDisplay" style="padding:16px; font-size:0.85rem; line-height:1.6; color:var(--cream-dim); min-height:100px;"></div>
+  </div>
+  <!-- Punchy - Gold -->
+  <div style="background:var(--surface-2); border-radius:12px; overflow:hidden; border-left:3px solid var(--accent);">
+    <div style="padding:12px 16px; background:rgba(200,169,110,0.1); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-weight:600; font-size:0.85rem;">⚡ Short & Punchy</span>
+      <button onclick="copyAiReply('aiPunchy')" style="background:transparent; border:none; color:var(--cream-dim); cursor:pointer;">📋 Copy</button>
+    </div>
+    <div id="aiPunchyDisplay" style="padding:16px; font-size:0.85rem; line-height:1.6; color:var(--cream-dim); min-height:100px;"></div>
+  </div>
+</div>
+<!-- Hidden textareas for storage -->
+<textarea id="aiProfessional" style="display:none;"></textarea>
+<textarea id="aiWarm" style="display:none;"></textarea>
+<textarea id="aiPunchy" style="display:none;"></textarea>
         </div>
       </div>
       <div id="aiLocked" class="pro-lock-panel" style="display:none">
@@ -1012,10 +1227,11 @@
         </div>
       </div>
       
-      <div class="panel" style="border-color: rgba(192,103,90,0.3);">
-        <h3 style="color: #D4897C;">⚠️ Danger zone</h3>
-        <button onclick="confirmCancel()" class="btn-full" style="background:transparent; border:1px solid #D4897C; color:#D4897C;">Cancel subscription</button>
-      </div>
+<div class="panel danger-zone" style="border-color: rgba(192,103,90,0.3); margin-top:24px;">
+  <h3 style="color: #D4897C;">⚠️ Cancel subscription</h3>
+  <p style="font-size:0.85rem; margin-bottom:16px;">Permanently cancel your account and lose access to your dashboard.</p>
+  <button onclick="confirmCancel()" class="btn-full" style="background:transparent; border:1px solid #D4897C; color:#D4897C;">Cancel subscription</button>
+</div>
     </div>
   </main>
 </div>
@@ -1077,6 +1293,7 @@ const navIdMap = {
 
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => {
+    showNavTransition();
     const target = item.dataset.nav;
     const sectionId = navIdMap[target];
     if (!sectionId) return;
@@ -1114,23 +1331,52 @@ function updateGreeting(businessName) {
 }
 
 function updateTicker(events) {
-  const tickerEl = document.getElementById("tickerText");
+  const tickerText = document.getElementById("tickerText");
+  const tickerContent = document.getElementById("tickerContent");
+  const tickerContainer = document.getElementById("activityTicker");
+  
   if (!events || events.length === 0) {
-    tickerEl.innerHTML = "No recent activity";
+    tickerText.innerHTML = "No recent activity";
+    if (tickerContainer) tickerContainer.setAttribute('data-items', '0');
     return;
   }
-  const recent = events.slice(0, 3);
-  const messages = recent.map(e => {
-    if (e.event_type === 'visit') return `👤 Customer visited funnel`;
-    if (e.event_type === 'positive') return `⭐ New 5-star rating`;
-    if (e.event_type === 'negative') return `📝 Private feedback received`;
-    if (e.event_type === 'sms_sent') return `📱 SMS review request`;
-    if (e.event_type === 'email_sent') return `📧 Email review request`;
-    return `${e.event_type}`;
+  
+  // Create friendly descriptions for all event types
+  const messages = events.map(e => {
+    const timeAgo = e.created_at ? getRelativeTime(e.created_at) : "";
+    switch(e.event_type) {
+      case 'visit': return `👤 Customer visited funnel • ${timeAgo}`;
+      case 'positive': return `⭐ New 5-star rating • ${timeAgo}`;
+      case 'negative': return `📝 Private feedback received • ${timeAgo}`;
+      case 'sms_sent': return `📱 SMS review request sent • ${timeAgo}`;
+      case 'email_sent': return `📧 Email review request sent • ${timeAgo}`;
+      case 'review_click': return `🔗 Customer clicked to leave review • ${timeAgo}`;
+      case 'rating': return `⭐ Customer rated ${e.rating || ''} stars • ${timeAgo}`;
+      default: return `${e.event_type.replace('_', ' ')} • ${timeAgo}`;
+    }
   });
-  tickerEl.innerHTML = messages.join(' · ');
+  
+  // Create marquee by duplicating messages if needed
+  let displayMessages = [...messages];
+  if (messages.length >= 3) {
+    // Duplicate for seamless looping
+    displayMessages = [...messages, ...messages];
+  }
+  
+  tickerText.innerHTML = displayMessages.join(' &nbsp;&nbsp;•&nbsp;&nbsp; ');
+  
+  // Set data attribute for CSS to control animation
+  if (tickerContainer) {
+    tickerContainer.setAttribute('data-items', messages.length);
+  }
+  
+  // Force reflow to restart animation
+  if (tickerContent && messages.length >= 3) {
+    tickerContent.style.animation = 'none';
+    tickerContent.offsetHeight; // force reflow
+    tickerContent.style.animation = 'tickerScroll 20s linear infinite';
+  }
 }
-
 function copyReviewLink() {
   // Try to get the link from assetReviewLink (visible element) or fallback to reviewLink
   let input = document.getElementById("assetReviewLink");
@@ -1277,6 +1523,12 @@ if(ctx && canvas && canvas.offsetParent !== null) {
   });
 }
 
+const smsCounter = document.getElementById("smsCounter");
+if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`;
+
+const emailCounter = document.getElementById("emailCounter");
+if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`;
+
 // Analytics section chart
 const analyticsCanvas = document.getElementById("ratingChartAnalytics");
 const analyticsCtx = analyticsCanvas?.getContext("2d");
@@ -1336,12 +1588,22 @@ function navigateTo(nav) {
 }
 
 async function loadActivityFeed() {
+  const container = document.getElementById("activityList");
+  if (!container) return;
+  
+  // Show skeleton
+  container.innerHTML = Array(5).fill(0).map(() => `
+    <div class="skeleton-row">
+      <div class="skeleton-icon"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-time"></div>
+    </div>
+  `).join('');
+  
   const res = await fetch("/stats/"+slug);
   if(!res.ok) return;
   const stats = await res.json();
   const events = stats.recent_events || [];
-  const container = document.getElementById("activityList");
-  if (!container) return;
   
   if (events.length === 0) {
     container.innerHTML = '<div class="activity-item"><div class="activity-left"><div class="activity-icon visit"><i class="ti ti-eye"></i></div><div class="activity-text">No activity yet</div></div></div>';
@@ -1352,18 +1614,17 @@ async function loadActivityFeed() {
     let iconClass = "visit";
     let iconName = "ti-eye";
     let text = "";
-    if (e.event_type === 'visit') { iconClass = "visit"; iconName = "ti-eye"; text = "Customer visited your funnel"; }
-    else if (e.event_type === 'positive') { iconClass = "positive"; iconName = "ti-thumb-up"; text = "⭐ 5-star rating received"; }
+    if (e.event_type === 'visit') { iconClass = "visit"; iconName = "ti-eye"; text = "👤 Customer visited your funnel"; }
+    else if (e.event_type === 'positive') { iconClass = "positive"; iconName = "ti-thumb-up"; text = "⭐ New 5-star rating received"; }
     else if (e.event_type === 'negative') { iconClass = "negative"; iconName = "ti-message"; text = "📝 Private feedback captured"; }
     else if (e.event_type === 'sms_sent') { iconClass = "sms"; iconName = "ti-message-circle"; text = "📱 SMS review request sent"; }
     else if (e.event_type === 'email_sent') { iconClass = "sms"; iconName = "ti-mail"; text = "📧 Email review request sent"; }
-    else { iconClass = "visit"; iconName = "ti-info-circle"; text = e.event_type; }
+    else { iconClass = "visit"; iconName = "ti-info-circle"; text = e.event_type.replace('_', ' '); }
     
     const timeAgo = e.created_at ? getRelativeTime(e.created_at) : "recently";
     return `<div class="activity-item"><div class="activity-left"><div class="activity-icon ${iconClass}"><i class="ti ${iconName}"></i></div><div class="activity-text">${text}</div></div><div class="activity-time">${timeAgo}</div></div>`;
   }).join('');
 }
-
 async function loadPrivateFeedback() {
   const res = await fetch("/stats/" + slug);
   const stats = await res.json();
@@ -1732,6 +1993,107 @@ async function loadFunnelSettings() {
     proFeatures.style.display = 'none';
     upgradePrompt.style.display = 'block';
   }
+
+  // Add logo preview
+const logoUrlInput = document.getElementById('funnelLogoUrl');
+const logoPreview = document.getElementById('logoPreview');
+const logoPreviewImg = document.getElementById('logoPreviewImg');
+if (logoUrlInput && logoPreview && logoPreviewImg) {
+  logoUrlInput.addEventListener('input', () => {
+    const url = logoUrlInput.value.trim();
+    if (url) {
+      logoPreviewImg.src = url;
+      logoPreview.style.display = 'block';
+    } else {
+      logoPreview.style.display = 'none';
+    }
+  });
+}
+
+const funnelLinkDisplay = document.getElementById('funnelLinkDisplay');
+if (funnelLinkDisplay) funnelLinkDisplay.textContent = window.location.origin + "/r/" + slug;
+
+// Add headline character counter
+const headlineInput = document.getElementById('funnelHeadline');
+const headlineCounter = document.getElementById('headlineCounter');
+if (headlineInput && headlineCounter) {
+  headlineInput.addEventListener('input', () => {
+    const len = headlineInput.value.length;
+    headlineCounter.textContent = `(${len}/60)`;
+    headlineCounter.style.color = len > 55 ? '#D4897C' : 'var(--accent)';
+  });
+}
+
+  // Add live preview event listeners
+const livePreviewInputs = ['funnelAccentColor', 'funnelLogoUrl', 'funnelHeadline', 'funnelHappyLabel', 'funnelUnhappyLabel'];
+livePreviewInputs.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    if (id === 'funnelLogoUrl') {
+      let debounceTimer;
+      el.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => updateLivePreview(), 500);
+      });
+    } else {
+      el.addEventListener('input', () => updateLivePreview());
+    }
+  }
+});
+}
+
+// ========== FUNNEL STUDIO LIVE PREVIEW ==========
+function updateLivePreview() {
+  const previewFrames = [
+    document.getElementById('funnelPreviewMobile'),
+    document.getElementById('funnelPreviewDesktop')
+  ].filter(Boolean);
+  
+  const settings = {
+    template: currentFunnelSettings.funnel_template,
+    accentColor: document.getElementById('funnelAccentColor')?.value || '#C8A96E',
+    logoUrl: document.getElementById('funnelLogoUrl')?.value || '',
+    headline: document.getElementById('funnelHeadline')?.value || '',
+    happyLabel: document.getElementById('funnelHappyLabel')?.value || '',
+    unhappyLabel: document.getElementById('funnelUnhappyLabel')?.value || ''
+  };
+  
+  previewFrames.forEach(frame => {
+    try {
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({ type: 'FUNNEL_PREVIEW_UPDATE', settings }, '*');
+      }
+    } catch(e) {}
+  });
+}
+
+function updateSwatchHighlight(color) {
+  document.querySelectorAll('.color-swatch').forEach(swatch => {
+    const swatchColor = swatch.getAttribute('data-color');
+    swatch.style.outline = swatchColor === color ? '2px solid #EAE7DC' : '2px solid transparent';
+    swatch.style.outlineOffset = '2px';
+  });
+}
+
+// Improved selectTemplate with live preview
+function selectTemplate(template) {
+  currentFunnelSettings.funnel_template = template;
+  document.querySelectorAll('.template-option-compact').forEach(opt => {
+    const isSelected = opt.getAttribute('data-template') === template;
+    opt.style.background = isSelected ? 'rgba(200,169,110,0.15)' : 'transparent';
+    opt.style.border = isSelected ? '1px solid var(--accent)' : '1px solid transparent';
+  });
+  updateLivePreview();
+}
+
+// Improved setAccentColor with live preview
+function setAccentColor(color) {
+  const accentInput = document.getElementById('funnelAccentColor');
+  if (accentInput) {
+    accentInput.value = color;
+    updateLivePreview();
+    updateSwatchHighlight(color);
+  }
 }
 
 let currentDevice = 'mobile';
@@ -1754,6 +2116,16 @@ function setPreviewDevice(device) {
     if (desktopBtn) { desktopBtn.style.background = 'var(--accent)'; desktopBtn.style.color = '#1A1A18'; }
     if (mobileBtn) { mobileBtn.style.background = 'var(--surface-2)'; mobileBtn.style.color = 'var(--cream-dim)'; }
   }
+}
+
+function showNavTransition() {
+  const bar = document.getElementById('navProgressBar');
+  if (!bar) return;
+  bar.style.width = '0%';
+  bar.style.opacity = '1';
+  setTimeout(() => bar.style.width = '60%', 50);
+  setTimeout(() => bar.style.width = '100%', 200);
+  setTimeout(() => bar.style.opacity = '0', 400);
 }
 
 function selectTemplate(template) {
@@ -1790,13 +2162,16 @@ async function generateRepliesStreaming() {
     btn.textContent = "Generating...";
   }
   
+  const profDisplay = document.getElementById("aiProfessionalDisplay");
+  const warmDisplay = document.getElementById("aiWarmDisplay");
+  const punchyDisplay = document.getElementById("aiPunchyDisplay");
   const profTextarea = document.getElementById("aiProfessional");
   const warmTextarea = document.getElementById("aiWarm");
   const punchyTextarea = document.getElementById("aiPunchy");
   
-  if (profTextarea) profTextarea.value = "✦";
-  if (warmTextarea) warmTextarea.value = "✦";
-  if (punchyTextarea) punchyTextarea.value = "✦";
+  if (profDisplay) profDisplay.innerHTML = "<span style='opacity:0.5;'>✦ Generating...</span>";
+  if (warmDisplay) warmDisplay.innerHTML = "<span style='opacity:0.5;'>✦ Generating...</span>";
+  if (punchyDisplay) punchyDisplay.innerHTML = "<span style='opacity:0.5;'>✦ Generating...</span>";
   
   try {
     const res = await fetch("/generate-reply", {
@@ -1808,13 +2183,16 @@ async function generateRepliesStreaming() {
     
     if (data.error) {
       showToast(data.error, "error");
-      if (profTextarea) profTextarea.value = "";
-      if (warmTextarea) warmTextarea.value = "";
-      if (punchyTextarea) punchyTextarea.value = "";
+      if (profDisplay) profDisplay.innerHTML = "";
+      if (warmDisplay) warmDisplay.innerHTML = "";
+      if (punchyDisplay) punchyDisplay.innerHTML = "";
     } else {
-      if (profTextarea) await streamToTextarea(profTextarea, data.professional || "");
-      if (warmTextarea) await streamToTextarea(warmTextarea, data.warm || "");
-      if (punchyTextarea) await streamToTextarea(punchyTextarea, data.punchy || "");
+      if (profTextarea) profTextarea.value = data.professional || "";
+      if (warmTextarea) warmTextarea.value = data.warm || "";
+      if (punchyTextarea) punchyTextarea.value = data.punchy || "";
+      if (profDisplay) await streamToDiv(profDisplay, data.professional || "");
+      if (warmDisplay) await streamToDiv(warmDisplay, data.warm || "");
+      if (punchyDisplay) await streamToDiv(punchyDisplay, data.punchy || "");
       showToast("Replies generated! ✓", "success");
     }
   } catch (e) {
@@ -1827,6 +2205,14 @@ async function generateRepliesStreaming() {
   }
 }
 
+async function streamToDiv(div, text) {
+  div.innerHTML = "";
+  const chars = text.split('');
+  for (let i = 0; i < chars.length; i++) {
+    div.innerHTML += chars[i];
+    await new Promise(r => setTimeout(r, 8 + Math.random() * 12));
+  }
+}
 async function streamToTextarea(textarea, text) {
   textarea.value = "";
   const chars = text.split('');
@@ -1837,11 +2223,45 @@ async function streamToTextarea(textarea, text) {
   }
 }
 
+function checkForNewData(stats) {
+  const lastVisited = JSON.parse(localStorage.getItem('reviewlift_last_visited') || '{}');
+  const now = Date.now();
+  
+  // Check for new negative feedback since last visit
+  const lastCustomersVisit = lastVisited.customers || 0;
+  const hasNewNegative = stats.feedback && stats.feedback.length > 0 && 
+    stats.recent_events?.some(e => e.event_type === 'negative' && new Date(e.created_at).getTime() > lastCustomersVisit);
+  
+  const customersNav = document.querySelector('.nav-item[data-nav="customers"]');
+  if (customersNav) {
+    if (hasNewNegative) customersNav.classList.add('has-new');
+    else customersNav.classList.remove('has-new');
+  }
+  
+  // Update last visited when sections are clicked
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const section = item.dataset.nav;
+      lastVisited[section] = Date.now();
+      localStorage.setItem('reviewlift_last_visited', JSON.stringify(lastVisited));
+      item.classList.remove('has-new');
+    });
+  });
+}
+
+function copyFunnelLink() {
+  const funnelUrl = window.location.origin + "/r/" + slug;
+  navigator.clipboard.writeText(funnelUrl);
+  showToast("Funnel link copied!", "success");
+}
+
 async function saveFunnelSettings() {
   const btn = event.target;
   const msg = document.getElementById('funnelMsg');
-  if (btn) btn.disabled = true;
-  if (btn) btn.textContent = 'Saving...';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Saving...';
+  }
   
   const data = {
     funnel_template: currentFunnelSettings.funnel_template,
@@ -1864,26 +2284,45 @@ async function saveFunnelSettings() {
     const result = await res.json();
     
     if (result.success) {
-      showToast("Funnel updated! Preview reloading...", "success");
-      const previewMobile = document.getElementById('funnelPreviewMobile');
-      const previewDesktop = document.getElementById('funnelPreviewDesktop');
-      if (previewMobile) previewMobile.src = '/r/' + slug + '?preview=true&t=' + Date.now();
-      if (previewDesktop) previewDesktop.src = '/r/' + slug + '?preview=true&t=' + Date.now();
-      if (msg) { msg.textContent = '✓ Changes saved successfully'; msg.style.color = '#8EC9A8'; }
-      setTimeout(() => { if (msg) msg.textContent = ''; }, 3000);
+      // Show success message with copy link box
+      const funnelUrl = window.location.origin + "/r/" + slug;
+      if (msg) {
+        msg.innerHTML = `
+          ✓ Saved — changes are live!
+          <div style="margin-top:12px; padding:12px; background:var(--surface-3); border-radius:8px;">
+            <code style="font-size:0.7rem; word-break:break-all;">${funnelUrl}</code>
+            <button onclick="copyToClipboard('${funnelUrl}')" class="btn-full" style="margin-top:8px; padding:8px; font-size:0.7rem;">Copy link →</button>
+            <p style="font-size:0.7rem; margin-top:6px;">Share this link — it's already live with your changes.</p>
+          </div>
+        `;
+        msg.style.color = '#8EC9A8';
+      }
+      setTimeout(() => {
+        if (btn) {
+          btn.innerHTML = 'Save Changes';
+          btn.style.background = 'var(--accent)';
+        }
+        if (msg) setTimeout(() => { if(msg) msg.innerHTML = ''; }, 5000);
+      }, 3000);
     } else {
       showToast(result.error || "Could not save settings", "error");
       if (msg) { msg.textContent = result.error || 'Error saving settings'; msg.style.color = '#D4897C'; }
+      if (btn) btn.innerHTML = 'Save Changes';
     }
   } catch(e) {
     showToast("Something went wrong", "error");
     if (msg) { msg.textContent = 'Error saving settings'; msg.style.color = '#D4897C'; }
+    if (btn) btn.innerHTML = 'Save Changes';
   }
   
   if (btn) {
-    btn.disabled = false;
-    btn.textContent = 'Save & Preview';
+    setTimeout(() => { btn.disabled = false; }, 1000);
   }
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+  showToast("Link copied!", "success");
 }
 
 // Floating Action Button
@@ -1932,5 +2371,54 @@ document.addEventListener('click', (e) => {
     </button>
   </div>
 </div>
+<!-- Mobile Bottom Tab Bar -->
+<div id="mobileTabBar" style="position:fixed; bottom:0; left:0; right:0; background:#1A1A18; border-top:1px solid var(--border); display:none; justify-content:space-around; padding:10px 16px 20px; z-index:200;">
+  <div onclick="navigateToMobile('overview')" class="mobile-tab" data-tab="overview" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+    <i class="ti ti-dashboard" style="font-size:1.3rem;"></i>
+  </div>
+  <div onclick="navigateToMobile('customers')" class="mobile-tab" data-tab="customers" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+    <i class="ti ti-users" style="font-size:1.3rem;"></i>
+  </div>
+  <div onclick="navigateToMobile('ai-lab')" class="mobile-tab" data-tab="ai-lab" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+    <i class="ti ti-brain" style="font-size:1.3rem;"></i>
+  </div>
+  <div onclick="navigateToMobile('assets')" class="mobile-tab" data-tab="assets" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+    <i class="ti ti-package" style="font-size:1.3rem;"></i>
+  </div>
+  <div onclick="navigateToMobile('settings')" class="mobile-tab" data-tab="settings" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+    <i class="ti ti-settings" style="font-size:1.3rem;"></i>
+  </div>
+</div>
+
+<style>
+@media (max-width: 768px) {
+  #mobileTabBar { display: flex !important; }
+  .main { margin-bottom: 70px !important; }
+  .mobile-tab.active { opacity: 1 !important; color: var(--accent); }
+}
+</style>
+
+<script>
+function navigateToMobile(nav) {
+  const targetNav = document.querySelector(`.nav-item[data-nav="${nav}"]`);
+  if (targetNav) targetNav.click();
+  document.querySelectorAll('.mobile-tab').forEach(tab => {
+    tab.classList.remove('active');
+    if (tab.getAttribute('data-tab') === nav) tab.classList.add('active');
+  });
+}
+
+// Update mobile tab active state on nav click
+const originalNavClick = document.querySelectorAll('.nav-item');
+originalNavClick.forEach(item => {
+  item.addEventListener('click', () => {
+    const target = item.dataset.nav;
+    document.querySelectorAll('.mobile-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.getAttribute('data-tab') === target) tab.classList.add('active');
+    });
+  });
+});
+</script>
 </body>
 </html>
