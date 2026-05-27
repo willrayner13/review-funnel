@@ -914,7 +914,7 @@
           <div style="width:80px;height:80px;background:var(--surface-2);border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:16px;">📲</div>
           <h3 style="margin-bottom:8px;">QR Code</h3>
           <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Print-ready for counters and receipts</p>
-          <a href="/qr-download" class="btn-full" style="display:inline-block;background:var(--accent);color:#1A1A18;padding:10px 20px;text-decoration:none;">Download QR →</a>
+          <a href="#" id="qrDownloadLink" class="btn-full" style="display:inline-block;background:var(--accent);color:#1A1A18;padding:10px 20px;text-decoration:none;">Download QR →</a>
         </div>
         
         <div class="panel" style="display:flex;flex-direction:column;align-items:center;text-align:center;">
@@ -1086,6 +1086,11 @@ document.querySelectorAll('.nav-item').forEach(item => {
     const section = document.getElementById(sectionId);
     if (section) section.classList.add('active');
     window.location.hash = target;
+    
+    // Load private feedback when Customers section is opened
+    if (target === 'customers') {
+      loadPrivateFeedback();
+    }
   });
 });
 
@@ -1152,8 +1157,25 @@ function confirmCancel() {
   openModal("cancelModal");
 }
 
-function saveWhatsAppSettings() {
-  showToast("WhatsApp settings saved (feature coming soon)", "success");
+async function saveWhatsAppSettings() {
+  const whatsappNumber = document.getElementById("whatsappNumber")?.value.trim();
+  const alertsEnabled = document.getElementById("whatsappAlertsToggle")?.checked;
+  
+  try {
+    const res = await fetch("/update-business", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        owner_whatsapp: whatsappNumber,
+        whatsapp_alerts: alertsEnabled ? "yes" : "no"
+      })
+    });
+    const data = await res.json();
+    if(data.success) showToast("WhatsApp settings saved!", "success");
+    else showToast("Could not save settings", "error");
+  } catch(e) {
+    showToast("Could not save settings", "error");
+  }
 }
 
 // ========== LOAD DASHBOARD DATA ==========
@@ -1211,6 +1233,11 @@ if (bizNameEl) bizNameEl.value = stats.business_name || "";
 
 const reviewLinkInputEl = document.getElementById("reviewLinkInput");
 if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || "";
+
+const assetReviewLinkEl = document.getElementById("assetReviewLink");
+if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug;
+const qrDownloadLink = document.getElementById("qrDownloadLink");
+if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug;
   
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");
   document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none";
@@ -1223,26 +1250,44 @@ if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || "";
   document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block";
   document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none";
   document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block";
-  
+  // Competitor Analysis - Agency only
+const isAgency = stats.plan_type === "agency";
+document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none";
+document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block";
   if (hasPro) document.getElementById("whatsappSettings").style.display = "block";
   
   if (hasPro) {
     loadSentimentTrends();
     loadSendIntelligence();
+      loadGrowthChart();
+  document.getElementById("proAnalyticsPreview").style.display = "block";
+  document.getElementById("analyticsUpgradePrompt").style.display = "none";
   }
   
   if(chartInstance){ chartInstance.destroy(); chartInstance = null; }
-  const canvas = document.getElementById("ratingChart");
-  const ctx = canvas?.getContext("2d");
-  if(ctx && canvas && canvas.offsetParent !== null) {
-    const dist = stats.rating_distribution || {};
-    chartInstance = new Chart(ctx, {
-      type: "bar",
-      data: { labels: ["1 ★","2 ★","3 ★","4 ★","5 ★"], datasets:[{ data: [dist[1]||0, dist[2]||0, dist[3]||0, dist[4]||0, dist[5]||0], backgroundColor: ["#C0675A","#C07A5A","#C8A96E","#8BAC6A","#6A9E7F"], borderRadius: 6 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-    });
-  }
-  lastStats = stats;
+// Overview chart
+const canvas = document.getElementById("ratingChart");
+const ctx = canvas?.getContext("2d");
+if(ctx && canvas && canvas.offsetParent !== null) {
+  const dist = stats.rating_distribution || {};
+  chartInstance = new Chart(ctx, {
+    type: "bar",
+    data: { labels: ["1 ★","2 ★","3 ★","4 ★","5 ★"], datasets:[{ data: [dist[1]||0, dist[2]||0, dist[3]||0, dist[4]||0, dist[5]||0], backgroundColor: ["#C0675A","#C07A5A","#C8A96E","#8BAC6A","#6A9E7F"], borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+
+// Analytics section chart
+const analyticsCanvas = document.getElementById("ratingChartAnalytics");
+const analyticsCtx = analyticsCanvas?.getContext("2d");
+if(analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) {
+  const dist = stats.rating_distribution || {};
+  new Chart(analyticsCtx, {
+    type: "bar",
+    data: { labels: ["1 ★","2 ★","3 ★","4 ★","5 ★"], datasets:[{ data: [dist[1]||0, dist[2]||0, dist[3]||0, dist[4]||0, dist[5]||0], backgroundColor: ["#C0675A","#C07A5A","#C8A96E","#8BAC6A","#6A9E7F"], borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+}
 }
 
 function buildFeatureTiles(stats) {
@@ -1317,6 +1362,30 @@ async function loadActivityFeed() {
     const timeAgo = e.created_at ? getRelativeTime(e.created_at) : "recently";
     return `<div class="activity-item"><div class="activity-left"><div class="activity-icon ${iconClass}"><i class="ti ${iconName}"></i></div><div class="activity-text">${text}</div></div><div class="activity-time">${timeAgo}</div></div>`;
   }).join('');
+}
+
+async function loadPrivateFeedback() {
+  const res = await fetch("/stats/" + slug);
+  const stats = await res.json();
+  const container = document.getElementById("privateFeedbackList");
+  if (!container) return;
+  const feedback = stats.feedback || [];
+  if (feedback.length === 0) {
+    container.innerHTML = '<p style="color:var(--cream-dim);font-size:0.85rem;">No private feedback yet. When customers choose \'Could be better\', their message appears here — before it can become a public review.</p>';
+    return;
+  }
+  container.innerHTML = feedback.map(msg => `
+    <div style="background:var(--surface-2);border-left:3px solid var(--danger);
+      border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+      <p style="font-size:0.85rem;line-height:1.5;">${escapeHtml(msg)}</p>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 function getRelativeTime(dateStr) {
@@ -1497,6 +1566,50 @@ async function loadSendIntelligence() {
     document.getElementById("sendIntelMessage").innerHTML = data.data_source === 'industry_benchmark' ? `Based on industry data. Personalises after 20 sends.` : `Based on ${data.sends_analysed} requests.`;
     document.getElementById("sendIntelInsight").innerHTML = `<div style="display:flex;align-items:center;gap:14px;"><div style="font-size:2rem;font-weight:800;color:var(--accent);">${r.predicted_conversion_rate}%</div><div><strong>${r.recommended_channel.toUpperCase()}</strong> is best<br>Best window: ${r.best_window}</div></div>`;
   } catch(e) { document.getElementById("sendIntelMessage").innerHTML = "Could not load analytics."; }
+}
+
+async function loadGrowthChart() {
+  try {
+    const res = await fetch("/review-growth/" + slug);
+    const data = await res.json();
+    const months = Object.keys(data).sort();
+    const counts = months.map(m => data[m]);
+    
+    if (months.length === 0) return;
+    
+    const canvas = document.getElementById("growthChart");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: months,
+        datasets: [{
+          label: "Reviews collected",
+          data: counts,
+          borderColor: "#C8A96E",
+          backgroundColor: "rgba(200,169,110,0.1)",
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: "#C8A96E",
+          pointBorderColor: "#1A1A18",
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { labels: { color: "#EAE7DC" } }
+        },
+        scales: {
+          y: { beginAtZero: true, grid: { color: "rgba(234,231,220,0.1)" }, ticks: { color: "#EAE7DC" } },
+          x: { ticks: { color: "#EAE7DC", maxRotation: 45, minRotation: 45 } }
+        }
+      }
+    });
+  } catch(e) { console.log("Growth chart error:", e); }
 }
 
 async function analyseCompetitor() {
@@ -1805,9 +1918,9 @@ document.addEventListener('click', (e) => {
     <i class="ti ti-plus" style="font-size:1.8rem; color:#1A1A18;"></i>
   </button>
   <div id="fabMenu" style="position:absolute; bottom:70px; right:0; display:none; flex-direction:column; gap:12px;">
-    <button onclick="window.location.href='/admin'" style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
-      <i class="ti ti-send"></i> Send campaign
-    </button>
+<button onclick="navigateTo('campaigns'); closeFab()" style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
+  <i class="ti ti-send"></i> Send campaign
+</button>
     <button onclick="goToAILab()" style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
       <i class="ti ti-robot"></i> Generate AI replies
     </button>
