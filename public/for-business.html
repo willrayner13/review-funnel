@@ -377,6 +377,24 @@
     .qr-area { display: flex; align-items: flex-start; gap: 24px; }
     #qr { width: 130px; height: 130px; border: 1px solid var(--border); border-radius: 8px; }
 
+    /* Fix for AI Tools content visibility */
+#aiToolsSection #aiUnlocked,
+#aiToolsSection #sentimentUnlocked,
+#aiToolsSection #competitorUnlocked,
+#aiToolsSection #sendIntelUnlocked {
+  display: block !important;
+}
+
+#aiToolsSection .pro-lock-panel {
+  display: block !important;
+}
+
+/* Fix for Review Wall content */
+#reviewWallSection .panel,
+#widgetSection .panel {
+  display: block !important;
+}
+
     /* ── MOBILE ── */
     @media (max-width: 768px) {
       .sidebar { display: none; }
@@ -479,7 +497,7 @@
       </div>
     </div>
 
-    <!-- DASHBOARD SECTION -->
+        <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" class="content-section active">
       <!-- Reputation Hero -->
       <div class="rep-hero">
@@ -526,6 +544,10 @@
         <div class="activity-header">📋 Recent activity</div>
         <div id="activityList"></div>
       </div>
+
+      <!-- Hidden chart canvas for Chart.js (prevents error) -->
+      <canvas id="ratingChart" style="display: none;"></canvas>
+    </div>
     </div>
 
     <!-- REVIEWS SECTION (existing SMS + email) -->
@@ -833,9 +855,11 @@ async function loadDashboardData() {
   }
   
   // Chart
+   // Chart - only if canvas exists
   if(chartInstance){ chartInstance.destroy(); chartInstance = null; }
-  const ctx = document.getElementById("ratingChart")?.getContext("2d");
-  if(ctx) {
+  const canvas = document.getElementById("ratingChart");
+  const ctx = canvas?.getContext("2d");
+  if(ctx && canvas && canvas.offsetParent !== null) {
     const dist = stats.rating_distribution || {};
     chartInstance = new Chart(ctx, {
       type: "bar",
@@ -843,7 +867,6 @@ async function loadDashboardData() {
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
     });
   }
-  
   lastStats = stats;
 }
 
