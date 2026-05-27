@@ -1776,7 +1776,8 @@
             <div style="text-align:center; flex:1; min-width:80px;">
               <div
                 style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-eye" style="color:var(--accent);"></i></div>
+                <i class="ti ti-eye" style="color:var(--accent);"></i>
+              </div>
               <div style="font-size:0.7rem; color:var(--cream-dim);">Visit</div>
               <div class="journey-count" id="journeyVisits" style="font-size:1.2rem; font-weight:700;">0</div>
             </div>
@@ -1784,7 +1785,8 @@
             <div style="text-align:center; flex:1; min-width:80px;">
               <div
                 style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-star" style="color:var(--accent);"></i></div>
+                <i class="ti ti-star" style="color:var(--accent);"></i>
+              </div>
               <div style="font-size:0.7rem; color:var(--cream-dim);">Rating</div>
               <div class="journey-count" id="journeyRatings" style="font-size:1.2rem; font-weight:700;">0</div>
             </div>
@@ -1792,7 +1794,8 @@
             <div style="text-align:center; flex:1; min-width:80px;">
               <div
                 style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-click" style="color:var(--accent);"></i></div>
+                <i class="ti ti-click" style="color:var(--accent);"></i>
+              </div>
               <div style="font-size:0.7rem; color:var(--cream-dim);">Review Click</div>
               <div class="journey-count" id="journeyClicks" style="font-size:1.2rem; font-weight:700;">0</div>
             </div>
@@ -1800,7 +1803,8 @@
             <div style="text-align:center; flex:1; min-width:80px;">
               <div
                 style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-brand-google" style="color:var(--accent);"></i></div>
+                <i class="ti ti-brand-google" style="color:var(--accent);"></i>
+              </div>
               <div style="font-size:0.7rem; color:var(--cream-dim);">Review Posted</div>
               <div class="journey-count" id="journeyPosted" style="font-size:1.2rem; font-weight:700;">0</div>
             </div>
@@ -1846,1184 +1850,1399 @@
 
 
 
-<!-- FUNNEL STUDIO SECTION — Advanced Redesign -->
-<div id="funnelStudioSection" class="content-section">
-  <style>
-    /* ===== FUNNEL STUDIO ADVANCED STYLES ===== */
-    .fs-container {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    
-    .fs-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .fs-header h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin: 0;
-    }
-    .fs-header p {
-      color: var(--cream-dim);
-      font-size: 0.85rem;
-      margin: 4px 0 0;
-    }
-    .fs-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(106,158,127,0.15);
-      color: var(--success);
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 100px;
-      border: 1px solid rgba(106,158,127,0.3);
-    }
-    .fs-status-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    
-    /* Main 3-column layout */
-    .fs-workspace {
-      display: grid;
-      grid-template-columns: 300px 1fr 340px;
-      gap: 20px;
-      min-height: 600px;
-    }
-    
-    /* Left panel — Flow Builder */
-    .fs-flow-builder {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .fs-flow-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    .fs-flow-title i { color: var(--accent); }
-    
-    /* Flow nodes */
-    .flow-node {
-      background: var(--surface-2);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-    }
-    .flow-node:hover { border-color: var(--border-hover); }
-    .flow-node.active {
-      border-color: var(--accent);
-      background: var(--accent-dim);
-      box-shadow: 0 0 20px rgba(200,169,110,0.15);
-    }
-    .flow-node-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-    .flow-node-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-    }
-    .flow-node-icon.visit { background: rgba(59,130,246,0.15); color: #3B82F6; }
-    .flow-node-icon.rating { background: rgba(200,169,110,0.2); color: var(--accent); }
-    .flow-node-icon.review { background: rgba(106,158,127,0.15); color: var(--success); }
-    .flow-node-icon.feedback { background: rgba(192,103,90,0.15); color: var(--danger); }
-    .flow-node-name { font-weight: 600; font-size: 0.85rem; }
-    .flow-node-desc { font-size: 0.7rem; color: var(--cream-dim); }
-    .flow-connector {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: 4px 0;
-    }
-    .flow-connector-dot {
-      width: 4px;
-      height: 4px;
-      background: var(--accent);
-      border-radius: 50%;
-      opacity: 0.4;
-    }
-    .flow-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .flow-branch {
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      font-size: 0.7rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .flow-branch:hover { border-color: var(--accent); }
-    .flow-branch.positive { border-left: 3px solid var(--success); }
-    .flow-branch.negative { border-left: 3px solid var(--danger); }
-    .flow-branch-label { font-weight: 600; margin-bottom: 2px; }
-    .flow-branch-dest { color: var(--cream-dim); font-size: 0.65rem; }
-    
-    /* Center — Preview */
-    .fs-preview-area {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .fs-preview-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      margin-bottom: 16px;
-    }
-    .fs-device-toggle {
-      background: var(--surface-2);
-      border-radius: 40px;
-      padding: 3px;
-      display: inline-flex;
-      gap: 2px;
-    }
-    .fs-device-btn {
-      background: transparent;
-      color: var(--cream-dim);
-      border: none;
-      border-radius: 32px;
-      padding: 7px 18px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-weight: 500;
-    }
-    .fs-device-btn.active {
-      background: var(--accent);
-      color: #1A1A18;
-      font-weight: 600;
-    }
-    .fs-zoom-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .fs-zoom-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      color: var(--cream-dim);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-    .fs-zoom-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .fs-zoom-label { font-size: 0.7rem; color: var(--cream-dim); min-width: 40px; text-align: center; }
-    
-    /* Mobile frame */
-    .fs-mobile-frame {
-      background: #0A0A0A;
-      border-radius: 40px;
-      padding: 10px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      transition: transform 0.3s ease;
-      max-width: 380px;
-      width: 100%;
-    }
-    .fs-mobile-screen {
-      background: #fff;
-      border-radius: 30px;
-      overflow: hidden;
-      position: relative;
-      min-height: 600px;
-    }
-    .fs-mobile-notch {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 25px;
-      background: #0A0A0A;
-      border-radius: 0 0 18px 18px;
-      z-index: 10;
-    }
-    .fs-mobile-status {
-      background: #0A0A0A;
-      color: #fff;
-      padding: 8px 16px 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.65rem;
-      font-weight: 600;
-    }
-    .fs-mobile-content {
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      min-height: 520px;
-      justify-content: center;
-    }
-    .fs-mobile-biz {
-      font-size: 0.75rem;
-      color: #999;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .fs-mobile-question {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #1A1A18;
-      margin-bottom: 24px;
-    }
-    .fs-mobile-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      max-width: 280px;
-    }
-    .fs-mobile-btn {
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-    }
-    .fs-mobile-btn.happy {
-      background: #6A9E7F;
-      color: #fff;
-      border-color: #6A9E7F;
-    }
-    .fs-mobile-btn.sad {
-      background: transparent;
-      color: #999;
-      border-color: #e0e0e0;
-    }
-    .fs-mobile-power {
-      margin-top: 24px;
-      font-size: 0.65rem;
-      color: #ccc;
-    }
-    .fs-mobile-power span { font-weight: 700; color: #999; }
-    
-    /* Desktop frame */
-    .fs-desktop-frame {
-      background: #f5f5f5;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      width: 100%;
-      display: none;
-    }
-    .fs-desktop-chrome {
-      background: #e8e8e8;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .fs-desktop-dots { display: flex; gap: 5px; }
-    .fs-desktop-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-    .fs-desktop-dot.red { background: #ED6A5E; }
-    .fs-desktop-dot.yellow { background: #F5BD4F; }
-    .fs-desktop-dot.green { background: #61C454; }
-    .fs-desktop-url {
-      flex: 1;
-      background: #ddd;
-      border-radius: 4px;
-      padding: 4px 10px;
-      font-size: 0.65rem;
-      color: #999;
-    }
-    .fs-desktop-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 40px;
-      min-height: 400px;
-      background: #fff;
-    }
-    .fs-desktop-card {
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-    }
-    .fs-desktop-biz {
-      font-size: 0.8rem;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 24px;
-    }
-    .fs-desktop-question {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #1A1A18;
-      margin-bottom: 28px;
-    }
-    .fs-desktop-buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-    }
-    .fs-desktop-btn {
-      padding: 16px 36px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-    }
-    .fs-desktop-btn.happy {
-      background: #6A9E7F;
-      color: #fff;
-      border-color: #6A9E7F;
-    }
-    .fs-desktop-btn.sad {
-      background: transparent;
-      color: #999;
-      border-color: #ddd;
-    }
-    
-    /* Right panel — Settings */
-    .fs-settings {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      overflow-y: auto;
-      max-height: 700px;
-    }
-    .fs-settings-section {
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .fs-settings-section:last-child { border-bottom: none; }
-    .fs-settings-label {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--cream-dim);
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-    
-    /* Template thumbnails */
-    .fs-template-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .fs-template-thumb {
-      border-radius: 10px;
-      padding: 12px 8px;
-      text-align: center;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-      position: relative;
-    }
-    .fs-template-thumb:hover { border-color: var(--border-hover); }
-    .fs-template-thumb.selected { border-color: var(--accent); }
-    .fs-template-thumb.selected::after {
-      content: '✓';
-      position: absolute;
-      top: 6px;
-      right: 8px;
-      font-size: 0.7rem;
-      color: var(--accent);
-      font-weight: 700;
-    }
-    .fs-template-preview {
-      width: 100%;
-      height: 60px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-    }
-    .fs-template-name {
-      font-size: 0.7rem;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-    .fs-template-tag {
-      font-size: 0.6rem;
-      color: var(--cream-dim);
-    }
-    
-    /* Color picker */
-    .fs-color-options {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .fs-color-swatch {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-    }
-    .fs-color-swatch:hover { transform: scale(1.1); }
-    .fs-color-swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px var(--accent); }
-    .fs-color-input {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      padding: 0;
-    }
-    
-    /* Input styles */
-    .fs-input {
-      width: 100%;
-      padding: 10px 12px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--cream);
-      font-size: 0.82rem;
-      font-family: 'DM Sans', sans-serif;
-      transition: border-color 0.2s;
-    }
-    .fs-input:focus { outline: none; border-color: var(--accent); }
-    .fs-input-label {
-      font-size: 0.7rem;
-      color: var(--cream-dim);
-      display: block;
-      margin-bottom: 4px;
-    }
-    .fs-char-count {
-      font-size: 0.65rem;
-      color: var(--cream-dim);
-      text-align: right;
-      margin-top: 2px;
-    }
-    
-    /* AI suggestions */
-    .fs-ai-suggestion {
-      background: linear-gradient(135deg, rgba(139,92,246,0.08) 0%, rgba(200,169,110,0.04) 100%);
-      border: 1px solid rgba(200,169,110,0.2);
-      border-radius: var(--radius);
-      padding: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .fs-ai-suggestion:hover {
-      border-color: var(--accent);
-      background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(200,169,110,0.08) 100%);
-    }
-    .fs-ai-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .fs-ai-header i { color: #8B5CF6; font-size: 0.9rem; }
-    .fs-ai-header span { font-size: 0.7rem; font-weight: 600; color: #8B5CF6; }
-    .fs-ai-text { font-size: 0.75rem; color: var(--cream-dim); line-height: 1.5; }
-    
-    /* Save bar */
-    .fs-save-bar {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .fs-save-status {
-      font-size: 0.75rem;
-      color: var(--cream-dim);
-    }
-    .fs-save-status.saved { color: var(--success); }
-    .fs-save-btn {
-      background: var(--accent);
-      color: #1A1A18;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 24px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .fs-save-btn:hover { background: #D4B87A; transform: translateY(-1px); }
-    .fs-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .fs-share-btn {
-      background: transparent;
-      color: var(--cream-dim);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .fs-share-btn:hover { border-color: var(--accent); color: var(--accent); }
-    
-    /* Link display */
-    .fs-link-box {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .fs-link-code {
-      flex: 1;
-      font-family: 'Courier New', monospace;
-      font-size: 0.7rem;
-      color: var(--accent);
-      word-break: break-all;
-      background: var(--surface-3);
-      padding: 8px 10px;
-      border-radius: 6px;
-    }
-    .fs-link-copy {
-      background: var(--accent);
-      color: #1A1A18;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 14px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .fs-link-copy:hover { background: #D4B87A; }
-    
-    @media (max-width: 1200px) {
-      .fs-workspace {
-        grid-template-columns: 1fr;
-      }
-      .fs-flow-builder { display: none; }
-      .fs-settings {
-        max-height: none;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .fs-workspace {
-        grid-template-columns: 1fr;
-      }
-      .fs-flow-builder { display: none; }
-      .fs-mobile-frame { max-width: 100%; }
-      .fs-mobile-screen { min-height: 500px; }
-      .fs-desktop-frame { display: none !important; }
-    }
-  </style>
+      <!-- FUNNEL STUDIO SECTION — Advanced Redesign -->
+      <div id="funnelStudioSection" class="content-section">
+        <style>
+          /* ===== FUNNEL STUDIO ADVANCED STYLES ===== */
+          .fs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+          }
 
-  <div class="fs-container">
-    
-    <!-- Header -->
-    <div class="fs-header">
-      <div>
-        <h2>🎨 Funnel Studio</h2>
-        <p>Design every step of your customer's review journey</p>
-      </div>
-      <div class="fs-status-badge">
-        <span class="fs-status-dot"></span> Live & collecting reviews
-      </div>
-    </div>
+          .fs-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+          }
 
-    <!-- Workspace -->
-    <div class="fs-workspace">
-      
-      <!-- LEFT: Flow Builder -->
-      <div class="fs-flow-builder">
-        <div class="fs-flow-title">
-          <i class="ti ti-route"></i> Customer Flow
-        </div>
-        
-        <div class="flow-node active" data-node="visit">
-          <div class="flow-node-header">
-            <div class="flow-node-icon visit"><i class="ti ti-qrcode"></i></div>
-            <div class="flow-node-name">1. Customer Arrives</div>
-          </div>
-          <div class="flow-node-desc">Via QR code, SMS, email, or link</div>
-        </div>
-        
-        <div class="flow-connector">
-          <div class="flow-connector-dot"></div>
-          <div class="flow-connector-dot"></div>
-          <div class="flow-connector-dot"></div>
-        </div>
-        
-        <div class="flow-node" data-node="rating">
-          <div class="flow-node-header">
-            <div class="flow-node-icon rating"><i class="ti ti-star"></i></div>
-            <div class="flow-node-name">2. Rating Question</div>
-          </div>
-          <div class="flow-node-desc">"How was your experience?"</div>
-        </div>
-        
-        <div class="flow-connector">
-          <div class="flow-connector-dot"></div>
-          <div style="font-size:0.6rem;color:var(--accent);">Split based on answer</div>
-          <div class="flow-connector-dot"></div>
-        </div>
-        
-        <div class="flow-split">
-          <div class="flow-branch positive" data-node="positive">
-            <div class="flow-branch-label">😊 Happy</div>
-            <div class="flow-branch-dest">→ Google Review</div>
-          </div>
-          <div class="flow-branch negative" data-node="negative">
-            <div class="flow-branch-label">😕 Unhappy</div>
-            <div class="flow-branch-dest">→ Private Feedback</div>
-          </div>
-        </div>
-        
-        <div class="flow-connector">
-          <div class="flow-connector-dot"></div>
-          <div class="flow-connector-dot"></div>
-        </div>
-        
-        <div class="flow-node" data-node="review">
-          <div class="flow-node-header">
-            <div class="flow-node-icon review"><i class="ti ti-brand-google"></i></div>
-            <div class="flow-node-name">3. Review Posted</div>
-          </div>
-          <div class="flow-node-desc">Or feedback captured privately</div>
-        </div>
-      </div>
-      
-      <!-- CENTER: Live Preview -->
-      <div class="fs-preview-area">
-        <div class="fs-preview-header">
-          <div class="fs-device-toggle">
-            <button class="fs-device-btn active" onclick="setFSDevice('mobile')">📱 Mobile</button>
-            <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
-          </div>
-          <div class="fs-zoom-controls">
-            <button class="fs-zoom-btn" onclick="zoomFS(-10)">−</button>
-            <span class="fs-zoom-label" id="fsZoomLabel">100%</span>
-            <button class="fs-zoom-btn" onclick="zoomFS(10)">+</button>
-          </div>
-        </div>
-        
-        <!-- Mobile Preview -->
-        <div class="fs-mobile-frame" id="fsMobileFrame">
-          <div class="fs-mobile-screen">
-            <div class="fs-mobile-notch"></div>
-            <div class="fs-mobile-status">
-              <span>9:41</span>
-              <span>●●● ○○ Wi-Fi</span>
+          .fs-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+          }
+
+          .fs-header p {
+            color: var(--cream-dim);
+            font-size: 0.85rem;
+            margin: 4px 0 0;
+          }
+
+          .fs-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(106, 158, 127, 0.15);
+            color: var(--success);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 100px;
+            border: 1px solid rgba(106, 158, 127, 0.3);
+          }
+
+          .fs-status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+          }
+
+          /* Main 3-column layout */
+          .fs-workspace {
+            display: grid;
+            grid-template-columns: 300px 1fr 340px;
+            gap: 20px;
+            min-height: 600px;
+          }
+
+          /* Left panel — Flow Builder */
+          .fs-flow-builder {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          }
+
+          .fs-flow-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+          }
+
+          .fs-flow-title i {
+            color: var(--accent);
+          }
+
+          /* Flow nodes */
+          .flow-node {
+            background: var(--surface-2);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+          }
+
+          .flow-node:hover {
+            border-color: var(--border-hover);
+          }
+
+          .flow-node.active {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            box-shadow: 0 0 20px rgba(200, 169, 110, 0.15);
+          }
+
+          .flow-node-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+          }
+
+          .flow-node-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+          }
+
+          .flow-node-icon.visit {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3B82F6;
+          }
+
+          .flow-node-icon.rating {
+            background: rgba(200, 169, 110, 0.2);
+            color: var(--accent);
+          }
+
+          .flow-node-icon.review {
+            background: rgba(106, 158, 127, 0.15);
+            color: var(--success);
+          }
+
+          .flow-node-icon.feedback {
+            background: rgba(192, 103, 90, 0.15);
+            color: var(--danger);
+          }
+
+          .flow-node-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+          }
+
+          .flow-node-desc {
+            font-size: 0.7rem;
+            color: var(--cream-dim);
+          }
+
+          .flow-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 0;
+          }
+
+          .flow-connector-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.4;
+          }
+
+          .flow-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+          }
+
+          .flow-branch {
+            background: var(--surface-3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
+
+          .flow-branch:hover {
+            border-color: var(--accent);
+          }
+
+          .flow-branch.positive {
+            border-left: 3px solid var(--success);
+          }
+
+          .flow-branch.negative {
+            border-left: 3px solid var(--danger);
+          }
+
+          .flow-branch-label {
+            font-weight: 600;
+            margin-bottom: 2px;
+          }
+
+          .flow-branch-dest {
+            color: var(--cream-dim);
+            font-size: 0.65rem;
+          }
+
+          /* Center — Preview */
+          .fs-preview-area {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .fs-preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 16px;
+          }
+
+          .fs-device-toggle {
+            background: var(--surface-2);
+            border-radius: 40px;
+            padding: 3px;
+            display: inline-flex;
+            gap: 2px;
+          }
+
+          .fs-device-btn {
+            background: transparent;
+            color: var(--cream-dim);
+            border: none;
+            border-radius: 32px;
+            padding: 7px 18px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+          }
+
+          .fs-device-btn.active {
+            background: var(--accent);
+            color: #1A1A18;
+            font-weight: 600;
+          }
+
+          .fs-zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .fs-zoom-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--cream-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+          }
+
+          .fs-zoom-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+          }
+
+          .fs-zoom-label {
+            font-size: 0.7rem;
+            color: var(--cream-dim);
+            min-width: 40px;
+            text-align: center;
+          }
+
+          /* Mobile frame */
+          .fs-mobile-frame {
+            background: #0A0A0A;
+            border-radius: 40px;
+            padding: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            max-width: 380px;
+            width: 100%;
+          }
+
+          .fs-mobile-screen {
+            background: #fff;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            min-height: 600px;
+          }
+
+          .fs-mobile-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #0A0A0A;
+            border-radius: 0 0 18px 18px;
+            z-index: 10;
+          }
+
+          .fs-mobile-status {
+            background: #0A0A0A;
+            color: #fff;
+            padding: 8px 16px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            font-weight: 600;
+          }
+
+          .fs-mobile-content {
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 520px;
+            justify-content: center;
+          }
+
+          .fs-mobile-biz {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+
+          .fs-mobile-question {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1A1A18;
+            margin-bottom: 24px;
+          }
+
+          .fs-mobile-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+          }
+
+          .fs-mobile-btn {
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+          }
+
+          .fs-mobile-btn.happy {
+            background: #6A9E7F;
+            color: #fff;
+            border-color: #6A9E7F;
+          }
+
+          .fs-mobile-btn.sad {
+            background: transparent;
+            color: #999;
+            border-color: #e0e0e0;
+          }
+
+          .fs-mobile-power {
+            margin-top: 24px;
+            font-size: 0.65rem;
+            color: #ccc;
+          }
+
+          .fs-mobile-power span {
+            font-weight: 700;
+            color: #999;
+          }
+
+          /* Desktop frame */
+          .fs-desktop-frame {
+            background: #f5f5f5;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            display: none;
+          }
+
+          .fs-desktop-chrome {
+            background: #e8e8e8;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .fs-desktop-dots {
+            display: flex;
+            gap: 5px;
+          }
+
+          .fs-desktop-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+          }
+
+          .fs-desktop-dot.red {
+            background: #ED6A5E;
+          }
+
+          .fs-desktop-dot.yellow {
+            background: #F5BD4F;
+          }
+
+          .fs-desktop-dot.green {
+            background: #61C454;
+          }
+
+          .fs-desktop-url {
+            flex: 1;
+            background: #ddd;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.65rem;
+            color: #999;
+          }
+
+          .fs-desktop-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            min-height: 400px;
+            background: #fff;
+          }
+
+          .fs-desktop-card {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+          }
+
+          .fs-desktop-biz {
+            font-size: 0.8rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+          }
+
+          .fs-desktop-question {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1A1A18;
+            margin-bottom: 28px;
+          }
+
+          .fs-desktop-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+          }
+
+          .fs-desktop-btn {
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+          }
+
+          .fs-desktop-btn.happy {
+            background: #6A9E7F;
+            color: #fff;
+            border-color: #6A9E7F;
+          }
+
+          .fs-desktop-btn.sad {
+            background: transparent;
+            color: #999;
+            border-color: #ddd;
+          }
+
+          /* Right panel — Settings */
+          .fs-settings {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            max-height: 700px;
+          }
+
+          .fs-settings-section {
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+          }
+
+          .fs-settings-section:last-child {
+            border-bottom: none;
+          }
+
+          .fs-settings-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--cream-dim);
+            margin-bottom: 10px;
+            font-weight: 600;
+          }
+
+          /* Template thumbnails */
+          .fs-template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+          }
+
+          .fs-template-thumb {
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+          }
+
+          .fs-template-thumb:hover {
+            border-color: var(--border-hover);
+          }
+
+          .fs-template-thumb.selected {
+            border-color: var(--accent);
+          }
+
+          .fs-template-thumb.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            font-size: 0.7rem;
+            color: var(--accent);
+            font-weight: 700;
+          }
+
+          .fs-template-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+          }
+
+          .fs-template-name {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+          }
+
+          .fs-template-tag {
+            font-size: 0.6rem;
+            color: var(--cream-dim);
+          }
+
+          /* Color picker */
+          .fs-color-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+          }
+
+          .fs-color-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+          }
+
+          .fs-color-swatch:hover {
+            transform: scale(1.1);
+          }
+
+          .fs-color-swatch.selected {
+            border-color: #fff;
+            box-shadow: 0 0 0 2px var(--accent);
+          }
+
+          .fs-color-input {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            padding: 0;
+          }
+
+          /* Input styles */
+          .fs-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--cream);
+            font-size: 0.82rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.2s;
+          }
+
+          .fs-input:focus {
+            outline: none;
+            border-color: var(--accent);
+          }
+
+          .fs-input-label {
+            font-size: 0.7rem;
+            color: var(--cream-dim);
+            display: block;
+            margin-bottom: 4px;
+          }
+
+          .fs-char-count {
+            font-size: 0.65rem;
+            color: var(--cream-dim);
+            text-align: right;
+            margin-top: 2px;
+          }
+
+          /* AI suggestions */
+          .fs-ai-suggestion {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(200, 169, 110, 0.04) 100%);
+            border: 1px solid rgba(200, 169, 110, 0.2);
+            border-radius: var(--radius);
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
+
+          .fs-ai-suggestion:hover {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(200, 169, 110, 0.08) 100%);
+          }
+
+          .fs-ai-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+          }
+
+          .fs-ai-header i {
+            color: #8B5CF6;
+            font-size: 0.9rem;
+          }
+
+          .fs-ai-header span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #8B5CF6;
+          }
+
+          .fs-ai-text {
+            font-size: 0.75rem;
+            color: var(--cream-dim);
+            line-height: 1.5;
+          }
+
+          /* Save bar */
+          .fs-save-bar {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+          }
+
+          .fs-save-status {
+            font-size: 0.75rem;
+            color: var(--cream-dim);
+          }
+
+          .fs-save-status.saved {
+            color: var(--success);
+          }
+
+          .fs-save-btn {
+            background: var(--accent);
+            color: #1A1A18;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .fs-save-btn:hover {
+            background: #D4B87A;
+            transform: translateY(-1px);
+          }
+
+          .fs-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
+          .fs-share-btn {
+            background: transparent;
+            color: var(--cream-dim);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+          }
+
+          .fs-share-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+          }
+
+          /* Link display */
+          .fs-link-box {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+
+          .fs-link-code {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            word-break: break-all;
+            background: var(--surface-3);
+            padding: 8px 10px;
+            border-radius: 6px;
+          }
+
+          .fs-link-copy {
+            background: var(--accent);
+            color: #1A1A18;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+          }
+
+          .fs-link-copy:hover {
+            background: #D4B87A;
+          }
+
+          @media (max-width: 1200px) {
+            .fs-workspace {
+              grid-template-columns: 1fr;
+            }
+
+            .fs-flow-builder {
+              display: none;
+            }
+
+            .fs-settings {
+              max-height: none;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .fs-workspace {
+              grid-template-columns: 1fr;
+            }
+
+            .fs-flow-builder {
+              display: none;
+            }
+
+            .fs-mobile-frame {
+              max-width: 100%;
+            }
+
+            .fs-mobile-screen {
+              min-height: 500px;
+            }
+
+            .fs-desktop-frame {
+              display: none !important;
+            }
+          }
+        </style>
+
+        <div class="fs-container">
+
+          <!-- Header -->
+          <div class="fs-header">
+            <div>
+              <h2>🎨 Funnel Studio</h2>
+              <p>Design every step of your customer's review journey</p>
             </div>
-            <div class="fs-mobile-content" id="fsMobileContent">
-              <div class="fs-mobile-biz" id="fsPreviewBiz">Your Business</div>
-              <div class="fs-mobile-question" id="fsPreviewQuestion">How was your experience?</div>
-              <div class="fs-mobile-buttons">
-                <button class="fs-mobile-btn happy" id="fsPreviewHappy">😊 Great experience!</button>
-                <button class="fs-mobile-btn sad" id="fsPreviewSad">😕 Could be better</button>
+            <div class="fs-status-badge">
+              <span class="fs-status-dot"></span> Live & collecting reviews
+            </div>
+          </div>
+
+          <!-- Workspace -->
+          <div class="fs-workspace">
+
+            <!-- LEFT: Flow Builder -->
+            <div class="fs-flow-builder">
+              <div class="fs-flow-title">
+                <i class="ti ti-route"></i> Customer Flow
               </div>
-              <div class="fs-mobile-power">Powered by <span>ReviewLift</span></div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Desktop Preview -->
-        <div class="fs-desktop-frame" id="fsDesktopFrame">
-          <div class="fs-desktop-chrome">
-            <div class="fs-desktop-dots">
-              <div class="fs-desktop-dot red"></div>
-              <div class="fs-desktop-dot yellow"></div>
-              <div class="fs-desktop-dot green"></div>
-            </div>
-            <div class="fs-desktop-url">reviewlift.app/r/your-business</div>
-          </div>
-          <div class="fs-desktop-content">
-            <div class="fs-desktop-card">
-              <div class="fs-desktop-biz" id="fsPreviewBizDesktop">Your Business</div>
-              <div class="fs-desktop-question" id="fsPreviewQuestionDesktop">How was your experience?</div>
-              <div class="fs-desktop-buttons">
-                <button class="fs-desktop-btn happy" id="fsPreviewHappyDesktop">😊 Great experience!</button>
-                <button class="fs-desktop-btn sad" id="fsPreviewSadDesktop">😕 Could be better</button>
+
+              <div class="flow-node active" data-node="visit">
+                <div class="flow-node-header">
+                  <div class="flow-node-icon visit"><i class="ti ti-qrcode"></i></div>
+                  <div class="flow-node-name">1. Customer Arrives</div>
+                </div>
+                <div class="flow-node-desc">Via QR code, SMS, email, or link</div>
+              </div>
+
+              <div class="flow-connector">
+                <div class="flow-connector-dot"></div>
+                <div class="flow-connector-dot"></div>
+                <div class="flow-connector-dot"></div>
+              </div>
+
+              <div class="flow-node" data-node="rating">
+                <div class="flow-node-header">
+                  <div class="flow-node-icon rating"><i class="ti ti-star"></i></div>
+                  <div class="flow-node-name">2. Rating Question</div>
+                </div>
+                <div class="flow-node-desc">"How was your experience?"</div>
+              </div>
+
+              <div class="flow-connector">
+                <div class="flow-connector-dot"></div>
+                <div style="font-size:0.6rem;color:var(--accent);">Split based on answer</div>
+                <div class="flow-connector-dot"></div>
+              </div>
+
+              <div class="flow-split">
+                <div class="flow-branch positive" data-node="positive">
+                  <div class="flow-branch-label">😊 Happy</div>
+                  <div class="flow-branch-dest">→ Google Review</div>
+                </div>
+                <div class="flow-branch negative" data-node="negative">
+                  <div class="flow-branch-label">😕 Unhappy</div>
+                  <div class="flow-branch-dest">→ Private Feedback</div>
+                </div>
+              </div>
+
+              <div class="flow-connector">
+                <div class="flow-connector-dot"></div>
+                <div class="flow-connector-dot"></div>
+              </div>
+
+              <div class="flow-node" data-node="review">
+                <div class="flow-node-header">
+                  <div class="flow-node-icon review"><i class="ti ti-brand-google"></i></div>
+                  <div class="flow-node-name">3. Review Posted</div>
+                </div>
+                <div class="flow-node-desc">Or feedback captured privately</div>
               </div>
             </div>
+
+            <!-- CENTER: Live Preview -->
+            <div class="fs-preview-area">
+              <div class="fs-preview-header">
+                <div class="fs-device-toggle">
+                  <button class="fs-device-btn active" onclick="setFSDevice('mobile')">📱 Mobile</button>
+                  <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
+                </div>
+                <div class="fs-zoom-controls">
+                  <button class="fs-zoom-btn" onclick="zoomFS(-10)">−</button>
+                  <span class="fs-zoom-label" id="fsZoomLabel">100%</span>
+                  <button class="fs-zoom-btn" onclick="zoomFS(10)">+</button>
+                </div>
+              </div>
+
+              <!-- Mobile Preview -->
+              <div class="fs-mobile-frame" id="fsMobileFrame">
+                <div class="fs-mobile-screen">
+                  <div class="fs-mobile-notch"></div>
+                  <div class="fs-mobile-status">
+                    <span>9:41</span>
+                    <span>●●● ○○ Wi-Fi</span>
+                  </div>
+                  <div class="fs-mobile-content" id="fsMobileContent">
+                    <div class="fs-mobile-biz" id="fsPreviewBiz">Your Business</div>
+                    <div class="fs-mobile-question" id="fsPreviewQuestion">How was your experience?</div>
+                    <div class="fs-mobile-buttons">
+                      <button class="fs-mobile-btn happy" id="fsPreviewHappy">😊 Great experience!</button>
+                      <button class="fs-mobile-btn sad" id="fsPreviewSad">😕 Could be better</button>
+                    </div>
+                    <div class="fs-mobile-power">Powered by <span>ReviewLift</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Desktop Preview -->
+              <div class="fs-desktop-frame" id="fsDesktopFrame">
+                <div class="fs-desktop-chrome">
+                  <div class="fs-desktop-dots">
+                    <div class="fs-desktop-dot red"></div>
+                    <div class="fs-desktop-dot yellow"></div>
+                    <div class="fs-desktop-dot green"></div>
+                  </div>
+                  <div class="fs-desktop-url">reviewlift.app/r/your-business</div>
+                </div>
+                <div class="fs-desktop-content">
+                  <div class="fs-desktop-card">
+                    <div class="fs-desktop-biz" id="fsPreviewBizDesktop">Your Business</div>
+                    <div class="fs-desktop-question" id="fsPreviewQuestionDesktop">How was your experience?</div>
+                    <div class="fs-desktop-buttons">
+                      <button class="fs-desktop-btn happy" id="fsPreviewHappyDesktop">😊 Great experience!</button>
+                      <button class="fs-desktop-btn sad" id="fsPreviewSadDesktop">😕 Could be better</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: Settings Panel -->
+            <div class="fs-settings" id="fsSettingsPanel">
+
+              <!-- Template Selection -->
+              <div class="fs-settings-section">
+                <div class="fs-settings-label">🎭 Template</div>
+                <div class="fs-template-grid">
+                  <div class="fs-template-thumb selected" data-template="classic"
+                    onclick="selectFSTemplate('classic', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#1A1A18,#2E2E2B);"></div>
+                    <div class="fs-template-name">Modern Glow</div>
+                    <div class="fs-template-tag">Default</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="bright" onclick="selectFSTemplate('bright', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#fff,#f0f0f0);"></div>
+                    <div class="fs-template-name">Luxe White</div>
+                    <div class="fs-template-tag">Retail & Food</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="medical" onclick="selectFSTemplate('medical', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);"></div>
+                    <div class="fs-template-name">Clinical Clean</div>
+                    <div class="fs-template-tag">Healthcare</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="bold" onclick="selectFSTemplate('bold', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#C8A96E,#A88B5C);"></div>
+                    <div class="fs-template-name">Bold Impact</div>
+                    <div class="fs-template-tag">Trades & Gyms</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);"></div>
+                    <div class="fs-template-name">Elegant Minimal</div>
+                    <div class="fs-template-tag">High-end</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Branding -->
+              <div class="fs-settings-section">
+                <div class="fs-settings-label">🎨 Branding</div>
+
+                <label class="fs-input-label">Accent Colour</label>
+                <div class="fs-color-options" style="margin-bottom:10px;">
+                  <div class="fs-color-swatch selected" style="background:#C8A96E;" data-color="#C8A96E"
+                    onclick="selectFSColor('#C8A96E', this)"></div>
+                  <div class="fs-color-swatch" style="background:#3B82F6;" data-color="#3B82F6"
+                    onclick="selectFSColor('#3B82F6', this)"></div>
+                  <div class="fs-color-swatch" style="background:#10B981;" data-color="#10B981"
+                    onclick="selectFSColor('#10B981', this)"></div>
+                  <div class="fs-color-swatch" style="background:#8B5CF6;" data-color="#8B5CF6"
+                    onclick="selectFSColor('#8B5CF6', this)"></div>
+                  <div class="fs-color-swatch" style="background:#EF4444;" data-color="#EF4444"
+                    onclick="selectFSColor('#EF4444', this)"></div>
+                  <div class="fs-color-swatch" style="background:#F59E0B;" data-color="#F59E0B"
+                    onclick="selectFSColor('#F59E0B', this)"></div>
+                  <input type="color" class="fs-color-input" value="#C8A96E" onchange="selectFSColor(this.value, null)"
+                    title="Custom color">
+                </div>
+
+                <label class="fs-input-label">Logo URL</label>
+                <input type="url" class="fs-input" id="fsLogoUrl" placeholder="https://your-site.com/logo.png"
+                  oninput="updateFSPreview()">
+                <div id="fsLogoPreview" style="display:none; text-align:center; margin-top:8px;">
+                  <img id="fsLogoPreviewImg" style="max-height:30px; max-width:100%;" alt="Logo preview">
+                </div>
+              </div>
+
+              <!-- Wording -->
+              <div class="fs-settings-section">
+                <div class="fs-settings-label">✏️ Wording</div>
+
+                <label class="fs-input-label">Headline Question</label>
+                <input type="text" class="fs-input" id="fsHeadline" placeholder="How was your experience?"
+                  maxlength="60" value="How was your experience?" oninput="updateFSPreview(); updateFSCharCount();">
+                <div class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</div>
+
+                <label class="fs-input-label" style="margin-top:10px;">Happy Button</label>
+                <input type="text" class="fs-input" id="fsHappyLabel" placeholder="Great experience!"
+                  value="Great experience!" oninput="updateFSPreview()">
+
+                <label class="fs-input-label" style="margin-top:10px;">Unhappy Button</label>
+                <input type="text" class="fs-input" id="fsSadLabel" placeholder="Could be better"
+                  value="Could be better" oninput="updateFSPreview()">
+
+                <label class="fs-input-label" style="margin-top:10px;">Thank You Message</label>
+                <input type="text" class="fs-input" id="fsThankyouMsg" placeholder="Thanks for your feedback!"
+                  oninput="updateFSPreview()">
+              </div>
+
+              <!-- AI Suggestions -->
+              <div class="fs-settings-section">
+                <div class="fs-settings-label">🤖 AI Optimisation</div>
+
+                <div class="fs-ai-suggestion" onclick="applyAISuggestion('headline')">
+                  <div class="fs-ai-header">
+                    <i class="ti ti-brain"></i>
+                    <span>HEADLINE SUGGESTION</span>
+                  </div>
+                  <div class="fs-ai-text">"How did we do today?" converts 18% better than generic text for service
+                    businesses.</div>
+                </div>
+
+                <div class="fs-ai-suggestion" style="margin-top:8px;" onclick="applyAISuggestion('happy')">
+                  <div class="fs-ai-header">
+                    <i class="ti ti-brain"></i>
+                    <span>BUTTON SUGGESTION</span>
+                  </div>
+                  <div class="fs-ai-text">"Loved it! ⭐" with the star emoji increases click-through by 23%.</div>
+                </div>
+
+                <div class="fs-ai-suggestion" style="margin-top:8px;" onclick="applyAISuggestion('color')">
+                  <div class="fs-ai-header">
+                    <i class="ti ti-brain"></i>
+                    <span>COLOUR INSIGHT</span>
+                  </div>
+                  <div class="fs-ai-text">Gold and green accents increase trust signals by 18%. Blue works best for
+                    healthcare.</div>
+                </div>
+              </div>
+            </div>
+
           </div>
+
+          <!-- Bottom Bar: Save & Share -->
+          <div class="fs-save-bar">
+            <div>
+              <span class="fs-save-status" id="fsSaveStatus">Changes not saved</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <button class="fs-share-btn" onclick="copyFSLink()">
+                <i class="ti ti-link"></i> Copy funnel link
+              </button>
+              <button class="fs-save-btn" id="fsSaveBtn" onclick="saveFSSettings()">
+                <i class="ti ti-device-floppy"></i> Save changes
+              </button>
+            </div>
+          </div>
+
+          <!-- Funnel Link -->
+          <div class="fs-link-box">
+            <span style="font-size:0.7rem;color:var(--cream-dim);white-space:nowrap;">🔗 Your funnel:</span>
+            <code class="fs-link-code" id="fsLinkDisplay">Loading...</code>
+            <button class="fs-link-copy" onclick="copyFSLink()">Copy</button>
+          </div>
+
         </div>
       </div>
-      
-      <!-- RIGHT: Settings Panel -->
-      <div class="fs-settings" id="fsSettingsPanel">
-        
-        <!-- Template Selection -->
-        <div class="fs-settings-section">
-          <div class="fs-settings-label">🎭 Template</div>
-          <div class="fs-template-grid">
-            <div class="fs-template-thumb selected" data-template="classic" onclick="selectFSTemplate('classic', this)">
-              <div class="fs-template-preview" style="background:linear-gradient(135deg,#1A1A18,#2E2E2B);"></div>
-              <div class="fs-template-name">Modern Glow</div>
-              <div class="fs-template-tag">Default</div>
-            </div>
-            <div class="fs-template-thumb" data-template="bright" onclick="selectFSTemplate('bright', this)">
-              <div class="fs-template-preview" style="background:linear-gradient(135deg,#fff,#f0f0f0);"></div>
-              <div class="fs-template-name">Luxe White</div>
-              <div class="fs-template-tag">Retail & Food</div>
-            </div>
-            <div class="fs-template-thumb" data-template="medical" onclick="selectFSTemplate('medical', this)">
-              <div class="fs-template-preview" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);"></div>
-              <div class="fs-template-name">Clinical Clean</div>
-              <div class="fs-template-tag">Healthcare</div>
-            </div>
-            <div class="fs-template-thumb" data-template="bold" onclick="selectFSTemplate('bold', this)">
-              <div class="fs-template-preview" style="background:linear-gradient(135deg,#C8A96E,#A88B5C);"></div>
-              <div class="fs-template-name">Bold Impact</div>
-              <div class="fs-template-tag">Trades & Gyms</div>
-            </div>
-            <div class="fs-template-thumb" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
-              <div class="fs-template-preview" style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);"></div>
-              <div class="fs-template-name">Elegant Minimal</div>
-              <div class="fs-template-tag">High-end</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Branding -->
-        <div class="fs-settings-section">
-          <div class="fs-settings-label">🎨 Branding</div>
-          
-          <label class="fs-input-label">Accent Colour</label>
-          <div class="fs-color-options" style="margin-bottom:10px;">
-            <div class="fs-color-swatch selected" style="background:#C8A96E;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E', this)"></div>
-            <div class="fs-color-swatch" style="background:#3B82F6;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6', this)"></div>
-            <div class="fs-color-swatch" style="background:#10B981;" data-color="#10B981" onclick="selectFSColor('#10B981', this)"></div>
-            <div class="fs-color-swatch" style="background:#8B5CF6;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6', this)"></div>
-            <div class="fs-color-swatch" style="background:#EF4444;" data-color="#EF4444" onclick="selectFSColor('#EF4444', this)"></div>
-            <div class="fs-color-swatch" style="background:#F59E0B;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B', this)"></div>
-            <input type="color" class="fs-color-input" value="#C8A96E" onchange="selectFSColor(this.value, null)" title="Custom color">
-          </div>
-          
-          <label class="fs-input-label">Logo URL</label>
-          <input type="url" class="fs-input" id="fsLogoUrl" placeholder="https://your-site.com/logo.png" oninput="updateFSPreview()">
-          <div id="fsLogoPreview" style="display:none; text-align:center; margin-top:8px;">
-            <img id="fsLogoPreviewImg" style="max-height:30px; max-width:100%;" alt="Logo preview">
-          </div>
-        </div>
-        
-        <!-- Wording -->
-        <div class="fs-settings-section">
-          <div class="fs-settings-label">✏️ Wording</div>
-          
-          <label class="fs-input-label">Headline Question</label>
-          <input type="text" class="fs-input" id="fsHeadline" placeholder="How was your experience?" maxlength="60" value="How was your experience?" oninput="updateFSPreview(); updateFSCharCount();">
-          <div class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</div>
-          
-          <label class="fs-input-label" style="margin-top:10px;">Happy Button</label>
-          <input type="text" class="fs-input" id="fsHappyLabel" placeholder="Great experience!" value="Great experience!" oninput="updateFSPreview()">
-          
-          <label class="fs-input-label" style="margin-top:10px;">Unhappy Button</label>
-          <input type="text" class="fs-input" id="fsSadLabel" placeholder="Could be better" value="Could be better" oninput="updateFSPreview()">
-          
-          <label class="fs-input-label" style="margin-top:10px;">Thank You Message</label>
-          <input type="text" class="fs-input" id="fsThankyouMsg" placeholder="Thanks for your feedback!" oninput="updateFSPreview()">
-        </div>
-        
-        <!-- AI Suggestions -->
-        <div class="fs-settings-section">
-          <div class="fs-settings-label">🤖 AI Optimisation</div>
-          
-          <div class="fs-ai-suggestion" onclick="applyAISuggestion('headline')">
-            <div class="fs-ai-header">
-              <i class="ti ti-brain"></i>
-              <span>HEADLINE SUGGESTION</span>
-            </div>
-            <div class="fs-ai-text">"How did we do today?" converts 18% better than generic text for service businesses.</div>
-          </div>
-          
-          <div class="fs-ai-suggestion" style="margin-top:8px;" onclick="applyAISuggestion('happy')">
-            <div class="fs-ai-header">
-              <i class="ti ti-brain"></i>
-              <span>BUTTON SUGGESTION</span>
-            </div>
-            <div class="fs-ai-text">"Loved it! ⭐" with the star emoji increases click-through by 23%.</div>
-          </div>
-          
-          <div class="fs-ai-suggestion" style="margin-top:8px;" onclick="applyAISuggestion('color')">
-            <div class="fs-ai-header">
-              <i class="ti ti-brain"></i>
-              <span>COLOUR INSIGHT</span>
-            </div>
-            <div class="fs-ai-text">Gold and green accents increase trust signals by 18%. Blue works best for healthcare.</div>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-    
-    <!-- Bottom Bar: Save & Share -->
-    <div class="fs-save-bar">
-      <div>
-        <span class="fs-save-status" id="fsSaveStatus">Changes not saved</span>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <button class="fs-share-btn" onclick="copyFSLink()">
-          <i class="ti ti-link"></i> Copy funnel link
-        </button>
-        <button class="fs-save-btn" id="fsSaveBtn" onclick="saveFSSettings()">
-          <i class="ti ti-device-floppy"></i> Save changes
-        </button>
-      </div>
-    </div>
-    
-    <!-- Funnel Link -->
-    <div class="fs-link-box">
-      <span style="font-size:0.7rem;color:var(--cream-dim);white-space:nowrap;">🔗 Your funnel:</span>
-      <code class="fs-link-code" id="fsLinkDisplay">Loading...</code>
-      <button class="fs-link-copy" onclick="copyFSLink()">Copy</button>
-    </div>
-    
-  </div>
-</div>
 
-<script>
-// ========== FUNNEL STUDIO ADVANCED STATE ==========
-let fsState = {
-  template: 'classic',
-  accentColor: '#C8A96E',
-  logoUrl: '',
-  headline: 'How was your experience?',
-  happyLabel: 'Great experience!',
-  sadLabel: 'Could be better',
-  thankyouMsg: 'Thanks for your feedback!',
-  device: 'mobile',
-  zoom: 100,
-  saved: false
-};
+      <script>
+        // ========== FUNNEL STUDIO ADVANCED STATE ==========
+        let fsState = {
+          template: 'classic',
+          accentColor: '#C8A96E',
+          logoUrl: '',
+          headline: 'How was your experience?',
+          happyLabel: 'Great experience!',
+          sadLabel: 'Could be better',
+          thankyouMsg: 'Thanks for your feedback!',
+          device: 'mobile',
+          zoom: 100,
+          saved: false
+        };
 
-let fsSlug = '';
+        let fsSlug = '';
 
-// ========== INIT ==========
-function initFunnelStudio(slug) {
-  fsSlug = slug;
-  document.getElementById('fsLinkDisplay').textContent = window.location.origin + '/r/' + slug;
-  
-  // Load saved settings
-  fetch('/stats/' + slug)
-    .then(r => r.json())
-    .then(stats => {
-      if (stats.funnel_template) fsState.template = stats.funnel_template;
-      if (stats.funnel_accent_color) fsState.accentColor = stats.funnel_accent_color;
-      if (stats.funnel_logo_url) {
-        fsState.logoUrl = stats.funnel_logo_url;
-        document.getElementById('fsLogoUrl').value = stats.funnel_logo_url;
-      }
-      if (stats.funnel_headline) {
-        fsState.headline = stats.funnel_headline;
-        document.getElementById('fsHeadline').value = stats.funnel_headline;
-      }
-      if (stats.funnel_happy_label) {
-        fsState.happyLabel = stats.funnel_happy_label;
-        document.getElementById('fsHappyLabel').value = stats.funnel_happy_label;
-      }
-      if (stats.funnel_unhappy_label) {
-        fsState.sadLabel = stats.funnel_unhappy_label;
-        document.getElementById('fsSadLabel').value = stats.funnel_unhappy_label;
-      }
-      
-      // Update UI to match loaded state
-      selectFSTemplate(fsState.template, document.querySelector(`[data-template="${fsState.template}"]`));
-      selectFSColor(fsState.accentColor, document.querySelector(`[data-color="${fsState.accentColor}"]`));
-      updateFSPreview();
-      updateFSCharCount();
-    })
-    .catch(() => updateFSPreview());
-}
+        // ========== INIT ==========
+        function initFunnelStudio(slug) {
+          fsSlug = slug;
+          document.getElementById('fsLinkDisplay').textContent = window.location.origin + '/r/' + slug;
 
-// ========== TEMPLATE SELECTION ==========
-function selectFSTemplate(template, el) {
-  fsState.template = template;
-  fsState.saved = false;
-  
-  document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  
-  updateFSPreview();
-  updateFSSaveStatus();
-}
+          // Load saved settings
+          fetch('/stats/' + slug)
+            .then(r => r.json())
+            .then(stats => {
+              if (stats.funnel_template) fsState.template = stats.funnel_template;
+              if (stats.funnel_accent_color) fsState.accentColor = stats.funnel_accent_color;
+              if (stats.funnel_logo_url) {
+                fsState.logoUrl = stats.funnel_logo_url;
+                document.getElementById('fsLogoUrl').value = stats.funnel_logo_url;
+              }
+              if (stats.funnel_headline) {
+                fsState.headline = stats.funnel_headline;
+                document.getElementById('fsHeadline').value = stats.funnel_headline;
+              }
+              if (stats.funnel_happy_label) {
+                fsState.happyLabel = stats.funnel_happy_label;
+                document.getElementById('fsHappyLabel').value = stats.funnel_happy_label;
+              }
+              if (stats.funnel_unhappy_label) {
+                fsState.sadLabel = stats.funnel_unhappy_label;
+                document.getElementById('fsSadLabel').value = stats.funnel_unhappy_label;
+              }
 
-// ========== COLOR SELECTION ==========
-function selectFSColor(color, el) {
-  fsState.accentColor = color;
-  fsState.saved = false;
-  
-  document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  
-  // Update the color input
-  const colorInput = document.querySelector('.fs-color-input');
-  if (colorInput) colorInput.value = color;
-  
-  updateFSPreview();
-  updateFSSaveStatus();
-}
+              // Update UI to match loaded state
+              selectFSTemplate(fsState.template, document.querySelector(`[data-template="${fsState.template}"]`));
+              selectFSColor(fsState.accentColor, document.querySelector(`[data-color="${fsState.accentColor}"]`));
+              updateFSPreview();
+              updateFSCharCount();
+            })
+            .catch(() => updateFSPreview());
+        }
 
-// ========== DEVICE TOGGLE ==========
-function setFSDevice(device) {
-  fsState.device = device;
-  
-  const mobileFrame = document.getElementById('fsMobileFrame');
-  const desktopFrame = document.getElementById('fsDesktopFrame');
-  const buttons = document.querySelectorAll('.fs-device-btn');
-  
-  buttons.forEach(b => b.classList.remove('active'));
-  
-  if (device === 'mobile') {
-    mobileFrame.style.display = 'block';
-    desktopFrame.style.display = 'none';
-    buttons[0].classList.add('active');
-  } else {
-    mobileFrame.style.display = 'none';
-    desktopFrame.style.display = 'block';
-    buttons[1].classList.add('active');
-  }
-}
+        // ========== TEMPLATE SELECTION ==========
+        function selectFSTemplate(template, el) {
+          fsState.template = template;
+          fsState.saved = false;
 
-// ========== ZOOM ==========
-function zoomFS(delta) {
-  fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
-  document.getElementById('fsZoomLabel').textContent = fsState.zoom + '%';
-  document.getElementById('fsMobileFrame').style.transform = `scale(${fsState.zoom / 100})`;
-  document.getElementById('fsMobileFrame').style.transformOrigin = 'top center';
-}
+          document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
+          if (el) el.classList.add('selected');
 
-// ========== LIVE PREVIEW UPDATE ==========
-function updateFSPreview() {
-  // Read current values
-  const headline = document.getElementById('fsHeadline')?.value || fsState.headline;
-  const happyLabel = document.getElementById('fsHappyLabel')?.value || fsState.happyLabel;
-  const sadLabel = document.getElementById('fsSadLabel')?.value || fsState.sadLabel;
-  const logoUrl = document.getElementById('fsLogoUrl')?.value || fsState.logoUrl;
-  
-  // Update state
-  fsState.headline = headline;
-  fsState.happyLabel = happyLabel;
-  fsState.sadLabel = sadLabel;
-  fsState.logoUrl = logoUrl;
-  
-  // Update Mobile Preview
-  const bizEl = document.getElementById('fsPreviewBiz');
-  const questionEl = document.getElementById('fsPreviewQuestion');
-  const happyEl = document.getElementById('fsPreviewHappy');
-  const sadEl = document.getElementById('fsPreviewSad');
-  
-  if (bizEl) bizEl.textContent = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
-  if (questionEl) questionEl.textContent = headline;
-  if (happyEl) happyEl.innerHTML = `😊 ${happyLabel}`;
-  if (sadEl) sadEl.innerHTML = `😕 ${sadLabel}`;
-  
-  // Update Desktop Preview
-  const bizDesktop = document.getElementById('fsPreviewBizDesktop');
-  const questionDesktop = document.getElementById('fsPreviewQuestionDesktop');
-  const happyDesktop = document.getElementById('fsPreviewHappyDesktop');
-  const sadDesktop = document.getElementById('fsPreviewSadDesktop');
-  
-  if (bizDesktop) bizDesktop.textContent = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
-  if (questionDesktop) questionDesktop.textContent = headline;
-  if (happyDesktop) happyDesktop.innerHTML = `😊 ${happyLabel}`;
-  if (sadDesktop) sadDesktop.innerHTML = `😕 ${sadLabel}`;
-  
-  // Update accent color on buttons
-  if (happyEl) {
-    happyEl.style.background = fsState.accentColor === '#C8A96E' ? '#6A9E7F' : fsState.accentColor;
-    happyEl.style.borderColor = fsState.accentColor === '#C8A96E' ? '#6A9E7F' : fsState.accentColor;
-  }
-  
-  // Logo preview
-  const logoPreview = document.getElementById('fsLogoPreview');
-  const logoImg = document.getElementById('fsLogoPreviewImg');
-  if (logoUrl && logoPreview && logoImg) {
-    logoImg.src = logoUrl;
-    logoPreview.style.display = 'block';
-  } else if (logoPreview) {
-    logoPreview.style.display = 'none';
-  }
-  
-  fsState.saved = false;
-  updateFSSaveStatus();
-}
+          updateFSPreview();
+          updateFSSaveStatus();
+        }
 
-function updateFSCharCount() {
-  const headline = document.getElementById('fsHeadline');
-  const count = document.getElementById('fsHeadlineCount');
-  if (headline && count) {
-    count.textContent = headline.value.length;
-    count.style.color = headline.value.length > 55 ? '#D4897C' : 'var(--cream-dim)';
-  }
-}
+        // ========== COLOR SELECTION ==========
+        function selectFSColor(color, el) {
+          fsState.accentColor = color;
+          fsState.saved = false;
 
-// ========== AI SUGGESTIONS ==========
-function applyAISuggestion(type) {
-  if (type === 'headline') {
-    document.getElementById('fsHeadline').value = 'How did we do today?';
-    updateFSPreview();
-    updateFSCharCount();
-  } else if (type === 'happy') {
-    document.getElementById('fsHappyLabel').value = 'Loved it! ⭐';
-    updateFSPreview();
-  } else if (type === 'color') {
-    selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
-  }
-  updateFSSaveStatus();
-}
+          document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
+          if (el) el.classList.add('selected');
 
-// ========== SAVE STATUS ==========
-function updateFSSaveStatus() {
-  const status = document.getElementById('fsSaveStatus');
-  if (fsState.saved) {
-    status.textContent = '✓ All changes saved';
-    status.className = 'fs-save-status saved';
-  } else {
-    status.textContent = 'Changes not saved';
-    status.className = 'fs-save-status';
-  }
-}
+          // Update the color input
+          const colorInput = document.querySelector('.fs-color-input');
+          if (colorInput) colorInput.value = color;
 
-// ========== SAVE SETTINGS ==========
-async function saveFSSettings() {
-  const btn = document.getElementById('fsSaveBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Saving...';
-  
-  const data = {
-    funnel_template: fsState.template,
-    funnel_accent_color: fsState.accentColor,
-    funnel_logo_url: fsState.logoUrl,
-    funnel_headline: fsState.headline,
-    funnel_happy_label: fsState.happyLabel,
-    funnel_unhappy_label: fsState.sadLabel,
-    funnel_thankyou_message: fsState.thankyouMsg
-  };
-  
-  try {
-    const res = await fetch('/update-funnel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    
-    if (result.success) {
-      fsState.saved = true;
-      updateFSSaveStatus();
-      showToast('Funnel updated! Changes are live.', 'success');
-    } else {
-      showToast(result.error || 'Could not save', 'error');
-    }
-  } catch(e) {
-    showToast('Something went wrong', 'error');
-  }
-  
-  btn.disabled = false;
-  btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
-}
+          updateFSPreview();
+          updateFSSaveStatus();
+        }
 
-// ========== COPY LINK ==========
-function copyFSLink() {
-  const link = document.getElementById('fsLinkDisplay').textContent;
-  navigator.clipboard.writeText(link);
-  showToast('Funnel link copied!', 'success');
-}
+        // ========== DEVICE TOGGLE ==========
+        function setFSDevice(device) {
+          fsState.device = device;
 
-// ========== KEYBOARD SHORTCUTS ==========
-document.addEventListener('keydown', function(e) {
-  // Only if Funnel Studio is visible
-  const fsSection = document.getElementById('funnelStudioSection');
-  if (!fsSection || !fsSection.classList.contains('active')) return;
-  
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    saveFSSettings();
-  }
-});
+          const mobileFrame = document.getElementById('fsMobileFrame');
+          const desktopFrame = document.getElementById('fsDesktopFrame');
+          const buttons = document.querySelectorAll('.fs-device-btn');
 
-// Initialize when section becomes visible
-const fsObserver = new MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    if (mutation.target.id === 'funnelStudioSection' && 
-        mutation.target.classList.contains('active') && 
-        fsSlug) {
-      initFunnelStudio(fsSlug);
-    }
-  });
-});
+          buttons.forEach(b => b.classList.remove('active'));
 
-const fsSection = document.getElementById('funnelStudioSection');
-if (fsSection) {
-  fsObserver.observe(fsSection, { attributes: true, attributeFilter: ['class'] });
-}
-</script>
+          if (device === 'mobile') {
+            mobileFrame.style.display = 'block';
+            desktopFrame.style.display = 'none';
+            buttons[0].classList.add('active');
+          } else {
+            mobileFrame.style.display = 'none';
+            desktopFrame.style.display = 'block';
+            buttons[1].classList.add('active');
+          }
+        }
+
+        // ========== ZOOM ==========
+        function zoomFS(delta) {
+          fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
+          document.getElementById('fsZoomLabel').textContent = fsState.zoom + '%';
+          document.getElementById('fsMobileFrame').style.transform = `scale(${fsState.zoom / 100})`;
+          document.getElementById('fsMobileFrame').style.transformOrigin = 'top center';
+        }
+
+        // ========== LIVE PREVIEW UPDATE ==========
+        function updateFSPreview() {
+          // Read current values
+          const headline = document.getElementById('fsHeadline')?.value || fsState.headline;
+          const happyLabel = document.getElementById('fsHappyLabel')?.value || fsState.happyLabel;
+          const sadLabel = document.getElementById('fsSadLabel')?.value || fsState.sadLabel;
+          const logoUrl = document.getElementById('fsLogoUrl')?.value || fsState.logoUrl;
+
+          // Update state
+          fsState.headline = headline;
+          fsState.happyLabel = happyLabel;
+          fsState.sadLabel = sadLabel;
+          fsState.logoUrl = logoUrl;
+
+          // Update Mobile Preview
+          const bizEl = document.getElementById('fsPreviewBiz');
+          const questionEl = document.getElementById('fsPreviewQuestion');
+          const happyEl = document.getElementById('fsPreviewHappy');
+          const sadEl = document.getElementById('fsPreviewSad');
+
+          if (bizEl) bizEl.textContent = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
+          if (questionEl) questionEl.textContent = headline;
+          if (happyEl) happyEl.innerHTML = `😊 ${happyLabel}`;
+          if (sadEl) sadEl.innerHTML = `😕 ${sadLabel}`;
+
+          // Update Desktop Preview
+          const bizDesktop = document.getElementById('fsPreviewBizDesktop');
+          const questionDesktop = document.getElementById('fsPreviewQuestionDesktop');
+          const happyDesktop = document.getElementById('fsPreviewHappyDesktop');
+          const sadDesktop = document.getElementById('fsPreviewSadDesktop');
+
+          if (bizDesktop) bizDesktop.textContent = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
+          if (questionDesktop) questionDesktop.textContent = headline;
+          if (happyDesktop) happyDesktop.innerHTML = `😊 ${happyLabel}`;
+          if (sadDesktop) sadDesktop.innerHTML = `😕 ${sadLabel}`;
+
+          // Update accent color on buttons
+          if (happyEl) {
+            happyEl.style.background = fsState.accentColor === '#C8A96E' ? '#6A9E7F' : fsState.accentColor;
+            happyEl.style.borderColor = fsState.accentColor === '#C8A96E' ? '#6A9E7F' : fsState.accentColor;
+          }
+
+          // Logo preview
+          const logoPreview = document.getElementById('fsLogoPreview');
+          const logoImg = document.getElementById('fsLogoPreviewImg');
+          if (logoUrl && logoPreview && logoImg) {
+            logoImg.src = logoUrl;
+            logoPreview.style.display = 'block';
+          } else if (logoPreview) {
+            logoPreview.style.display = 'none';
+          }
+
+          fsState.saved = false;
+          updateFSSaveStatus();
+        }
+
+        function updateFSCharCount() {
+          const headline = document.getElementById('fsHeadline');
+          const count = document.getElementById('fsHeadlineCount');
+          if (headline && count) {
+            count.textContent = headline.value.length;
+            count.style.color = headline.value.length > 55 ? '#D4897C' : 'var(--cream-dim)';
+          }
+        }
+
+        // ========== AI SUGGESTIONS ==========
+        function applyAISuggestion(type) {
+          if (type === 'headline') {
+            document.getElementById('fsHeadline').value = 'How did we do today?';
+            updateFSPreview();
+            updateFSCharCount();
+          } else if (type === 'happy') {
+            document.getElementById('fsHappyLabel').value = 'Loved it! ⭐';
+            updateFSPreview();
+          } else if (type === 'color') {
+            selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
+          }
+          updateFSSaveStatus();
+        }
+
+        // ========== SAVE STATUS ==========
+        function updateFSSaveStatus() {
+          const status = document.getElementById('fsSaveStatus');
+          if (fsState.saved) {
+            status.textContent = '✓ All changes saved';
+            status.className = 'fs-save-status saved';
+          } else {
+            status.textContent = 'Changes not saved';
+            status.className = 'fs-save-status';
+          }
+        }
+
+        // ========== SAVE SETTINGS ==========
+        async function saveFSSettings() {
+          const btn = document.getElementById('fsSaveBtn');
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+          const data = {
+            funnel_template: fsState.template,
+            funnel_accent_color: fsState.accentColor,
+            funnel_logo_url: fsState.logoUrl,
+            funnel_headline: fsState.headline,
+            funnel_happy_label: fsState.happyLabel,
+            funnel_unhappy_label: fsState.sadLabel,
+            funnel_thankyou_message: fsState.thankyouMsg
+          };
+
+          try {
+            const res = await fetch('/update-funnel', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            const result = await res.json();
+
+            if (result.success) {
+              fsState.saved = true;
+              updateFSSaveStatus();
+              showToast('Funnel updated! Changes are live.', 'success');
+            } else {
+              showToast(result.error || 'Could not save', 'error');
+            }
+          } catch (e) {
+            showToast('Something went wrong', 'error');
+          }
+
+          btn.disabled = false;
+          btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
+        }
+
+        // ========== COPY LINK ==========
+        function copyFSLink() {
+          const link = document.getElementById('fsLinkDisplay').textContent;
+          navigator.clipboard.writeText(link);
+          showToast('Funnel link copied!', 'success');
+        }
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        document.addEventListener('keydown', function (e) {
+          // Only if Funnel Studio is visible
+          const fsSection = document.getElementById('funnelStudioSection');
+          if (!fsSection || !fsSection.classList.contains('active')) return;
+
+          if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            saveFSSettings();
+          }
+        });
+
+        // Initialize when section becomes visible
+        const fsObserver = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.target.id === 'funnelStudioSection' &&
+              mutation.target.classList.contains('active') &&
+              fsSlug) {
+              initFunnelStudio(fsSlug);
+            }
+          });
+        });
+
+        const fsSection = document.getElementById('funnelStudioSection');
+        if (fsSection) {
+          fsObserver.observe(fsSection, { attributes: true, attributeFilter: ['class'] });
+        }
+      </script>
 
       <!-- CUSTOMERS SECTION -->
       <div id="customersSection" class="content-section">
@@ -3107,7 +3326,8 @@ if (fsSection) {
                   <span style="font-weight:600; font-size:0.85rem;">🤵 Professional</span><button
                     onclick="copyAiReply('aiProfessional')"
                     style="background:transparent; border:none; color:var(--cream-dim); cursor:pointer;">📋
-                    Copy</button></div>
+                    Copy</button>
+                </div>
                 <div id="aiProfessionalDisplay"
                   style="padding:16px; font-size:0.85rem; line-height:1.6; color:var(--cream-dim); min-height:100px;">
                 </div>
@@ -3119,7 +3339,8 @@ if (fsSection) {
                   <span style="font-weight:600; font-size:0.85rem;">💚 Warm & Personal</span><button
                     onclick="copyAiReply('aiWarm')"
                     style="background:transparent; border:none; color:var(--cream-dim); cursor:pointer;">📋
-                    Copy</button></div>
+                    Copy</button>
+                </div>
                 <div id="aiWarmDisplay"
                   style="padding:16px; font-size:0.85rem; line-height:1.6; color:var(--cream-dim); min-height:100px;">
                 </div>
@@ -3131,7 +3352,8 @@ if (fsSection) {
                   <span style="font-weight:600; font-size:0.85rem;">⚡ Short & Punchy</span><button
                     onclick="copyAiReply('aiPunchy')"
                     style="background:transparent; border:none; color:var(--cream-dim); cursor:pointer;">📋
-                    Copy</button></div>
+                    Copy</button>
+                </div>
                 <div id="aiPunchyDisplay"
                   style="padding:16px; font-size:0.85rem; line-height:1.6; color:var(--cream-dim); min-height:100px;">
                 </div>
@@ -3560,7 +3782,8 @@ if (fsSection) {
           class="ti ti-link"></i> Copy review link</button><button onclick="navigateTo('automations'); closeFab()"
         style="background:var(--surface); border:1px solid var(--border); border-radius:40px; padding:12px 20px; color:var(--cream); cursor:pointer; white-space:nowrap; font-size:0.85rem;">
         <i class="ti ti-zap"></i> New automation
-      </button></div>
+      </button>
+    </div>
   </div>
 
   <!-- MOBILE TAB BAR -->
