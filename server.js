@@ -572,46 +572,53 @@ app.get("/stats/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
 
   const { data: businessData } = await supabase
-  .from("businesses")
-  .select("name, subscription_active, plan_type, trial_ends_at, review_link, industry, current_software")
-  .eq("slug", req.params.slug)
-  .single();
+    .from("businesses")
+    .select("name, subscription_active, plan_type, trial_ends_at, review_link, industry, current_software, nfc_card_ordered, nfc_card_tracking_number")
+    .eq("slug", req.params.slug)
+    .single();
+    
   if (!businessData) return res.status(404).json({ error: "Business not found" });
 
-  const { data } = await supabase
+  const { data: events } = await supabase
     .from("events")
-    .select("event_type, rating, message")
+    .select("event_type, rating, message, created_at")
     .eq("business_slug", req.params.slug);
 
-    // Add recent_events to the stats response
-const { data: recentEvents } = await supabase
-  .from("events")
-  .select("event_type, created_at")
-  .eq("business_slug", req.params.slug)
-  .order("created_at", { ascending: false })
-  .limit(10);
+  // Get recent events for activity feed
+  const { data: recentEvents } = await supabase
+    .from("events")
+    .select("event_type, created_at")
+    .eq("business_slug", req.params.slug)
+    .order("created_at", { ascending: false })
+    .limit(10);
 
-stats.recent_events = recentEvents || [];
-
-const stats = {
-  visits: 0, positive: 0, negative: 0, reviews: 0,
-  rating_avg: 0, rating_count: 0, rating_distribution: {}, feedback: [],
-  subscription_active: businessData.subscription_active,
-  plan_type: businessData.plan_type,
-  trial_ends_at: businessData.trial_ends_at,
-  business_name: businessData.name,
-  review_link: businessData.review_link,
-  account_lapsed: !businessData.subscription_active,
-  industry: businessData.industry,
-  current_software: businessData.current_software,
-  nfc_card_ordered: businessData.nfc_card_ordered || false,
-  nfc_card_tracking_number: businessData.nfc_card_tracking_number || null
-};
+  // Build stats object
+  const stats = {
+    visits: 0,
+    positive: 0,
+    negative: 0,
+    reviews: 0,
+    rating_avg: 0,
+    rating_count: 0,
+    rating_distribution: {},
+    feedback: [],
+    subscription_active: businessData.subscription_active,
+    plan_type: businessData.plan_type,
+    trial_ends_at: businessData.trial_ends_at,
+    business_name: businessData.name,
+    review_link: businessData.review_link,
+    account_lapsed: !businessData.subscription_active,
+    industry: businessData.industry,
+    current_software: businessData.current_software,
+    nfc_card_ordered: businessData.nfc_card_ordered || false,
+    nfc_card_tracking_number: businessData.nfc_card_tracking_number || null,
+    recent_events: recentEvents || []
+  };
 
   let ratingTotal = 0;
   const ratingDist = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
-  (data || []).forEach((e) => {
+  (events || []).forEach((e) => {
     if (e.event_type === "visit") stats.visits++;
     if (e.event_type === "positive") stats.positive++;
     if (e.event_type === "negative") stats.negative++;
@@ -628,9 +635,9 @@ const stats = {
   stats.rating_distribution = ratingDist;
   stats.conversion_rate = stats.visits ? ((stats.positive / stats.visits) * 100).toFixed(1) : 0;
   stats.negative_rate = stats.visits ? ((stats.negative / stats.visits) * 100).toFixed(1) : 0;
+  
   res.json(stats);
 });
-
 // ─── NFC CARD ADMIN PANEL ──────────────────────────────────────────────────────
 
 // Admin page to view all NFC card orders
