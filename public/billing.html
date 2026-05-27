@@ -146,6 +146,19 @@
 </div>
 </div>
 
+<div class="modal-overlay" id="nfcModal" onclick="handleModalOverlay(event, 'nfcModal')">
+  <div class="modal-box" style="max-width:500px;">
+    <button class="modal-close" onclick="closeModal('nfcModal')">✕</button>
+    <span class="modal-icon">📦</span>
+    <h3>Order your Tap-to-Review Card</h3>
+    <p style="margin-bottom:16px;">Enter your shipping address. We'll post your card within 2 business days.</p>
+    <div class="form-group"><label>Full name</label><input id="nfcFullName" type="text" placeholder="Your full name" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;"></div>
+    <div class="form-group"><label>Shipping address</label><textarea id="nfcAddress" rows="3" placeholder="Street address, city, postcode, country" style="width:100%;min-height:80px;background:var(--surface-2);border-radius:6px;"></textarea></div>
+    <button onclick="orderNfcCard()" id="nfcOrderBtn" class="btn-full" style="background:var(--accent); color:#1A1A18;">Continue to payment (£9.99) →</button>
+    <p id="nfcModalMsg" style="font-size:0.75rem; color:#D4897C; margin-top:12px;"></p>
+  </div>
+</div>
+
 <div class="modal-overlay" id="cancelModal" onclick="handleModalOverlay(event,'cancelModal')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('cancelModal')">✕</button>
@@ -194,10 +207,15 @@ async function init(){
   const trialEnd = stats.trial_ends_at ? new Date(stats.trial_ends_at) : null;
   const inTrial = isActive && trialEnd && new Date() < trialEnd;
 
-  document.getElementById("planName").textContent = currentPlan === "pro" ? "Pro" : "Starter";
-  document.getElementById("planPrice").innerHTML = currentPlan === "pro"
-    ? '<sup>£</sup>24.99<span>/mo</span>'
-    : '<sup>£</sup>9.99<span>/mo</span>';
+let planDisplay = "Starter";
+if (currentPlan === "pro") planDisplay = "Pro";
+if (currentPlan === "agency") planDisplay = "Agency";
+document.getElementById("planName").textContent = planDisplay;
+
+let priceHtml = '<sup>£</sup>9.99<span>/mo</span>';
+if (currentPlan === "pro") priceHtml = '<sup>£</sup>24.99<span>/mo</span>';
+if (currentPlan === "agency") priceHtml = '<sup>£</sup>79<span>/mo</span>';
+document.getElementById("planPrice").innerHTML = priceHtml;
 
   const badge = document.getElementById("planBadge");
   if(isCancelPending){

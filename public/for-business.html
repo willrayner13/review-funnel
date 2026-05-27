@@ -586,9 +586,10 @@
       </div>
     </div>
 
-    <!-- AI TOOLS SECTION -->
+       <!-- AI TOOLS SECTION -->
     <div id="aiToolsSection" class="content-section">
       <h2 style="margin-bottom: 20px;">AI Tools</h2>
+      
       <!-- AI Reply Generator -->
       <div id="aiUnlocked" style="display:none">
         <div class="panel">
@@ -602,12 +603,13 @@
           </div>
         </div>
       </div>
-      <div class="pro-lock-panel" id="aiLocked" style="display:none">
+      <div id="aiLocked" class="pro-lock-panel" style="display:none">
         <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
         <h4>AI Review Reply Generator</h4>
         <p>Upgrade to Pro to unlock AI-generated replies.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
+      
       <!-- Sentiment Trends -->
       <div id="sentimentUnlocked" style="display:none">
         <div class="panel">
@@ -615,12 +617,28 @@
           <div id="sentimentContent"><p>Loading...</p></div>
         </div>
       </div>
-      <div class="pro-lock-panel" id="sentimentLocked" style="display:none">
+      <div id="sentimentLocked" class="pro-lock-panel" style="display:none">
         <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
         <h4>AI Sentiment Trends</h4>
         <p>Upgrade to Pro to see what your customers are saying.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
+      
+      <!-- Send Intelligence -->
+      <div id="sendIntelUnlocked" style="display:none">
+        <div class="panel">
+          <h3>🧠 AI Send Intelligence</h3>
+          <p id="sendIntelMessage">Loading analytics...</p>
+          <div id="sendIntelInsight"></div>
+        </div>
+      </div>
+      <div id="sendIntelLocked" class="pro-lock-panel" style="display:none">
+        <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
+        <h4>AI Send Intelligence</h4>
+        <p>Upgrade to Pro to see channel recommendations.</p>
+        <a href="/billing" style="color:var(--accent);">Upgrade →</a>
+      </div>
+      
       <!-- Competitor Analysis -->
       <div id="competitorUnlocked" style="display:none">
         <div class="panel">
@@ -631,20 +649,14 @@
           <div id="competitorResults" style="margin-top:16px;"></div>
         </div>
       </div>
-      <div class="pro-lock-panel" id="competitorLocked" style="display:none">
+      <div id="competitorLocked" class="pro-lock-panel" style="display:none">
         <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
         <h4>Competitor Analysis</h4>
         <p>Upgrade to Agency to analyse competitors.</p>
         <a href="/billing" style="color:var(--accent);">Upgrade →</a>
       </div>
-      <!-- Send Intelligence -->
-      <div id="sendIntelUnlocked" style="display:none">
-        <div class="panel">
-          <h3>🧠 AI Send Intelligence</h3>
-          <p id="sendIntelMessage">Loading analytics...</p>
-          <div id="sendIntelInsight"></div>
-        </div>
-      </div>
+    </div> <!-- Send Intelligence -->
+     
       <div class="pro-lock-panel" id="sendIntelLocked" style="display:none">
         <i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i>
         <h4>AI Send Intelligence</h4>
@@ -673,12 +685,38 @@
     </div>
 
     <!-- REVIEW WALL SECTION -->
+    <!-- REVIEW WALL SECTION -->
     <div id="reviewWallSection" class="content-section">
       <h2 style="margin-bottom: 20px;">Your Review Wall</h2>
       <div class="panel">
         <p>A public page showing all your positive customer feedback. Updates automatically.</p>
-        <div class="input-row" style="margin:16px 0;"><input id="wallUrl" readonly><button onclick="copyWallUrl()">Copy</button></div>
+        <div class="input-row" style="margin:16px 0;"><input id="wallUrl" readonly style="background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:12px;"><button onclick="copyWallUrl()" style="background:var(--accent);color:#1A1A18;border:none;border-radius:6px;padding:0 20px;">Copy</button></div>
         <a href="#" id="wallPreviewLink" target="_blank" class="btn-full" style="display:inline-block;text-align:center;text-decoration:none;">View your Review Wall →</a>
+      </div>
+    </div>
+
+        <!-- NFC TAP-TO-REVIEW CARD SECTION -->
+    <div id="nfcCardSection" class="content-section">
+      <h2 style="margin-bottom: 20px;">Tap-to-Review Card</h2>
+      <div class="panel">
+        <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;">
+          <div style="flex-shrink:0;">
+            <div style="width:120px;height:80px;background:linear-gradient(135deg,#1A1A18,#2E2E2B);border-radius:8px;border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:2rem;">📱</div>
+          </div>
+          <div style="flex:1;">
+            <h3 style="margin-bottom:8px;">📱 Tap-to-Review NFC Card — £9.99 one-time</h3>
+            <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:12px;">A physical card customers tap with their phone to instantly leave a review.</p>
+            <div id="nfcCardUpsell">
+              <button onclick="openNfcModal()" class="btn-full" style="background:var(--accent); color:#1A1A18; max-width:220px;">💳 Order card — £9.99</button>
+            </div>
+            <div id="nfcCardOrdered" style="display:none;">
+              <p style="color:var(--success);">✅ Card ordered! We'll ship it within 2 business days.</p>
+            </div>
+            <div id="nfcCardShipped" style="display:none;">
+              <p style="color:var(--accent);">✈️ Your card has shipped! <span id="nfcTrackingInfo"></span></p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -806,7 +844,6 @@ function updateGreeting(businessName) {
   document.getElementById("greetingBusiness").innerHTML = businessName ? `Welcome back to your dashboard` : '';
 }
 
-// ========== ACTIVITY TICKER (auto-updates) ==========
 function updateTicker(events) {
   const tickerEl = document.getElementById("tickerText");
   if (!events || events.length === 0) {
@@ -815,12 +852,12 @@ function updateTicker(events) {
   }
   const recent = events.slice(0, 3);
   const messages = recent.map(e => {
-    if (e.event_type === 'visit') return `Someone visited your funnel`;
-    if (e.event_type === 'positive') return `⭐ New 5-star rating received`;
-    if (e.event_type === 'negative') return `📝 Private feedback captured`;
-    if (e.event_type === 'sms_sent') return `📱 SMS review request sent`;
-    if (e.event_type === 'email_sent') return `📧 Email review request sent`;
-    return `${e.event_type} occurred`;
+    if (e.event_type === 'visit') return `👤 Customer visited funnel`;
+    if (e.event_type === 'positive') return `⭐ New 5-star rating`;
+    if (e.event_type === 'negative') return `📝 Private feedback received`;
+    if (e.event_type === 'sms_sent') return `📱 SMS review request`;
+    if (e.event_type === 'email_sent') return `📧 Email review request`;
+    return `${e.event_type}`;
   });
   tickerEl.innerHTML = messages.join(' · ');
 }
@@ -1046,6 +1083,36 @@ async function loadReputationScore() {
     }).join('');
     document.getElementById("heroBars").innerHTML = barsHtml;
   } catch(e) { console.log("Reputation score error:", e); }
+}
+
+function openNfcModal() { openModal("nfcModal"); }
+
+async function orderNfcCard() {
+  const fullName = document.getElementById("nfcFullName").value.trim();
+  const address = document.getElementById("nfcAddress").value.trim();
+  if (!fullName || !address) { showToast("Please enter your name and address", "error"); return; }
+  const btn = document.getElementById("nfcOrderBtn");
+  btn.disabled = true; btn.textContent = "Processing...";
+  const res = await fetch("/create-nfc-checkout", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ shipping_address: `${fullName}\n${address}` })
+  });
+  const data = await res.json();
+  if (data.url) window.location = data.url;
+  else { showToast(data.error || "Could not create order", "error"); btn.disabled = false; btn.textContent = "Continue to payment (£9.99) →"; }
+}
+
+async function loadNfcCardStatus() {
+  const res = await fetch("/stats/"+slug);
+  const stats = await res.json();
+  if (stats.nfc_card_tracking_number) {
+    document.getElementById("nfcCardUpsell").style.display = "none";
+    document.getElementById("nfcCardShipped").style.display = "block";
+    document.getElementById("nfcTrackingInfo").innerHTML = `Tracking: ${stats.nfc_card_tracking_number}`;
+  } else if (stats.nfc_card_ordered) {
+    document.getElementById("nfcCardUpsell").style.display = "none";
+    document.getElementById("nfcCardOrdered").style.display = "block";
+  }
 }
 
 // ========== START POLLING ==========
