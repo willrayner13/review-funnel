@@ -274,32 +274,74 @@ app.post("/restore-session/:slug", async (req, res) => {
 });
 
 // ─── BUSINESS FUNNEL PAGE ─────────────────────────────────────────────────────
+// ─── BUSINESS FUNNEL PAGE (with customisation) ─────────────────────────────
 app.get("/r/:business", async (req, res) => {
-  const slug = req.params.business;
+  let slug = req.params.business;
+  
+  // Check if this is a custom domain request
+  const host = req.get('host');
+  if (host && host !== process.env.BASE_URL?.replace('https://', '')) {
+    // Look up business by custom domain
+    const { data: domainMatch } = await supabase
+      .from("businesses")
+      .select("slug")
+      .eq("funnel_custom_domain", host)
+      .single();
+      
+    if (domainMatch) {
+      slug = domainMatch.slug;
+    }
+  }
+  
   const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (error || !data) return res.status(404).send("Business not found");
 
   await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
 
   const pagePath = path.join(__dirname, "public", "index.html");
-  const page = fs.readFileSync(pagePath, "utf8");
+  let page = fs.readFileSync(pagePath, "utf8");
   const isLapsed = !data.subscription_active;
+  
+  // Get translated content if language is set
+  let headline = data.funnel_headline || `How was your experience at ${data.name}?`;
+  let happyLabel = data.funnel_happy_label || 'Great experience!';
+  let unhappyLabel = data.funnel_unhappy_label || 'Could be better';
+  let thankyouMessage = data.funnel_thankyou_message || 'Thank you for your feedback — it means a lot to us.';
+  
+  // Use translations if available and language not English
+  if (data.funnel_language && data.funnel_language !== 'en') {
+    headline = data.funnel_translated_headline || headline;
+    happyLabel = data.funnel_translated_happy_label || happyLabel;
+    unhappyLabel = data.funnel_translated_unhappy_label || unhappyLabel;
+    thankyouMessage = data.funnel_translated_thankyou_message || thankyouMessage;
+  }
+  
+  // Escape for JavaScript injection
+  const escapeJS = (str) => str ? str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') : '';
 
   res.send(`
     <html>
       <script>
-window.businessName   = "${data.name.replace(/"/g, '\\"')}";
-window.slug           = "${slug}";
-window.reviewLink     = "${(data.review_link || "").replace(/"/g, '\\"')}";
-window.accountLapsed  = ${isLapsed};
-window.industry       = "${(data.industry || 'local business').replace(/"/g, '\\"')}";
-window.service        = "${(req.query.service || '').replace(/"/g, '\\"')}";
+window.businessName        = "${data.name.replace(/"/g, '\\"')}";
+window.slug                = "${slug}";
+window.reviewLink          = "${(data.review_link || "").replace(/"/g, '\\"')}";
+window.accountLapsed       = ${isLapsed};
+window.industry            = "${(data.industry || 'local business').replace(/"/g, '\\"')}";
+window.service             = "${(req.query.service || '').replace(/"/g, '\\"')}";
+// Funnel customisation variables
+window.funnelTemplate      = "${data.funnel_template || 'classic'}";
+window.funnelLogoUrl       = "${(data.funnel_logo_url || '').replace(/"/g, '\\"')}";
+window.funnelAccentColor   = "${data.funnel_accent_color || '#C8A96E'}";
+window.funnelHeadline      = "${escapeJS(headline)}";
+window.funnelHappyLabel    = "${escapeJS(happyLabel)}";
+window.funnelUnhappyLabel  = "${escapeJS(unhappyLabel)}";
+window.funnelThankyouMessage = "${escapeJS(thankyouMessage)}";
+window.funnelLanguage      = "${data.funnel_language || 'en'}";
       </script>
       ${page}
     </html>
   `);
 });
-
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 app.post("/positive", async (req, res) => {
   const { slug } = req.body;
@@ -612,7 +654,16 @@ app.get("/stats/:slug", async (req, res) => {
     current_software: businessData.current_software,
     nfc_card_ordered: businessData.nfc_card_ordered || false,
     nfc_card_tracking_number: businessData.nfc_card_tracking_number || null,
-    recent_events: recentEvents || []
+    recent_events: recentEvents || [],
+     funnel_template: businessData.funnel_template || 'classic',
+  funnel_logo_url: businessData.funnel_logo_url || null,
+  funnel_accent_color: businessData.funnel_accent_color || '#C8A96E',
+  funnel_headline: businessData.funnel_headline || null,
+  funnel_happy_label: businessData.funnel_happy_label || 'Great experience!',
+  funnel_unhappy_label: businessData.funnel_unhappy_label || 'Could be better',
+  funnel_thankyou_message: businessData.funnel_thankyou_message || null,
+  funnel_custom_domain: businessData.funnel_custom_domain || null,
+  funnel_language: businessData.funnel_language || 'en'
   };
 
   let ratingTotal = 0;
@@ -2774,6 +2825,133 @@ app.get("/cron/reputation-scores", async (req, res) => {
   
   res.json({ saved: count });
 });
+
+// ─── UPDATE FUNNEL SETTINGS ──────────────────────────────────────────────
+app.post("/update-funnel", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const {
+    funnel_template,
+    funnel_logo_url,
+    funnel_accent_color,
+    funnel_headline,
+    funnel_happy_label,
+    funnel_unhappy_label,
+    funnel_thankyou_message,
+    funnel_custom_domain,
+    funnel_language
+  } = req.body;
+  
+  const slug = req.session.slug;
+  
+  // Get business data to check plan
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("plan_type, subscription_active")
+    .eq("slug", slug)
+    .single();
+    
+  const isProOrAgency = business?.subscription_active && 
+    (business?.plan_type === "pro" || business?.plan_type === "agency");
+  const isAgency = business?.plan_type === "agency";
+  
+  // Language translation requires Pro/Agency
+  if (funnel_language && funnel_language !== 'en' && !isProOrAgency) {
+    return res.status(403).json({ error: "Language translation requires Pro or Agency plan" });
+  }
+  
+  // Custom domain requires Agency
+  if (funnel_custom_domain && !isAgency) {
+    return res.status(403).json({ error: "Custom domains require Agency plan" });
+  }
+  
+  // Prepare update object
+  const updateData = {};
+  if (funnel_template !== undefined) updateData.funnel_template = funnel_template;
+  if (funnel_logo_url !== undefined) updateData.funnel_logo_url = funnel_logo_url;
+  if (funnel_accent_color !== undefined) updateData.funnel_accent_color = funnel_accent_color;
+  if (funnel_headline !== undefined) updateData.funnel_headline = funnel_headline;
+  if (funnel_happy_label !== undefined) updateData.funnel_happy_label = funnel_happy_label;
+  if (funnel_unhappy_label !== undefined) updateData.funnel_unhappy_label = funnel_unhappy_label;
+  if (funnel_thankyou_message !== undefined) updateData.funnel_thankyou_message = funnel_thankyou_message;
+  if (funnel_custom_domain !== undefined && isAgency) updateData.funnel_custom_domain = funnel_custom_domain;
+  if (funnel_language !== undefined && isProOrAgency) updateData.funnel_language = funnel_language;
+  
+  // If language changed and not English, translate using OpenAI
+  if (funnel_language && funnel_language !== 'en' && isProOrAgency) {
+    const translation = await translateFunnelContent(
+      funnel_headline || business?.name ? `How was your experience at ${business?.name}?` : null,
+      funnel_happy_label || 'Great experience!',
+      funnel_unhappy_label || 'Could be better',
+      funnel_thankyou_message || null,
+      funnel_language
+    );
+    
+    if (translation) {
+      updateData.funnel_translated_headline = translation.headline;
+      updateData.funnel_translated_happy_label = translation.happy_label;
+      updateData.funnel_translated_unhappy_label = translation.unhappy_label;
+      updateData.funnel_translated_thankyou_message = translation.thankyou_message;
+    }
+  } else {
+    // Clear translations if switching back to English
+    updateData.funnel_translated_headline = null;
+    updateData.funnel_translated_happy_label = null;
+    updateData.funnel_translated_unhappy_label = null;
+    updateData.funnel_translated_thankyou_message = null;
+  }
+  
+  const { error } = await supabase
+    .from("businesses")
+    .update(updateData)
+    .eq("slug", slug);
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  
+  res.json({ success: true });
+});
+
+// Helper function for translation
+async function translateFunnelContent(headline, happyLabel, unhappyLabel, thankyouMessage, targetLang) {
+  const langNames = {
+    'es': 'Spanish', 'fr': 'French', 'de': 'German', 'pl': 'Polish',
+    'ur': 'Urdu', 'pa': 'Punjabi', 'ar': 'Arabic', 'it': 'Italian',
+    'pt': 'Portuguese', 'nl': 'Dutch', 'tr': 'Turkish', 'ro': 'Romanian'
+  };
+  
+  const langName = langNames[targetLang] || targetLang;
+  
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `You are a translator for a review funnel tool. Translate the following text into ${langName} (${targetLang}). Keep the tone natural and conversational. Return JSON only: { "headline": "...", "happy_label": "...", "unhappy_label": "...", "thankyou_message": "..." }`
+        },
+        {
+          role: "user",
+          content: JSON.stringify({
+            headline: headline || "How was your experience?",
+            happy_label: happyLabel,
+            unhappy_label: unhappyLabel,
+            thankyou_message: thankyouMessage || "Thank you for your feedback — it means a lot to us."
+          })
+        }
+      ],
+      temperature: 0.5,
+      max_tokens: 300
+    });
+    
+    const cleaned = completion.choices[0].message.content.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch (err) {
+    console.error("Translation error:", err.message);
+    return null;
+  }
+}
 
 // ─── CRON: Mark conversions for sent review requests ──────────────────────────
 app.get("/cron/mark-conversions", async (req, res) => {

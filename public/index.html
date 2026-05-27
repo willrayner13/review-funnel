@@ -7,504 +7,450 @@
   <title>How was your experience?</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <style>
-    html, body { height: 100%; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    /* Base styles (overridden by templates) */
     body {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      min-height: 100vh; padding: 24px;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-
+    
     .funnel-wrap { width: 100%; max-width: 440px; }
-
-    #businessTitle {
-      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600;
-      color: var(--accent); display: block; text-align: center; margin-bottom: 8px;
-      min-height: 1.4rem;
-    }
-
+    #businessTitle { font-size: 0.9rem; text-align: center; margin-bottom: 8px; min-height: 1.4rem; }
+    
     .funnel-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 40px 32px;
-      box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+      border-radius: 24px;
+      padding: 40px 32px;
       text-align: center;
+      transition: all 0.3s ease;
     }
-    .funnel-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(234,231,220,0.18), transparent);
-    }
-
+    
     .funnel-card h2 { font-size: 1.4rem; margin-bottom: 6px; }
-    .funnel-card > div > p { color: var(--cream-dim); font-size: 0.9rem; }
-
+    .funnel-card > div > p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 24px; }
+    
     .funnel-options {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin: 24px 0 4px; width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 24px 0 4px;
+      width: 100%;
     }
-
+    
     .funnel-btn {
-      all: unset; box-sizing: border-box;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      all: unset;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       gap: 10px;
-      background: var(--surface-2); border: 1px solid var(--border);
-      border-radius: 14px; padding: 24px 12px; min-height: 120px; width: 100%;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem; font-weight: 500; color: var(--cream);
-      transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
-      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+      padding: 24px 12px;
+      min-height: 120px;
+      width: 100%;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 14px;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
     .funnel-btn .funnel-icon { font-size: 2.2rem; line-height: 1; }
-    .funnel-btn.positive:hover, .funnel-btn.positive:active {
-      border-color: var(--success); background: rgba(106,158,127,0.1);
-      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    
+    .stars-row { display: flex; justify-content: center; gap: 8px; margin: 20px 0 8px; }
+    #stars span { font-size: 42px; cursor: pointer; transition: transform 0.15s, filter 0.15s; filter: grayscale(1) brightness(0.45); display: inline-block; }
+    #stars span:hover, #stars span.selected { transform: scale(1.2); filter: grayscale(0) brightness(1.1); }
+    
+    .review-prompt { border-radius: 16px; padding: 22px; margin: 16px 0; }
+    .review-prompt button { width: 100%; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    
+    #feedbackBox textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 14px;
+      border-radius: 12px;
+      font-family: inherit;
+      margin: 16px 0 12px;
+      resize: vertical;
     }
-    .funnel-btn.negative:hover, .funnel-btn.negative:active {
-      border-color: rgba(192,103,90,0.6); background: rgba(192,103,90,0.07);
-      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    #feedbackBox button { width: 100%; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+    
+    .powered-by { text-align: center; margin-top: 20px; font-size: 0.7rem; opacity: 0.3; transition: opacity 0.2s; }
+    .powered-by a:hover { opacity: 0.8; }
+    
+    /* Logo styling */
+    .funnel-logo {
+      max-height: 60px;
+      max-width: 200px;
+      margin: 0 auto 20px;
+      display: block;
     }
+    
+    /* ========== TEMPLATE 1: CLASSIC (default) ========== */
+    body.template-classic {
+      background: #1A1A18;
+      color: #EAE7DC;
+    }
+    body.template-classic .funnel-card {
+      background: #242422;
+      border: 1px solid rgba(234,231,220,0.09);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    body.template-classic .funnel-btn {
+      background: #2E2E2B;
+      border: 1px solid rgba(234,231,220,0.09);
+      color: #EAE7DC;
+    }
+    body.template-classic .funnel-btn.positive:hover { border-color: #6A9E7F; background: rgba(106,158,127,0.1); }
+    body.template-classic .funnel-btn.negative:hover { border-color: #C0675A; background: rgba(192,103,90,0.07); }
+    body.template-classic .review-prompt { background: rgba(106,158,127,0.08); border: 1px solid rgba(106,158,127,0.25); }
+    body.template-classic .review-prompt button { background: var(--accent, #C8A96E); color: #1A1A18; border: none; }
+    body.template-classic #feedbackBox textarea { background: #2E2E2B; border: 1px solid rgba(234,231,220,0.09); color: #EAE7DC; }
+    body.template-classic #feedbackBox button { background: var(--accent, #C8A96E); color: #1A1A18; border: none; }
+    
+    /* ========== TEMPLATE 2: BRIGHT ========== */
+    body.template-bright {
+      background: #FFFFFF;
+      color: #1A1A1A;
+    }
+    body.template-bright .funnel-card {
+      background: #FFFFFF;
+      border: 1px solid #E8E8E6;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+    body.template-bright .funnel-btn {
+      background: #F5F5F4;
+      border: 1px solid #E8E8E6;
+      color: #1A1A1A;
+      border-radius: 50px;
+    }
+    body.template-bright .funnel-btn.positive:hover { border-color: #10B981; background: rgba(16,185,129,0.08); }
+    body.template-bright .funnel-btn.negative:hover { border-color: #EF4444; background: rgba(239,68,68,0.05); }
+    body.template-bright .review-prompt { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); border-radius: 20px; }
+    body.template-bright .review-prompt button { background: var(--accent, #10B981); color: white; border: none; border-radius: 50px; }
+    body.template-bright #feedbackBox textarea { background: #F5F5F4; border: 1px solid #E8E8E6; color: #1A1A1A; border-radius: 20px; }
+    body.template-bright #feedbackBox button { background: var(--accent, #EF4444); color: white; border: none; border-radius: 50px; }
+    
+    /* ========== TEMPLATE 3: MEDICAL ========== */
+    body.template-medical {
+      background: #F8FAFC;
+      color: #1E293B;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+    body.template-medical .funnel-card {
+      background: #FFFFFF;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 16px;
+    }
+    body.template-medical .funnel-btn {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      color: #1E293B;
+      border-radius: 12px;
+    }
+    body.template-medical .funnel-btn .funnel-icon { font-size: 1.8rem; }
+    body.template-medical .funnel-btn.positive:hover { border-color: var(--accent, #3B82F6); background: rgba(59,130,246,0.05); }
+    body.template-medical .funnel-btn.negative:hover { border-color: #EF4444; background: rgba(239,68,68,0.03); }
+    body.template-medical .review-prompt { background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; }
+    body.template-medical .review-prompt button { background: var(--accent, #3B82F6); color: white; border: none; border-radius: 12px; }
+    body.template-medical #feedbackBox textarea { background: #FFFFFF; border: 1px solid #E2E8F0; color: #1E293B; border-radius: 12px; }
+    body.template-medical #feedbackBox button { background: var(--accent, #3B82F6); color: white; border: none; border-radius: 12px; }
+    
+    /* ========== TEMPLATE 4: BOLD ========== */
+    body.template-bold {
+      background: var(--accent, #C8A96E);
+      color: #1A1A18;
+    }
+    body.template-bold .funnel-card {
+      background: rgba(0,0,0,0.15);
+      backdrop-filter: blur(20px);
+      border: none;
+      border-radius: 48px;
+      padding: 48px 32px;
+    }
+    body.template-bold .funnel-card h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; }
+    body.template-bold .funnel-options { gap: 16px; }
+    body.template-bold .funnel-btn {
+      background: rgba(255,255,255,0.95);
+      color: #1A1A18;
+      border: none;
+      border-radius: 100px;
+      padding: 28px 16px;
+      font-weight: 700;
+    }
+    body.template-bold .funnel-btn .funnel-icon { font-size: 2.5rem; }
+    body.template-bold .review-prompt { background: rgba(255,255,255,0.15); border: none; border-radius: 32px; }
+    body.template-bold .review-prompt button { background: white; color: #1A1A18; border: none; border-radius: 60px; font-weight: 700; }
+    body.template-bold #feedbackBox textarea { background: rgba(255,255,255,0.9); border: none; border-radius: 24px; color: #1A1A18; }
+    body.template-bold #feedbackBox button { background: white; color: #1A1A18; border: none; border-radius: 60px; font-weight: 700; }
+    
+    /* ========== TEMPLATE 5: LUXURY ========== */
+    body.template-luxury {
+      background: #0A0A0A;
+      color: #F5F0E8;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+    body.template-luxury .funnel-card {
+      background: #111111;
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 32px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+    body.template-luxury .funnel-card h2 { font-family: Georgia, serif; font-weight: normal; letter-spacing: -0.01em; }
+    body.template-luxury .funnel-btn {
+      background: #1A1A18;
+      border: 1px solid rgba(200,169,110,0.25);
+      color: #F5F0E8;
+      border-radius: 16px;
+    }
+    body.template-luxury .funnel-btn .funnel-icon { font-size: 1.8rem; }
+    body.template-luxury .funnel-btn.positive:hover { border-color: var(--accent, #B8965A); background: rgba(184,150,90,0.08); }
+    body.template-luxury .review-prompt { background: rgba(184,150,90,0.06); border: 1px solid rgba(184,150,90,0.2); border-radius: 24px; }
+    body.template-luxury .review-prompt button { background: var(--accent, #B8965A); color: #0A0A0A; border: none; border-radius: 40px; font-weight: 600; }
+    body.template-luxury #feedbackBox textarea { background: #1A1A18; border: 1px solid rgba(200,169,110,0.2); color: #F5F0E8; border-radius: 16px; }
+    body.template-luxury #feedbackBox button { background: var(--accent, #B8965A); color: #0A0A0A; border: none; border-radius: 40px; }
 
-    .stars-hint { font-size: 0.78rem; color: var(--cream-dim); margin-top: 6px; }
-
-    .review-prompt {
-      background: rgba(106,158,127,0.08); border: 1px solid rgba(106,158,127,0.25);
-      border-radius: var(--radius); padding: 22px; margin: 16px 0;
+    /* Mobile responsive */
+    @media (max-width: 480px) {
+      .funnel-card { padding: 32px 20px; }
+      body.template-bold .funnel-card { padding: 40px 20px; }
+      .funnel-btn { min-height: 100px; font-size: 0.9rem; }
+      .funnel-btn .funnel-icon { font-size: 1.8rem; }
+      .stars-row { gap: 4px; }
+      #stars span { font-size: 32px; }
     }
-    .review-prompt p { color: #8EC9A8; font-size: 0.9rem; margin-bottom: 14px; }
-    .review-prompt button {
-      width: 100%; justify-content: center;
-      background: var(--accent); color: #1E1E1C; border-color: var(--accent);
-    }
-    .review-prompt button:hover { background: #D4B87A; }
-
-    /* Countdown ring for lapsed delay */
-    .countdown-wrap {
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-      padding: 8px 0 4px;
-    }
+    
+    /* Countdown ring (keep from original) */
+    .countdown-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 8px 0 4px; }
     .countdown-ring-wrap { position: relative; width: 64px; height: 64px; }
     .countdown-ring-wrap svg { transform: rotate(-90deg); }
-    .countdown-circle-bg { fill: none; stroke: var(--border); stroke-width: 4; }
-    .countdown-circle { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
-    .countdown-number {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--accent);
-    }
-    .countdown-label { font-size: 0.82rem; color: var(--cream-dim); line-height: 1.5; }
-
-    /* Powered by — becomes subtle ad for ReviewLift */
-    .powered-by { text-align: center; margin-top: 20px; font-size: 0.7rem; color: rgba(234,231,220,0.2); }
-    .powered-by a { transition: color 0.2s; }
-    .powered-by a:hover { color: var(--accent); }
-
-    /* Lapsed feedback message */
-    .feedback-unavailable {
-      padding: 20px; text-align: center;
-      background: rgba(234,231,220,0.04); border-radius: var(--radius);
-      border: 1px solid var(--border); margin-top: 8px;
-    }
-    .feedback-unavailable p { font-size: 0.875rem; color: var(--cream-dim); line-height: 1.6; margin: 0; }
-
-    #feedbackBox textarea { margin: 16px 0 12px; min-height: 110px; }
-    #feedbackBox button { width: 100%; justify-content: center; }
-
-
-    /* Back button — appears on steps 2+ to let customers correct mistakes */
-.funnel-back {
-  display: none;
-  background: none !important;
-  border: none !important;
-  cursor: pointer;
-  color: rgba(234,231,220,0.3);
-  font-size: 0.78rem;
-  padding: 0;
-  margin-bottom: 14px;
-  font-family: "DM Sans", sans-serif;
-  transition: color 0.2s;
-  align-items: center;
-  gap: 4px;
-  box-shadow: none !important;
-}
-
-.funnel-back:hover {
-  color: var(--cream-dim);
-  background: none !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-  .preview-banner {
-    background: linear-gradient(135deg, #C8A96E 0%, #D4B87A 100%);
-    color: #1A1A18;
-    text-align: center;
-    padding: 10px 20px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  }
-  .preview-banner a {
-    background: #1A1A18;
-    color: #C8A96E;
-    padding: 8px 18px;
-    border-radius: 40px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .preview-banner a:hover {
-    background: #000;
-    color: #D4B87A;
-    transform: scale(1.02);
-  }
-.preview-banner .banner-close {
-  background: transparent;
-  color: #1A1A18;
-  border: none;
-  padding: 6px 8px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-  margin-left: 4px;
-}
-.preview-banner .banner-close:hover {
-  opacity: 1;
-  background: rgba(0,0,0,0.05);
-}
-  body.has-preview-banner .funnel-wrap {
-    padding-top: 70px;
-  }
-    
-    @media (max-width: 380px) {
-      .funnel-card { padding: 32px 20px; }
-      .funnel-btn { min-height: 100px; font-size: 0.9rem; }
-      .funnel-btn .funnel-icon { font-size: 1.9rem; }
-    }
-
-    @media (max-width: 600px) {
-  body.has-preview-banner {
-    padding-top: 70px !important;
-  }
-  .preview-banner {
-    padding: 10px 16px;
-    font-size: 0.75rem;
-    flex-wrap: wrap;
-    gap: 10px;
-    text-align: center;
-    line-height: 1.4;
-  }
-  .preview-banner span {
-    flex: 1 1 100%;
-    max-width: 280px;
-  }
-  .preview-banner a {
-    padding: 8px 16px;
-    border-radius: 40px;
-    font-size: 0.8rem;
-  }
-}
+    .countdown-circle-bg { fill: none; stroke: rgba(234,231,220,0.2); stroke-width: 4; }
+    .countdown-circle { fill: none; stroke: var(--accent, #C8A96E); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+    .countdown-number { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--accent, #C8A96E); }
+    .countdown-label { font-size: 0.82rem; opacity: 0.7; line-height: 1.5; }
+    .funnel-back { background: none !important; border: none !important; cursor: pointer; color: rgba(234,231,220,0.4); font-size: 0.78rem; padding: 0; margin-bottom: 14px; font-family: inherit; display: none; align-items: center; gap: 4px; }
+    .funnel-back:hover { color: rgba(234,231,220,0.7); }
+    .preview-banner { background: linear-gradient(135deg, #C8A96E 0%, #D4B87A 100%); color: #1A1A18; text-align: center; padding: 10px 20px; font-size: 0.9rem; font-weight: 600; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .preview-banner a { background: #1A1A18; color: #C8A96E; padding: 8px 18px; border-radius: 40px; font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+    body.has-preview-banner { padding-top: 70px; }
   </style>
 </head>
-<body>
+<body id="funnelBody">
 
 <div class="funnel-wrap">
   <span id="businessTitle"></span>
 
   <div class="funnel-card">
-
     <button class="funnel-back" id="backBtn" onclick="goBack()">← Back</button>
-
-    <!-- Step 1: Yes / No -->
+    
+    <img id="funnelLogo" class="funnel-logo" style="display:none;" alt="Logo">
+    
     <div id="mainQuestion">
-      <h2>How was your experience?</h2>
+      <h2 id="mainHeadline">How was your experience?</h2>
       <p>Your feedback helps us improve.</p>
       <div class="funnel-options">
-        <button class="funnel-btn positive" onclick="positive()">
-          <span class="funnel-icon">😊</span>Great!
+        <button class="funnel-btn positive" id="happyBtn" onclick="positive()">
+          <span class="funnel-icon">😊</span>
+          <span id="happyLabel">Great experience!</span>
         </button>
-        <button class="funnel-btn negative" onclick="showFeedback()">
-          <span class="funnel-icon">😕</span>Could be better
+        <button class="funnel-btn negative" id="unhappyBtn" onclick="showFeedback()">
+          <span class="funnel-icon">😕</span>
+          <span id="unhappyLabel">Could be better</span>
         </button>
       </div>
     </div>
 
-    <!-- Step 2: Star rating -->
     <div id="ratingSection" style="display:none">
       <h2>Rate your experience</h2>
       <p>How many stars would you give us?</p>
-      <div class="stars-row">
-        <div id="stars">
-          <span onclick="rate(1)">⭐</span>
-          <span onclick="rate(2)">⭐</span>
-          <span onclick="rate(3)">⭐</span>
-          <span onclick="rate(4)">⭐</span>
-          <span onclick="rate(5)">⭐</span>
-        </div>
-      </div>
+      <div class="stars-row"><div id="stars"><span onclick="rate(1)">⭐</span><span onclick="rate(2)">⭐</span><span onclick="rate(3)">⭐</span><span onclick="rate(4)">⭐</span><span onclick="rate(5)">⭐</span></div></div>
       <p class="stars-hint">Tap a star to rate</p>
     </div>
 
-        <!-- Step 3a: Leave review — NORMAL (active subscription) -->
     <div id="reviewSection" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
       <h2>Thank you!</h2>
-      
-      <!-- Voice note option -->
-      <div id="voiceNoteSection" style="margin: 16px 0;">
-        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:12px;">Or leave a quick voice note instead of typing:</p>
-        <button id="recordBtn" onclick="startRecording()" style="background:var(--surface-2);border:1px solid var(--border);color:var(--cream);padding:12px 20px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.9rem;">
-          🎤 Tap to record (30s max)
-        </button>
-        <span id="recordingTimer" style="display:none;font-size:0.8rem;color:var(--accent);margin-left:10px;">0:00</span>
+      <div id="voiceNoteSection" style="margin:16px 0;">
+        <p style="font-size:0.85rem;opacity:0.7;margin-bottom:12px;">Or leave a quick voice note instead of typing:</p>
+        <button id="recordBtn" onclick="startRecording()" style="padding:12px 20px;border-radius:40px;cursor:pointer;font-size:0.9rem;">🎤 Tap to record (30s max)</button>
+        <span id="recordingTimer" style="display:none;font-size:0.8rem;margin-left:10px;">0:00</span>
         <div id="voiceResult" style="margin-top:12px;"></div>
       </div>
-      
-      <!-- Copy & Go suggestion -->
-      <div id="copyGoSection" style="margin: 16px 0;">
-        <div id="suggestionLoading" style="text-align:center;padding:16px;">
-          <p style="font-size:0.85rem;color:var(--cream-dim);">Writing your review...</p>
-        </div>
+      <div id="copyGoSection" style="margin:16px 0;">
+        <div id="suggestionLoading" style="text-align:center;padding:16px;"><p>Writing your review...</p></div>
         <div id="suggestionReady" style="display:none;">
-          <p style="font-size:0.8rem;color:var(--accent);margin-bottom:8px;">Here's a review you could leave — feel free to edit it:</p>
-          <textarea id="suggestionText" style="min-height:80px;font-size:0.9rem;margin-bottom:10px;"></textarea>
-          <button onclick="copyAndGo()" id="copyGoBtn" style="background:var(--accent);color:#1A1A18;border:none;padding:12px 20px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;width:100%;">
-            📋 Copy & open Google
-          </button>
-          <p style="font-size:0.7rem;color:rgba(234,231,220,0.3);text-align:center;margin-top:8px;">Paste it into Google and hit post — takes 10 seconds</p>
+          <p style="font-size:0.8rem;margin-bottom:8px;">Here's a review you could leave — feel free to edit it:</p>
+          <textarea id="suggestionText" style="min-height:80px;font-size:0.9rem;margin-bottom:10px;width:100%;padding:12px;border-radius:12px;"></textarea>
+          <button onclick="copyAndGo()" id="copyGoBtn" style="padding:12px 20px;border-radius:40px;font-weight:600;cursor:pointer;width:100%;">📋 Copy & open Google</button>
         </div>
       </div>
-      
       <div class="review-prompt">
         <p>Prefer to write your own review?</p>
-        <button onclick="leaveReview()">Leave a Review →</button>
+        <button id="leaveReviewBtn" onclick="leaveReview()">Leave a Review →</button>
       </div>
     </div>
 
-    <!-- Step 3b: Leave review — LAPSED (countdown delay before redirect) -->
     <div id="reviewSectionLapsed" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
       <h2>Thank you!</h2>
-      <p style="color:var(--cream-dim);margin-bottom:20px;">We're redirecting you to leave a review...</p>
-      <div class="countdown-wrap">
-        <div class="countdown-ring-wrap">
-          <svg width="64" height="64" viewBox="0 0 64 64">
-            <circle class="countdown-circle-bg" cx="32" cy="32" r="28"/>
-            <circle class="countdown-circle" id="countdownRing" cx="32" cy="32" r="28"
-              stroke-dasharray="175.9" stroke-dashoffset="0"/>
-          </svg>
-          <div class="countdown-number" id="countdownNum">8</div>
-        </div>
-        <p class="countdown-label">Redirecting in <span id="countdownSec">8</span> seconds<br>
-          <span style="font-size:0.72rem;color:rgba(234,231,220,0.3);">Powered by <a href="/" style="color:var(--accent);text-decoration:none;">ReviewLift</a></span>
-        </p>
-      </div>
+      <p style="opacity:0.7;margin-bottom:20px;">We're redirecting you to leave a review...</p>
+      <div class="countdown-wrap"><div class="countdown-ring-wrap"><svg width="64" height="64" viewBox="0 0 64 64"><circle class="countdown-circle-bg" cx="32" cy="32" r="28"/><circle class="countdown-circle" id="countdownRing" cx="32" cy="32" r="28" stroke-dasharray="175.9" stroke-dashoffset="0"/></svg><div class="countdown-number" id="countdownNum">8</div></div><p class="countdown-label">Redirecting in <span id="countdownSec">8</span> seconds<br><span style="font-size:0.72rem;">Powered by <a href="/" style="text-decoration:none;">ReviewLift</a></span></p></div>
     </div>
 
-    <!-- Step 4a: Negative feedback — NORMAL (active subscription) -->
     <div id="feedbackBox" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">💬</div>
       <h2>We're sorry to hear that</h2>
-      <p style="color:var(--cream-dim);">Your feedback is private — only the business sees it.</p>
+      <p style="opacity:0.7;">Your feedback is private — only the business sees it.</p>
       <textarea id="message" placeholder="What could we have done better?"></textarea>
-      <button onclick="sendFeedback()">Send Feedback</button>
+      <button id="sendFeedbackBtn" onclick="sendFeedback()">Send Feedback</button>
     </div>
 
-    <!-- Step 4b: Negative feedback — LAPSED (graceful degradation) -->
     <div id="feedbackBoxLapsed" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">💬</div>
       <h2>We're sorry to hear that</h2>
-      <div class="feedback-unavailable">
-        <p>Private feedback is temporarily unavailable for this business. To share your experience, please contact them directly.</p>
-      </div>
+      <div class="feedback-unavailable"><p>Private feedback is temporarily unavailable. Please contact the business directly.</p></div>
     </div>
 
   </div>
-
   <p class="powered-by"><a href="/">Powered by ReviewLift</a></p>
 </div>
 
 <script>
-const slug         = window.slug;
-const isLapsed     = window.accountLapsed === true;  // set by server
-const REDIRECT_DELAY = 8; // seconds delay before Google redirect when lapsed
-
-// ── Navigation helpers ────────────────────────────────────────────────────────
+const slug = window.slug;
+const isLapsed = window.accountLapsed === true;
+const REDIRECT_DELAY = 8;
 let _stepHistory = [];
 
-function show(id, pushHistory){
+// Apply template and customisations
+function applyFunnelCustomisation() {
+  const template = window.funnelTemplate || 'classic';
+  const accentColor = window.funnelAccentColor || '#C8A96E';
+  document.body.classList.add(`template-${template}`);
+  document.documentElement.style.setProperty('--accent', accentColor);
+  
+  // Set custom headline
+  if (window.funnelHeadline) document.getElementById('mainHeadline').textContent = window.funnelHeadline;
+  if (window.funnelHappyLabel) document.getElementById('happyLabel').textContent = window.funnelHappyLabel;
+  if (window.funnelUnhappyLabel) document.getElementById('unhappyLabel').textContent = window.funnelUnhappyLabel;
+  if (window.funnelThankyouMessage) {
+    const thankyouMsg = window.funnelThankyouMessage;
+    document.getElementById('copyGoSection').dataset.thankyou = thankyouMsg;
+  }
+  
+  // Logo
+  if (window.funnelLogoUrl && window.funnelLogoUrl.length > 0) {
+    const logo = document.getElementById('funnelLogo');
+    logo.src = window.funnelLogoUrl;
+    logo.style.display = 'block';
+  }
+  
+  // Update buttons with accent color
+  const btns = document.querySelectorAll('.review-prompt button, #feedbackBox button, #copyGoBtn, #recordBtn');
+  btns.forEach(btn => { if(btn) btn.style.backgroundColor = accentColor; });
+}
+
+function show(id, pushHistory) {
   const steps = ["mainQuestion","ratingSection","reviewSection","reviewSectionLapsed","feedbackBox","feedbackBoxLapsed"];
-  // If pushing to history, save current visible step first
   if(pushHistory){
     const current = steps.find(s => { const el = document.getElementById(s); return el && el.style.display !== "none"; });
     if(current) _stepHistory.push(current);
   }
   steps.forEach(s => { document.getElementById(s).style.display = s === id ? "block" : "none"; });
-  // Show/hide back button
   const backBtn = document.getElementById("backBtn");
   if(backBtn) backBtn.style.display = id === "mainQuestion" ? "none" : "flex";
 }
 
-function goBack(){
-  if(_stepHistory.length > 0){
-    const prev = _stepHistory.pop();
-    show(prev, false);
-  }
-}
+function goBack(){ if(_stepHistory.length > 0) show(_stepHistory.pop(), false); }
 
-// ── Step 1: Positive ──────────────────────────────────────────────────────────
 function positive(){
   fetch("/positive",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
   show("ratingSection", true);
 }
+function showFeedback(){ show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", true); }
 
-// ── Step 1: Negative ──────────────────────────────────────────────────────────
-function showFeedback(){
-  show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", true);
-}
-
-// ── Step 2: Rating ────────────────────────────────────────────────────────────
 function rate(stars){
   fetch("/rating",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,rating:stars})});
   if(stars >= 4){
-    // Good rating — go to review prompt (with or without delay)
-    if(isLapsed){
-      show("reviewSectionLapsed", true);
-      startCountdown();
-    } else {
-      show("reviewSection", true);
-    }
-  } else {
-    show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", true);
-  }
+    if(isLapsed){ show("reviewSectionLapsed", true); startCountdown(); }
+    else { show("reviewSection", true); loadSuggestion(stars); }
+  } else { show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", true); }
 }
 
-// ── Step 3: Leave review (active subscription) ────────────────────────────────
 function leaveReview(){
   fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
   window.location.href = window.reviewLink;
 }
 
-// ── Step 3b: Countdown then redirect (lapsed) ────────────────────────────────
 function startCountdown(){
-  const circumference = 175.9; // 2πr where r=28
-  const ring   = document.getElementById("countdownRing");
-  const numEl  = document.getElementById("countdownNum");
-  const secEl  = document.getElementById("countdownSec");
-  let   remaining = REDIRECT_DELAY;
-
-  // Set initial state
+  const circumference = 175.9;
+  const ring = document.getElementById("countdownRing");
+  const numEl = document.getElementById("countdownNum");
+  const secEl = document.getElementById("countdownSec");
+  let remaining = REDIRECT_DELAY;
   ring.style.strokeDashoffset = "0";
-
   const interval = setInterval(() => {
     remaining--;
     numEl.textContent = remaining;
     secEl.textContent = remaining;
-
-    // Animate the ring draining
-    const progress   = (REDIRECT_DELAY - remaining) / REDIRECT_DELAY;
+    const progress = (REDIRECT_DELAY - remaining) / REDIRECT_DELAY;
     ring.style.strokeDashoffset = String(circumference * progress);
-
     if(remaining <= 0){
       clearInterval(interval);
-      // Track the click then redirect
       fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
       window.location.href = window.reviewLink;
     }
   }, 1000);
 }
 
-// ── Step 4: Send feedback (active subscription only) ─────────────────────────
 function sendFeedback(){
   const message = document.getElementById("message").value.trim();
   if(!message) return;
   const btn = document.querySelector('#feedbackBox button');
   btn.disabled = true; btn.textContent = "Sending...";
   fetch("/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({business:slug,message})})
-    .then(() => {
-      document.getElementById("feedbackBox").innerHTML = `
-        <div style="font-size:2.4rem;margin-bottom:12px;">✅</div>
-        <h2>Feedback received</h2>
-        <p style="color:var(--cream-dim);">Thank you — we appreciate you taking the time.</p>
-      `;
-    });
+    .then(() => { document.getElementById("feedbackBox").innerHTML = `<div style="font-size:2.4rem;margin-bottom:12px;">✅</div><h2>Feedback received</h2><p>Thank you — we appreciate you taking the time.</p>`; });
 }
 
-  (function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isPreview = urlParams.get('preview') === 'true';
-    if (isPreview) {
-      document.body.classList.add('has-preview-banner');
-      const banner = document.createElement('div');
-      banner.className = 'preview-banner';
-      banner.innerHTML = `
-        <span>👁️ <strong>Preview Mode</strong> — See exactly what your customers would experience</span>
-        <div style="display: flex; gap: 12px;">
-          <a href="/admin">✨ Get this for your business →</a>
-          <span class="banner-close" onclick="this.closest('.preview-banner').style.display='none'; document.body.classList.remove('has-preview-banner');" aria-label="Close preview banner">✕</span>
-        </div>
-      `;
-      document.body.prepend(banner);
-    }
-  })();
-
-  // ── Voice note recording ──────────────────────────────────────────────────────
-let mediaRecorder;
-let audioChunks = [];
-let recordingTimer;
-let seconds = 0;
-
+// Voice recording
+let mediaRecorder, audioChunks, recordingTimer, seconds = 0;
 async function startRecording() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
     audioChunks = [];
-    
-    mediaRecorder.ondataavailable = e => {
-      if (e.data.size > 0) audioChunks.push(e.data);
-    };
-    
+    mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
     mediaRecorder.onstop = async () => {
       stream.getTracks().forEach(t => t.stop());
       const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
       await transcribeAudio(audioBlob);
     };
-    
     mediaRecorder.start();
     document.getElementById("recordBtn").textContent = "⏹ Stop recording";
     document.getElementById("recordBtn").onclick = stopRecording;
     document.getElementById("recordingTimer").style.display = "inline";
-    
     seconds = 0;
     recordingTimer = setInterval(() => {
       seconds++;
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
       document.getElementById("recordingTimer").textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
-      if (seconds >= 30) stopRecording();
+      if(seconds >= 30) stopRecording();
     }, 1000);
-    
-  } catch(e) {
-    document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed. Please allow it and try again.</p>';
-  }
+  } catch(e) { document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed.</p>'; }
 }
-
 function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state === "recording") {
+  if(mediaRecorder && mediaRecorder.state === "recording"){
     mediaRecorder.stop();
     clearInterval(recordingTimer);
     document.getElementById("recordBtn").textContent = "Processing...";
@@ -512,95 +458,68 @@ function stopRecording() {
     document.getElementById("recordingTimer").style.display = "none";
   }
 }
-
 async function transcribeAudio(blob) {
   const formData = new FormData();
   formData.append('audio', blob, 'recording.webm');
-  
   try {
-    const res = await fetch("/transcribe-voice/" + window.slug, {
-      method: "POST",
-      body: formData
-    });
+    const res = await fetch("/transcribe-voice/" + window.slug, { method: "POST", body: formData });
     const data = await res.json();
-    
-    if (data.sentiment === "positive") {
-      document.getElementById("voiceResult").innerHTML = `
-        <div style="background:rgba(106,158,127,0.08);border:1px solid rgba(106,158,127,0.2);border-radius:8px;padding:14px;margin-bottom:12px;">
-          <p style="color:#8EC9A8;font-size:0.85rem;margin-bottom:8px;">We heard: "${data.transcription}"</p>
-          <button onclick="leaveReview()" style="background:var(--accent);color:#1A1A18;border:none;padding:10px 20px;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;width:100%;">
-            Post as Google review →
-          </button>
-        </div>`;
+    if(data.sentiment === "positive"){
+      document.getElementById("voiceResult").innerHTML = `<div style="padding:14px;border-radius:12px;margin-bottom:12px;"><p>We heard: "${data.transcription}"</p><button onclick="leaveReview()" style="padding:10px 20px;border-radius:40px;cursor:pointer;width:100%;">Post as Google review →</button></div>`;
     } else {
-      document.getElementById("voiceResult").innerHTML = `
-        <p style="color:var(--cream-dim);font-size:0.85rem;">Thank you — your feedback has been saved privately and will help us improve.</p>`;
-      // Hide the review button since feedback was negative
+      document.getElementById("voiceResult").innerHTML = `<p>Thank you — your feedback has been saved privately.</p>`;
       document.querySelector(".review-prompt").style.display = "none";
     }
-  } catch(e) {
-    document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Could not process audio. Please try again.</p>';
-  }
-  
+  } catch(e) { document.getElementById("voiceResult").innerHTML = '<p>Could not process audio. Please try again.</p>'; }
   document.getElementById("recordBtn").style.display = "none";
 }
 
-// ── Copy & Go review suggestion ───────────────────────────────────────────────
 let selectedRating = 0;
-
-// Modify the rate() function to store the rating
 const originalRate = rate;
-rate = function(stars) {
+rate = function(stars){
   selectedRating = stars;
   originalRate(stars);
-  if (stars >= 4 && !isLapsed) {
-    loadSuggestion(stars);
-  }
+  if(stars >= 4 && !isLapsed) loadSuggestion(stars);
 };
-
-async function loadSuggestion(stars) {
+async function loadSuggestion(stars){
   try {
-    const res = await fetch("/suggest-review/" + window.slug, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rating: stars, service: window.service || null })
-    });
+    const res = await fetch("/suggest-review/" + window.slug, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rating: stars, service: window.service || null }) });
     const data = await res.json();
-    
-    if (data.suggestion) {
+    if(data.suggestion){
       document.getElementById("suggestionLoading").style.display = "none";
       document.getElementById("suggestionReady").style.display = "block";
       document.getElementById("suggestionText").value = data.suggestion;
     }
-  } catch(e) {
-    document.getElementById("suggestionLoading").innerHTML = 
-      '<p style="font-size:0.85rem;color:var(--cream-dim);">Ready to leave a review below.</p>';
-  }
+  } catch(e) { document.getElementById("suggestionLoading").innerHTML = '<p>Ready to leave a review below.</p>'; }
 }
-
-function copyAndGo() {
+function copyAndGo(){
   const text = document.getElementById("suggestionText").value;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById("copyGoBtn");
     btn.textContent = "✓ Copied! Google is opening...";
     btn.disabled = true;
-    btn.style.opacity = "0.7";
-    setTimeout(() => {
-      fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug: window.slug})});
-      window.open(window.reviewLink, "_blank");
-    }, 600);
-  }).catch(() => {
-    // Fallback
-    const textarea = document.getElementById("suggestionText");
-    textarea.select();
-    document.execCommand("copy");
-    window.open(window.reviewLink, "_blank");
+    setTimeout(() => { fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug: window.slug})}); window.open(window.reviewLink, "_blank"); }, 600);
   });
 }
 
-// ── Set business name ─────────────────────────────────────────────────────────
 const t = document.getElementById("businessTitle");
 if(t && window.businessName) t.innerText = window.businessName;
+
+// Preview banner
+(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPreview = urlParams.get('preview') === 'true';
+  if(isPreview){
+    document.body.classList.add('has-preview-banner');
+    const banner = document.createElement('div');
+    banner.className = 'preview-banner';
+    banner.innerHTML = `<span>👁️ <strong>Preview Mode</strong> — This is how your customers would see your funnel</span><div style="display:flex;gap:12px;"><a href="/admin">✨ Get this for your business →</a><span class="banner-close" onclick="this.closest('.preview-banner').style.display='none'; document.body.classList.remove('has-preview-banner');" style="cursor:pointer;">✕</span></div>`;
+    document.body.prepend(banner);
+  }
+})();
+
+// Apply funnel customisation on load
+applyFunnelCustomisation();
 </script>
 </body>
 </html>
