@@ -13,7 +13,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
-    /* Base styles (overridden by templates) */
     body {
       font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       min-height: 100vh;
@@ -38,38 +37,10 @@
     .funnel-card h2 { font-size: 1.4rem; margin-bottom: 6px; }
     .funnel-card > div > p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 24px; }
     
-    .funnel-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 24px 0 4px;
-      width: 100%;
-    }
+    #mainQuestion > p { font-size: 0.85rem; opacity: 0.6; margin-top: -8px; }
     
-    .funnel-btn {
-      all: unset;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 24px 12px;
-      min-height: 120px;
-      width: 100%;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 500;
-      border-radius: 14px;
-      transition: all 0.2s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .funnel-btn .funnel-icon { font-size: 2.2rem; line-height: 1; }
-    
-    .stars-row { display: flex; justify-content: center; gap: 8px; margin: 20px 0 8px; }
-    #stars span { font-size: 42px; cursor: pointer; transition: transform 0.15s, filter 0.15s; filter: grayscale(1) brightness(0.45); display: inline-block; }
-    #stars span:hover, #stars span.selected { transform: scale(1.2); filter: grayscale(0) brightness(1.1); }
+    #starRating { display: flex; gap: 12px; justify-content: center; margin: 24px 0; cursor: pointer; }
+    #starRating span { font-size: 44px; filter: grayscale(1) brightness(0.5); transition: all 0.15s; display: inline-block; }
     
     .review-prompt { border-radius: 16px; padding: 22px; margin: 16px 0; }
     .review-prompt button { width: 100%; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
@@ -88,7 +59,6 @@
     .powered-by { text-align: center; margin-top: 20px; font-size: 0.7rem; opacity: 0.3; transition: opacity 0.2s; }
     .powered-by a:hover { opacity: 0.8; }
     
-    /* Logo styling */
     .funnel-logo {
       max-height: 60px;
       max-width: 200px;
@@ -106,13 +76,6 @@
       border: 1px solid rgba(234,231,220,0.09);
       box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
-    body.template-classic .funnel-btn {
-      background: #2E2E2B;
-      border: 1px solid rgba(234,231,220,0.09);
-      color: #EAE7DC;
-    }
-    body.template-classic .funnel-btn.positive:hover { border-color: #6A9E7F; background: rgba(106,158,127,0.1); }
-    body.template-classic .funnel-btn.negative:hover { border-color: #C0675A; background: rgba(192,103,90,0.07); }
     body.template-classic .review-prompt { background: rgba(106,158,127,0.08); border: 1px solid rgba(106,158,127,0.25); }
     body.template-classic .review-prompt button { background: var(--accent, #C8A96E); color: #1A1A18; border: none; }
     body.template-classic #feedbackBox textarea { background: #2E2E2B; border: 1px solid rgba(234,231,220,0.09); color: #EAE7DC; }
@@ -128,14 +91,6 @@
       border: 1px solid #E8E8E6;
       box-shadow: 0 20px 40px rgba(0,0,0,0.08);
     }
-    body.template-bright .funnel-btn {
-      background: #F5F5F4;
-      border: 1px solid #E8E8E6;
-      color: #1A1A1A;
-      border-radius: 50px;
-    }
-    body.template-bright .funnel-btn.positive:hover { border-color: #10B981; background: rgba(16,185,129,0.08); }
-    body.template-bright .funnel-btn.negative:hover { border-color: #EF4444; background: rgba(239,68,68,0.05); }
     body.template-bright .review-prompt { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); border-radius: 20px; }
     body.template-bright .review-prompt button { background: var(--accent, #10B981); color: white; border: none; border-radius: 50px; }
     body.template-bright #feedbackBox textarea { background: #F5F5F4; border: 1px solid #E8E8E6; color: #1A1A1A; border-radius: 20px; }
@@ -153,15 +108,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       border-radius: 16px;
     }
-    body.template-medical .funnel-btn {
-      background: #FFFFFF;
-      border: 1px solid #E2E8F0;
-      color: #1E293B;
-      border-radius: 12px;
-    }
-    body.template-medical .funnel-btn .funnel-icon { font-size: 1.8rem; }
-    body.template-medical .funnel-btn.positive:hover { border-color: var(--accent, #3B82F6); background: rgba(59,130,246,0.05); }
-    body.template-medical .funnel-btn.negative:hover { border-color: #EF4444; background: rgba(239,68,68,0.03); }
     body.template-medical .review-prompt { background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; }
     body.template-medical .review-prompt button { background: var(--accent, #3B82F6); color: white; border: none; border-radius: 12px; }
     body.template-medical #feedbackBox textarea { background: #FFFFFF; border: 1px solid #E2E8F0; color: #1E293B; border-radius: 12px; }
@@ -180,16 +126,6 @@
       padding: 48px 32px;
     }
     body.template-bold .funnel-card h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; }
-    body.template-bold .funnel-options { gap: 16px; }
-    body.template-bold .funnel-btn {
-      background: rgba(255,255,255,0.95);
-      color: #1A1A18;
-      border: none;
-      border-radius: 100px;
-      padding: 28px 16px;
-      font-weight: 700;
-    }
-    body.template-bold .funnel-btn .funnel-icon { font-size: 2.5rem; }
     body.template-bold .review-prompt { background: rgba(255,255,255,0.15); border: none; border-radius: 32px; }
     body.template-bold .review-prompt button { background: white; color: #1A1A18; border: none; border-radius: 60px; font-weight: 700; }
     body.template-bold #feedbackBox textarea { background: rgba(255,255,255,0.9); border: none; border-radius: 24px; color: #1A1A18; }
@@ -208,14 +144,6 @@
       box-shadow: 0 30px 60px rgba(0,0,0,0.5);
     }
     body.template-luxury .funnel-card h2 { font-family: Georgia, serif; font-weight: normal; letter-spacing: -0.01em; }
-    body.template-luxury .funnel-btn {
-      background: #1A1A18;
-      border: 1px solid rgba(200,169,110,0.25);
-      color: #F5F0E8;
-      border-radius: 16px;
-    }
-    body.template-luxury .funnel-btn .funnel-icon { font-size: 1.8rem; }
-    body.template-luxury .funnel-btn.positive:hover { border-color: var(--accent, #B8965A); background: rgba(184,150,90,0.08); }
     body.template-luxury .review-prompt { background: rgba(184,150,90,0.06); border: 1px solid rgba(184,150,90,0.2); border-radius: 24px; }
     body.template-luxury .review-prompt button { background: var(--accent, #B8965A); color: #0A0A0A; border: none; border-radius: 40px; font-weight: 600; }
     body.template-luxury #feedbackBox textarea { background: #1A1A18; border: 1px solid rgba(200,169,110,0.2); color: #F5F0E8; border-radius: 16px; }
@@ -225,13 +153,11 @@
     @media (max-width: 480px) {
       .funnel-card { padding: 32px 20px; }
       body.template-bold .funnel-card { padding: 40px 20px; }
-      .funnel-btn { min-height: 100px; font-size: 0.9rem; }
-      .funnel-btn .funnel-icon { font-size: 1.8rem; }
-      .stars-row { gap: 4px; }
-      #stars span { font-size: 32px; }
+      #starRating { gap: 8px; }
+      #starRating span { font-size: 36px; }
     }
     
-    /* Countdown ring (keep from original) */
+    /* Countdown ring */
     .countdown-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 8px 0 4px; }
     .countdown-ring-wrap { position: relative; width: 64px; height: 64px; }
     .countdown-ring-wrap svg { transform: rotate(-90deg); }
@@ -258,24 +184,14 @@
     
     <div id="mainQuestion">
       <h2 id="mainHeadline">How was your experience?</h2>
-      <p>Your feedback helps us improve.</p>
-      <div class="funnel-options">
-        <button class="funnel-btn positive" id="happyBtn" onclick="positive()">
-          <span class="funnel-icon">😊</span>
-          <span id="happyLabel">Great experience!</span>
-        </button>
-        <button class="funnel-btn negative" id="unhappyBtn" onclick="showFeedback()">
-          <span class="funnel-icon">😕</span>
-          <span id="unhappyLabel">Could be better</span>
-        </button>
+      <p>Tap a star to get started</p>
+      <div id="starRating">
+        <span data-star="1">⭐</span>
+        <span data-star="2">⭐</span>
+        <span data-star="3">⭐</span>
+        <span data-star="4">⭐</span>
+        <span data-star="5">⭐</span>
       </div>
-    </div>
-
-    <div id="ratingSection" style="display:none">
-      <h2>Rate your experience</h2>
-      <p>How many stars would you give us?</p>
-      <div class="stars-row"><div id="stars"><span onclick="rate(1)">⭐</span><span onclick="rate(2)">⭐</span><span onclick="rate(3)">⭐</span><span onclick="rate(4)">⭐</span><span onclick="rate(5)">⭐</span></div></div>
-      <p class="stars-hint">Tap a star to rate</p>
     </div>
 
     <div id="reviewSection" style="display:none">
@@ -332,20 +248,19 @@ const isLapsed = window.accountLapsed === true;
 const REDIRECT_DELAY = 8;
 let _stepHistory = [];
 
-// Apply template and customisations
+// ========== FUNNEL CUSTOMISATION ==========
 function applyFunnelCustomisation() {
   const template = window.funnelTemplate || 'classic';
   const accentColor = window.funnelAccentColor || '#C8A96E';
   document.body.classList.add(`template-${template}`);
   document.documentElement.style.setProperty('--accent', accentColor);
   
-  // Set custom headline
-  if (window.funnelHeadline) document.getElementById('mainHeadline').textContent = window.funnelHeadline;
-  if (window.funnelHappyLabel) document.getElementById('happyLabel').textContent = window.funnelHappyLabel;
-  if (window.funnelUnhappyLabel) document.getElementById('unhappyLabel').textContent = window.funnelUnhappyLabel;
-  if (window.funnelThankyouMessage) {
-    const thankyouMsg = window.funnelThankyouMessage;
-    document.getElementById('copyGoSection').dataset.thankyou = thankyouMsg;
+  // Set headline
+  const headlineEl = document.getElementById('mainHeadline');
+  if (window.funnelHeadline && window.funnelHeadline.trim() !== '') {
+    headlineEl.textContent = window.funnelHeadline;
+  } else if (window.businessName) {
+    headlineEl.textContent = `How was your experience at ${window.businessName}?`;
   }
   
   // Logo
@@ -360,8 +275,9 @@ function applyFunnelCustomisation() {
   btns.forEach(btn => { if(btn) btn.style.backgroundColor = accentColor; });
 }
 
+// ========== NAVIGATION ==========
 function show(id, pushHistory) {
-  const steps = ["mainQuestion","ratingSection","reviewSection","reviewSectionLapsed","feedbackBox","feedbackBoxLapsed"];
+  const steps = ["mainQuestion","reviewSection","reviewSectionLapsed","feedbackBox","feedbackBoxLapsed"];
   if(pushHistory){
     const current = steps.find(s => { const el = document.getElementById(s); return el && el.style.display !== "none"; });
     if(current) _stepHistory.push(current);
@@ -373,25 +289,67 @@ function show(id, pushHistory) {
 
 function goBack(){ if(_stepHistory.length > 0) show(_stepHistory.pop(), false); }
 
-function positive(){
-  fetch("/positive",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
-  show("ratingSection", true);
-}
 function showFeedback(){ show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", true); }
 
-function rate(stars){
-  fetch("/rating",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,rating:stars})});
-  if(stars >= 4){
-    if(isLapsed){ show("reviewSectionLapsed", true); startCountdown(); }
-    else { show("reviewSection", true); loadSuggestion(stars); }
-  } else { show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", true); }
-}
+// ========== STAR RATING ==========
+(function initStars() {
+  const stars = document.querySelectorAll('#starRating span');
+  stars.forEach(star => {
+    star.addEventListener('mouseover', () => {
+      const val = parseInt(star.dataset.star);
+      stars.forEach(s => {
+        const sVal = parseInt(s.dataset.star);
+        s.style.filter = sVal <= val ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
+        s.style.transform = sVal <= val ? 'scale(1.15)' : 'scale(1)';
+      });
+    });
+    star.addEventListener('mouseout', () => {
+      stars.forEach(s => {
+        s.style.filter = 'grayscale(1) brightness(0.5)';
+        s.style.transform = 'scale(1)';
+      });
+    });
+    star.addEventListener('click', async () => {
+      const rating = parseInt(star.dataset.star);
+      // Freeze stars at selected rating
+      stars.forEach(s => {
+        const sVal = parseInt(s.dataset.star);
+        s.style.filter = sVal <= rating ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
+        s.style.transform = sVal <= rating ? 'scale(1.15)' : 'scale(1)';
+        s.style.pointerEvents = 'none';
+      });
+      
+      // POST rating to backend
+      await fetch('/rating', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ slug: window.slug, rating })
+      });
+      
+      document.getElementById("mainQuestion").style.display = "none";
+      
+      if (rating >= 4) {
+        await fetch('/positive', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ slug: window.slug })
+        });
+        if (isLapsed) { show('reviewSectionLapsed', true); startCountdown(); }
+        else { show('reviewSection', true); loadSuggestion(rating); }
+      } else {
+        show(isLapsed ? 'feedbackBoxLapsed' : 'feedbackBox', true);
+      }
+    });
+  });
+})();
 
+// ========== LEAVE REVIEW ==========
 function leaveReview(){
   fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
   window.location.href = window.reviewLink;
 }
 
+// ========== COUNTDOWN (LAPSED ACCOUNTS) ==========
 function startCountdown(){
   const circumference = 175.9;
   const ring = document.getElementById("countdownRing");
@@ -413,6 +371,7 @@ function startCountdown(){
   }, 1000);
 }
 
+// ========== FEEDBACK ==========
 function sendFeedback(){
   const message = document.getElementById("message").value.trim();
   if(!message) return;
@@ -422,7 +381,7 @@ function sendFeedback(){
     .then(() => { document.getElementById("feedbackBox").innerHTML = `<div style="font-size:2.4rem;margin-bottom:12px;">✅</div><h2>Feedback received</h2><p>Thank you — we appreciate you taking the time.</p>`; });
 }
 
-// Voice recording
+// ========== VOICE RECORDING ==========
 let mediaRecorder, audioChunks, recordingTimer, seconds = 0;
 async function startRecording() {
   try {
@@ -474,13 +433,7 @@ async function transcribeAudio(blob) {
   document.getElementById("recordBtn").style.display = "none";
 }
 
-let selectedRating = 0;
-const originalRate = rate;
-rate = function(stars){
-  selectedRating = stars;
-  originalRate(stars);
-  if(stars >= 4 && !isLapsed) loadSuggestion(stars);
-};
+// ========== AI REVIEW SUGGESTION ==========
 async function loadSuggestion(stars){
   try {
     const res = await fetch("/suggest-review/" + window.slug, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rating: stars, service: window.service || null }) });
@@ -492,6 +445,7 @@ async function loadSuggestion(stars){
     }
   } catch(e) { document.getElementById("suggestionLoading").innerHTML = '<p>Ready to leave a review below.</p>'; }
 }
+
 function copyAndGo(){
   const text = document.getElementById("suggestionText").value;
   navigator.clipboard.writeText(text).then(() => {
@@ -502,6 +456,7 @@ function copyAndGo(){
   });
 }
 
+// ========== INIT ==========
 const t = document.getElementById("businessTitle");
 if(t && window.businessName) t.innerText = window.businessName;
 
@@ -518,38 +473,30 @@ if(t && window.businessName) t.innerText = window.businessName;
   }
 })();
 
-// Apply funnel customisation on load
 applyFunnelCustomisation();
 
-
-
-
+// ========== FUNNEL STUDIO LIVE PREVIEW ==========
 window.addEventListener('message', (event) => {
-  // Only accept messages from the same origin
   if (event.origin !== window.location.origin) return;
   
   if (event.data?.type === 'FUNNEL_PREVIEW_UPDATE') {
     const s = event.data.settings;
     
-    // Update accent colour
+    // Accent colour
     if (s.accentColor) {
       document.documentElement.style.setProperty('--accent', s.accentColor);
-      // Also update any buttons that use accent colour directly
       const accentButtons = document.querySelectorAll('.review-prompt button, #feedbackBox button, #copyGoBtn, #recordBtn');
-      accentButtons.forEach(btn => {
-        if (btn) btn.style.backgroundColor = s.accentColor;
-      });
+      accentButtons.forEach(btn => { if (btn) btn.style.backgroundColor = s.accentColor; });
     }
     
-    // Update template class
+    // Template
     if (s.template) {
-      // Remove existing template classes
       const templateClasses = ['template-classic', 'template-bright', 'template-medical', 'template-bold', 'template-luxury'];
       templateClasses.forEach(cls => document.body.classList.remove(cls));
       document.body.classList.add(`template-${s.template}`);
     }
     
-    // Update headline
+    // Headline
     const headlineEl = document.getElementById('mainHeadline');
     if (headlineEl && s.headline && s.headline.trim() !== '') {
       headlineEl.textContent = s.headline;
@@ -557,23 +504,7 @@ window.addEventListener('message', (event) => {
       headlineEl.textContent = `How was your experience at ${window.businessName}?`;
     }
     
-    // Update happy button label
-    const happyBtn = document.getElementById('happyLabel');
-    if (happyBtn && s.happyLabel && s.happyLabel.trim() !== '') {
-      happyBtn.textContent = s.happyLabel;
-    } else if (happyBtn) {
-      happyBtn.textContent = 'Great experience!';
-    }
-    
-    // Update unhappy button label
-    const unhappyBtn = document.getElementById('unhappyLabel');
-    if (unhappyBtn && s.unhappyLabel && s.unhappyLabel.trim() !== '') {
-      unhappyBtn.textContent = s.unhappyLabel;
-    } else if (unhappyBtn) {
-      unhappyBtn.textContent = 'Could be better';
-    }
-    
-    // Update logo
+    // Logo
     if (s.logoUrl && s.logoUrl.trim() !== '') {
       let logoEl = document.querySelector('.funnel-logo');
       if (!logoEl) {
@@ -586,45 +517,31 @@ window.addEventListener('message', (event) => {
       }
       if (logoEl) logoEl.src = s.logoUrl;
     } else {
-      // Remove logo if URL is empty
       const logoEl = document.querySelector('.funnel-logo');
       if (logoEl) logoEl.remove();
     }
   }
 });
 
-// Also listen for initial load to apply any custom settings from window variables
+// DOMContentLoaded fallback
 document.addEventListener('DOMContentLoaded', () => {
-  // Apply template from window variable if set
   if (window.funnelTemplate) {
     const templateClasses = ['template-classic', 'template-bright', 'template-medical', 'template-bold', 'template-luxury'];
     templateClasses.forEach(cls => document.body.classList.remove(cls));
     document.body.classList.add(`template-${window.funnelTemplate}`);
   }
   
-  // Apply accent colour
   if (window.funnelAccentColor) {
     document.documentElement.style.setProperty('--accent', window.funnelAccentColor);
   }
   
-  // Apply headline
-  if (window.funnelHeadline && window.funnelHeadline.trim() !== '') {
-    const headlineEl = document.getElementById('mainHeadline');
-    if (headlineEl) headlineEl.textContent = window.funnelHeadline;
+  const headlineEl = document.getElementById('mainHeadline');
+  if (window.funnelHeadline && window.funnelHeadline.trim() !== '' && headlineEl) {
+    headlineEl.textContent = window.funnelHeadline;
+  } else if (headlineEl && window.businessName) {
+    headlineEl.textContent = `How was your experience at ${window.businessName}?`;
   }
   
-  // Apply button labels
-  if (window.funnelHappyLabel && window.funnelHappyLabel.trim() !== '') {
-    const happyLabel = document.getElementById('happyLabel');
-    if (happyLabel) happyLabel.textContent = window.funnelHappyLabel;
-  }
-  
-  if (window.funnelUnhappyLabel && window.funnelUnhappyLabel.trim() !== '') {
-    const unhappyLabel = document.getElementById('unhappyLabel');
-    if (unhappyLabel) unhappyLabel.textContent = window.funnelUnhappyLabel;
-  }
-  
-  // Apply logo
   if (window.funnelLogoUrl && window.funnelLogoUrl.trim() !== '') {
     let logoEl = document.querySelector('.funnel-logo');
     if (!logoEl) {
@@ -638,7 +555,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoEl) logoEl.src = window.funnelLogoUrl;
   }
 });
-
 </script>
 </body>
 </html>
