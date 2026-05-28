@@ -2877,6 +2877,410 @@ app.get("/cron/reputation-scores", async (req, res) => {
   res.json({ saved: count });
 });
 
+// ─── AGENCY CLIENT MANAGEMENT ──────────────────────────────────────────────
+
+// Get all clients for this agency
+app.get("/agency/clients", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const agencySlug = req.session.slug;
+  
+  // Verify agency plan
+  const { data: agency } = await supabase
+    .from("businesses")
+    .select("plan_type, subscription_active, agency_name")
+    .eq("slug", agencySlug)
+    .single();
+    
+  if (!agency || agency.plan_type !== "agency" || !agency.subscription_active) {
+    return res.status(403).json({ error: "Agency plan required" });
+  }
+  
+  // Get all clients with their stats
+  const { data: clients, error } = await supabase
+    .from("agency_clients")
+    .select(`
+      client_slug,
+      status,
+      created_at,
+      businesses:client_slug (
+        name,
+        email,
+        plan_type,
+        subscription_active,
+        created_at
+      )
+    `)
+    .eq("agency_slug", agencySlug)
+    .order("created_at", { ascending: false });
+    
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  
+  // Get stats for each client
+  const clientsWithStats = await Promise.all((clients || []).map(async (client) => {
+    const slug = client.client_slug;
+    const biz = client.businesses;
+    
+    // Get recent stats
+    const { data: events } = await supabase
+      .from("events")
+      .select("event_type, created_at")
+      .eq("business_slug", slug)
+      .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+      
+    const positiveCount = (events || []).filter(e => e.event_type === "positive").length;
+    const visitCount = (events || []).filter(e => e.event_type === "visit").length;
+    const conversionRate = visitCount > 0 ? Math.round((positiveCount / visitCount) * 100) : 0;
+    
+    return {
+      slug: slug,
+      name: biz?.name || slug,
+      email: biz?.email,
+      plan: biz?.plan_type || "starter",
+      status: client.status,
+      active_subscription: biz?.subscription_active || false,
+      joined: client.created_at,
+      positive_count: positiveCount,
+      conversion_rate: conversionRate
+    };
+  }));
+  
+  // Get usage stats
+  const { count: totalClients } = await supabase
+    .from("agency_clients")
+    .select("*", { count: "exact", head: true })
+    .eq("agency_slug", agencySlug);
+    
+  const { count: activeClients } = await supabase
+    .from("agency_clients")
+    .select("*", { count: "exact", head: true })
+    .eq("agency_slug", agencySlug)
+    .eq("status", "active");
+    
+  const remainingSlots = Math.max(0, 10 - (totalClients || 0));
+  
+  res.json({
+    agency: {
+      name: agency.agency_name || agencySlug,
+      slug: agencySlug,
+      total_clients: totalClients || 0,
+      active_clients: activeClients || 0,
+      remaining_slots: remainingSlots
+    },
+    clients: clientsWithStats
+  });
+});
+
+// Create a new client account under this agency
+app.post("/agency/create-client", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const agencySlug = req.session.slug;
+  const { name, email, review_link } = req.body;
+  
+  if (!name || !email) {
+    return res.status(400).json({ error: "Business name and email required" });
+  }
+  
+  // Verify agency plan
+  const { data: agency } = await supabase
+    .from("businesses")
+    .select("plan_type, subscription_active, agency_name")
+    .eq("slug", agencySlug)
+    .single();
+    
+  if (!agency || agency.plan_type !== "agency" || !agency.subscription_active) {
+    return res.status(403).json({ error: "Agency plan required" });
+  }
+  
+  // Check client limit (max 10)
+  const { count: currentClients } = await supabase
+    .from("agency_clients")
+    .select("*", { count: "exact", head: true })
+    .eq("agency_slug", agencySlug);
+    
+  if ((currentClients || 0) >= 10) {
+    return res.status(403).json({ 
+      error: "Client limit reached (10). Please contact support to upgrade." 
+    });
+  }
+  
+  // Generate slug from business name
+  let slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
+  
+  // Ensure slug is unique
+  let slugExists = true;
+  while (slugExists) {
+    const { data: existing } = await supabase
+      .from("businesses")
+      .select("slug")
+      .eq("slug", slug)
+      .single();
+    if (!existing) {
+      slugExists = false;
+    } else {
+      slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
+    }
+  }
+  
+  // Generate random password for client
+  const tempPassword = Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-4);
+  const hashedPassword = await bcrypt.hash(tempPassword, 10);
+  
+  // Create the client business account
+  const trialEnd = new Date();
+  trialEnd.setDate(trialEnd.getDate() + 14);
+  
+  const { data: newClient, error: clientError } = await supabase
+    .from("businesses")
+    .insert({
+      name: name.trim(),
+      email: email.trim(),
+      review_link: review_link || "",
+      slug: slug,
+      password: hashedPassword,
+      plan_type: "starter",
+      subscription_active: false,
+      trial_ends_at: trialEnd.toISOString(),
+      referred_by: agencySlug // Track as referral for commission
+    })
+    .select()
+    .single();
+    
+  if (clientError) {
+    console.error("Client creation error:", clientError);
+    return res.status(500).json({ error: clientError.message });
+  }
+  
+  // Create agency-client relationship
+  const { error: relationError } = await supabase
+    .from("agency_clients")
+    .insert({
+      agency_slug: agencySlug,
+      client_slug: slug,
+      status: "active",
+      created_at: new Date().toISOString()
+    });
+    
+  if (relationError) {
+    console.error("Relation creation error:", relationError);
+    // Rollback - delete the client
+    await supabase.from("businesses").delete().eq("slug", slug);
+    return res.status(500).json({ error: relationError.message });
+  }
+  
+  // Send welcome email to client with temporary password
+  try {
+    const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
+    const dashboardUrl = `${process.env.BASE_URL}/login`;
+    const agencyName = agency.agency_name || agencySlug;
+    
+    await resend.emails.send({
+      from: `${agencyName} <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+      to: email,
+      subject: `${name} — Your review funnel is ready`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"></head>
+        <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,sans-serif;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+            <tr><td align="center">
+              <table width="500" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;max-width:500px;">
+                <tr><td style="padding:32px;">
+                  <h2 style="color:#C8A96E;margin:0 0 16px;">Your review funnel is ready</h2>
+                  <p style="color:#EAE7DC;margin-bottom:16px;">${agencyName} has set up your ReviewLift account. Here's your login:</p>
+                  <div style="background:#2E2E2B;border-radius:8px;padding:16px;margin:16px 0;">
+                    <p style="margin:0 0 8px;"><strong style="color:#C8A96E;">Dashboard:</strong> <a href="${dashboardUrl}" style="color:#C8A96E;">${dashboardUrl}</a></p>
+                    <p style="margin:0 0 8px;"><strong style="color:#C8A96E;">Email:</strong> ${email}</p>
+                    <p style="margin:0;"><strong style="color:#C8A96E;">Temporary Password:</strong> <code style="background:#1A1A18;padding:4px 8px;border-radius:4px;">${tempPassword}</code></p>
+                  </div>
+                  <p style="color:rgba(234,231,220,0.55);font-size:0.85rem;">Your review funnel is already live at:</p>
+                  <p style="background:#1A1A18;padding:12px;border-radius:8px;word-break:break-all;"><a href="${funnelUrl}" style="color:#C8A96E;">${funnelUrl}</a></p>
+                  <p style="margin-top:24px;color:rgba(234,231,220,0.4);font-size:0.75rem;">Powered by ReviewLift · Managed by ${agencyName}</p>
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
+        </body>
+        </html>
+      `
+    });
+  } catch (emailErr) {
+    console.error("Welcome email failed:", emailErr.message);
+  }
+  
+  res.json({
+    success: true,
+    client: {
+      slug: slug,
+      name: name,
+      email: email,
+      temporary_password: tempPassword
+    }
+  });
+});
+
+// Switch to client view (agency impersonation)
+app.post("/agency/switch-client/:clientSlug", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const agencySlug = req.session.slug;
+  const { clientSlug } = req.params;
+  
+  // Verify agency owns this client
+  const { data: relation, error } = await supabase
+    .from("agency_clients")
+    .select("status")
+    .eq("agency_slug", agencySlug)
+    .eq("client_slug", clientSlug)
+    .single();
+    
+  if (error || !relation) {
+    return res.status(403).json({ error: "Not authorized to access this client" });
+  }
+  
+  // Store the original agency slug to switch back
+  req.session.agency_mode = true;
+  req.session.original_slug = agencySlug;
+  req.session.slug = clientSlug;
+  
+  await new Promise((resolve, reject) => {
+    req.session.save((err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+  
+  res.json({ 
+    success: true, 
+    client_slug: clientSlug,
+    message: "Switched to client view"
+  });
+});
+
+// Return to agency view
+app.post("/agency/exit-client-mode", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  if (req.session.agency_mode && req.session.original_slug) {
+    req.session.slug = req.session.original_slug;
+    req.session.agency_mode = false;
+    delete req.session.original_slug;
+    
+    await new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+    
+    res.json({ success: true, message: "Returned to agency view" });
+  } else {
+    res.json({ success: false, message: "Not in client mode" });
+  }
+});
+
+// Remove a client (deactivate)
+app.delete("/agency/remove-client/:clientSlug", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const agencySlug = req.session.slug;
+  const { clientSlug } = req.params;
+  
+  // Verify agency owns this client
+  const { data: relation, error } = await supabase
+    .from("agency_clients")
+    .select("id")
+    .eq("agency_slug", agencySlug)
+    .eq("client_slug", clientSlug)
+    .single();
+    
+  if (error || !relation) {
+    return res.status(403).json({ error: "Not authorized" });
+  }
+  
+  // Soft delete - just mark as inactive (don't delete the client account)
+  const { error: updateError } = await supabase
+    .from("agency_clients")
+    .update({ status: "inactive" })
+    .eq("agency_slug", agencySlug)
+    .eq("client_slug", clientSlug);
+    
+  if (updateError) {
+    return res.status(500).json({ error: updateError.message });
+  }
+  
+  res.json({ success: true, message: "Client removed" });
+});
+
+// Get agency earnings overview
+app.get("/agency/earnings", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const agencySlug = req.session.slug;
+  
+  // Verify agency plan
+  const { data: agency } = await supabase
+    .from("businesses")
+    .select("plan_type, subscription_active")
+    .eq("slug", agencySlug)
+    .single();
+    
+  if (!agency || agency.plan_type !== "agency") {
+    return res.status(403).json({ error: "Agency plan required" });
+  }
+  
+  // Get all active clients
+  const { data: clients } = await supabase
+    .from("agency_clients")
+    .select(`
+      client_slug,
+      businesses:client_slug (
+        plan_type,
+        subscription_active
+      )
+    `)
+    .eq("agency_slug", agencySlug)
+    .eq("status", "active");
+    
+  // Calculate potential monthly earnings
+  const payingClients = (clients || []).filter(c => 
+    c.businesses?.subscription_active === true
+  );
+  
+  const monthlyEarnings = payingClients.reduce((sum, c) => {
+    const plan = c.businesses?.plan_type || "starter";
+    let price = plan === "pro" ? 24.99 : plan === "agency" ? 79 : 9.99;
+    return sum + price;
+  }, 0);
+  
+  // Also count referrals (direct signups using agency referral code)
+  const { data: referrals } = await supabase
+    .from("businesses")
+    .select("plan_type, subscription_active")
+    .eq("referred_by", agencySlug);
+    
+  const referralEarnings = (referrals || []).reduce((sum, r) => {
+    if (r.subscription_active) {
+      let price = r.plan_type === "pro" ? 24.99 : r.plan_type === "agency" ? 79 : 9.99;
+      return sum + (price * 0.3);
+    }
+    return sum;
+  }, 0);
+  
+  res.json({
+    agency_slug: agencySlug,
+    managed_clients: payingClients.length,
+    referral_clients: (referrals || []).length,
+    monthly_managed_earnings: monthlyEarnings,
+    monthly_referral_earnings: referralEarnings,
+    total_monthly_earnings: monthlyEarnings + referralEarnings
+  });
+});
+
 // ─── UPDATE FUNNEL SETTINGS ──────────────────────────────────────────────
 app.post("/update-funnel", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });

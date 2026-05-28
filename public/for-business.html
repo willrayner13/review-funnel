@@ -3784,6 +3784,54 @@ if (fsSectionElement) {
             style="background:transparent; border:1px solid #D4897C; color:#D4897C;">Cancel subscription</button>
         </div>
       </div>
+
+      <!-- AGENCY CLIENTS SECTION - Only visible to agency plan -->
+<div id="agencyClientsSection" class="panel" style="display:none;">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h3 style="margin:0;">👥 Client Management</h3>
+      <p style="font-size:0.85rem; color:var(--cream-dim); margin:4px 0 0;">Manage your client accounts and resell ReviewLift under your brand</p>
+    </div>
+    <button onclick="openCreateClientModal()" class="btn-full" style="width:auto; padding:10px 20px; background:var(--accent); color:#1A1A18;">
+      + Add New Client
+    </button>
+  </div>
+  
+  <!-- Usage stats -->
+  <div id="agencyUsageStats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px;">
+    <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="clientCount">0</div>
+      <div style="font-size:0.7rem; color:var(--cream-dim);">Total Clients</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:800; color:#8EC9A8;" id="activeClientCount">0</div>
+      <div style="font-size:0.7rem; color:var(--cream-dim);">Active</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="remainingSlots">10</div>
+      <div style="font-size:0.7rem; color:var(--cream-dim);">Remaining Slots</div>
+    </div>
+  </div>
+  
+  <!-- Client list -->
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Business</th>
+          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Plan</th>
+          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Reviews (30d)</th>
+          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Conv. Rate</th>
+          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Status</th>
+          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="clientsTableBody">
+        <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">Loading clients...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
     </main>
   </div>
 
@@ -4158,10 +4206,237 @@ function navigateToMobile(nav) {
       const positivePercentDisplay = document.getElementById('positivePercentDisplay');
       if (positivePercentDisplay) positivePercentDisplay.innerHTML = `${positivePercent}%`;
 
-      const reviewsCapturedDisplay = document.getElementById('reviewsCapturedDisplay');
-      if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0; loadReputationScore(); loadFunnelSettings(); loadAlertSettings(); if (stats.recent_events) updateTicker(stats.recent_events); buildFeatureTiles(stats); loadActivityFeed(); const reviewLink = window.location.origin + "/r/" + slug; const wallUrlEl = document.getElementById("wallUrl"); if (wallUrlEl) wallUrlEl.value = reviewLink; const wallPreviewEl = document.getElementById("wallPreviewLink"); if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug; const embedCodeEl = document.getElementById("embedCode"); if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`; const webhookUrlEl = document.getElementById("webhookUrl"); if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug; const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug; const bizNameEl = document.getElementById("bizNameInput"); if (bizNameEl) bizNameEl.value = stats.business_name || ""; const reviewLinkInputEl = document.getElementById("reviewLinkInput"); if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || ""; const assetReviewLinkEl = document.getElementById("assetReviewLink"); if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug; const qrDownloadLink = document.getElementById("qrDownloadLink"); if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug; const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"); document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("smsLocked").style.display = hasPro ? "none" : "block"; document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("emailLocked").style.display = hasPro ? "none" : "block"; document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("aiLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block"; const isAgency = stats.plan_type === "agency"; document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none"; document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block"; if (hasPro) { loadSentimentTrends(); loadSendIntelligence(); loadGrowthChart(); document.getElementById("proAnalyticsPreview").style.display = "block"; document.getElementById("analyticsUpgradePrompt").style.display = "none"; } if (chartInstance) { chartInstance.destroy(); chartInstance = null; } const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d"); if (ctx && canvas && canvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; chartInstance = new Chart(ctx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } else if (canvas && stats.rating_count === 0) { const placeholderCtx = canvas.getContext("2d"); if (placeholderCtx) { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; placeholderCtx.font = "14px 'DM Sans'"; placeholderCtx.fillStyle = "#EAE7DC"; placeholderCtx.textAlign = "center"; placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); } } const smsCounter = document.getElementById("smsCounter"); if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`; const emailCounter = document.getElementById("emailCounter"); if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`; const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d"); if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; new Chart(analyticsCtx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } lastStats = stats;
+      
+      
+            const reviewsCapturedDisplay = document.getElementById('reviewsCapturedDisplay');
+      if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0; loadReputationScore(); loadFunnelSettings(); loadAlertSettings(); if (stats.recent_events) updateTicker(stats.recent_events); buildFeatureTiles(stats); loadActivityFeed(); 
+      
+      // Load agency clients if user is on agency plan
+      if (stats.plan_type === "agency") {
+        loadAgencyClients();
+      }const reviewLink = window.location.origin + "/r/" + slug; const wallUrlEl = document.getElementById("wallUrl"); if (wallUrlEl) wallUrlEl.value = reviewLink; const wallPreviewEl = document.getElementById("wallPreviewLink"); if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug; const embedCodeEl = document.getElementById("embedCode"); if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`; const webhookUrlEl = document.getElementById("webhookUrl"); if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug; const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug; const bizNameEl = document.getElementById("bizNameInput"); if (bizNameEl) bizNameEl.value = stats.business_name || ""; const reviewLinkInputEl = document.getElementById("reviewLinkInput"); if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || ""; const assetReviewLinkEl = document.getElementById("assetReviewLink"); if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug; const qrDownloadLink = document.getElementById("qrDownloadLink"); if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug; const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"); document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("smsLocked").style.display = hasPro ? "none" : "block"; document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("emailLocked").style.display = hasPro ? "none" : "block"; document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("aiLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block"; const isAgency = stats.plan_type === "agency"; document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none"; document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block"; if (hasPro) { loadSentimentTrends(); loadSendIntelligence(); loadGrowthChart(); document.getElementById("proAnalyticsPreview").style.display = "block"; document.getElementById("analyticsUpgradePrompt").style.display = "none"; } if (chartInstance) { chartInstance.destroy(); chartInstance = null; } const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d"); if (ctx && canvas && canvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; chartInstance = new Chart(ctx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } else if (canvas && stats.rating_count === 0) { const placeholderCtx = canvas.getContext("2d"); if (placeholderCtx) { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; placeholderCtx.font = "14px 'DM Sans'"; placeholderCtx.fillStyle = "#EAE7DC"; placeholderCtx.textAlign = "center"; placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); } } const smsCounter = document.getElementById("smsCounter"); if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`; const emailCounter = document.getElementById("emailCounter"); if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`; const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d"); if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; new Chart(analyticsCtx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } lastStats = stats;
     }
 
+
+    // ========== AGENCY CLIENT MANAGEMENT ==========
+
+async function loadAgencyClients() {
+  try {
+    const res = await fetch("/agency/clients");
+    const data = await res.json();
+    
+    if (data.error) {
+      console.log("Not an agency account or error:", data.error);
+      document.getElementById("agencyClientsSection").style.display = "none";
+      return;
+    }
+    
+    // Show the agency section
+    document.getElementById("agencyClientsSection").style.display = "block";
+    
+    // Update stats
+    document.getElementById("clientCount").textContent = data.agency.total_clients;
+    document.getElementById("activeClientCount").textContent = data.agency.active_clients;
+    document.getElementById("remainingSlots").textContent = data.agency.remaining_slots;
+    
+    // Render clients table
+    const tbody = document.getElementById("clientsTableBody");
+    if (data.clients.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">No clients yet. Click "Add New Client" to get started.</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = data.clients.map(client => `
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:12px 8px;">
+          <div style="font-weight:600;">${escapeHtml(client.name)}</div>
+          <div style="font-size:0.7rem; color:var(--cream-dim);">${client.email || client.slug}</div>
+        </td>
+        <td style="padding:12px 8px;">
+          <span style="background:${client.plan === 'pro' ? 'rgba(200,169,110,0.15)' : 'var(--surface-3)'}; padding:4px 10px; border-radius:20px; font-size:0.7rem;">
+            ${client.plan === 'pro' ? 'Pro' : client.plan === 'agency' ? 'Agency' : 'Starter'}
+          </span>
+        </td>
+        <td style="padding:12px 8px; font-weight:600;">${client.positive_count}</td>
+        <td style="padding:12px 8px;">${client.conversion_rate}%</td>
+        <td style="padding:12px 8px;">
+          ${client.active_subscription ? 
+            '<span style="color:#8EC9A8;">● Active</span>' : 
+            '<span style="color:rgba(234,231,220,0.3);">○ Trial</span>'
+          }
+        </td>
+        <td style="padding:12px 8px;">
+          <button onclick="switchToClient('${client.slug}')" style="background:var(--accent-dim); border:1px solid var(--border); color:var(--cream); padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.7rem; margin-right:6px;">
+            🔄 Switch
+          </button>
+          <button onclick="removeClient('${client.slug}')" style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.7rem;">
+            Remove
+          </button>
+        </td>
+      </tr>
+    `).join('');
+    
+  } catch (e) {
+    console.error("Load agency clients error:", e);
+  }
+}
+
+function openCreateClientModal() {
+  // Create modal dynamically
+  const modalHtml = `
+    <div class="modal-overlay" id="createClientModal" onclick="handleModalOverlay(event, 'createClientModal')">
+      <div class="modal-box" style="max-width:500px;">
+        <button class="modal-close" onclick="closeModal('createClientModal')">✕</button>
+        <span class="modal-icon">👥</span>
+        <h3>Add New Client</h3>
+        <p>Create a new client account. They'll receive an email with login details.</p>
+        
+        <div class="form-group">
+          <label>Business name</label>
+          <input id="clientName" type="text" placeholder="e.g. Joe's Coffee Shop">
+        </div>
+        <div class="form-group">
+          <label>Client email</label>
+          <input id="clientEmail" type="email" placeholder="owner@joescoffee.com">
+        </div>
+        <div class="form-group">
+          <label>Google review link (optional)</label>
+          <input id="clientReviewLink" type="url" placeholder="https://g.page/r/...">
+          <p class="helper-text">They can add this later in their dashboard</p>
+        </div>
+        
+        <button onclick="createClient()" id="createClientBtn" class="btn-full" style="background:var(--accent); color:#1A1A18;">Create Client Account →</button>
+        <p id="createClientMsg" style="margin-top:12px; font-size:0.75rem;"></p>
+      </div>
+    </div>
+  `;
+  
+  // Remove existing modal if any
+  const existing = document.getElementById("createClientModal");
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  openModal("createClientModal");
+}
+
+async function createClient() {
+  const name = document.getElementById("clientName").value.trim();
+  const email = document.getElementById("clientEmail").value.trim();
+  const reviewLink = document.getElementById("clientReviewLink").value.trim();
+  const btn = document.getElementById("createClientBtn");
+  const msg = document.getElementById("createClientMsg");
+  
+  if (!name || !email) {
+    msg.textContent = "Business name and email required";
+    msg.style.color = "#D4897C";
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Creating...';
+  
+  try {
+    const res = await fetch("/agency/create-client", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, review_link: reviewLink })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      msg.innerHTML = `✓ Client created! Temporary password: <strong>${data.client.temporary_password}</strong>`;
+      msg.style.color = "#8EC9A8";
+      
+      // Close modal after 2 seconds and refresh list
+      setTimeout(() => {
+        closeModal("createClientModal");
+        loadAgencyClients();
+      }, 3000);
+    } else {
+      msg.textContent = data.error || "Could not create client";
+      msg.style.color = "#D4897C";
+      btn.disabled = false;
+      btn.innerHTML = "Create Client Account →";
+    }
+  } catch (e) {
+    msg.textContent = "Something went wrong";
+    msg.style.color = "#D4897C";
+    btn.disabled = false;
+    btn.innerHTML = "Create Client Account →";
+  }
+}
+
+async function switchToClient(clientSlug) {
+  if (!confirm(`Switch to this client's dashboard? You can switch back from your Settings.`)) return;
+  
+  try {
+    const res = await fetch(`/agency/switch-client/${clientSlug}`, { method: "POST" });
+    const data = await res.json();
+    
+    if (data.success) {
+      showToast(`Switched to client view`, "success");
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      showToast(data.error || "Could not switch", "error");
+    }
+  } catch (e) {
+    showToast("Something went wrong", "error");
+  }
+}
+
+async function exitClientMode() {
+  try {
+    const res = await fetch("/agency/exit-client-mode", { method: "POST" });
+    const data = await res.json();
+    
+    if (data.success) {
+      showToast("Returned to agency view", "success");
+      setTimeout(() => window.location.reload(), 1000);
+    }
+  } catch (e) {
+    console.error("Exit client mode error:", e);
+  }
+}
+
+async function removeClient(clientSlug) {
+  if (!confirm(`Remove this client? They will lose access to their dashboard.`)) return;
+  
+  try {
+    const res = await fetch(`/agency/remove-client/${clientSlug}`, { method: "DELETE" });
+    const data = await res.json();
+    
+    if (data.success) {
+      showToast("Client removed", "success");
+      loadAgencyClients();
+    } else {
+      showToast(data.error || "Could not remove", "error");
+    }
+  } catch (e) {
+    showToast("Something went wrong", "error");
+  }
+}
+
+// Add client mode indicator to top bar if in client mode
+function checkClientMode() {
+  // Check if we're in client mode via session
+  fetch("/session")
+    .then(r => r.json())
+    .then(data => {
+      if (data.agency_mode) {
+        const topBar = document.querySelector(".top-bar");
+        if (topBar && !document.getElementById("clientModeBanner")) {
+          const banner = document.createElement("div");
+          banner.id = "clientModeBanner";
+          banner.style.cssText = "background:var(--accent-dim); border-bottom:1px solid var(--accent); padding:8px 20px; text-align:center; font-size:0.8rem; display:flex; align-items:center; justify-content:center; gap:16px;";
+          banner.innerHTML = `
+            <span>👁️ You are viewing a client dashboard</span>
+            <button onclick="exitClientMode()" style="background:var(--accent); color:#1A1A18; border:none; padding:6px 16px; border-radius:6px; cursor:pointer;">Exit client mode →</button>
+          `;
+          document.querySelector(".main").insertBefore(banner, document.querySelector(".main").firstChild);
+        }
+      }
+    });
+}
 
 function buildFeatureTiles(stats) {
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"),
@@ -4261,7 +4536,19 @@ function buildFeatureTiles(stats) {
 
     function startPolling() { if (pollingInterval) clearInterval(pollingInterval); pollingInterval = setInterval(async () => { const res = await fetch("/stats/" + slug); if (!res.ok) return; const newStats = await res.json(); document.getElementById("statVisits").innerText = newStats.visits ?? 0; document.getElementById("statPositive").innerText = newStats.positive ?? 0; document.getElementById("statReviews").innerText = newStats.reviews ?? 0; document.getElementById("statNegative").innerText = newStats.negative ?? 0; if (newStats.recent_events) updateTicker(newStats.recent_events); loadActivityFeed(); loadReputationScore(); }, 30000); }
 
-    async function checkSession() { const res = await fetch("/session"); const data = await res.json(); if (!data.loggedIn) { window.location = "/login"; return; } slug = data.slug; await loadDashboardData(); startPolling(); handleHash(); }
+        async function checkSession() { 
+      const res = await fetch("/session"); 
+      const data = await res.json(); 
+      if (!data.loggedIn) { 
+        window.location = "/login"; 
+        return; 
+      } 
+      slug = data.slug; 
+      await loadDashboardData(); 
+      startPolling(); 
+      handleHash();
+      checkClientMode(); // Check if we're in client mode (agency viewing client)
+    }
     checkSession();
 
     // FAB
