@@ -351,25 +351,30 @@ function showFeedback(){ show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", tr
         s.style.pointerEvents = 'none';
       });
       
-      // POST rating to backend
-      await fetch('/rating', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ slug: window.slug, rating })
-      });
-      
+      // Hide main question IMMEDIATELY — don't wait for network
       document.getElementById("mainQuestion").style.display = "none";
       
+      // Route based on rating FIRST, then fire API calls in background
       if (rating >= 4) {
-        await fetch('/positive', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ slug: window.slug })
-        });
         if (isLapsed) { show('reviewSectionLapsed', true); startCountdown(); }
         else { show('reviewSection', true); loadSuggestion(rating); }
       } else {
         show(isLapsed ? 'feedbackBoxLapsed' : 'feedbackBox', true);
+      }
+      
+      // Fire API calls in background (don't block UI)
+      fetch('/rating', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ slug: window.slug, rating })
+      }).catch(e => console.log('Rating fetch failed:', e));
+      
+      if (rating >= 4) {
+        fetch('/positive', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ slug: window.slug })
+        }).catch(e => console.log('Positive fetch failed:', e));
       }
     });
   });
