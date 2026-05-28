@@ -1,653 +1,548 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
-
-/* ═══════════════════════════════════════════════════════════
-   CSS VARIABLES
-═══════════════════════════════════════════════════════════ */
-:root {
-  --bg:           #1E1E1C;
-  --surface:      #2A2A28;
-  --surface-2:    #333331;
-  --surface-3:    #3D3D3A;
-  --border:       rgba(234,231,220,0.10);
-  --border-hover: rgba(234,231,220,0.22);
-  --cream:        #EAE7DC;
-  --cream-dim:    rgba(234,231,220,0.55);
-  --cream-faint:  rgba(234,231,220,0.08);
-  --accent:       #C8A96E;
-  --accent-dim:   rgba(200,169,110,0.18);
-  --danger:       #C0675A;
-  --success:      #6A9E7F;
-  --radius-sm:    8px;
-  --radius:       14px;
-  --radius-lg:    20px;
-  --shadow:       0 2px 8px rgba(0,0,0,0.35), 0 8px 32px rgba(0,0,0,0.25);
-  --shadow-lg:    0 4px 16px rgba(0,0,0,0.45), 0 16px 64px rgba(0,0,0,0.35);
-  --transition:   0.2s cubic-bezier(0.4,0,0.2,1);
-
-  /* Fluid font scale — shrinks gracefully on smaller screens */
-  --text-base:    clamp(0.875rem, 1.5vw, 1rem);
-  --text-sm:      clamp(0.78rem, 1.2vw, 0.875rem);
-  --text-xs:      clamp(0.68rem, 1vw, 0.75rem);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   RESET & BASE
-═══════════════════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,169,110,0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 90% 90%, rgba(200,169,110,0.04) 0%, transparent 60%);
-  color: var(--cream);
-  min-height: 100vh;
-  line-height: 1.6;
-  font-size: var(--text-base);
-  -webkit-font-smoothing: antialiased;
-  /* Prevent horizontal scroll on mobile */
-  overflow-x: hidden;
-}
-
-a { color: var(--cream); text-decoration: none; transition: color var(--transition); }
-a:hover { color: var(--accent); }
-
-/* ═══════════════════════════════════════════════════════════
-   TYPOGRAPHY
-   Uses clamp() so headings scale fluidly between screen sizes
-═══════════════════════════════════════════════════════════ */
-h1, h2, h3, h4, h5 {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.3px;
-}
-
-/* clamp(min, preferred, max) — min for mobile, max for desktop */
-h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
-h2 { font-size: clamp(1.25rem, 3vw, 1.75rem); margin-bottom: 8px; }
-h3 { font-size: clamp(1rem, 2vw, 1.25rem); margin-bottom: 8px; }
-h4 {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: var(--accent);
-  margin-bottom: 14px;
-  margin-top: 36px;
-}
-
-p { color: var(--cream-dim); font-size: var(--text-base); margin-bottom: 8px; }
-
-/* ═══════════════════════════════════════════════════════════
-   LAYOUT CONTAINERS
-═══════════════════════════════════════════════════════════ */
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: clamp(20px, 4vw, 32px) 16px 64px;
-}
-
-.container {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  /* Responsive padding: smaller on laptops/tablets */
-  padding: clamp(28px, 4vw, 48px) clamp(20px, 4vw, 44px);
-  width: 100%;
-  max-width: 640px;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-}
-
-.container::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(234,231,220,0.18), transparent);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   FORM INPUTS
-   font-size: 1rem minimum prevents iOS auto-zoom on focus
-═══════════════════════════════════════════════════════════ */
-input, textarea {
-  width: 100%;
-  padding: 13px 16px;
-  background: var(--surface-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--cream);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem; /* must be ≥1rem to prevent iOS zoom */
-  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
-  display: block;
-  margin-bottom: 14px;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-input::placeholder, textarea::placeholder { color: rgba(234,231,220,0.28); }
-
-input:focus, textarea:focus {
-  outline: none;
-  border-color: rgba(234,231,220,0.4);
-  background: var(--surface-2);
-  box-shadow: 0 0 0 3px rgba(234,231,220,0.06);
-}
-
-textarea {
-  resize: vertical;
-  min-height: 100px;
-  line-height: 1.6;
-}
-
-input[readonly] { cursor: default; color: var(--cream-dim); }
-
-/* ═══════════════════════════════════════════════════════════
-   BUTTONS
-   min-height: 44px ensures touch-friendly targets on mobile
-═══════════════════════════════════════════════════════════ */
-button, .btn {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
-  font-size: clamp(0.875rem, 1.5vw, 1rem);
-  padding: 12px 20px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  white-space: nowrap;
-  text-decoration: none;
-  min-height: 44px;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-/* Primary (default) */
-button { background: var(--cream); color: #1E1E1C; border-color: var(--cream); }
-button:hover { background: #F5F2EB; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(234,231,220,0.15); }
-button:active { transform: translateY(0); }
-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
-
-.btn-secondary { background: transparent; color: var(--cream); border-color: var(--border-hover); }
-.btn-secondary:hover { background: var(--cream-faint); border-color: rgba(234,231,220,0.3); }
-
-.btn-accent { background: var(--accent); color: #1E1E1C; border-color: var(--accent); }
-.btn-accent:hover { background: #D4B87A; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,169,110,0.25); }
-
-.btn-danger { background: transparent; color: var(--danger); border-color: rgba(192,103,90,0.3); }
-.btn-danger:hover { background: rgba(192,103,90,0.1); border-color: var(--danger); }
-
-.btn-ghost { background: transparent; color: var(--cream-dim); border-color: transparent; padding: 10px 14px; min-height: 40px; }
-.btn-ghost:hover { color: var(--cream); background: var(--cream-faint); transform: none; box-shadow: none; }
-
-.btn-full { width: 100%; justify-content: center; }
-.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-.btn-row button { flex: 1; min-width: 120px; }
-
-/* ═══════════════════════════════════════════════════════════
-   FUNNEL PAGE (index.html & demo.html)
-   Equal-height buttons side by side on all screen sizes
-═══════════════════════════════════════════════════════════ */
-.funnel-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 24px 0 8px;
-  width: 100%;
-}
-
-.funnel-btn {
-  all: unset;
-  box-sizing: border-box;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: clamp(0.875rem, 2vw, 1rem);
-  font-weight: 500;
-  color: var(--cream);
-  min-height: 115px;
-  padding: 20px 12px;
-  width: 100%;
-  text-align: center;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-.funnel-btn .funnel-icon { font-size: clamp(1.8rem, 5vw, 2.4rem); line-height: 1; }
-
-.funnel-btn.positive:hover, .funnel-btn.positive:active {
-  border-color: var(--success);
-  background: rgba(106,158,127,0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-
-.funnel-btn.negative:hover, .funnel-btn.negative:active {
-  border-color: rgba(192,103,90,0.6);
-  background: rgba(192,103,90,0.07);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   STARS
-═══════════════════════════════════════════════════════════ */
-.stars-row { display: flex; justify-content: center; gap: 6px; margin: 16px 0; }
-#stars { display: flex; gap: 4px; }
-#stars span {
-  font-size: clamp(28px, 7vw, 36px);
-  cursor: pointer;
-  transition: transform 0.15s ease, filter 0.15s ease;
-  filter: grayscale(1) brightness(0.45);
-  display: inline-block;
-  line-height: 1;
-  padding: 4px;
-  -webkit-tap-highlight-color: transparent;
-}
-#stars span:hover, #stars span.selected {
-  transform: scale(1.3);
-  filter: grayscale(0) brightness(1.1);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   DASHBOARD METRICS GRID
-═══════════════════════════════════════════════════════════ */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.metric-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: clamp(14px, 2vw, 20px);
-  transition: border-color var(--transition);
-}
-.metric-card:hover { border-color: var(--border-hover); }
-
-.metric-value {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.metric-label {
-  font-size: clamp(0.62rem, 1vw, 0.7rem);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--cream-dim);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   DASHBOARD PANELS & SECTIONS
-═══════════════════════════════════════════════════════════ */
-.dash-section { margin-bottom: 40px; }
-
-.dash-section-title {
-  font-size: var(--text-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.4px;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.dash-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: clamp(18px, 2.5vw, 24px);
-  margin-bottom: 14px;
-}
-.panel h3 {
-  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-  color: var(--cream-dim);
-  font-family: 'Syne', sans-serif;
-  font-weight: 600;
-  margin-bottom: 14px;
-}
-
-/* Input + button inline row */
-.input-row { display: flex; gap: 10px; align-items: stretch; }
-.input-row input { flex: 1; margin-bottom: 0; }
-.input-row button { flex-shrink: 0; padding: 0 18px; height: 50px; font-size: 0.875rem; min-height: 0; }
-
-.input-action-row { display: flex; gap: 10px; align-items: stretch; margin-bottom: 14px; }
-.input-action-row input { flex: 1; margin-bottom: 0; }
-.input-action-row button { flex-shrink: 0; padding: 0 18px; font-size: 0.875rem; min-height: 0; height: 50px; }
-
-/* ═══════════════════════════════════════════════════════════
-   FEEDBACK LIST
-═══════════════════════════════════════════════════════════ */
-ul.feedback-list,
-#negativeList {
-  list-style: none;
-  padding: 0;
-  max-height: 240px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-ul.feedback-list li,
-#negativeList li {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--danger);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  font-size: var(--text-sm);
-  color: var(--cream-dim);
-  line-height: 1.5;
-}
-
-ul.feedback-list::-webkit-scrollbar,
-#negativeList::-webkit-scrollbar { width: 4px; }
-ul.feedback-list::-webkit-scrollbar-track,
-#negativeList::-webkit-scrollbar-track { background: var(--surface-2); }
-ul.feedback-list::-webkit-scrollbar-thumb,
-#negativeList::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
-
-/* ═══════════════════════════════════════════════════════════
-   CHART
-═══════════════════════════════════════════════════════════ */
-.chart-wrap,
-.chart-container {
-  position: relative;
-  height: clamp(160px, 20vw, 220px);
-  width: 100%;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   QR CODE
-═══════════════════════════════════════════════════════════ */
-#qr {
-  width: clamp(100px, 14vw, 130px);
-  height: clamp(100px, 14vw, 130px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface-3);
-  display: block;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PLAN CARDS (admin.html plan selection)
-═══════════════════════════════════════════════════════════ */
-.plans-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin: 20px 0;
-}
-
-.plan {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: clamp(20px, 3vw, 28px) clamp(16px, 2.5vw, 24px);
-  transition: all var(--transition);
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-}
-
-.plan:hover {
-  border-color: rgba(234,231,220,0.25);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-
-.plan.featured {
-  border-color: var(--accent);
-  background: linear-gradient(135deg, var(--surface-2) 0%, rgba(200,169,110,0.06) 100%);
-}
-
-.plan.featured::before {
-  content: 'POPULAR';
-  position: absolute;
-  top: 14px; right: -22px;
-  background: var(--accent);
-  color: #1E1E1C;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  padding: 4px 32px;
-  transform: rotate(35deg);
-}
-
-.plan-name { font-family: 'Syne', sans-serif; font-size: clamp(0.95rem, 2vw, 1.1rem); font-weight: 700; margin-bottom: 4px; }
-.plan-price { font-family: 'Syne', sans-serif; font-size: clamp(1.6rem, 3.5vw, 2rem); font-weight: 700; color: var(--cream); margin: 8px 0 4px; }
-.plan-price span { font-size: 0.9rem; font-weight: 400; color: var(--cream-dim); }
-.plan-desc { font-size: var(--text-sm); color: var(--cream-dim); margin-bottom: 16px; line-height: 1.5; }
-
-.plan-features { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 7px; }
-.plan-features li { font-size: var(--text-sm); color: var(--cream-dim); display: flex; align-items: center; gap: 8px; }
-.plan-features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
-
-/* ═══════════════════════════════════════════════════════════
-   ALERTS & STATUS
-═══════════════════════════════════════════════════════════ */
-.alert {
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  font-size: var(--text-sm);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 12px 0;
-}
-
-.alert-success { background: rgba(106,158,127,0.12); border: 1px solid rgba(106,158,127,0.3); color: #8EC9A8; }
-.alert-error   { background: rgba(192,103,90,0.1);   border: 1px solid rgba(192,103,90,0.3);   color: #D4897C; }
-.alert-info    { background: rgba(200,169,110,0.08);  border: 1px solid rgba(200,169,110,0.2);  color: var(--accent); }
-
-#result, #status { font-size: var(--text-sm); margin-top: 10px; min-height: 20px; color: var(--cream-dim); }
-
-/* ═══════════════════════════════════════════════════════════
-   LOADER
-═══════════════════════════════════════════════════════════ */
-.loader-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 0; }
-.loader {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ═══════════════════════════════════════════════════════════
-   UTILITY CLASSES
-═══════════════════════════════════════════════════════════ */
-.divider { height: 1px; background: var(--border); margin: 28px 0; }
-.divider-label {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--surface);
-  padding: 0 12px;
-  font-size: var(--text-xs);
-  color: var(--cream-dim);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-.small-text  { font-size: var(--text-xs); color: rgba(234,231,220,0.3); margin-top: 4px; }
-.flash       { font-size: var(--text-xs); color: var(--success); margin-left: 6px; opacity: 0; transition: opacity 0.3s; }
-.flash.show  { opacity: 1; }
-
-.powered-by { text-align: center; margin-top: 24px; font-size: var(--text-xs); color: rgba(234,231,220,0.22); letter-spacing: 0.5px; }
-.powered-by a:hover { color: var(--accent); }
-
-.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-sm); color: var(--cream-dim); margin-bottom: 28px; transition: color var(--transition); }
-.back-link:hover { color: var(--cream); }
-
-.section-title { font-family: 'Syne', sans-serif; font-size: var(--text-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--cream-dim); }
-
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE BREAKPOINTS
-   ─────────────────────────────────────────────────────────
-   1280px+  → Full desktop (base styles)
-   1024px   → Laptop (slightly tighter)
-    768px   → Tablet
-    600px   → Large phone / small tablet
-    480px   → Standard phone
-    380px   → Small phone (iPhone SE etc.)
-═══════════════════════════════════════════════════════════ */
-
-/* ── Laptop (1024px) — everything slightly more compact ── */
-@media (max-width: 1024px) {
-  .container { max-width: 580px; }
-
-  /* Dashboard: slightly tighter */
-  .metrics-grid { gap: 10px; }
-  .metric-value { font-size: 1.65rem; }
-  .panel { padding: 20px; }
-
-  /* Topnav: hide less important elements */
-  .topnav { padding: 14px 28px; }
-}
-
-/* ── Tablet (768px) ── */
-@media (max-width: 768px) {
-  .container { padding: 28px 24px; }
-  h1 { font-size: clamp(1.4rem, 5vw, 1.8rem); }
-  h2 { font-size: clamp(1.15rem, 4vw, 1.5rem); }
-
-  /* Dashboard metrics: 2x2 grid */
-  .metrics-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .metric-value { font-size: 1.6rem; }
-
-  /* QR area stacks vertically */
-  .qr-area { flex-direction: column; }
-
-  /* Dashboard padding */
-  .dash-body { padding: 24px 20px 60px !important; }
-
-  /* Topnav */
-  .topnav { padding: 14px 20px; }
-  .nav-biz { max-width: 120px; }
-}
-
-/* ── Large phone / small tablet (600px) ── */
-@media (max-width: 600px) {
-  .container { padding: 24px 18px; }
-
-  /* Plan grid stacks */
-  .plans-grid { grid-template-columns: 1fr; max-width: 420px; }
-
-  /* Input + button rows stack */
-  .input-row { flex-direction: column; }
-  .input-row button { height: 50px; width: 100%; padding: 0; }
-  .input-action-row { flex-direction: column; }
-  .input-action-row button { height: 50px; width: 100%; padding: 0; }
-
-  /* Topnav secondary buttons hidden */
-  .nav-right .btn-secondary,
-  .nav-right a:has(button.btn-secondary) { display: none; }
-  .topnav { padding: 12px 16px; }
-
-  /* Dashboard */
-  .dash-body { padding: 20px 14px 60px !important; }
-  .panel { padding: 18px 16px; }
-  .metrics-grid { gap: 8px; }
-
-  .btn-row { flex-direction: column; }
-  .btn-row button { min-width: 0; }
-}
-
-/* ── Standard phone (480px) ── */
-@media (max-width: 480px) {
+/* Add at the top after the root variables */
+@media (min-width: 1024px) and (max-width: 1366px) {
   :root {
-    --radius:    12px;
-    --radius-lg: 16px;
+    --text-base: 0.85rem;
+    --text-sm: 0.75rem;
+    --text-xs: 0.65rem;
   }
-
-  .container { padding: 22px 16px; border-radius: var(--radius-lg); }
-  h1 { font-size: 1.4rem; }
-  h2 { font-size: 1.2rem; }
-
-  /* Metrics: still 2 columns but tighter */
-  .metrics-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .metric-value { font-size: 1.5rem; }
-  .metric-card { padding: 14px 12px; }
-
-  /* Funnel buttons */
-  .funnel-options { gap: 10px; }
-  .funnel-btn { min-height: 105px; }
-  .funnel-btn .funnel-icon { font-size: 1.9rem; }
-
-  /* Stars */
-  #stars span { font-size: 28px; padding: 2px; }
-
-  /* Topnav: minimal */
-  .topnav { padding: 12px 14px; }
-  .nav-biz { max-width: 90px; font-size: 0.72rem; }
-  .nav-right button { font-size: 0.72rem; padding: 7px 10px; min-height: 34px; }
-
-  /* Dashboard */
-  .dash-body { padding: 16px 12px 60px !important; }
-  .panel { padding: 16px 14px; }
-  .dash-section { margin-bottom: 32px; }
-  .dash-section-title { font-size: 0.62rem; }
-
-  /* Buttons slightly smaller */
-  button, .btn { font-size: 0.9rem; padding: 11px 16px; min-height: 42px; }
-  .btn-full { font-size: 0.95rem; }
 }
 
-/* ── Small phone / iPhone SE (380px) ── */
-@media (max-width: 380px) {
-  .container { padding: 18px 14px; }
-  h2 { font-size: 1.1rem; }
-
-  .metrics-grid { grid-template-columns: 1fr 1fr; }
-  .metric-value { font-size: 1.35rem; }
-
-  .funnel-btn { min-height: 95px; font-size: 0.875rem; }
-  .funnel-btn .funnel-icon { font-size: 1.7rem; }
-  #stars span { font-size: 24px; }
-
-  .topnav { padding: 10px 12px; }
+/* Update the container max-width for better laptop fit */
+.container {
+  max-width: min(90vw, 580px);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   iOS SAFARI FIXES
-═══════════════════════════════════════════════════════════ */
-@supports (-webkit-touch-callout: none) {
-  /* Prevent iOS border-radius differences */
-  input, textarea { -webkit-border-radius: var(--radius-sm); }
-  /* Prevent double-tap zoom */
-  button, a { touch-action: manipulation; }
-  /* Fix position: sticky in iOS Safari */
-  .topnav { -webkit-transform: translateZ(0); }
+/* Fix dashboard layout on laptop */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .main {
+    padding: 0 20px;
+  }
+  
+  .content-section {
+    padding: 24px !important;
+  }
+  
+  .stats-row {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  
+  .stat-tile {
+    padding: 14px;
+  }
+  
+  .stat-number {
+    font-size: 1.4rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .assets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .plans-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  
+  .price-card {
+    padding: 24px 20px;
+  }
+  
+  .price-amount {
+    font-size: 2rem;
+  }
+  
+  .plan-features li {
+    font-size: 0.7rem;
+  }
 }
 
+/* Fix funnel studio on laptop */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .fs-workspace {
+    grid-template-columns: 260px 1fr 300px;
+    gap: 12px;
+  }
+  
+  .fs-settings {
+    padding: 16px;
+  }
+  
+  .fs-template-grid {
+    gap: 6px;
+  }
+  
+  .fs-template-thumb {
+    padding: 8px 4px;
+  }
+  
+  .fs-template-preview {
+    height: 45px;
+  }
+  
+  .fs-template-name {
+    font-size: 0.6rem;
+  }
+  
+  .fs-mobile-frame {
+    max-width: 320px;
+  }
+  
+  .fs-mobile-screen {
+    min-height: 500px;
+  }
+  
+  .fs-mobile-content {
+    padding: 16px;
+  }
+  
+  .fs-mobile-question {
+    font-size: 1rem;
+  }
+  
+  .fs-mobile-btn {
+    padding: 12px;
+    font-size: 0.8rem;
+  }
+  
+  .fs-desktop-question {
+    font-size: 1.4rem;
+  }
+  
+  .fs-desktop-btn {
+    padding: 12px 24px;
+    font-size: 0.85rem;
+  }
+  
+  .fs-desktop-content {
+    padding: 40px 20px;
+  }
+}
+
+/* Fix hero section on laptop */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .hero {
+    padding: 100px 24px 60px;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    max-width: 700px;
+  }
+  
+  .hero-sub {
+    font-size: 0.95rem;
+    max-width: 550px;
+  }
+  
+  .steps-grid {
+    gap: 24px;
+  }
+  
+  .step-card {
+    padding-top: 45px;
+  }
+  
+  .step-number {
+    font-size: 4rem;
+  }
+  
+  .step-title {
+    font-size: 1rem;
+  }
+  
+  .step-desc {
+    font-size: 0.85rem;
+  }
+  
+  .features-grid {
+    gap: 16px;
+  }
+  
+  .feature-card {
+    padding: 20px 18px;
+  }
+  
+  .feature-icon {
+    font-size: 1.8rem;
+  }
+  
+  .feature-card h4 {
+    font-size: 0.9rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.8rem;
+  }
+  
+  .pricing-section {
+    padding: 60px 24px;
+  }
+  
+  .cta-section {
+    padding: 60px 24px;
+  }
+  
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+  
+  footer {
+    padding: 32px 24px;
+  }
+}
+
+/* Fix sidebar on laptop */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .sidebar {
+    width: 220px;
+  }
+  
+  .main {
+    margin-left: 220px;
+  }
+  
+  .nav-item {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .nav-item i {
+    font-size: 1.1rem;
+    width: 20px;
+  }
+  
+  .sidebar-header {
+    padding: 18px 16px;
+  }
+  
+  .sidebar-logo {
+    font-size: 18px;
+  }
+  
+  .sidebar-biz {
+    font-size: 0.7rem;
+  }
+  
+  .plan-badge-side {
+    padding: 10px;
+  }
+  
+  .plan-name {
+    font-size: 0.75rem;
+  }
+  
+  .upgrade-link {
+    font-size: 0.65rem;
+  }
+  
+  .logout-link {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+}
+
+/* Fix top bar on laptop */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .top-bar {
+    padding: 12px 24px;
+  }
+  
+  .greeting h2 {
+    font-size: 1.1rem;
+  }
+  
+  .activity-ticker {
+    font-size: 0.7rem;
+    padding: 4px 12px;
+  }
+}
+
+/* Fix panel and modals on laptop */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .panel {
+    padding: 20px;
+  }
+  
+  .modal-box {
+    max-width: 450px;
+    padding: 28px 24px;
+  }
+  
+  .action-row {
+    gap: 8px;
+  }
+  
+  .action-row button {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+  
+  .input-row input {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+  
+  .input-row button {
+    height: 46px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Fix AI Lab section on laptop */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .ai-reply-grid {
+    gap: 12px;
+  }
+  
+  .ai-reply-card {
+    padding: 16px;
+  }
+  
+  .reply-text {
+    font-size: 0.8rem;
+    min-height: 80px;
+  }
+}
+
+/* Fix customer journey map */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .journey-map {
+    overflow-x: auto;
+  }
+  
+  .journey-steps {
+    min-width: 700px;
+  }
+}
+
+/* Fix reputation hero */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .rep-hero {
+    padding: 20px 24px;
+    flex-wrap: wrap;
+  }
+  
+  .rep-score {
+    min-width: 80px;
+  }
+  
+  .rep-score-value {
+    font-size: 2rem;
+  }
+  
+  .rep-bars {
+    min-width: 250px;
+  }
+  
+  .rep-bar-label {
+    width: 80px;
+    font-size: 0.65rem;
+  }
+}
+
+/* Fix integrations grid */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  #integrationsGrid {
+    gap: 12px;
+  }
+  
+  #integrationsGrid > div {
+    padding: 12px;
+  }
+  
+  #integrationsGrid i {
+    font-size: 1.6rem;
+  }
+  
+  #integrationsGrid .feature-name {
+    font-size: 0.75rem;
+  }
+}
+
+/* Fix mobile preview size */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .funnel-studio-preview .mobile-frame {
+    max-width: 300px;
+  }
+  
+  .funnel-studio-preview iframe {
+    height: 500px;
+  }
+}
+
+/* Fix button sizes */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  button, .btn {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+  
+  .btn-full {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+  
+  .btn-trial {
+    padding: 14px 28px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Fix navigation links */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .nav-links {
+    gap: 24px;
+  }
+  
+  .nav-links a {
+    font-size: 0.8rem;
+  }
+  
+  nav {
+    padding: 0 24px;
+  }
+}
+
+/* Fix footer */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  footer {
+    padding: 28px 24px;
+  }
+  
+  .footer-links {
+    gap: 20px;
+  }
+  
+  .footer-links a {
+    font-size: 0.75rem;
+  }
+}
+
+/* Fix how section */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .how-section {
+    padding: 60px 24px;
+  }
+  
+  .section-heading {
+    font-size: 2rem;
+  }
+  
+  .agency-section {
+    padding: 60px 24px;
+  }
+  
+  .agency-grid {
+    gap: 16px;
+  }
+  
+  .agency-card {
+    padding: 20px;
+  }
+  
+  .integrations-section {
+    padding: 50px 24px;
+  }
+}
+
+/* Fix comparison table */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .comparison-table th,
+  .comparison-table td {
+    padding: 10px 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Fix activity ticker */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .activity-ticker {
+    max-width: 400px;
+  }
+  
+  .activity-ticker-content {
+    font-size: 0.68rem;
+  }
+}
+
+/* Fix skeleton loading */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .skeleton-row {
+    padding: 10px 16px;
+  }
+  
+  .skeleton-text {
+    height: 14px;
+  }
+}
+
+/* Fix toast notifications */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .toast {
+    bottom: 20px;
+    right: 20px;
+    font-size: 0.8rem;
+    padding: 10px 18px;
+  }
+}
+
+/* Fix FAB */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  #fab {
+    bottom: 24px;
+    right: 24px;
+  }
+  
+  #fabMain {
+    width: 48px;
+    height: 48px;
+  }
+  
+  #fabMain i {
+    font-size: 1.5rem;
+  }
+  
+  #fabMenu button {
+    padding: 10px 16px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Fix billing page */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .billing-card {
+    padding: 20px 24px;
+  }
+  
+  .plan-display {
+    gap: 12px;
+  }
+  
+  .plan-price-display {
+    font-size: 1.5rem;
+  }
+  
+  .plan-option {
+    padding: 18px 16px;
+  }
+  
+  .plan-option-price {
+    font-size: 1.5rem;
+  }
+}
+
+/* Fix settings page */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .settings-card {
+    padding: 20px 24px;
+  }
+  
+  .page-body {
+    padding: 40px 24px 60px;
+  }
+}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Try the ReviewLift review funnel demo. See how happy customers go to Google and unhappy feedback stays private.">
   <meta name="keywords" content="reviewlift demo, review funnel example, google review funnel test, free review tool demo">
   <link rel="canonical" href="https://www.reviewlift.app/demo">
@@ -88,6 +88,22 @@
 
     .powered-by { text-align: center; margin-top: 24px; font-size: 0.72rem; color: rgba(234,231,220,0.22); }
     .powered-by a:hover { color: var(--accent); }
+
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
 
     /* Mobile‑friendly demo banner */
     @media (max-width: 600px) {

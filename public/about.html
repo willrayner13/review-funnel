@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>About ReviewLift — UK Review Funnel Tool for Local Businesses</title>
   <meta name="description" content="ReviewLift is a UK-based review management platform for local businesses. It routes happy customers to Google reviews and captures unhappy feedback privately, before it reaches public review sites.">
   <meta name="keywords" content="reviewlift, about reviewlift, uk review funnel, reputation management tool, local business reviews uk">
@@ -135,6 +135,22 @@
     .footer-links a{font-size:.82rem;color:var(--cream-dim);transition:color .2s;}
     .footer-links a:hover{color:var(--cream);}
     .footer-copy{font-size:.78rem;color:rgba(234,231,220,.22);}
+
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
 
     @media(max-width:700px){
       nav{padding:0 16px;}

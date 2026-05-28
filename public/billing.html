@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Billing — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
@@ -75,6 +75,21 @@
     .btn-danger-solid { background: var(--danger) !important; color: #fff !important; border-color: var(--danger) !important; }
     .btn-danger-solid:hover { background: #a85548 !important; transform: none !important; }
     #statusMsg { margin-top: 16px; font-size: 0.875rem; min-height: 20px; }
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
     @media (max-width: 600px) {
       .topnav { padding: 14px 16px; }
       .page-body { padding: 32px 16px 60px; }

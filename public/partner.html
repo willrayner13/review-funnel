@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Affiliate Portal — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -68,7 +68,21 @@
     .bank-details-btn:hover{color:#D4B87A;}
 
     .earnings-note{font-size:0.72rem;color:rgba(234,231,220,0.3);margin-top:4px;}
-
+/* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
     @media(max-width:700px){
       .metrics-grid{grid-template-columns:1fr 1fr;}
       .payout-grid{grid-template-columns:1fr;}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Blog — ReviewLift | Reputation insights for UK local businesses</title>
   <meta name="description" content="Practical advice on online reviews, reputation management, and growing your local business — from the team behind ReviewLift.">
   <meta name="keywords" content="reviewlift blog, online reviews uk, reputation management tips, local business marketing, review funnel guide">
@@ -350,6 +350,22 @@
       font-size: .78rem;
       color: rgba(234,231,220,.22);
     }
+
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
 
     /* ——— RESPONSIVE ——— */
     @media (max-width: 900px) {

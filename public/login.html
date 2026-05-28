@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Sign In — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
@@ -27,6 +27,21 @@
     .pw-wrap input { padding-right: 50px; margin-bottom: 0; }
     .pw-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--cream-dim); font-size: 1.1rem; padding: 4px; min-height: 0; line-height: 1; transition: color 0.2s; }
     .pw-eye:hover { color: var(--cream); transform: translateY(-50%); box-shadow: none; }
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
   </style>
 </head>
 <body>

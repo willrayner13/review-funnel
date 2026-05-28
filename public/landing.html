@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>ReviewLift — Smart Review Funnel for UK Local Businesses</title>
   <meta name="description" content="ReviewLift routes happy customers to your Google review page and catches complaints privately before they go public. The review funnel that runs itself.">
   <meta name="keywords" content="reviewlift, review lift, review funnel, google review management, negative review filter, uk local business reviews">
@@ -119,6 +119,22 @@
       align-items: center;
       gap: 10px;
     }
+
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
     
     .btn-nav-login {
       font-family: 'DM Sans', sans-serif;
@@ -879,6 +895,88 @@
       opacity: 1;
       transform: none;
     }
+
+    /* Laptop specific landing page fixes */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .hero {
+    min-height: 80vh;
+    padding: 100px 24px 60px;
+  }
+  
+  .hero h1 {
+    font-size: 3.2rem;
+  }
+  
+  .hero-sub {
+    font-size: 1rem;
+    max-width: 550px;
+  }
+  
+  .steps-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .step-card {
+    padding-top: 50px;
+  }
+  
+  .step-number {
+    font-size: 4rem;
+  }
+  
+  .step-title {
+    font-size: 1rem;
+  }
+  
+  .step-desc {
+    font-size: 0.85rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .feature-card {
+    padding: 22px 18px;
+  }
+  
+  .pricing-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .price-card {
+    padding: 24px 20px;
+  }
+  
+  .price-amount {
+    font-size: 2.2rem;
+  }
+  
+  .integrations-grid {
+    gap: 8px;
+  }
+  
+  .integration-pill {
+    padding: 6px 16px;
+    font-size: 0.8rem;
+  }
+  
+  .agency-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .cta-section {
+    padding: 70px 24px;
+  }
+  
+  .cta-section h2 {
+    font-size: 2.2rem;
+  }
+}
 
     /* RESPONSIVE */
     @media (max-width: 900px) {

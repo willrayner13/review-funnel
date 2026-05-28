@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Create Your Account — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
@@ -80,6 +80,21 @@
     .plan.featured button:hover{background:#D4B87A;}
     .global-trial-note{text-align:center;font-size:0.78rem;color:rgba(234,231,220,0.3);margin-top:12px;line-height:1.6;}
     #result{text-align:center;font-size:0.875rem;margin-top:10px;min-height:20px;}
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
     @media(max-width:768px){.plans-grid{grid-template-columns:1fr;}}
   </style>
 </head>

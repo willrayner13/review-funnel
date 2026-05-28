@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Feedback — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
@@ -17,6 +17,21 @@
     h2 { margin-bottom: 8px; }
     p { color: var(--cream-dim); margin-bottom: 24px; }
     textarea { min-height: 130px; }
+    /* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
   </style>
 </head>
 <body>

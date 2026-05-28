@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>How much a single bad online review can cost your business — ReviewLift</title>
   <meta name="description" content="One negative review can quietly influence dozens of future customers. Understand the real cost and how to protect yourself.">
   <meta name="keywords" content="bad online review cost, impact of negative reviews, protect online rating, review funnel">
@@ -54,7 +54,21 @@
     footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .footer-links { display: flex; gap: 24px; }
     .footer-copy { font-size: 0.78rem; color: rgba(234,231,220,.22); }
-
+/* Base laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body {
+    font-size: 14px;
+  }
+  
+  .container, .dashboard-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
     @media (max-width: 700px) {
       nav { padding: 0 16px; } .nav-links { display: none; } .page-wrap { padding: 100px 16px 60px; }
     }
