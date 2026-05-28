@@ -3,706 +3,943 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ReviewLift — The UK Review Funnel for Local Businesses</title>
-  <meta name="description" content="ReviewLift helps local businesses collect more positive reviews and capture negative feedback privately, before it reaches public review sites.">
+  <title>ReviewLift — Smart Review Funnel for UK Local Businesses</title>
+  <meta name="description" content="ReviewLift routes happy customers to your Google review page and catches complaints privately before they go public. The review funnel that runs itself.">
   <meta name="keywords" content="reviewlift, review lift, review funnel, google review management, negative review filter, uk local business reviews">
   <link rel="canonical" href="https://www.reviewlift.app/">
   <meta name="google-site-verification" content="zN2rayp3VSieYnBvNdJnlJF7e35aJcdoO1KH_7fKGqc" />
-  <meta property="og:title" content="ReviewLift — The UK Review Funnel for Local Businesses">
-<meta property="og:description" content="ReviewLift quietly intercepts unhappy customers before they reach public review sites — and sends satisfied ones straight to your review page.">
-<meta property="og:image" content="https://www.reviewlift.app/apple-touch-icon.png">
-<meta property="og:url" content="https://www.reviewlift.app/">
-<meta property="og:type" content="website">
+  <meta property="og:title" content="ReviewLift — Smart Review Funnel for UK Local Businesses">
+  <meta property="og:description" content="ReviewLift quietly intercepts unhappy customers before they reach public review sites — and sends satisfied ones straight to your review page.">
+  <meta property="og:image" content="https://www.reviewlift.app/apple-touch-icon.png">
+  <meta property="og:url" content="https://www.reviewlift.app/">
+  <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ReviewLift — The UK Review Funnel for Local Businesses">
-<meta name="twitter:description" content="ReviewLift quietly intercepts unhappy customers before they reach public review sites — and sends satisfied ones straight to your review page.">
-<meta name="twitter:image" content="https://www.reviewlift.app/apple-touch-icon.png">
-<meta property="og:locale" content="en_GB">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="ReviewLift — Smart Review Funnel for UK Local Businesses">
+  <meta name="twitter:description" content="ReviewLift quietly intercepts unhappy customers before they reach public review sites — and sends satisfied ones straight to your review page.">
+  <meta name="twitter:image" content="https://www.reviewlift.app/apple-touch-icon.png">
+  <meta property="og:locale" content="en_GB">
   <style>
     :root {
-      --bg:#1A1A18; --surface:#242422; --surface-2:#2E2E2B; --surface-3:#383835;
-      --border:rgba(234,231,220,0.09); --border-hi:rgba(234,231,220,0.22);
-      --cream:#EAE7DC; --cream-dim:rgba(234,231,220,0.52); --cream-faint:rgba(234,231,220,0.07);
-      --accent:#C8A96E; --accent-dim:rgba(200,169,110,0.15);
-      --success:#6A9E7F; --danger:#C0675A;
-      --r:12px; --r-lg:20px;
+      --bg: #1A1A18;
+      --surface: #242422;
+      --surface-2: #2E2E2B;
+      --surface-3: #383835;
+      --border: rgba(234, 231, 220, 0.09);
+      --border-hi: rgba(234, 231, 220, 0.22);
+      --cream: #EAE7DC;
+      --cream-dim: rgba(234, 231, 220, 0.52);
+      --cream-faint: rgba(234, 231, 220, 0.07);
+      --accent: #C8A96E;
+      --accent-dim: rgba(200, 169, 110, 0.15);
+      --success: #6A9E7F;
+      --danger: #C0675A;
+      --r: 12px;
+      --r-lg: 20px;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--cream);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
-    a{color:inherit;text-decoration:none;}
-    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
-
-    /* ── NAV ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(26,26,24,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
-    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;}
-    .nav-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;}
-    .nav-links{display:flex;align-items:center;gap:32px;}
-    .nav-links a{font-size:0.875rem;color:var(--cream-dim);transition:color .2s;}
-    .nav-links a:hover{color:var(--cream);}
-    .nav-cta{display:flex;align-items:center;gap:10px;}
-    .nav-cta{display:flex;align-items:center;gap:10px;}
-    .btn-nav-login{font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;color:var(--cream-dim);padding:8px 16px;border:1px solid var(--border);border-radius:8px;transition:all .2s;cursor:pointer;background:transparent;}
-    .btn-nav-login:hover{border-color:var(--border-hi);color:var(--cream);}
-    .btn-nav-start{font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:700;background:var(--accent);color:#1A1A18;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;}
-    .btn-nav-start:hover{background:#D4B87A;transform:translateY(-1px);}
-    /* Hamburger button — hidden on desktop */
-    .nav-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:transparent;border:none;cursor:pointer;padding:8px;min-height:0;width:36px;height:36px;}
-    .nav-hamburger span{display:block;width:22px;height:2px;background:var(--cream-dim);border-radius:2px;transition:all .25s;}
-    .nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-    .nav-hamburger.open span:nth-child(2){opacity:0;}
-    .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-    /* Mobile drawer */
-    .nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(22,22,20,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:20px 24px 28px;flex-direction:column;gap:0;z-index:199;}
-    .nav-drawer.open{display:flex;}
-    .nav-drawer a{font-size:1rem;color:var(--cream-dim);padding:14px 0;border-bottom:1px solid var(--border);transition:color .2s;display:block;}
-    .nav-drawer a:last-of-type{border-bottom:none;}
-    .nav-drawer a:hover{color:var(--cream);}
-    .nav-drawer-cta{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
-    .nav-drawer-cta a{border-bottom:none !important;}
-    .nav-drawer-cta .btn-nav-login{width:100%;text-align:center;justify-content:center;display:block;padding:12px;border-radius:8px;}
-    .nav-drawer-cta .btn-nav-start{width:100%;text-align:center;display:block;padding:12px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;background:var(--accent);color:#1A1A18;}
-
-    section{position:relative;z-index:1;}
-
-        /* SMS mockup */
-    .sms-mockup{background:var(--surface-2);border-radius:12px;padding:16px;max-width:280px;margin:0 auto;}
-    .sms-bubble{background:#2563EB;color:white;border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:0.82rem;line-height:1.6;margin-bottom:8px;}
-    .sms-bubble .sms-sender{font-size:0.68rem;color:rgba(255,255,255,0.65);margin-bottom:4px;font-weight:600;}
-    .sms-time{font-size:0.65rem;color:var(--cream-dim);text-align:center;}
-    .sms-cta{display:block;background:var(--accent);color:#1A1A18;font-size:0.78rem;font-weight:700;padding:10px 16px;border-radius:8px;text-align:center;margin-top:10px;}
-
-    /* Email mockup */
-    .email-mockup{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface-3);font-size:0.78rem;}
-    .email-header{background:var(--surface-2);padding:10px 14px;border-bottom:1px solid var(--border);}
-    .email-header-row{display:flex;gap:6px;align-items:center;color:var(--cream-dim);margin-bottom:3px;}
-    .email-header-row strong{color:var(--cream);}
-    .email-body{padding:14px;}
-    .email-body p{color:var(--cream-dim);line-height:1.6;margin-bottom:8px;}
-    .email-cta-btn{display:inline-block;background:var(--accent);color:#1A1A18;padding:8px 18px;border-radius:6px;font-weight:700;font-size:0.78rem;margin-top:4px;}
-
-
-    /* ── HERO — clean, centred, no demo card ── */
-    .hero{
-      min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      text-align:center;padding:100px 24px 80px;
-      background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(200,169,110,0.11) 0%,transparent 70%),
-                 radial-gradient(ellipse 40% 30% at 80% 80%,rgba(200,169,110,0.05) 0%,transparent 60%);
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,169,110,0.25);border-radius:100px;padding:6px 16px;margin-bottom:32px;animation:fadeUp .6s ease both;}
-    .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,6vw,5rem);font-weight:800;line-height:1.06;letter-spacing:-1.5px;max-width:820px;animation:fadeUp .6s .1s ease both;}
-    .hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent) 0%,#E8C98A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .hero-sub{margin-top:24px;max-width:540px;font-size:1.1rem;color:var(--cream-dim);line-height:1.7;animation:fadeUp .6s .2s ease both;}
-
-    /* Hero buttons */
-    .hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:40px;animation:fadeUp .6s .3s ease both;}
-    .btn-trial{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;background:var(--cream);color:#1A1A18;padding:16px 36px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;}
-    .btn-trial:hover{background:#F5F2EB;transform:translateY(-2px);box-shadow:0 8px 28px rgba(234,231,220,0.18);}
-
-    /* Demo button — deliberately eye-catching, different style */
-    .btn-demo{
-      font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;
-      background:transparent;color:var(--accent);
-      padding:15px 32px;border-radius:10px;
-      border:2px solid var(--accent);
-      cursor:pointer;transition:all .25s;
-      display:inline-flex;align-items:center;gap:10px;
-      position:relative;overflow:hidden;
+    
+    a { color: inherit; text-decoration: none; }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
     }
-    .btn-demo::before{
-      content:'';position:absolute;inset:0;
-      background:var(--accent);opacity:0;transition:opacity .25s;
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(26, 26, 24, 0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
     }
-    .btn-demo:hover{color:#1A1A18;transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,169,110,0.3);}
-    .btn-demo:hover::before{opacity:1;}
-    .btn-demo span{position:relative;z-index:1;}
-    /* Pulse ring on demo button to draw the eye */
-    .btn-demo-wrap{position:relative;display:inline-block;}
-    .btn-demo-wrap::after{
-      content:'';position:absolute;inset:-6px;border-radius:14px;
-      border:2px solid rgba(200,169,110,0.4);
-      animation:demoRing 2.4s ease-in-out infinite;
-      pointer-events:none;
+    
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    @keyframes demoRing{0%,100%{opacity:0;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
-
-    .hero-note{margin-top:18px;font-size:0.78rem;color:rgba(234,231,220,0.28);animation:fadeUp .6s .4s ease both;}
-
-    /* ── PROOF BAR ── */
-    .proof-bar{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 48px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
-    .proof-item{display:flex;align-items:center;gap:10px;}
-    .proof-icon{font-size:1.4rem;}
-    .proof-text{font-size:0.82rem;color:var(--cream-dim);line-height:1.4;}
-    .proof-text strong{color:var(--cream);display:block;font-size:1rem;}
-
-       /* ── TESTIMONIALS CAROUSEL ── */
-    .testimonials-section{padding:0 0 100px;overflow:hidden;}
-    .testimonials-header{max-width:1000px;margin:0 auto 40px;padding:0 24px;}
-    .carousel-outer{
-      position:relative;
-      -webkit-mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);
-      mask-image:linear-gradient(to right,transparent 0%,black 7%,black 93%,transparent 100%);
+    
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
     }
-    .carousel-track{
-      display:flex;
-      gap:20px;
-      width:max-content;
-      animation:scrollLeft 42s linear infinite;
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
     }
-    .carousel-track:hover{animation-play-state:paused;}
-    @keyframes scrollLeft{
-      0%{transform:translateX(0);}
-      100%{transform:translateX(-50%);}
+    
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--cream-dim);
+      transition: color .2s;
     }
-        @keyframes scrollLeft{
-      0%{transform:translateX(0);}
-      100%{transform:translateX(-50%);}
+    
+    .nav-links a:hover { color: var(--cream); }
+    
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .t-card{
-      background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
-      padding:28px 26px 24px;width:300px;flex-shrink:0;
+    
+    .btn-nav-login {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--cream-dim);
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all .2s;
+      cursor: pointer;
+      background: transparent;
     }
-    .t-stars{color:var(--accent);font-size:0.875rem;letter-spacing:3px;margin-bottom:14px;}
-    .t-quote{font-size:0.875rem;color:var(--cream-dim);line-height:1.7;margin-bottom:20px;font-style:italic;}
-    .t-author{border-top:1px solid var(--border);padding-top:14px;display:flex;flex-direction:column;gap:3px;}
-    .t-name{font-size:0.82rem;font-weight:600;color:var(--cream);}
-    .t-biz{font-size:0.72rem;color:var(--accent);}
- 
-
-    /* ── STATS SECTION ── */
-    .stats-section{padding:100px 24px;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(200,169,110,0.07) 0%,transparent 70%);}
-    .stats-inner{max-width:1000px;margin:0 auto;}
-    .stats-intro{text-align:center;margin-bottom:60px;}
-    .stats-eyebrow{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--accent);margin-bottom:14px;display:block;}
-    .stats-heading{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.6px;line-height:1.1;margin-bottom:14px;}
-    .stats-sub{font-size:1rem;color:var(--cream-dim);max-width:520px;margin:0 auto;line-height:1.7;}
-
-    /* Interactive calculator card */
-    .calc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:48px;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);}
-    .calc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.4),transparent);}
-    .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
-
-    /* Slider controls */
-    .calc-controls{display:flex;flex-direction:column;gap:28px;}
-    .slider-group label{font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--cream-dim);display:block;margin-bottom:10px;}
-    .slider-value-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-    .slider-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--cream);}
-    input[type=range]{
-      -webkit-appearance:none;appearance:none;width:100%;height:4px;
-      background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--pct,40%),var(--surface-3) var(--pct,40%),var(--surface-3) 100%);
-      border-radius:4px;outline:none;cursor:pointer;border:none;margin:0;padding:0;
+    
+    .btn-nav-login:hover {
+      border-color: var(--border-hi);
+      color: var(--cream);
     }
-    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 3px rgba(200,169,110,0.2);}
-    input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
-
-    /* Results */
-    .calc-results{display:flex;flex-direction:column;gap:16px;}
-    .result-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;transition:border-color .3s,transform .3s;}
-    .result-card.highlight{border-color:rgba(200,169,110,0.35);background:linear-gradient(135deg,var(--surface-2),rgba(200,169,110,0.06));}
-    .result-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:.8px;color:var(--cream-dim);margin-bottom:6px;}
-    .result-value{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1;transition:all .3s;}
-    .result-value.positive{color:#8EC9A8;}
-    .result-value.accent{color:var(--accent);}
-    .result-value.danger{color:#D4897C;}
-    .result-sub{font-size:0.75rem;color:var(--cream-dim);margin-top:4px;line-height:1.5;}
-    .calc-disclaimer{font-size:0.7rem;color:rgba(234,231,220,0.25);margin-top:24px;line-height:1.5;text-align:center;}
-
-    /* Stat tiles below calc */
-    .stat-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;}
-    .stat-tile{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);padding:24px 20px;text-align:center;transition:all .2s;}
-    .stat-tile:hover{border-color:var(--border-hi);transform:translateY(-2px);}
-    .tile-num{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;line-height:1;margin-bottom:6px;}
-    .tile-label{font-size:0.78rem;color:var(--cream-dim);line-height:1.5;}
-
-    /* ── DEMO SPOTLIGHT ── */
-    .demo-spotlight{background:linear-gradient(135deg,var(--surface) 0%,rgba(200,169,110,0.03) 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-    .spotlight-inner{max-width:1000px;margin:0 auto;padding:80px 48px;display:grid;grid-template-columns:1fr 1.5fr;gap:60px;align-items:start;}
-
-    .section-tag{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-    .section-tag::after{content:'';flex:1;max-width:60px;height:1px;background:var(--accent);opacity:.4;}
-    .section-heading{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.8px;line-height:1.1;max-width:560px;margin-bottom:16px;}
-    .section-sub{font-size:1rem;color:var(--cream-dim);max-width:480px;line-height:1.7;margin-bottom:60px;}
-
-    .ds-sub{font-size:0.95rem;color:var(--cream-dim);line-height:1.75;margin-bottom:28px;}
-    .ds-steps{display:flex;flex-direction:column;gap:14px;}
-    .ds-step{display:flex;align-items:flex-start;gap:14px;}
-    .ds-num{width:26px;height:26px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,169,110,0.3);color:var(--accent);font-size:0.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
-    .ds-step strong{font-size:0.875rem;font-weight:600;color:var(--cream);display:block;margin-bottom:2px;}
-    .ds-step span{font-size:0.8rem;color:var(--cream-dim);}
-
-    /* ── PRODUCT SCREENSHOTS SECTION ── */
-    .screenshots-section {
-      padding: 80px 24px 60px;
-      background: #242422;
+    
+    .btn-nav-start {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      background: var(--accent);
+      color: #1A1A18;
+      padding: 9px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
     }
-    .screenshots-inner {
+    
+    .btn-nav-start:hover {
+      background: #D4B87A;
+      transform: translateY(-1px);
+    }
+    
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      width: 36px;
+      height: 36px;
+    }
+    
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--cream-dim);
+      border-radius: 2px;
+      transition: all .25s;
+    }
+    
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(22, 22, 20, 0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px 28px;
+      flex-direction: column;
+      gap: 0;
+      z-index: 199;
+    }
+    
+    .nav-drawer.open { display: flex; }
+    
+    .nav-drawer a {
+      font-size: 1rem;
+      color: var(--cream-dim);
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color .2s;
+      display: block;
+    }
+    
+    .nav-drawer a:last-of-type { border-bottom: none; }
+    .nav-drawer a:hover { color: var(--cream); }
+    
+    .nav-drawer-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    
+    .nav-drawer-cta a { border-bottom: none !important; }
+    
+    .nav-drawer-cta .btn-nav-login {
+      width: 100%;
+      text-align: center;
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    
+    .nav-drawer-cta .btn-nav-start {
+      width: 100%;
+      text-align: center;
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: var(--accent);
+      color: #1A1A18;
+    }
+
+    section { position: relative; z-index: 1; }
+
+    /* HERO */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200, 169, 110, 0.11) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 30% at 80% 80%, rgba(200, 169, 110, 0.05) 0%, transparent 60%);
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(200, 169, 110, 0.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: 32px;
+      animation: fadeUp .6s ease both;
+    }
+    
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.06;
+      letter-spacing: -1.5px;
+      max-width: 800px;
+      animation: fadeUp .6s .1s ease both;
+    }
+    
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, #E8C98A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero-sub {
+      margin-top: 24px;
+      max-width: 600px;
+      font-size: 1.05rem;
+      color: var(--cream-dim);
+      line-height: 1.7;
+      animation: fadeUp .6s .2s ease both;
+    }
+    
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 36px;
+      animation: fadeUp .6s .3s ease both;
+    }
+    
+    .btn-trial {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      background: var(--cream);
+      color: #1A1A18;
+      padding: 16px 36px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .btn-trial:hover {
+      background: #F5F2EB;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(234, 231, 220, 0.18);
+    }
+    
+    .hero-trust {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      font-size: 0.78rem;
+      color: var(--cream-dim);
+      animation: fadeUp .6s .4s ease both;
+    }
+
+    .btn-demo {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      background: transparent;
+      color: var(--accent);
+      padding: 15px 32px;
+      border-radius: 10px;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      transition: all .25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-demo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    
+    .btn-demo:hover {
+      color: #1A1A18;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(200, 169, 110, 0.3);
+    }
+    
+    .btn-demo:hover::before { opacity: 1; }
+    .btn-demo span { position: relative; z-index: 1; }
+
+    /* SECTION DIVIDER */
+    .section-divider {
+      max-width: 1000px;
+      margin: 0 auto;
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.2), transparent);
+    }
+
+    /* HOW IT WORKS */
+    .how-section {
+      padding: 100px 48px;
       max-width: 1100px;
       margin: 0 auto;
     }
-    .screenshots-intro {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-    .screenshots-heading {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -0.6px;
-      line-height: 1.1;
-      margin-bottom: 14px;
-      color: var(--cream);
-    }
-    .screenshots-sub {
-      font-size: 1rem;
-      color: var(--cream-dim);
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* Shot groups */
-    .shot-group {
-      margin-bottom: 0;
-    }
-    .shot-label {
+    
+    .section-eyebrow {
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.4px;
       color: var(--accent);
-      display: block;
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    /* Three shots in a row */
-    .shot-row {
       display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 28px;
-    }
-    .shot-card {
-      flex: 1;
-      max-width: 320px;
-      text-align: center;
-    }
-    .shot-card img {
-      width: 100%;
-      height: auto;
-      border-radius: var(--r);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      display: block;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-    }
-
-    .shot-card img:hover {
-  transform: scale(1.8);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  z-index: 10;
-  position: relative;
-}
-    .shot-card-featured {
-      transform: scale(1.06);
-      z-index: 2;
-    }
-    .shot-card-featured img {
-      box-shadow: 0 12px 48px rgba(0,0,0,0.55);
-    }
-    .shot-caption {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      color: var(--cream-dim);
-      margin-top: 16px;
-    }
-
-    /* Divider */
-    .shot-divider {
-      text-align: center;
-      padding: 40px 0;
-      position: relative;
-    }
-    .shot-divider::before {
-      content: '';
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      top: 50%;
-      height: 1px;
-      background: rgba(200,169,110,0.2);
-    }
-    .shot-chevron {
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #242422;
-      border: 1px solid rgba(200,169,110,0.3);
-      color: var(--accent);
-      font-size: 1.2rem;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    
+    .section-eyebrow::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--accent);
+      opacity: .4;
+    }
+    
+    .section-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -.6px;
+      line-height: 1.1;
+      margin-bottom: 48px;
+      max-width: 600px;
+    }
+    
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    
+    .step-card {
       position: relative;
-      z-index: 1;
+      padding-top: 60px;
+    }
+    
+    .step-number {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      color: var(--accent);
+      opacity: 0.15;
+      line-height: 1;
+      pointer-events: none;
+    }
+    
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--cream-dim);
+      line-height: 1.7;
     }
 
-    /* Stat tiles */
-    .stat-tiles {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 16px;
+    /* INTEGRATIONS WALL */
+    .integrations-section {
+      padding: 80px 48px;
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
     }
-    .stat-tile {
+    
+    .integrations-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 32px 0;
+    }
+    
+    .integration-pill {
       background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 24px 20px;
-      text-align: center;
-      transition: all .2s;
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      transition: all 0.2s;
+      cursor: default;
     }
-    .stat-tile:hover {
+    
+    .integration-pill:hover {
+      border-color: var(--accent);
+      color: var(--cream);
+    }
+    
+    .integrations-note {
+      font-size: 0.82rem;
+      color: var(--cream-dim);
+    }
+
+    /* FEATURES */
+    .features-section {
+      padding: 80px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      transition: all 0.2s;
+    }
+    
+    .feature-card:hover {
       border-color: var(--border-hi);
       transform: translateY(-2px);
     }
-    .tile-num {
+    
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    
+    .feature-card h4 {
       font-family: 'Syne', sans-serif;
-      font-size: 2.2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .feature-card p {
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      line-height: 1.6;
+    }
+
+    /* AGENCY */
+    .agency-section {
+      padding: 80px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .agency-sub {
+      font-size: 1rem;
+      color: var(--cream-dim);
+      max-width: 600px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+    
+    .agency-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .agency-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: left;
+    }
+    
+    .agency-card .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 14px;
+    }
+    
+    .agency-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .agency-card p {
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      line-height: 1.6;
+    }
+    
+    .btn-agency {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      background: var(--accent);
+      color: #1A1A18;
+      padding: 16px 36px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .btn-agency:hover {
+      background: #D4B87A;
+      transform: translateY(-2px);
+    }
+
+    /* PRICING */
+    .pricing-section {
+      padding: 80px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 36px 32px;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+    
+    .price-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .4);
+    }
+    
+    .price-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(145deg, var(--surface) 0%, rgba(200, 169, 110, .06) 100%);
+    }
+    
+    .price-badge {
+      position: absolute;
+      top: 16px;
+      right: -26px;
+      background: var(--accent);
+      color: #1A1A18;
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 32px;
+      transform: rotate(35deg);
+    }
+    
+    .price-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .price-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.8rem;
       font-weight: 800;
       line-height: 1;
-      margin-bottom: 6px;
+      margin: 14px 0 4px;
     }
-    .tile-label {
-      font-size: 0.78rem;
+    
+    .price-amount sup {
+      font-size: 1.2rem;
+      vertical-align: top;
+      margin-top: 8px;
+    }
+    
+    .price-amount span {
+      font-size: 1rem;
+      font-weight: 400;
       color: var(--cream-dim);
+    }
+    
+    .price-desc {
+      font-size: .82rem;
+      color: var(--cream-dim);
+      margin-bottom: 20px;
       line-height: 1.5;
     }
-
-    @media (min-width: 901px) {
-  .pricing-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-}
-
-    /* ── MOBILE: smaller images, single column ── */
-    @media (max-width: 768px) {
-      .screenshots-section {
-        padding: 50px 20px 40px;
-      }
-      .screenshots-intro {
-        margin-bottom: 40px;
-      }
-      .shot-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 32px;
-      }
-      .shot-card {
-        max-width: 260px;
-        width: 100%;
-      }
-      .shot-card-featured {
-        transform: none;
-      }
-      .shot-card img {
-        max-height: none;
-        width: 100%;
-      }
-      .shot-label {
-        margin-bottom: 22px;
-      }
-      .shot-caption {
-        font-size: 0.78rem;
-        margin-top: 10px;
-      }
-      .shot-divider {
-        padding: 24px 0;
-      }
-      .stat-tiles {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
+    
+    .price-trial {
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    
+    .price-features {
+      list-style: none;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .price-features li {
+      font-size: .85rem;
+      color: var(--cream-dim);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .price-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    .price-cta {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+      transition: all .2s;
+      text-align: center;
+      display: block;
+    }
+    
+    .price-cta.dark {
+      background: var(--surface-2);
+      color: var(--cream);
+      border: 1px solid var(--border-hi);
+    }
+    
+    .price-cta.dark:hover {
+      background: var(--surface-3);
+      border-color: var(--cream-dim);
+      transform: translateY(-1px);
+    }
+    
+    .price-cta.gold {
+      background: var(--accent);
+      color: #1A1A18;
+    }
+    
+    .price-cta.gold:hover {
+      background: #D4B87A;
+      transform: translateY(-1px);
+    }
+    
+    /* Comparison row */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    
+    .comparison-table th {
+      text-align: left;
+      padding: 12px 16px;
+      color: var(--cream-dim);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .comparison-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--cream-dim);
+    }
+    
+    .comparison-table td.check {
+      color: var(--accent);
     }
 
-    /* Big demo card — spacious, no trial CTA inside */
-    .spotlight-card{
-      background:var(--surface-2);border:1px solid var(--border-hi);
-      border-radius:var(--r-lg);overflow:hidden;
-      box-shadow:0 24px 64px rgba(0,0,0,0.45);
-      position:sticky;top:84px;
+    /* FINAL CTA */
+    .cta-section {
+      padding: 100px 48px;
+      text-align: center;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(200, 169, 110, 0.08) 0%, transparent 70%);
+      border-top: 1px solid var(--border);
     }
-    .sc-header{
-      background:linear-gradient(135deg,rgba(200,169,110,0.18) 0%,rgba(200,169,110,0.06) 100%);
-      border-bottom:1px solid rgba(200,169,110,0.2);
-      padding:18px 28px;display:flex;align-items:center;justify-content:space-between;
+    
+    .cta-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.05;
+      margin-bottom: 16px;
     }
-    .sc-header-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);}
-    .sc-live{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--success);}
-    .sc-pulse{width:7px;height:7px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
-
-    /* Funnel preview inside card */
-    .sc-preview{padding:28px 28px 24px;text-align:center;border-bottom:1px solid var(--border);}
-    .sc-biz{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:600;color:var(--accent);margin-bottom:6px;min-height:1.4em;transition:all .15s;}
-    .sc-q{font-size:1.05rem;font-weight:600;font-family:'Syne',sans-serif;margin-bottom:18px;}
-    .sc-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-    .sc-btn{border-radius:10px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:0.85rem;font-weight:500;color:var(--cream);}
-    .sc-btn.good{background:rgba(106,158,127,0.1);border:1px solid rgba(106,158,127,0.35);}
-    .sc-btn.bad{background:rgba(192,103,90,0.07);border:1px solid rgba(192,103,90,0.28);}
-    .sc-btn-icon{font-size:1.7rem;}
-    .sc-flow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-    .sc-dest{font-size:0.68rem;font-weight:600;padding:6px 8px;border-radius:6px;text-align:center;}
-    .sc-dest.google{background:rgba(106,158,127,0.12);color:#8EC9A8;border:1px solid rgba(106,158,127,0.25);}
-    .sc-dest.private{background:rgba(192,103,90,0.1);color:#D4897C;border:1px solid rgba(192,103,90,0.2);}
-
-    /* Generator */
-    .sc-gen{padding:24px 28px 28px;}
-    .sc-gen-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:6px;}
-    .sc-gen-sub{font-size:0.8rem;color:var(--cream-dim);margin-bottom:18px;line-height:1.55;}
-    .sc-input{width:100%;padding:15px 18px;background:var(--surface-3);border:1px solid var(--border);border-radius:8px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:1rem;transition:border-color .2s;display:block;margin-bottom:12px;-webkit-appearance:none;}
-    .sc-input:focus{outline:none;border-color:rgba(234,231,220,0.35);background:var(--surface);}
-    .sc-input::placeholder{color:rgba(234,231,220,0.28);}
-    .sc-link-out{
-      background:var(--surface-3);border:1px solid var(--border);border-radius:8px;
-      padding:12px 16px;font-size:0.75rem;color:rgba(234,231,220,0.3);
-      font-family:'Courier New',monospace;word-break:break-all;
-      min-height:44px;margin-bottom:14px;line-height:1.6;transition:color .2s;
+    
+    .cta-section p {
+      font-size: 1.05rem;
+      color: var(--cream-dim);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .sc-link-out.active{color:var(--accent);}
-    .sc-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .sc-copy-btn{
-      font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;
-      background:var(--accent);color:#1A1A18;border:none;
-      padding:14px;border-radius:8px;cursor:pointer;
-      transition:all .2s;-webkit-tap-highlight-color:transparent;
+    
+    .cta-trust {
+      margin-top: 16px;
+      font-size: 0.82rem;
+      color: var(--cream-dim);
     }
-    .sc-copy-btn:hover{background:#D4B87A;transform:translateY(-1px);}
-    .sc-open-btn{
-      font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;
-      background:transparent;color:var(--cream-dim);
-      border:1px solid var(--border-hi);
-      padding:14px;border-radius:8px;cursor:pointer;
-      transition:all .2s;text-align:center;display:flex;align-items:center;justify-content:center;
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
     }
-    .sc-open-btn:hover{color:var(--cream);background:var(--cream-faint);}
-    .sc-footnote{font-size:0.68rem;color:rgba(234,231,220,0.22);text-align:center;margin-top:12px;}
-
-    /* ── HOW IT WORKS ── */
-    .section-wrap{max-width:1000px;margin:0 auto;padding:100px 48px;}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-    .step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px 28px;transition:all .2s;position:relative;overflow:hidden;}
-    .step:hover{border-color:var(--border-hi);transform:translateY(-4px);}
-    .step::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(234,231,220,0.12),transparent);}
-    .step-num{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:rgba(200,169,110,0.18);line-height:1;margin-bottom:20px;}
-    .step-icon{font-size:1.8rem;margin-bottom:14px;display:block;}
-    .step h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:10px;}
-    .step p{font-size:0.875rem;color:var(--cream-dim);line-height:1.65;}
-
-    /* ── FEATURES ── */
-    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-    .feature{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:all .2s;}
-    .feature:hover{border-color:var(--border-hi);}
-    .feature-icon{font-size:1.6rem;margin-bottom:14px;display:block;}
-    .feature h4{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;margin-bottom:8px;}
-    .feature p{font-size:0.825rem;color:var(--cream-dim);line-height:1.6;}
-    .feature-tag{display:inline-block;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;background:var(--accent-dim);color:var(--accent);border-radius:4px;padding:2px 7px;margin-top:10px;}
-
-    /* ── TESTIMONIALS ── */
-    .testimonials{max-width:1000px;margin:0 auto;padding:0 48px 100px;}
-    .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-    .testimonial{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:all .2s;}
-    .testimonial:hover{border-color:var(--border-hi);}
-    .t-stars{color:var(--accent);font-size:0.85rem;margin-bottom:12px;letter-spacing:2px;}
-    .t-quote{font-size:0.875rem;color:var(--cream-dim);line-height:1.65;margin-bottom:18px;font-style:italic;}
-    .t-author{display:flex;flex-direction:column;gap:2px;}
-    .t-name{font-size:0.8rem;font-weight:600;color:var(--cream);}
-    .t-biz{font-size:0.72rem;color:var(--accent);}
-
- /* ── CONTACT SECTION ── */
-    .contact-section{padding:100px 48px;border-top:1px solid var(--border);}
-    .contact-inner{max-width:700px;margin:0 auto;}
-    .contact-intro{text-align:center;margin-bottom:48px;}
-    .contact-intro h2{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.4px;margin-bottom:10px;}
-    .contact-intro p{font-size:0.95rem;color:var(--cream-dim);line-height:1.7;}
-    .contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:40px;position:relative;overflow:hidden;}
-    .contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.3),transparent);}
-    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-    .contact-field{display:flex;flex-direction:column;gap:6px;}
-    .contact-field label{font-size:0.78rem;font-weight:600;color:var(--cream-dim);text-transform:uppercase;letter-spacing:.6px;}
-    .contact-field input,.contact-field textarea{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.9rem;transition:border-color .2s;outline:none;}
-    .contact-field input:focus,.contact-field textarea:focus{border-color:rgba(200,169,110,0.4);}
-    .contact-field textarea{min-height:120px;resize:vertical;}
-    .contact-submit{width:100%;background:var(--accent);color:#1A1A18;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;margin-top:8px;}
-    .contact-submit:hover{background:#D4B87A;transform:translateY(-1px);}
-    .contact-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-    #contactMsg{text-align:center;font-size:0.85rem;margin-top:12px;min-height:20px;}
-    #contactMsg.success{color:#8EC9A8;}
-    #contactMsg.error{color:#D4897C;}
-    .contact-alt{text-align:center;margin-top:20px;font-size:0.82rem;color:var(--cream-dim);}
-    .contact-alt a{color:var(--accent);}
-
-    /* ── PRICING ── */
-    /* ── PRICING ── */
-.pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 1100px;
-  margin: 0 auto;
-  width: 100%;
-}
-    .price-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:36px 32px;transition:all .2s;position:relative;overflow:hidden;}
-    .price-card:hover{border-color:var(--border-hi);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
-    .price-card.highlighted{border-color:var(--accent);background:linear-gradient(145deg,var(--surface) 0%,rgba(200,169,110,.06) 100%);}
-    .price-badge{position:absolute;top:16px;right:-26px;background:var(--accent);color:#1A1A18;font-size:.58rem;font-weight:700;letter-spacing:1px;padding:4px 32px;transform:rotate(35deg);}
-    .price-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:8px;}
-    .price-amount{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;line-height:1;margin:14px 0 4px;}
-    .price-amount sup{font-size:1.2rem;vertical-align:top;margin-top:8px;}
-    .price-amount span{font-size:1rem;font-weight:400;color:var(--cream-dim);}
-    .price-desc{font-size:.82rem;color:var(--cream-dim);margin-bottom:28px;line-height:1.5;}
-    .price-features{list-style:none;margin-bottom:32px;display:flex;flex-direction:column;gap:10px;}
-    .price-features li{font-size:.85rem;color:var(--cream-dim);display:flex;align-items:center;gap:10px;}
-    .price-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
-    .price-cta{width:100%;padding:14px;border-radius:10px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;transition:all .2s;text-align:center;display:block;}
-    .price-cta.dark{background:var(--surface-2);color:var(--cream);border:1px solid var(--border-hi);}
-    .price-cta.dark:hover{background:var(--surface-3);border-color:var(--cream-dim);transform:translateY(-1px);}
-    .price-cta.gold{background:var(--accent);color:#1A1A18;}
-    .price-cta.gold{background:var(--accent);color:#1A1A18;}
-    .price-cta.gold:hover{background:#D4B87A;transform:translateY(-1px);}
-
-    /* ── FINAL CTA ── */
-    /* ── FINAL CTA — redesigned, much more impactful ── */
-    .cta-section{position:relative;overflow:hidden;padding:120px 48px;}
-    .cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(200,169,110,0.12) 0%,transparent 70%);pointer-events:none;}
-    .cta-section::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,0.3),transparent);}
-    .cta-inner{max-width:720px;margin:0 auto;text-align:center;position:relative;z-index:1;}
-    .cta-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,169,110,0.25);border-radius:100px;padding:6px 16px;margin-bottom:28px;}
-    .cta-section h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:20px;}
-    .cta-section h2 em{font-style:normal;background:linear-gradient(135deg,var(--accent) 0%,#E8C98A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .cta-section p{font-size:1.05rem;color:var(--cream-dim);line-height:1.75;margin-bottom:40px;max-width:520px;margin-left:auto;margin-right:auto;}
-    .cta-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:24px;}
-    .btn-cta-primary{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1.05rem;background:var(--accent);color:#1A1A18;padding:18px 44px;border-radius:12px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;}
-    .btn-cta-primary:hover{background:#D4B87A;transform:translateY(-2px);box-shadow:0 10px 36px rgba(200,169,110,0.35);}
-    .btn-cta-secondary{font-family:'DM Sans',sans-serif;font-weight:600;font-size:1rem;background:transparent;color:var(--cream-dim);padding:17px 32px;border-radius:12px;border:1px solid var(--border-hi);cursor:pointer;transition:all .2s;}
-    .btn-cta-secondary:hover{color:var(--cream);border-color:rgba(234,231,220,0.4);background:var(--cream-faint);}
-    .cta-proof{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap;padding-top:8px;}
-    .cta-proof-item{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:rgba(234,231,220,0.35);}
-    .cta-proof-item::before{content:'✓';color:var(--accent);font-size:0.7rem;}
-
-    /* ── FOOTER ── */
-    footer{border-top:1px solid var(--border);padding:40px 48px;position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-    .footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;}
-    .footer-links{display:flex;gap:28px;}
-    .footer-links a{font-size:.82rem;color:var(--cream-dim);transition:color .2s;}
-    .footer-links a:hover{color:var(--cream);}
-    .footer-copy{font-size:.78rem;color:rgba(234,231,220,.22);}
-
-    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-    .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
-    .reveal.visible{opacity:1;transform:none;}
-
-    @media(max-width:900px){
-      nav{padding:0 20px;}
-      .nav-links{display:none;}
-      .nav-cta{display:none;}
-      .nav-hamburger{display:flex;}
-      .hero{padding:100px 24px 60px;}
-      .proof-bar{gap:24px;padding:28px 24px;}
-      .calc-grid{grid-template-columns:1fr;}
-      .stat-tiles{grid-template-columns:1fr 1fr;}
-      .spotlight-inner{grid-template-columns:1fr;gap:40px;padding:60px 24px;}
-      .spotlight-card{position:static;}
-      .section-wrap{padding:80px 24px;}
-      .steps{grid-template-columns:1fr;}
-      .features-grid{grid-template-columns:1fr 1fr;}
-      .pricing-grid{grid-template-columns:1fr;max-width:420px;}
-      .testimonials{padding:0 24px 80px;}
-      .testimonials-grid{grid-template-columns:1fr;}
-      .contact-section{padding:80px 24px;}
-      .contact-grid{grid-template-columns:1fr;}
-      .cta-strip{padding:60px 24px;}
-            .cta-section{padding:80px 24px;}
-      footer{flex-direction:column;align-items:flex-start;padding:32px 24px;}
-      .stats-section{padding:80px 24px;}
-      .calc-card{padding:32px 24px;}
-
-         .pricing-grid {
-    grid-template-columns: 1fr !important;
-    max-width: 420px;
-  }
+    
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    @media(max-width:500px){
-      .features-grid{grid-template-columns:1fr;}
-      .hero h1{font-size:2.2rem;}
-      .hero-actions{flex-direction:column;align-items:stretch;}
-      .btn-trial,.btn-demo{justify-content:center;width:100%;}
-      .btn-demo-wrap{width:100%;display:block;}
-      .stat-tiles{grid-template-columns:1fr;}
-      .sc-btn-row{grid-template-columns:1fr;}
-            .cta-actions{flex-direction:column;align-items:stretch;}
-      .cta-actions{flex-direction:column;align-items:stretch;}
-      .btn-cta-primary,.btn-cta-secondary{justify-content:center;width:100%;}
+    
+    .footer-links {
+      display: flex;
+      gap: 28px;
     }
-    /* ── Mobile steps: horizontal numbered timeline instead of plain grid cards ── */
-    @media(max-width:900px){
-      .steps{display:flex;flex-direction:column;gap:0;position:relative;}
-      .steps::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent),rgba(200,169,110,0.1));border-radius:2px;}
-      .step{display:flex;align-items:flex-start;gap:20px;padding:24px 20px 24px 0;border:none;border-radius:0;background:transparent;transform:none !important;border-bottom:1px solid var(--border);position:relative;}
-      .step:last-child{border-bottom:none;}
-      .step::before{display:none;}
-      .step-num{font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:800;color:#1A1A18;background:var(--accent);width:36px;height:36px;min-width:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:0;line-height:1;position:relative;z-index:1;}
-      .step-icon{font-size:1.4rem;margin-bottom:8px;display:block;}
-      .step-content{flex:1;}
-      .step h3{font-size:1rem;margin-bottom:6px;}
-      .step p{font-size:0.85rem;}
+    
+    .footer-links a {
+      font-size: .82rem;
+      color: var(--cream-dim);
+      transition: color .2s;
+    }
+    
+    .footer-links a:hover { color: var(--cream); }
+    
+    .footer-copy {
+      font-size: .78rem;
+      color: rgba(234, 231, 220, .22);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      
+      .steps-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .agency-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+      
+      .how-section, .integrations-section, .features-section, .agency-section, .pricing-section, .cta-section {
+        padding: 60px 24px;
+      }
+    }
+    
+    @media (max-width: 500px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.2rem; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .btn-trial, .btn-demo { justify-content: center; width: 100%; }
     }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
-<div class="nav-links">
-<a href="#screenshots">How it works</a>
-<a href="#demo-section">Live demo</a>
-  <a href="#features">Features</a>
-  <a href="#pricing">Pricing</a>
-  <a href="/about">About</a>
-  <a href="/blog">Blog</a>               <!-- ADD THIS -->
-  <a href="#contact">Contact</a>
-</div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/about">About</a>
+    <a href="/blog">Blog</a>
+  </div>
   <div class="nav-cta">
     <a href="/login"><button class="btn-nav-login">Sign in</button></a>
     <a href="/admin"><button class="btn-nav-start">Start free trial →</button></a>
   </div>
-  <!-- Hamburger — mobile only -->
   <button class="nav-hamburger" id="navHamburger" onclick="toggleNav()" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
-<!-- Mobile nav drawer -->
+
 <div class="nav-drawer" id="navDrawer">
-<a href="#screenshots" onclick="closeNav()">How it works</a>
-<a href="#demo-section" onclick="closeNav()">Live demo</a>
+  <a href="#how" onclick="closeNav()">How it works</a>
   <a href="#features" onclick="closeNav()">Features</a>
   <a href="#pricing" onclick="closeNav()">Pricing</a>
   <a href="/about">About</a>
-    <a href="/blog" onclick="closeNav()">Blog</a>   <!-- ADD THIS -->
+  <a href="/blog" onclick="closeNav()">Blog</a>
   <div class="nav-drawer-cta">
     <a href="/login" onclick="closeNav()"><button class="btn-nav-login">Sign in</button></a>
     <a href="/admin" onclick="closeNav()"><button class="btn-nav-start">Start free trial →</button></a>
   </div>
 </div>
 
-<!-- Co-branded affiliate banner — only shows when ?ref= is present -->
-<div id="affiliateBanner" style="display:none; margin-top: 64px; background: linear-gradient(135deg, #242422 0%, rgba(200,169,110,0.08) 100%); border-bottom: 1px solid rgba(200,169,110,0.2); padding: 20px 48px; text-align: center;">
+<!-- AFFILIATE BANNER -->
+<div id="affiliateBanner" style="display:none; background: linear-gradient(135deg, #242422 0%, rgba(200,169,110,0.08) 100%); border-bottom: 1px solid rgba(200,169,110,0.2); padding: 20px 48px; text-align: center; margin-top: 64px;">
   <div style="max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
     <div style="display: flex; align-items: center; gap: 10px;">
       <div id="affiliateAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: var(--accent-dim); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: var(--accent); flex-shrink: 0;"></div>
@@ -717,454 +954,250 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════
-     HERO — clean, centred
-═══════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">⭐ Reputation management for local businesses</div>
-
-  <h1>Turn happy customers into<br><em>5-star reviews</em></h1>
-
-<p class="hero-sub">
-  ReviewLift quietly intercepts unhappy customers before they reach Google, Trustpilot, Checkatrade, or any review platform — and sends satisfied ones straight to your review page. Set up in 2 minutes.
-</p>
-
+  <div class="hero-badge">THE REVIEW SYSTEM THAT RUNS ITSELF</div>
+  <h1>Stop asking for reviews.<br><em>Make it happen automatically.</em></h1>
+  <p class="hero-sub">Connect ReviewLift to your booking system once. It watches every completed appointment, writes a personalised review request using AI, and sends it at the perfect moment. Your customers get a message that sounds like you wrote it. You do nothing.</p>
   <div class="hero-actions">
-    <a href="/admin">
-      <button class="btn-trial">Start 14-day free trial →</button>
-    </a>
-
-    <a href="#demo-section" class="btn-demo-wrap">
-      <button class="btn-demo">
-        <span>▶ See live demo</span>
-      </button>
-    </a>
+    <a href="/admin"><button class="btn-trial">Start free trial →</button></a>
+    <a href="#how"><button class="btn-demo"><span>See how it works</span></button></a>
   </div>
-
-  <p class="hero-note">14-day free trial · Card required · Cancel before day 14 to pay nothing</p>
-</section>
-
-<!-- PROOF BAR -->
-<div class="proof-bar reveal">
-  <div class="proof-item"><span class="proof-icon">⭐</span><div class="proof-text"><strong>More 5-star reviews</strong>Happy customers go to Google, Trustpilot, or anywhere</div></div>
-  <div class="proof-item"><span class="proof-icon">🔒</span><div class="proof-text"><strong>Complaints stay private</strong>Never reach public review sites</div></div>
-  <div class="proof-item"><span class="proof-icon">⚡</span><div class="proof-text"><strong>2-minute setup</strong>QR code ready to print instantly</div></div>
-  <div class="proof-item"><span class="proof-icon">📊</span><div class="proof-text"><strong>Full analytics</strong>Track every visit, rating & click</div></div>
-</div>
-
-<!-- ═══════════════════════════════════
-     PRODUCT SCREENSHOTS
-═══════════════════════════════════ -->
-<section class="screenshots-section" id="screenshots">
-  <div class="screenshots-inner">
-    
-    <div class="screenshots-intro reveal">
-      <h2 class="screenshots-heading">See exactly how it works</h2>
-      <p class="screenshots-sub">Simple for your customers. Powerful for you.</p>
-    </div>
-
-    <!-- Subsection 1: Customer Experience -->
-    <div class="shot-group reveal">
-      <span class="shot-label">THE CUSTOMER EXPERIENCE</span>
-      <div class="shot-row">
-        <div class="shot-card">
-          <img src="/images/592shots_so.png" alt="A simple, branded question" loading="lazy" width="280" height="560">
-          <p class="shot-caption">A simple, branded question</p>
-        </div>
-        <div class="shot-card shot-card-featured">
-          <img src="/images/627shots_so.png" alt="Unhappy? Feedback stays private" loading="lazy" width="280" height="560">
-          <p class="shot-caption">Unhappy? Feedback stays private</p>
-        </div>
-        <div class="shot-card">
-          <img src="/images/482shots_so.png" alt="Happy? Straight to Google" loading="lazy" width="280" height="560">
-          <p class="shot-caption">Happy? Straight to Google</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Divider between subsections -->
-    <div class="shot-divider reveal">
-      <span class="shot-chevron">⌄</span>
-    </div>
-
-    <!-- Subsection 2: Dashboard -->
-    <div class="shot-group reveal">
-      <span class="shot-label">YOUR DASHBOARD</span>
-      <div class="shot-row">
-        <div class="shot-card">
-          <img src="/images/641shots_so.png" alt="Track performance at a glance" loading="lazy" width="280" height="190">
-          <p class="shot-caption">Track performance at a glance</p>
-        </div>
-        <div class="shot-card shot-card-featured">
-          <img src="/images/699shots_so.png" alt="Send review requests by SMS or email" loading="lazy" width="280" height="190">
-          <p class="shot-caption">Send review requests by SMS or email</p>
-        </div>
-        <div class="shot-card">
-          <img src="/images/337shots_so.png" alt="AI replies and private feedback" loading="lazy" width="280" height="190">
-          <p class="shot-caption">AI replies and private feedback in one place</p>
-        </div>
-      </div>
-    </div>
-
+  <div class="hero-trust">
+    <span>✓ No card required</span>
+    <span>✓ Setup in under 2 minutes</span>
+    <span>✓ UK-built for UK businesses</span>
+    <span>✓ Cancel anytime</span>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════
-     STAT TILES (KEPT FROM OLD SECTION)
-═══════════════════════════════════ -->
-<section class="stats-section" style="padding-top:0;">
-  <div class="stats-inner">
-    <div class="stat-tiles">
-      <div class="stat-tile reveal">
-        <div class="tile-num" style="color:var(--danger)">30</div>
-        <div class="tile-label">potential customers deterred by a single 1-star review, on average</div>
-      </div>
-      <div class="stat-tile reveal" style="transition-delay:.08s">
-        <div class="tile-num" style="color:var(--accent)">28%</div>
-        <div class="tile-label">more new customers for businesses rated 4.5+ vs under 4.0 stars</div>
-      </div>
-      <div class="stat-tile reveal" style="transition-delay:.16s">
-        <div class="tile-num" style="color:#8EC9A8">89%</div>
-        <div class="tile-label">of UK consumers read reviews before choosing a local business</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════
-     DEMO SPOTLIGHT — big, prominent
-═══════════════════════════════════ -->
-<section class="demo-spotlight" id="demo-section">
-  <div class="spotlight-inner">
-
-    <div class="reveal">
-      <div class="section-tag">Live demo</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;letter-spacing:-.5px;line-height:1.1;margin-bottom:14px;">See how your reiew funnel would look</h2>
-      <p class="ds-sub">The easiest way to understand ReviewLift is to see the review funnel your customers would use.</p>
-
-      <div class="ds-steps">
-        <div class="ds-step"><div class="ds-num">1</div><div><strong>Enter your business name</strong><span>The funnel preview updates instantly with your business name.</span></div></div>
-        <div class="ds-step"><div class="ds-num">2</div><div><strong>Copy your personalised link</strong><span>The link is unique to your business and can be shared anywhere.</span></div></div>
-        <div class="ds-step"><div class="ds-num">3</div><div><strong>Send it to customers</strong><span>Use it in a message, email or QR code. When customers open the link, they're guided through the review funnel.</span></div></div>
-        
-      </div>
-    </div>
-
-    <!-- DEMO CARD — spacious, no trial CTA inside -->
-    <div class="spotlight-card reveal" style="transition-delay:.15s">
-      <div class="sc-header">
-        <span class="sc-header-label">👇 Type your business name</span>
-        <span class="sc-live"><span class="sc-pulse"></span>Live</span>
-      </div>
-
-      <div class="sc-preview">
-        <div class="sc-biz" id="scBizName">Your Business Name</div>
-        <div class="sc-q">How was your experience?</div>
-        <div class="sc-btns">
-          <div class="sc-btn good"><span class="sc-btn-icon">😊</span>Great!</div>
-          <div class="sc-btn bad"><span class="sc-btn-icon">😕</span>Could be better</div>
-        </div>
-        <div class="sc-flow">
-          <div class="sc-dest google">→ Sent to Google Review</div>
-          <div class="sc-dest private">→ Captured privately</div>
-        </div>
-      </div>
-
-      <div class="sc-gen">
-        <div class="sc-gen-title">Generate a personalised demo link</div>
-        <div class="sc-gen-sub">Enter your business name to see a live preview of the review funnel</div>
-        <input class="sc-input" id="scInput" placeholder="e.g. Joe's Barbershop, The Coffee House..." oninput="updateDemo()">
-        <div class="sc-link-out" id="scLinkOut">Type a business name to generate the link...</div>
-        <div class="sc-btn-row">
-          <button class="sc-copy-btn" onclick="copyDemo()"><span id="scCopyTxt">📋 Copy demo link</span></button>
-          <a id="scOpenBtn" href="#" target="_blank" class="sc-open-btn">Open demo →</a>
-        </div>
-        <p class="sc-footnote">No login needed · Works on any device · Instant</p>
-      </div>
-    </div>
-
-  </div>
-</section>
+<hr class="section-divider">
 
 <!-- HOW IT WORKS -->
-<section id="how-it-works">
-  <div class="section-wrap">
-    <div class="section-tag reveal">How it works</div>
-<h2 class="section-heading reveal">How does ReviewLift work?</h2><p class="section-sub reveal">Your funnel works wherever your customers are — QR, SMS, Email, or Link — separating happy and unhappy feedback instantly.</p>
-    <div class="steps">
-      <div class="step reveal"><div class="step-num">01</div><span class="step-icon">🏪</span><h3>Create your funnel</h3><p>Sign up, add your Google review link, and instantly get a unique funnel page and a printable QR code.</p></div>
-      <div class="step reveal" style="transition-delay:.1s"><div class="step-num">02</div><span class="step-icon">📲</span><h3>Customers scan your QR</h3><p>Place it on tables, receipts, or your counter. Customers scan it and answer one simple question.</p></div>
-      <div class="step reveal" style="transition-delay:.2s"><div class="step-num">03</div><span class="step-icon">✨</span><h3>The funnel does the work</h3><p>Happy customers go to your review page. Unhappy customers leave private feedback — only you see it.</p></div>
+<section class="how-section" id="how">
+  <div class="section-eyebrow reveal">How it works</div>
+  <h2 class="section-heading reveal">Three steps. Then it runs itself forever.</h2>
+  <div class="steps-grid">
+    <div class="step-card reveal">
+      <div class="step-number">01</div>
+      <div class="step-title">Connect your booking system</div>
+      <p class="step-desc">Paste one webhook URL into Calendly, Fresha, Booksy, Soe Exact, or any tool with Zapier. Takes 2 minutes. No developer needed.</p>
+    </div>
+    <div class="step-card reveal" style="transition-delay:.1s">
+      <div class="step-number">02</div>
+      <div class="step-title">AI writes the message</div>
+      <p class="step-desc">After each appointment, ReviewLift reads the service, the staff name, and the customer. It writes a message that sounds exactly like the business owner wrote it.</p>
+    </div>
+    <div class="step-card reveal" style="transition-delay:.2s">
+      <div class="step-number">03</div>
+      <div class="step-title">Reviews come in automatically</div>
+      <p class="step-desc">The customer gets a personalised text. They tap a link. They see your branded review funnel. They leave a review. You never touched anything.</p>
     </div>
   </div>
 </section>
+
+<hr class="section-divider">
+
+<!-- INTEGRATIONS -->
+<section class="integrations-section">
+  <div class="section-eyebrow reveal" style="justify-content:center;">Integrations</div>
+  <h2 class="section-heading reveal" style="max-width:100%; text-align:center; margin-left:auto; margin-right:auto;">Works with the software your clients already use</h2>
+  <div class="integrations-grid reveal">
+    <span class="integration-pill">Soe Exact</span>
+    <span class="integration-pill">Fresha</span>
+    <span class="integration-pill">Booksy</span>
+    <span class="integration-pill">Calendly</span>
+    <span class="integration-pill">Acuity</span>
+    <span class="integration-pill">Square</span>
+    <span class="integration-pill">Simplybook</span>
+    <span class="integration-pill">Zapier</span>
+    <span class="integration-pill">Xero</span>
+    <span class="integration-pill">QuickBooks</span>
+    <span class="integration-pill">Cliniko</span>
+    <span class="integration-pill">Timely</span>
+  </div>
+  <p class="integrations-note reveal">Don't see yours? If it has webhooks or works with Zapier, ReviewLift connects to it.</p>
+</section>
+
+<hr class="section-divider">
 
 <!-- FEATURES -->
-<section id="features" style="background:linear-gradient(180deg,transparent,rgba(200,169,110,0.02));">
-  <div class="section-wrap" style="padding-top:60px;">
-    <div class="section-tag reveal">Features</div>
-<h2 class="section-heading reveal">What features does ReviewLift offer?</h2>    <p class="section-sub reveal">No bloated dashboards. No confusing setup. Just the tools that actually move the needle on your rating.</p>
-    <div class="features-grid">
-     <div class="feature reveal"><span class="feature-icon">🔀</span><h4>Smart review funnel</h4><p>Routes happy customers to your review page and captures complaints privately before they go public.</p></div>
-      <div class="feature reveal" style="transition-delay:.05s"><span class="feature-icon">📊</span><h4>Analytics dashboard</h4><p>Track visits, positive rates, review clicks, and star distribution in one clean dashboard.</p></div>
-      <div class="feature reveal" style="transition-delay:.1s"><span class="feature-icon">📱</span><h4>QR code generator</h4><p>Instantly download a print-ready QR code for your counter, tables, or receipts.</p></div>
-      <div class="feature reveal" style="transition-delay:.15s"><span class="feature-icon">💬</span><h4>SMS & email requests</h4><p>Send review requests directly to customers via SMS or email with one click.</p><span class="feature-tag">Pro</span></div>
-      <div class="feature reveal" style="transition-delay:.2s"><span class="feature-icon">🤖</span><h4>AI review replies</h4><p>Paste any customer review and generate a polished, professional reply in seconds.</p><span class="feature-tag">Pro</span></div>
-      <div class="feature reveal" style="transition-delay:.25s"><span class="feature-icon">🔒</span><h4>Private feedback capture</h4><p>Unhappy customers submit feedback only you see. Resolve issues without public damage.</p></div>
+<section class="features-section" id="features">
+  <div class="section-eyebrow reveal">Features</div>
+  <h2 class="section-heading reveal">Everything a business needs to dominate their local Google ranking</h2>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <span class="feature-icon">✍️</span>
+      <h4>AI-personalised review requests</h4>
+      <p>Knows the customer's name, what service they had, and who served them. Every message sounds human — not like a robot copied a template.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:.05s">
+      <span class="feature-icon">🎤</span>
+      <h4>Voice note reviews</h4>
+      <p>Customer speaks for 30 seconds. AI transcribes it. They paste it into Google. The fastest review they'll ever leave.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:.1s">
+      <span class="feature-icon">🛡️</span>
+      <h4>Catches bad reviews privately</h4>
+      <p>Unhappy customers get a private feedback form. The complaint never reaches Google. You get a chance to fix it before it becomes public.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:.15s">
+      <span class="feature-icon">📊</span>
+      <h4>Reputation Score</h4>
+      <p>A single number out of 100 tracking your review velocity, average rating, and feedback ratio. Agencies love showing this to clients.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:.2s">
+      <span class="feature-icon">⚡</span>
+      <h4>WhatsApp complaint alerts</h4>
+      <p>When a customer complains, you get a WhatsApp within 60 seconds. With a suggested reply. Tap to send it. Resolve issues instantly.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:.25s">
+      <span class="feature-icon">📳</span>
+      <h4>NFC tap cards</h4>
+      <p>A physical card that customers tap with their phone. Opens your review funnel instantly. Order for £9.99. No app needed.</p>
     </div>
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<!-- TESTIMONIALS — infinite auto-scrolling carousel, pauses on hover -->
-<section class="testimonials-section">
-  <div class="testimonials-header reveal">
-    <div class="section-tag">What businesses say</div>
-  </div>
-  <div class="carousel-outer">
-    <div class="carousel-track">
-      <!-- Set A (6 cards) -->
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We went from 3.8 to 4.6 stars in under two months. The QR code on our tables has been a game changer — customers actually use it without being asked."</p><div class="t-author"><span class="t-name">Marco R.</span><span class="t-biz">Restaurant owner, Birmingham</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Before ReviewLift, one grumpy customer could tank our whole week online. Now I deal with complaints privately and only happy customers ever reach our public page."</p><div class="t-author"><span class="t-name">Sarah K.</span><span class="t-biz">Hair salon owner, Manchester</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny even on the Starter plan."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"My barber shop had 34 reviews and a 4.1 rating for two years. Six weeks with the QR system and we had 71 reviews and a 4.8. The difference is remarkable."</p><div class="t-author"><span class="t-name">Theo A.</span><span class="t-biz">Barber, London</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"The private feedback feature is genuinely underrated. I've fixed two real service issues because customers told me privately instead of leaving it online."</p><div class="t-author"><span class="t-name">Priya M.</span><span class="t-biz">Dental practice owner, Bristol</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We printed the QR on our receipts and on a card by the till. The passive review collection is brilliant — we're getting 3 to 4 new reviews every single week."</p><div class="t-author"><span class="t-name">Callum F.</span><span class="t-biz">Café owner, Edinburgh</span></div></div>
-      <!-- Set B — exact duplicate for seamless looping -->
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We went from 3.8 to 4.6 stars in under two months. The QR code on our tables has been a game changer — customers actually use it without being asked."</p><div class="t-author"><span class="t-name">Marco R.</span><span class="t-biz">Restaurant owner, Birmingham</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Before ReviewLift, one grumpy customer could tank our whole week online. Now I deal with complaints privately and only happy customers ever reach our public page."</p><div class="t-author"><span class="t-name">Sarah K.</span><span class="t-biz">Hair salon owner, Manchester</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"Setup took literally 2 minutes. The AI reply generator alone saves me an hour every week. Worth every penny even on the Starter plan."</p><div class="t-author"><span class="t-name">James T.</span><span class="t-biz">Gym owner, Leeds</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"My barber shop had 34 reviews and a 4.1 rating for two years. Six weeks with the QR system and we had 71 reviews and a 4.8. The difference is remarkable."</p><div class="t-author"><span class="t-name">Theo A.</span><span class="t-biz">Barber, London</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"The private feedback feature is genuinely underrated. I've fixed two real service issues because customers told me privately instead of leaving it online."</p><div class="t-author"><span class="t-name">Priya M.</span><span class="t-biz">Dental practice owner, Bristol</span></div></div>
-      <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-quote">"We printed the QR on our receipts and on a card by the till. The passive review collection is brilliant — we're getting 3 to 4 new reviews every single week."</p><div class="t-author"><span class="t-name">Callum F.</span><span class="t-biz">Café owner, Edinburgh</span></div></div>
+<hr class="section-divider">
+
+<!-- AGENCY -->
+<section class="agency-section">
+  <div class="section-eyebrow reveal" style="justify-content:center;">For agencies</div>
+  <h2 class="section-heading reveal" style="max-width:100%; text-align:center; margin-left:auto; margin-right:auto;">Built for agencies. White-label ready.</h2>
+  <p class="agency-sub reveal">Resell ReviewLift under your own brand. Your clients see your logo. You earn 30% recurring commission on every paying client. Forever.</p>
+  <div class="agency-grid">
+    <div class="agency-card reveal">
+      <span class="feature-icon">🎨</span>
+      <h4>White-label dashboard</h4>
+      <p>Your logo, your colours, your domain. Clients never see ReviewLift. It looks like you built it.</p>
+    </div>
+    <div class="agency-card reveal" style="transition-delay:.1s">
+      <span class="feature-icon">📄</span>
+      <h4>Monthly PDF reports</h4>
+      <p>Auto-generated on the 1st of every month. Forward to clients with your logo. Zero effort. They'll think you have a whole team.</p>
+    </div>
+    <div class="agency-card reveal" style="transition-delay:.2s">
+      <span class="feature-icon">💰</span>
+      <h4>30% recurring commission</h4>
+      <p>Earn every month your clients stay paying. One introduction, paid forever. No caps. No limits.</p>
     </div>
   </div>
-  <p style="text-align:center;font-size:0.68rem;color:rgba(234,231,220,0.18);margin-top:20px;padding:0 24px;">Based on early customers and beta testers. Results vary by business type, location, and usage.</p>
+  <a href="/partner"><button class="btn-agency">Become an agency partner →</button></a>
 </section>
 
-<section id="pricing">
-  <div class="section-wrap" style="max-width: 1100px; padding: 100px 24px;">
-    <div class="section-tag reveal" style="justify-content:center;">Pricing</div>
-    <h2 class="section-heading reveal" style="text-align:center;max-width:100%;margin-bottom:12px;">Honest, simple pricing</h2>
-    <p class="section-sub reveal" style="text-align:center;max-width:100%;margin-bottom:48px;">No contracts. No hidden fees. Cancel any time.</p>
-    <div class="pricing-grid" style="grid-template-columns:repeat(3,1fr);">
-      
-      <!-- Starter -->
-      <div class="price-card">
-        <div class="price-name">Starter</div>
-        <div class="price-amount"><sup>£</sup>9.99<span>/mo</span></div>
-        <p class="price-desc">Everything you need to start collecting more reviews and capturing feedback privately.</p>
-        <ul class="price-features">
-          <li>Smart review funnel page</li>
-          <li>Analytics dashboard</li>
-          <li>QR code generator</li>
-          <li>Private feedback capture</li>
-          <li>Review link embedding</li>
-        </ul>
-        <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
-      </div>
-      
-      <!-- Pro -->
-      <div class="price-card highlighted">
-        <div class="price-badge">POPULAR</div>
-        <div class="price-name">Pro</div>
-        <div class="price-amount"><sup>£</sup>24.99<span>/mo</span></div>
-        <p class="price-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</p>
-        <ul class="price-features">
-          <li>Everything in Starter</li>
-          <li>AI review reply generator</li>
-          <li>SMS review requests</li>
-          <li>Email review campaigns</li>
-          <li>Advanced analytics</li>
-          <li>Feedback AI summaries</li>
-          <li>Send Intelligence (AI channel prediction)</li>
-        </ul>
-        <a href="/admin"><button class="price-cta gold">Start free trial</button></a>
-      </div>
-      
-      <!-- Agency -->
-      <div class="price-card">
-        <div class="price-name">Agency</div>
-        <div class="price-amount"><sup>£</sup>79<span>/mo</span></div>
-        <p class="price-desc">White-label ReviewLift for agencies managing multiple clients.</p>
-        <ul class="price-features">
-          <li>Everything in Pro</li>
-          <li>Up to 10 client accounts</li>
-          <li>White-label branding</li>
-          <li>Monthly PDF reports</li>
-          <li>Competitor analysis</li>
-          <li>30% affiliate commission</li>
-          <li>Client management dashboard</li>
-        </ul>
-        <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
-      </div>
-      
+<hr class="section-divider">
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-eyebrow reveal" style="justify-content:center;">Pricing</div>
+  <h2 class="section-heading reveal" style="max-width:100%; text-align:center; margin-left:auto; margin-right:auto;">Simple, transparent pricing</h2>
+  <div class="pricing-grid">
+    <!-- Starter -->
+    <div class="price-card reveal">
+      <div class="price-name">Starter</div>
+      <div class="price-amount"><sup>£</sup>9.99<span>/mo</span></div>
+      <p class="price-desc">The review funnel that catches bad reviews privately and routes happy customers to Google.</p>
+      <p class="price-trial">14-day free trial</p>
+      <ul class="price-features">
+        <li>Smart review funnel</li>
+        <li>Private feedback capture</li>
+        <li>Analytics dashboard</li>
+        <li>QR code & review link</li>
+        <li>Website widget</li>
+      </ul>
+      <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
     </div>
-    <p class="pricing-note reveal" style="text-align:center;margin-top:20px;">Enter your card today · £0 charged for 14 days · Cancel before day 14 to pay nothing</p>
-  </div>
-</section>
-<!-- FINAL CTA — redesigned -->
-<section class="cta-section reveal">
-  <div class="cta-inner">
-    <div class="cta-eyebrow">🚀 Ready when you are</div>
-    <h2>Your next <em>5-star review</em><br>is 2 minutes away</h2>
-    <p>Join local businesses already using ReviewLift to grow their online rating, handle complaints privately, and stay ahead of their competition.</p>
-    <div class="cta-actions">
-      <a href="/admin"><button class="btn-cta-primary">Start my free trial →</button></a>
-      <a href="#demo-section"><button class="btn-cta-secondary">Try the demo first</button></a>
+    <!-- Pro -->
+    <div class="price-card featured reveal" style="transition-delay:.1s">
+      <div class="price-badge">MOST POPULAR</div>
+      <div class="price-name">Pro</div>
+      <div class="price-amount"><sup>£</sup>24.99<span>/mo</span></div>
+      <p class="price-desc">Automation, AI, and everything serious businesses need to dominate their reputation.</p>
+      <p class="price-trial">14-day free trial</p>
+      <ul class="price-features">
+        <li>Everything in Starter</li>
+        <li>AI-personalised review requests</li>
+        <li>SMS & email campaigns</li>
+        <li>WhatsApp complaint alerts</li>
+        <li>Voice note reviews</li>
+        <li>Funnel Studio (5 templates)</li>
+        <li>Advanced analytics</li>
+      </ul>
+      <a href="/admin"><button class="price-cta gold">Start free trial</button></a>
     </div>
-    <div class="cta-proof">
-      <span class="cta-proof-item">14-day free trial</span>
-      <span class="cta-proof-item">Card required, £0 charged until day 15</span>
-      <span class="cta-proof-item">Cancel in one click, any time</span>
-      <span class="cta-proof-item">2-minute setup</span>
+    <!-- Agency -->
+    <div class="price-card reveal" style="transition-delay:.2s">
+      <div class="price-name">Agency</div>
+      <div class="price-amount"><sup>£</sup>79<span>/mo</span></div>
+      <p class="price-desc">White-label everything. Resell to clients under your brand and earn recurring commission.</p>
+      <p class="price-trial">14-day free trial</p>
+      <ul class="price-features">
+        <li>Everything in Pro</li>
+        <li>Up to 10 client accounts</li>
+        <li>White-label branding</li>
+        <li>Monthly PDF reports</li>
+        <li>30% affiliate commission</li>
+        <li>Competitor analysis</li>
+      </ul>
+      <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
     </div>
   </div>
+  
+  <!-- Comparison row -->
+  <table class="comparison-table reveal">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Starter</th>
+        <th>Pro</th>
+        <th>Agency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Review funnel</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>AI review requests</td>
+        <td>—</td>
+        <td class="check">✓</td>
+        <td class="check">✓</td>
+      </tr>
+      <tr>
+        <td>White-label</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="check">✓</td>
+      </tr>
+    </tbody>
+  </table>
 </section>
 
-
-<!-- CONTACT SECTION -->
-<section class="contact-section" id="contact">
-  <div class="contact-inner">
-    <div class="contact-intro reveal">
-      <span class="stats-eyebrow">Get in touch</span>
-      <h2>Any questions? We'd love to help.</h2>
-      <p>Whether you're wondering if ReviewLift is right for your business, need help getting set up, or just want to ask something — fill in the form and we'll get back to you promptly.</p>
-    </div>
-    <div class="contact-card reveal">
-      <div class="contact-grid">
-        <div class="contact-field">
-          <label>Your name</label>
-          <input type="text" id="contactName" placeholder="e.g. Joe Smith">
-        </div>
-        <div class="contact-field">
-          <label>Email address</label>
-          <input type="email" id="contactEmail" placeholder="you@yourbusiness.com">
-        </div>
-      </div>
-      <div class="contact-field" style="margin-bottom:16px;">
-        <label>Message</label>
-        <textarea id="contactMessage" placeholder="Tell us what you're wondering about..."></textarea>
-      </div>
-      <button class="contact-submit" id="contactSubmit" onclick="submitContact()">Send message →</button>
-      <p id="contactMsg"></p>
-    </div>
-    <p class="contact-alt">Or email us directly at <a href="mailto:billy@reviewlift.app">billy@reviewlift.app</a></p>
-  </div>
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <h2 class="reveal">Your first automated review request in under 10 minutes.</h2>
+  <p class="reveal">Connect your booking system, customise your funnel, and let ReviewLift run on autopilot. Reviews come in while you run your business.</p>
+  <a href="/admin"><button class="btn-trial reveal">Start your free trial →</button></a>
+  <p class="cta-trust reveal">No card required · Cancel anytime · Built in the UK</p>
 </section>
 
-
+<!-- FOOTER -->
 <footer>
   <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
-  <div class="footer-links">   <a href="#screenshots">How it works</a>
+  <div class="footer-links">
+    <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
     <a href="/about">About</a>
-      <a href="/blog">Blog</a>   <!-- ADD -->
-      <a href="/demo">Live Demo</a>
+    <a href="/blog">Blog</a>
     <a href="/login">Sign in</a>
-    <a href="/admin">Sign up</a></div>
+    <a href="/admin">Sign up</a>
+  </div>
   <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
 </footer>
-
-<script>
-  /* ── Slider range gradient update ── */
-  function updateSliderFill(el){
-    const min=parseFloat(el.min),max=parseFloat(el.max),val=parseFloat(el.value);
-    const pct=((val-min)/(max-min)*100).toFixed(1)+'%';
-    el.style.setProperty('--pct',pct);
-  }
-// Only init sliders if they exist on the page
-document.querySelectorAll('input[type=range]').forEach(el=>{
-  if (el.id === 'custSlider' || el.id === 'spendSlider' || el.id === 'ratingSlider') {
-    updateSliderFill(el);
-    el.addEventListener('input',()=>updateSliderFill(el));
-  }
-});
-
-  /* ── Calculator ── */
-  function formatCurrency(n){
-    if(n>=1000000) return '£'+(n/1000000).toFixed(1)+'m';
-    if(n>=1000) return '£'+(n/1000).toFixed(1)+'k';
-    return '£'+n.toLocaleString();
-  }
-
-  function calcUpdate(){
-    const cust=parseInt(document.getElementById('custSlider').value);
-    const spend=parseInt(document.getElementById('spendSlider').value);
-    const rating=parseFloat(document.getElementById('ratingSlider').value);
-
-    document.getElementById('custVal').textContent=cust.toLocaleString();
-    // Format spend nicely for large values (construction, dental etc)
-    document.getElementById('spendVal').textContent= spend>=1000 ? '£'+(spend/1000).toFixed(spend>=10000?0:1)+'k' : '£'+spend;
-    document.getElementById('ratingVal').textContent=rating.toFixed(1)+' ★';
-
-    // Show appropriate unit label based on spend size
-    const unitEl=document.getElementById('spendUnit');
-    if(unitEl){
-      if(spend>=5000) unitEl.textContent='per project';
-      else if(spend>=500) unitEl.textContent='per job';
-      else unitEl.textContent='per visit';
-    }
-
-    let lostPct=0;
-    if(rating<3.0) lostPct=0.30;
-    else if(rating<3.5) lostPct=0.22;
-    else if(rating<4.0) lostPct=0.15;
-    else if(rating<4.5) lostPct=0.07;
-    else lostPct=0;
-
-    const lost=Math.round(cust*lostPct);
-    const lostRev=lost*spend;
-    const gain=Math.round(cust*0.28*0.4);
-    const gainRev=gain*spend;
-
-    document.getElementById('lostCustomers').textContent=lost.toLocaleString();
-    document.getElementById('lostRevenue').textContent=formatCurrency(lostRev);
-    document.getElementById('recovered').textContent=formatCurrency(gainRev);
-    document.getElementById('recoveredSub').textContent=`~${gain.toLocaleString()} extra customers at ${spend>=1000?'£'+(spend/1000).toFixed(1)+'k':'£'+spend} avg`;
-  }
-  // Only run calculator if the elements exist (they were removed from the page)
-if (document.getElementById('custSlider')) {
-  calcUpdate();
-}
-
-  /* ── Demo generator ── */
-  function slugify(s){return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
-  function makeUrl(name){return window.location.origin+'/demo/'+slugify(name)+'?name='+encodeURIComponent(name);}
-
-  function updateDemo(){
-    const name=document.getElementById('scInput').value.trim();
-    const biz=document.getElementById('scBizName');
-    const out=document.getElementById('scLinkOut');
-    const openBtn=document.getElementById('scOpenBtn');
-    if(!name){
-      biz.textContent='Your Business Name';
-      out.textContent='Type a business name to generate their link...';
-      out.className='sc-link-out';
-      openBtn.href='#'; return;
-    }
-    biz.textContent=name;
-    const url=makeUrl(name);
-    out.textContent=url;
-    out.className='sc-link-out active';
-    openBtn.href=url;
-  }
-
-  function copyDemo(){
-    const name=document.getElementById('scInput').value.trim();
-    if(!name){document.getElementById('scInput').focus();return;}
-    navigator.clipboard.writeText(makeUrl(name));
-    const t=document.getElementById('scCopyTxt');
-    t.textContent='✓ Copied!';
-    setTimeout(()=>t.textContent='📋 Copy demo link',2200);
-  }
-
-  /* ── Scroll reveal ── */
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
-  },{threshold:.08,rootMargin:'0px 0px -40px 0px'});
-  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
-</script>
 
 <script>
 function toggleNav(){
@@ -1179,7 +1212,6 @@ function closeNav(){
   document.getElementById('navDrawer').classList.remove('open');
   document.body.style.overflow = '';
 }
-// Close drawer when clicking outside
 document.addEventListener('click', function(e){
   const drawer = document.getElementById('navDrawer');
   const hamburger = document.getElementById('navHamburger');
@@ -1188,127 +1220,42 @@ document.addEventListener('click', function(e){
   }
 });
 
-  /* ── Contact form ── */
-  async function submitContact(){
-    const btn=document.getElementById('contactSubmit');
-    const msg=document.getElementById('contactMsg');
-    const name=document.getElementById('contactName').value.trim();
-    const email=document.getElementById('contactEmail').value.trim();
-    const message=document.getElementById('contactMessage').value.trim();
-    if(!name||!email||!message){msg.textContent='Please fill in all fields.';msg.className='error';return;}
-    btn.disabled=true;btn.textContent='Sending...';
-    try{
-      const res=await fetch('/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,message})});
-      const data=await res.json();
-      if(data.success){
-        msg.textContent='✓ Message sent! We\'ll get back to you shortly.';msg.className='success';
-        document.getElementById('contactName').value='';
-        document.getElementById('contactEmail').value='';
-        document.getElementById('contactMessage').value='';
-      }else{msg.textContent=data.error||'Something went wrong.';msg.className='error';}
-    }catch(e){msg.textContent='Could not send. Please email billy@reviewlift.app directly.';msg.className='error';}
-    btn.disabled=false;btn.textContent='Send message →';
-  }
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // ── Co-branded affiliate banner ──
+// Affiliate banner
 (function() {
   const params = new URLSearchParams(window.location.search);
   const ref = params.get('ref');
   if (!ref) return;
   
-  // Also store in cookie so it follows them to signup
   const d = new Date();
   d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
   document.cookie = "rl_ref=" + ref + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
   
-  // Fetch partner info
   fetch('/partner-info/' + ref)
     .then(r => r.json())
     .then(data => {
       const banner = document.getElementById('affiliateBanner');
       if (!banner) return;
       banner.style.display = 'block';
-      
-      // Reduce hero padding since banner is now taking up space
-      const hero = document.querySelector('.hero');
-      if (hero) hero.style.paddingTop = '60px';
-      
       document.getElementById('affiliateName').textContent = data.name;
-      
-      // Set avatar initials
       const avatar = document.getElementById('affiliateAvatar');
       const initials = data.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
       avatar.textContent = initials || 'P';
     })
-    .catch(() => {
-      // Silently fail — banner just won't show
-    });
-})();
-
-// ── Preserve ref param in all /admin links ──
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-  if (!ref) return;
-  
+    .catch(() => {});
+    
   document.querySelectorAll('a[href="/admin"], a[href*="/admin"]').forEach(link => {
     const url = new URL(link.href);
     url.searchParams.set('ref', ref);
     link.href = url.toString();
   });
 })();
-
 </script>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is ReviewLift?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "ReviewLift is a UK review funnel tool that routes happy customers to leave public reviews on Google, Trustpilot, or any platform, and catches unhappy feedback privately before it goes public."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How does the private feedback funnel work?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Customers are asked 'How was your experience?' Happy customers (4-5 stars) go to your public review page. Unhappy customers (1-3 stars) go to a private feedback form only you see."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is ReviewLift compliant with Google's policies?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. You're not filtering or incentivizing reviews—you're just choosing where the conversation happens. You ask every customer the same question."
-      }
-    }
-  ]
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "ReviewLift",
-  "url": "https://www.reviewlift.app",
-  "logo": "https://www.reviewlift.app/apple-touch-icon.png",
-  "description": "UK review funnel tool for local businesses. Routes happy customers to public reviews and catches complaints privately.",
-  "email": "billy@reviewlift.app",
-  "address": {
-    "@type": "PostalAddress",
-    "addressCountry": "GB"
-  }
-}
-
-
-</script>
 </body>
 </html>
