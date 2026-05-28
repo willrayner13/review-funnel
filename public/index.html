@@ -559,14 +559,6 @@ async function transcribeAudio(blob) {
   document.getElementById("voiceRecordBtn").style.display = "none";
 }
 
-// Remove any existing loadSuggestion/copyAndGo definitions that conflict.
-// Ensure the initStars function still calls loadSuggestion(rating) after positive rating.
-
-// ========== AI REVIEW SUGGESTION ==========
-
-
-
-
 // ========== INIT ==========
 const t = document.getElementById("businessTitle");
 if(t && window.businessName) t.innerText = window.businessName;
@@ -593,21 +585,18 @@ window.addEventListener('message', (event) => {
   if (event.data?.type === 'FUNNEL_PREVIEW_UPDATE') {
     const s = event.data.settings;
     
-    // Accent colour
     if (s.accentColor) {
       document.documentElement.style.setProperty('--accent', s.accentColor);
-      const accentButtons = document.querySelectorAll('.review-prompt button, #feedbackBox button, #copyGoBtn, #recordBtn');
+      const accentButtons = document.querySelectorAll('.review-prompt button, #feedbackBox button, #copyGoBtn, #voiceRecordBtn');
       accentButtons.forEach(btn => { if (btn) btn.style.backgroundColor = s.accentColor; });
     }
     
-    // Template
     if (s.template) {
       const templateClasses = ['template-classic', 'template-bright', 'template-medical', 'template-bold', 'template-luxury'];
       templateClasses.forEach(cls => document.body.classList.remove(cls));
       document.body.classList.add(`template-${s.template}`);
     }
     
-    // Headline
     const headlineEl = document.getElementById('mainHeadline');
     if (headlineEl && s.headline && s.headline.trim() !== '') {
       headlineEl.textContent = s.headline;
@@ -615,7 +604,6 @@ window.addEventListener('message', (event) => {
       headlineEl.textContent = `How was your experience at ${window.businessName}?`;
     }
     
-    // Logo
     if (s.logoUrl && s.logoUrl.trim() !== '') {
       let logoEl = document.querySelector('.funnel-logo');
       if (!logoEl) {
@@ -666,6 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoEl) logoEl.src = window.funnelLogoUrl;
   }
 });
+
 </script>
 </body>
 </html>
