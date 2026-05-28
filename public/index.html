@@ -556,7 +556,9 @@ async function transcribeAudio(blob) {
         </div>`;
     } else {
       document.getElementById("voiceResult").innerHTML = `<p>Thank you — your feedback has been saved privately.</p>`;
-      document.querySelector(".review-prompt")?.style.display = "none";
+      // FIX: Remove optional chaining from assignment
+      const reviewPrompt = document.querySelector(".review-prompt");
+      if (reviewPrompt) reviewPrompt.style.display = "none";
     }
   } catch (e) {
     document.getElementById("voiceResult").innerHTML = '<p>Could not process audio. Please try again.</p>';
