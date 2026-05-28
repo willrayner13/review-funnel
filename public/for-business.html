@@ -4471,59 +4471,205 @@
     async function saveFunnelSettings() { const btn = event.target, msg = document.getElementById('funnelMsg'); if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Saving...'; } const data = { funnel_template: currentFunnelSettings.funnel_template, funnel_logo_url: document.getElementById('funnelLogoUrl')?.value.trim() || '', funnel_accent_color: document.getElementById('funnelAccentColor')?.value || '#C8A96E', funnel_headline: document.getElementById('funnelHeadline')?.value.trim() || '', funnel_happy_label: document.getElementById('funnelHappyLabel')?.value.trim() || '', funnel_unhappy_label: document.getElementById('funnelUnhappyLabel')?.value.trim() || '', funnel_thankyou_message: document.getElementById('funnelThankyouMessage')?.value.trim() || '', funnel_custom_domain: document.getElementById('funnelCustomDomain')?.value.trim() || '', funnel_language: document.getElementById('funnelLanguage')?.value || 'en' }; try { const res = await fetch("/update-funnel", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }); const result = await res.json(); if (result.success) { const funnelUrl = window.location.origin + "/r/" + slug; if (msg) { msg.innerHTML = `✓ Saved — changes are live!<div style="margin-top:12px; padding:12px; background:var(--surface-3); border-radius:8px;"><code style="font-size:0.7rem; word-break:break-all;">${funnelUrl}</code><button onclick="copyToClipboard('${funnelUrl}')" class="btn-full" style="margin-top:8px; padding:8px; font-size:0.7rem;">Copy link →</button><p style="font-size:0.7rem; margin-top:6px;">Share this link — it's already live with your changes.</p></div>`; msg.style.color = '#8EC9A8'; } setTimeout(() => { if (btn) { btn.innerHTML = 'Save Changes'; btn.style.background = 'var(--accent)'; } if (msg) setTimeout(() => { if (msg) msg.innerHTML = ''; }, 5000); }, 3000); } else { showToast(result.error || "Could not save settings", "error"); if (msg) { msg.textContent = result.error || 'Error saving settings'; msg.style.color = '#D4897C'; } if (btn) btn.innerHTML = 'Save Changes'; } } catch (e) { showToast("Something went wrong", "error"); if (msg) { msg.textContent = 'Error saving settings'; msg.style.color = '#D4897C'; } if (btn) btn.innerHTML = 'Save Changes'; } if (btn) setTimeout(() => { btn.disabled = false; }, 1000); }
 
     // ========== LOAD DASHBOARD DATA ==========
-    async function loadDashboardData() {
-      const res = await fetch("/stats/" + slug); if (!res.ok) return; const stats = await res.json(); document.getElementById("sidebarBizName").innerText = stats.business_name || slug; document.getElementById("sidebarPlanName").innerText = stats.plan_type === "pro" ? "Pro" : stats.plan_type === "agency" ? "Agency" : "Starter"; document.getElementById("upgradeLink").style.display = stats.plan_type === "agency" ? "none" : "flex"; const reviewLinkElement = document.getElementById("reviewLink"); if (reviewLinkElement) reviewLinkElement.value = window.location.origin + "/r/" + slug; updateGreeting(stats.business_name); document.getElementById("statVisits").innerText = stats.visits ?? 0; document.getElementById("statPositive").innerText = stats.positive ?? 0; document.getElementById("statReviews").innerText = stats.reviews ?? 0; document.getElementById("statNegative").innerText = stats.negative ?? 0; document.getElementById('journeyVisits').innerText = stats.visits || 0; document.getElementById('journeyRatings').innerText = stats.rating_count || 0; document.getElementById('journeyClicks').innerText = stats.reviews || 0; const postedRate = stats.visits ? ((stats.reviews / stats.visits) * 100).toFixed(0) : 0; document.getElementById('journeyPosted').innerText = postedRate + '%'; document.getElementById('journeyProgress').style.width = postedRate + '%'; // Update new reputation metrics
-      const avgRating = stats.rating_avg || 0;
-      const avgRatingDisplay = document.getElementById('avgRatingDisplay');
-      if (avgRatingDisplay) avgRatingDisplay.innerHTML = avgRating > 0 ? `${avgRating} ★` : '—';
+   // ========== LOAD DASHBOARD DATA ==========
+async function loadDashboardData() {
+  const res = await fetch("/stats/" + slug); 
+  if (!res.ok) return; 
+  const stats = await res.json(); 
+  
+  // Common elements (always needed)
+  document.getElementById("sidebarBizName").innerText = stats.business_name || slug; 
+  document.getElementById("sidebarPlanName").innerText = stats.plan_type === "pro" ? "Pro" : stats.plan_type === "agency" ? "Agency" : "Starter"; 
+  document.getElementById("upgradeLink").style.display = stats.plan_type === "agency" ? "none" : "flex"; 
+  
+  const reviewLinkElement = document.getElementById("reviewLink"); 
+  if (reviewLinkElement) reviewLinkElement.value = window.location.origin + "/r/" + slug; 
+  
+  updateGreeting(stats.business_name); 
+  
+  // ========== CHECK IF AGENCY - EXIT EARLY ==========
+  const isAgency = stats.plan_type === 'agency';
+  
+  if (isAgency) {
+    // AGENCY DASHBOARD - skip all business dashboard code
+    updateNavForAgency(true);
+    loadAgencyDashboard(stats);
+    
+    // Still load common features
+    if (stats.recent_events) updateTicker(stats.recent_events);
+    loadReputationScore();
+    loadFunnelSettings();
+    loadAlertSettings();
+    
+    lastStats = stats;
+    return; // IMPORTANT: Exit here - don't run business code
+  }
+  
+  // ========== BUSINESS DASHBOARD CODE BELOW ==========
+  // This code only runs for non-agency users
+  
+  document.getElementById("statVisits").innerText = stats.visits ?? 0;
+  document.getElementById("statPositive").innerText = stats.positive ?? 0;
+  document.getElementById("statReviews").innerText = stats.reviews ?? 0;
+  document.getElementById("statNegative").innerText = stats.negative ?? 0;
+  document.getElementById('journeyVisits').innerText = stats.visits || 0;
+  document.getElementById('journeyRatings').innerText = stats.rating_count || 0;
+  document.getElementById('journeyClicks').innerText = stats.reviews || 0;
+  const postedRate = stats.visits ? ((stats.reviews / stats.visits) * 100).toFixed(0) : 0;
+  document.getElementById('journeyPosted').innerText = postedRate + '%';
+  document.getElementById('journeyProgress').style.width = postedRate + '%';
+  
+  // Update reputation metrics
+  const avgRating = stats.rating_avg || 0;
+  const avgRatingDisplay = document.getElementById('avgRatingDisplay');
+  if (avgRatingDisplay) avgRatingDisplay.innerHTML = avgRating > 0 ? `${avgRating} ★` : '—';
 
-      const velocityDisplay = document.getElementById('velocityDisplay');
-      if (velocityDisplay) velocityDisplay.innerHTML = `${stats.reviews || 0} this month`;
+  const velocityDisplay = document.getElementById('velocityDisplay');
+  if (velocityDisplay) velocityDisplay.innerHTML = `${stats.reviews || 0} this month`;
 
-      const positivePercent = stats.visits ? ((stats.positive / stats.visits) * 100).toFixed(0) : 0;
-      const positivePercentDisplay = document.getElementById('positivePercentDisplay');
-      if (positivePercentDisplay) positivePercentDisplay.innerHTML = `${positivePercent}%`;
+  const positivePercent = stats.visits ? ((stats.positive / stats.visits) * 100).toFixed(0) : 0;
+  const positivePercentDisplay = document.getElementById('positivePercentDisplay');
+  if (positivePercentDisplay) positivePercentDisplay.innerHTML = `${positivePercent}%`;
 
+  const reviewsCapturedDisplay = document.getElementById('reviewsCapturedDisplay');
+  if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0;
+  
+  loadReputationScore(); 
+  loadFunnelSettings(); 
+  loadAlertSettings(); 
+  if (stats.recent_events) updateTicker(stats.recent_events); 
+  buildFeatureTiles(stats); 
+  loadActivityFeed();
 
-
-      const reviewsCapturedDisplay = document.getElementById('reviewsCapturedDisplay');
-      if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0; loadReputationScore(); loadFunnelSettings(); loadAlertSettings(); if (stats.recent_events) updateTicker(stats.recent_events); buildFeatureTiles(stats); loadActivityFeed();
-
-      // Load agency clients if user is on agency plan
-      if (stats.plan_type === "agency") {
-        loadAgencyClients();
-      } const reviewLink = window.location.origin + "/r/" + slug; const wallUrlEl = document.getElementById("wallUrl"); if (wallUrlEl) wallUrlEl.value = reviewLink; const wallPreviewEl = document.getElementById("wallPreviewLink"); if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug; const embedCodeEl = document.getElementById("embedCode"); if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`; const webhookUrlEl = document.getElementById("webhookUrl"); if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug; const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug; const bizNameEl = document.getElementById("bizNameInput"); if (bizNameEl) bizNameEl.value = stats.business_name || ""; const reviewLinkInputEl = document.getElementById("reviewLinkInput"); if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || ""; const assetReviewLinkEl = document.getElementById("assetReviewLink"); if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug; const qrDownloadLink = document.getElementById("qrDownloadLink"); if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug; const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"); document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("smsLocked").style.display = hasPro ? "none" : "block"; document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("emailLocked").style.display = hasPro ? "none" : "block"; document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("aiLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block";       const isAgency = stats.plan_type === "agency";  // Keep only THIS declaration
-      document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none";
-      document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block";
-      if (hasPro) { loadSentimentTrends(); loadSendIntelligence(); loadGrowthChart(); document.getElementById("proAnalyticsPreview").style.display = "block"; document.getElementById("analyticsUpgradePrompt").style.display = "none"; }
-      if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-      const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d");
-      if (ctx && canvas && canvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; chartInstance = new Chart(ctx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } else if (canvas && stats.rating_count === 0) { const placeholderCtx = canvas.getContext("2d"); if (placeholderCtx) { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; placeholderCtx.font = "14px 'DM Sans'"; placeholderCtx.fillStyle = "#EAE7DC"; placeholderCtx.textAlign = "center"; placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); } } const smsCounter = document.getElementById("smsCounter"); if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`; const emailCounter = document.getElementById("emailCounter"); if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`;
-      const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d");
-      if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) {
-        if (analyticsChartInstance) {
-          analyticsChartInstance.destroy();
-          analyticsChartInstance = null;
-        }
-        const dist = stats.rating_distribution || {};
-        analyticsChartInstance = new Chart(analyticsCtx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
-      }
-
-      // Use the existing isAgency variable (don't redeclare it!)
-      if (isAgency) {
-        updateNavForAgency(true);
-        loadAgencyDashboard(stats);
-      } else {
-        // Hide agency overview if it was showing
-        const agencyOverview = document.getElementById('agencyOverview');
-        const businessOverview = document.getElementById('businessOverview');
-        if (agencyOverview) agencyOverview.style.display = 'none';
-        if (businessOverview) businessOverview.style.display = 'block';
-      }
-      
-      lastStats = stats;
+  // Load agency clients if user is on agency plan (already handled above, but keep for safety)
+  if (stats.plan_type === "agency") {
+    loadAgencyClients();
+  }
+  
+  const reviewLink = window.location.origin + "/r/" + slug;
+  
+  const wallUrlEl = document.getElementById("wallUrl"); 
+  if (wallUrlEl) wallUrlEl.value = reviewLink;
+  
+  const wallPreviewEl = document.getElementById("wallPreviewLink"); 
+  if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug;
+  
+  const embedCodeEl = document.getElementById("embedCode"); 
+  if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`;
+  
+  const webhookUrlEl = document.getElementById("webhookUrl"); 
+  if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug;
+  
+  const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); 
+  if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug;
+  
+  const bizNameEl = document.getElementById("bizNameInput"); 
+  if (bizNameEl) bizNameEl.value = stats.business_name || "";
+  
+  const reviewLinkInputEl = document.getElementById("reviewLinkInput"); 
+  if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || "";
+  
+  const assetReviewLinkEl = document.getElementById("assetReviewLink"); 
+  if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug;
+  
+  const qrDownloadLink = document.getElementById("qrDownloadLink"); 
+  if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug;
+  
+  const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");
+  
+  document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none";
+  document.getElementById("smsLocked").style.display = hasPro ? "none" : "block";
+  document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none";
+  document.getElementById("emailLocked").style.display = hasPro ? "none" : "block";
+  document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none";
+  document.getElementById("aiLocked").style.display = hasPro ? "none" : "block";
+  document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none";
+  document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block";
+  document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none";
+  document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block";
+  
+  document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none";
+  document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block";
+  
+  if (hasPro) { 
+    loadSentimentTrends(); 
+    loadSendIntelligence(); 
+    loadGrowthChart(); 
+    document.getElementById("proAnalyticsPreview").style.display = "block"; 
+    document.getElementById("analyticsUpgradePrompt").style.display = "none"; 
+  }
+  
+  if (chartInstance) { 
+    chartInstance.destroy(); 
+    chartInstance = null; 
+  }
+  
+  const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d");
+  if (ctx && canvas && canvas.offsetParent !== null) { 
+    const dist = stats.rating_distribution || {}; 
+    chartInstance = new Chart(ctx, { 
+      type: "bar", 
+      data: { 
+        labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], 
+        datasets: [{ 
+          data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], 
+          backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], 
+          borderRadius: 6 
+        }] 
+      }, 
+      options: { 
+        responsive: true, 
+        maintainAspectRatio: false, 
+        plugins: { legend: { display: false } }, 
+        scales: { y: { beginAtZero: true } } 
+      } 
+    }); 
+  } else if (canvas && stats.rating_count === 0) { 
+    const placeholderCtx = canvas.getContext("2d"); 
+    if (placeholderCtx) { 
+      canvas.width = canvas.offsetWidth; 
+      canvas.height = canvas.offsetHeight; 
+      placeholderCtx.font = "14px 'DM Sans'"; 
+      placeholderCtx.fillStyle = "#EAE7DC"; 
+      placeholderCtx.textAlign = "center"; 
+      placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); 
+    } 
+  }
+  
+  const smsCounter = document.getElementById("smsCounter"); 
+  if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`;
+  
+  const emailCounter = document.getElementById("emailCounter"); 
+  if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`;
+  
+  const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d");
+  if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) {
+    if (analyticsChartInstance) {
+      analyticsChartInstance.destroy();
+      analyticsChartInstance = null;
     }
-
+    const dist = stats.rating_distribution || {};
+    analyticsChartInstance = new Chart(analyticsCtx, { 
+      type: "bar", 
+      data: { 
+        labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], 
+        datasets: [{ 
+          data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], 
+          backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], 
+          borderRadius: 6 
+        }] 
+      }, 
+      options: { 
+        responsive: true, 
+        maintainAspectRatio: true, 
+        plugins: { legend: { display: false } }, 
+        scales: { y: { beginAtZero: true } } 
+      } 
+    });
+  }
+  
+  lastStats = stats;
+}
     // ========== AGENCY CLIENT MANAGEMENT ==========
 
     // Make sure loadAgencyClients is properly defined
