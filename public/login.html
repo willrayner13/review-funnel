@@ -5,43 +5,297 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Sign In — ReviewLift</title>
-  <link rel="stylesheet" href="/style.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <style>
-    body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
-    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--cream); margin-bottom: 48px; display: flex; align-items: center; gap: 8px; }
-    .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
-    .container { max-width: 440px; width: 100%; padding: 44px 40px; }
-    .page-eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 10px; display: block; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { font-size: 0.8rem; font-weight: 500; color: var(--cream-dim); display: block; margin-bottom: 6px; }
-    .form-group input { margin-bottom: 0; }
-    .signup-link { text-align: center; font-size: 0.85rem; color: var(--cream-dim); margin-top: 20px; }
-    .signup-link a { color: var(--accent); font-weight: 500; }
-    .signup-link a:hover { text-decoration: underline; }
-    #result { text-align: center; min-height: 20px; font-size: 0.875rem; color: #D4897C; margin-top: 10px; }
-    .pw-wrap { position: relative; }
-    .pw-wrap input { padding-right: 50px; margin-bottom: 0; }
-    .pw-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--cream-dim); font-size: 1.1rem; padding: 4px; min-height: 0; line-height: 1; transition: color 0.2s; }
-    .pw-eye:hover { color: var(--cream); transform: translateY(-50%); box-shadow: none; }
-    /* Base laptop adjustments */
-@media (min-width: 1024px) and (max-width: 1366px) {
-  html, body {
-    font-size: 14px;
-  }
-  
-  .container, .dashboard-container {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  
-  * {
-    max-width: 100%;
-  }
-}
+    :root {
+      --bg: #1A1A18;
+      --surface: #242422;
+      --surface-2: #2E2E2B;
+      --surface-3: #383835;
+      --border: rgba(234, 231, 220, 0.09);
+      --border-hover: rgba(234, 231, 220, 0.18);
+      --cream: #EAE7DC;
+      --cream-dim: rgba(234, 231, 220, 0.52);
+      --accent: #C8A96E;
+      --accent-dim: rgba(200, 169, 110, 0.15);
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--cream);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 44px 40px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(234, 231, 220, 0.18), transparent);
+    }
+
+    .page-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--cream-dim);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 0;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: rgba(234, 231, 220, 0.4);
+      background: var(--surface-2);
+    }
+
+    input::placeholder {
+      color: rgba(234, 231, 220, 0.28);
+    }
+
+    .btn-full {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #1A1A18;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      margin-top: 8px;
+    }
+
+    .btn-full:hover {
+      background: #D4B87A;
+      transform: translateY(-1px);
+    }
+
+    .signup-link {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      margin-top: 20px;
+    }
+
+    .signup-link a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    #result {
+      text-align: center;
+      min-height: 20px;
+      font-size: 0.875rem;
+      color: #D4897C;
+      margin-top: 10px;
+    }
+
+    .pw-wrap {
+      position: relative;
+    }
+
+    .pw-wrap input {
+      padding-right: 50px;
+    }
+
+    .pw-eye {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--cream-dim);
+      font-size: 1.1rem;
+      padding: 4px;
+      min-height: 0;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .pw-eye:hover {
+      color: var(--cream);
+      transform: translateY(-50%);
+      box-shadow: none;
+    }
+
+    /* Laptop responsive fixes */
+    @media (min-width: 1024px) and (max-width: 1366px) {
+      html, body {
+        font-size: 14px;
+      }
+      
+      .container {
+        padding: 36px 32px;
+        max-width: 420px;
+      }
+      
+      h2 {
+        font-size: 1.3rem;
+      }
+      
+      .logo {
+        font-size: 20px;
+        margin-bottom: 40px;
+      }
+      
+      .btn-full {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+      
+      input {
+        padding: 11px 14px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 700px) {
+      body {
+        padding: 16px;
+      }
+      
+      .container {
+        padding: 28px 24px;
+      }
+      
+      h2 {
+        font-size: 1.2rem;
+      }
+      
+      .logo {
+        font-size: 18px;
+        margin-bottom: 32px;
+      }
+      
+      .btn-full {
+        padding: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 24px 20px;
+      }
+      
+      h2 {
+        font-size: 1.1rem;
+      }
+      
+      .page-eyebrow {
+        font-size: 0.65rem;
+      }
+      
+      .form-group label {
+        font-size: 0.75rem;
+      }
+      
+      input {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+      }
+      
+      .btn-full {
+        padding: 10px;
+        font-size: 0.85rem;
+      }
+      
+      .signup-link {
+        font-size: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -49,7 +303,7 @@
   <div class="container">
     <span class="page-eyebrow">Welcome back</span>
     <h2>Sign in to your dashboard</h2>
-    <p style="margin-bottom:32px;">Manage your reviews, feedback, and analytics.</p>
+    <p style="margin-bottom:32px; color: var(--cream-dim);">Manage your reviews, feedback, and analytics.</p>
     <div class="form-group">
       <label for="email">Business email</label>
       <input id="email" type="email" placeholder="you@yourbusiness.com">
@@ -61,38 +315,69 @@
         <button class="pw-eye" type="button" onclick="togglePw('password','eyeBtn')" tabindex="-1" id="eyeBtn">👁</button>
       </div>
     </div>
-    <button class="btn-full" onclick="login()" style="margin-top:8px;">Sign In →</button>
+    <button class="btn-full" onclick="login()">Sign In →</button>
     <p id="result"></p>
     <div class="signup-link">Don't have an account? <a href="/admin">Create one free</a></div>
   </div>
+
 <script>
 function togglePw(inputId, btnId){
   const input = document.getElementById(inputId);
   const btn = document.getElementById(btnId);
-  if(input.type === "password"){ input.type = "text"; btn.textContent = "🙈"; }
-  else { input.type = "password"; btn.textContent = "👁"; }
-}
-async function login(){
-  const btn = document.querySelector('button[onclick="login()"]');
-  btn.disabled = true; btn.textContent = 'Signing in...';
-  const email    = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const res  = await fetch("/verify-login", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,password}) });
-  const data = await res.json();
-  if(data.success){
-    if(!data.subscription_active){
-      sessionStorage.setItem("currentSlug", data.slug);
-      sessionStorage.setItem("skipToPlans", "true");
-      window.location = "/admin";
-    } else {
-      window.location = "/for-business";
-    }
-  } else {
-    document.getElementById("result").innerText = "Incorrect email or password.";
-    btn.disabled = false; btn.textContent = 'Sign In →';
+  if(input.type === "password"){ 
+    input.type = "text"; 
+    btn.textContent = "🙈"; 
+  } else { 
+    input.type = "password"; 
+    btn.textContent = "👁"; 
   }
 }
-document.addEventListener("keydown", e => { if(e.key === "Enter") login(); });
+
+async function login(){
+  const btn = document.querySelector('.btn-full');
+  btn.disabled = true; 
+  btn.textContent = 'Signing in...';
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  
+  if(!email || !password){
+    document.getElementById("result").innerText = "Please enter both email and password.";
+    btn.disabled = false; 
+    btn.textContent = 'Sign In →';
+    return;
+  }
+  
+  try {
+    const res = await fetch("/verify-login", { 
+      method: "POST", 
+      headers: {"Content-Type": "application/json"}, 
+      body: JSON.stringify({email, password}) 
+    });
+    const data = await res.json();
+    
+    if(data.success){
+      if(!data.subscription_active){
+        sessionStorage.setItem("currentSlug", data.slug);
+        sessionStorage.setItem("skipToPlans", "true");
+        window.location = "/admin";
+      } else {
+        window.location = "/for-business";
+      }
+    } else {
+      document.getElementById("result").innerText = "Incorrect email or password.";
+      btn.disabled = false; 
+      btn.textContent = 'Sign In →';
+    }
+  } catch(e) {
+    document.getElementById("result").innerText = "Something went wrong. Please try again.";
+    btn.disabled = false; 
+    btn.textContent = 'Sign In →';
+  }
+}
+
+document.addEventListener("keydown", e => { 
+  if(e.key === "Enter") login(); 
+});
 </script>
 </body>
 </html>
