@@ -1647,7 +1647,7 @@
       <nav class="sidebar-nav">
         <!-- MAIN -->
         <div style="padding: 0 12px 8px 12px;"><span
-            style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.5;">Main</span>
+            style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.7;">Main</span>
         </div>
         <div class="nav-item active" data-nav="overview" data-tooltip="Overview"><i
             class="ti ti-dashboard"></i><span>Overview</span></div>
@@ -1660,7 +1660,7 @@
 
         <!-- GROWTH -->
         <div style="padding: 16px 12px 8px 12px; margin-top:8px;"><span
-            style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.5;">Growth</span>
+            style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.7;">Growth</span>
         </div>
         <div class="nav-item" data-nav="funnel-studio" data-tooltip="Funnel Studio"><i
             class="ti ti-palette"></i><span>Funnel Studio</span></div>
@@ -1671,7 +1671,7 @@
 
         <!-- TOOLS -->
         <div style="padding: 16px 12px 8px 12px; margin-top:8px;"><span
-            style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.5;">Tools</span>
+            style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.7;">Tools</span>
         </div>
         <div class="nav-item" data-nav="assets" data-tooltip="Assets"><i class="ti ti-package"></i><span>Assets</span>
         </div>
@@ -1718,32 +1718,30 @@
       <!-- OVERVIEW SECTION -->
       <div id="overviewSection" class="content-section active">
         <div class="rep-hero">
-          <div class="rep-score">
-            <div
-              style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-bottom:6px;">
-              Reputation Score</div>
-            <div class="rep-score-value" id="heroScore">—</div>
-            <div class="rep-score-trend" id="heroTrend"></div>
-          </div>
-          <div style="flex:1; display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
-            <div>
-              <div style="font-size:0.65rem; color:var(--cream-dim);">Average Rating</div>
-              <div style="font-size:1.3rem; font-weight:700;" id="avgRatingDisplay">—</div>
-            </div>
-            <div>
-              <div style="font-size:0.65rem; color:var(--cream-dim);">Review Velocity</div>
-              <div style="font-size:1.3rem; font-weight:700;" id="velocityDisplay">—</div>
-            </div>
-            <div>
-              <div style="font-size:0.65rem; color:var(--cream-dim);">Positive Feedback</div>
-              <div style="font-size:1.3rem; font-weight:700;" id="positivePercentDisplay">—</div>
-            </div>
-            <div>
-              <div style="font-size:0.65rem; color:var(--cream-dim);">Reviews Captured</div>
-              <div style="font-size:1.3rem; font-weight:700;" id="reviewsCapturedDisplay">—</div>
-            </div>
-          </div>
-        </div>
+  <div class="rep-score">
+    <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-bottom:6px;">Reputation Score</div>
+    <div class="rep-score-value" id="heroScore">—</div>
+    <div class="rep-score-trend" id="heroTrend"></div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; flex:1; min-width:200px;">
+    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
+      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="avgRatingDisplay">—</div>
+      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Average Rating</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
+      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="velocityDisplay">—</div>
+      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Review Velocity</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
+      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="positivePercentDisplay">—</div>
+      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Positive %</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
+      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="reviewsCapturedDisplay">—</div>
+      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Reviews Captured</div>
+    </div>
+  </div>
+</div>
 
         <div class="stats-row">
           <div class="stat-tile">
@@ -3816,9 +3814,9 @@
       }
 
       .mobile-tab.active {
-        opacity: 1 !important;
-        color: var(--accent);
-      }
+  opacity: 1 !important;
+  color: var(--accent) !important;
+}
     }
   </style>
 
@@ -3924,8 +3922,22 @@
     function handleHash() { const hash = window.location.hash.slice(1); if (hash) { const targetNav = document.querySelector(`.nav-item[data-nav="${hash}"]`); if (targetNav) targetNav.click(); } }
 
     function navigateTo(nav) { const targetNav = document.querySelector(`.nav-item[data-nav="${nav}"]`); if (targetNav) targetNav.click(); }
-    function navigateToMobile(nav) { navigateTo(nav); document.querySelectorAll('.mobile-tab').forEach(tab => { tab.classList.remove('active'); if (tab.getAttribute('data-tab') === nav) tab.classList.add('active'); }); }
-    document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { const target = item.dataset.nav; document.querySelectorAll('.mobile-tab').forEach(tab => { tab.classList.remove('active'); if (tab.getAttribute('data-tab') === target) tab.classList.add('active'); }); }); });
+function navigateToMobile(nav) {
+  navigateTo(nav);
+  document.querySelectorAll('.mobile-tab').forEach(tab => {
+    tab.classList.remove('active');
+    tab.style.opacity = '0.6';
+    const icon = tab.querySelector('i');
+    if (icon) icon.style.color = '';
+  });
+  const activeTab = document.querySelector(`.mobile-tab[data-tab="${nav}"]`);
+  if (activeTab) {
+    activeTab.classList.add('active');
+    activeTab.style.opacity = '1';
+    const icon = activeTab.querySelector('i');
+    if (icon) icon.style.color = 'var(--accent)';
+  }
+}    document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { const target = item.dataset.nav; document.querySelectorAll('.mobile-tab').forEach(tab => { tab.classList.remove('active'); if (tab.getAttribute('data-tab') === target) tab.classList.add('active'); }); }); });
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -4086,12 +4098,66 @@
       if (positivePercentDisplay) positivePercentDisplay.innerHTML = `${positivePercent}%`;
 
       const reviewsCapturedDisplay = document.getElementById('reviewsCapturedDisplay');
-      if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0; loadReputationScore(); loadFunnelSettings(); loadAlertSettings(); if (stats.recent_events) updateTicker(stats.recent_events); buildFeatureTiles(stats); loadActivityFeed(); const reviewLink = window.location.origin + "/r/" + slug; const wallUrlEl = document.getElementById("wallUrl"); if (wallUrlEl) wallUrlEl.value = reviewLink; const wallPreviewEl = document.getElementById("wallPreviewLink"); if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug; const embedCodeEl = document.getElementById("embedCode"); if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`; const webhookUrlEl = document.getElementById("webhookUrl"); if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug; const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug; const bizNameEl = document.getElementById("bizNameInput"); if (bizNameEl) bizNameEl.value = stats.business_name || ""; const reviewLinkInputEl = document.getElementById("reviewLinkInput"); if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || ""; const assetReviewLinkEl = document.getElementById("assetReviewLink"); if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug; const qrDownloadLink = document.getElementById("qrDownloadLink"); if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug; const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"); document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("smsLocked").style.display = hasPro ? "none" : "block"; document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("emailLocked").style.display = hasPro ? "none" : "block"; document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("aiLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block"; const isAgency = stats.plan_type === "agency"; document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none"; document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block"; if (hasPro) document.getElementById("whatsappSettings").style.display = "block"; if (hasPro) { loadSentimentTrends(); loadSendIntelligence(); loadGrowthChart(); document.getElementById("proAnalyticsPreview").style.display = "block"; document.getElementById("analyticsUpgradePrompt").style.display = "none"; } if (chartInstance) { chartInstance.destroy(); chartInstance = null; } const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d"); if (ctx && canvas && canvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; chartInstance = new Chart(ctx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } else if (canvas && stats.rating_count === 0) { const placeholderCtx = canvas.getContext("2d"); if (placeholderCtx) { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; placeholderCtx.font = "14px 'DM Sans'"; placeholderCtx.fillStyle = "#EAE7DC"; placeholderCtx.textAlign = "center"; placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); } } const smsCounter = document.getElementById("smsCounter"); if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`; const emailCounter = document.getElementById("emailCounter"); if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`; const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d"); if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; new Chart(analyticsCtx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } lastStats = stats;
+      if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0; loadReputationScore(); loadFunnelSettings(); loadAlertSettings(); if (stats.recent_events) updateTicker(stats.recent_events); buildFeatureTiles(stats); loadActivityFeed(); const reviewLink = window.location.origin + "/r/" + slug; const wallUrlEl = document.getElementById("wallUrl"); if (wallUrlEl) wallUrlEl.value = reviewLink; const wallPreviewEl = document.getElementById("wallPreviewLink"); if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug; const embedCodeEl = document.getElementById("embedCode"); if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`; const webhookUrlEl = document.getElementById("webhookUrl"); if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug; const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug; const bizNameEl = document.getElementById("bizNameInput"); if (bizNameEl) bizNameEl.value = stats.business_name || ""; const reviewLinkInputEl = document.getElementById("reviewLinkInput"); if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || ""; const assetReviewLinkEl = document.getElementById("assetReviewLink"); if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug; const qrDownloadLink = document.getElementById("qrDownloadLink"); if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug; const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"); document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("smsLocked").style.display = hasPro ? "none" : "block"; document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("emailLocked").style.display = hasPro ? "none" : "block"; document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("aiLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block"; const isAgency = stats.plan_type === "agency"; document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none"; document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block"; if (hasPro) { loadSentimentTrends(); loadSendIntelligence(); loadGrowthChart(); document.getElementById("proAnalyticsPreview").style.display = "block"; document.getElementById("analyticsUpgradePrompt").style.display = "none"; } if (chartInstance) { chartInstance.destroy(); chartInstance = null; } const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d"); if (ctx && canvas && canvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; chartInstance = new Chart(ctx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } else if (canvas && stats.rating_count === 0) { const placeholderCtx = canvas.getContext("2d"); if (placeholderCtx) { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; placeholderCtx.font = "14px 'DM Sans'"; placeholderCtx.fillStyle = "#EAE7DC"; placeholderCtx.textAlign = "center"; placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); } } const smsCounter = document.getElementById("smsCounter"); if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`; const emailCounter = document.getElementById("emailCounter"); if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`; const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d"); if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; new Chart(analyticsCtx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } lastStats = stats;
     }
 
 
-    function buildFeatureTiles(stats) { const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"), isAgency = stats.plan_type === "agency"; const tiles = [{ id: "sms", name: "SMS Review Requests", icon: "ti-message", desc: "Send review requests via text", stat: `${stats.sms_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro" }, { id: "email", name: "Email Campaigns", icon: "ti-mail", desc: "Send review requests via email", stat: `${stats.email_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro" }, { id: "ai", name: "AI Reply Generator", icon: "ti-sparkles", desc: "Generate replies to reviews", stat: `${stats.ai_replies_generated || 0} replies this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" }, { id: "webhook", name: "Webhook Integration", icon: "ti-webhook", desc: "Auto-send review requests", stat: stats.webhook_configured ? "Connected" : "Not set up", nav: "assets", locked: false }, { id: "reviewWall", name: "Review Wall", icon: "ti-layout-grid", desc: "Share customer love", stat: `${stats.positive || 0} reviews displayed`, nav: "customers", locked: false }, { id: "widget", name: "Website Widget", icon: "ti-code", desc: "Embed on your site", stat: "Copy code to install", nav: "assets", locked: false }, { id: "sentiment", name: "Sentiment Trends", icon: "ti-chart-dots", desc: "AI analysis of feedback", stat: `${stats.feedback_themes || 0} themes identified`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" }, { id: "whatsapp", name: "WhatsApp Alerts", icon: "ti-brand-whatsapp", desc: "Instant complaint alerts", stat: stats.whatsapp_enabled ? "Active" : "Off", nav: "settings", locked: !hasPro, lockMsg: "Upgrade to Pro" }, { id: "competitor", name: "Competitor Analysis", icon: "ti-spy", desc: "See competitor weaknesses", stat: `Last run: ${stats.last_competitor_analysis || 'Never'}`, nav: "ai-lab", locked: !isAgency, lockMsg: "Upgrade to Agency" }, { id: "voice", name: "Voice Reviews", icon: "ti-microphone", desc: "Collect voice feedback", stat: `${stats.voice_notes || 0} received this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" }, { id: "sendIntel", name: "Send Intelligence", icon: "ti-brain", desc: "AI channel prediction", stat: `${stats.send_intel_rate || 0}% avg conversion`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro" }]; const grid = document.getElementById("featuresGrid"); if (!grid) return; grid.innerHTML = tiles.map(tile => `<div class="feature-tile ${tile.locked ? 'locked' : ''}" data-nav="${tile.nav}" ${tile.locked ? '' : 'onclick="navigateTo(\'' + tile.nav + '\')"'}> <div class="feature-tile-header"><div class="feature-icon"><i class="ti ${tile.icon}"></i></div>${tile.locked ? '<i class="ti ti-lock lock-icon"></i>' : ''}</div><div class="feature-name">${tile.name}</div><div class="feature-desc">${tile.desc}</div><div class="feature-stat">${tile.stat}</div>${tile.locked ? `<div class="lock-overlay"><span>${tile.lockMsg}</span></div>` : ''}</div>`).join(''); document.querySelectorAll('.feature-tile.locked').forEach(tile => { tile.addEventListener('mouseenter', () => { const overlay = tile.querySelector('.lock-overlay'); if (overlay) overlay.style.opacity = '1'; }); tile.addEventListener('mouseleave', () => { const overlay = tile.querySelector('.lock-overlay'); if (overlay) overlay.style.opacity = '0'; }); }); }
+function buildFeatureTiles(stats) {
+  const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"),
+    isAgency = stats.plan_type === "agency";
+  const tiles = [
+    { id: "sms", name: "SMS Review Requests", icon: "ti-message", desc: "Send review requests via text", stat: `${stats.sms_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "communication" },
+    { id: "email", name: "Email Campaigns", icon: "ti-mail", desc: "Send review requests via email", stat: `${stats.email_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "communication" },
+    { id: "ai", name: "AI Reply Generator", icon: "ti-sparkles", desc: "Generate replies to reviews", stat: `${stats.ai_replies_generated || 0} replies this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" },
+    { id: "webhook", name: "Webhook Integration", icon: "ti-webhook", desc: "Auto-send review requests", stat: stats.webhook_configured ? "Connected" : "Not set up", nav: "assets", locked: false, category: "communication" },
+    { id: "reviewWall", name: "Review Wall", icon: "ti-layout-grid", desc: "Share customer love", stat: `${stats.positive || 0} reviews displayed`, nav: "customers", locked: false, category: "display" },
+    { id: "widget", name: "Website Widget", icon: "ti-code", desc: "Embed on your site", stat: "Copy code to install", nav: "assets", locked: false, category: "display" },
+    { id: "sentiment", name: "Sentiment Trends", icon: "ti-chart-dots", desc: "AI analysis of feedback", stat: `${stats.feedback_themes || 0} themes identified`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" },
+    { id: "whatsapp", name: "WhatsApp Alerts", icon: "ti-brand-whatsapp", desc: "Instant complaint alerts", stat: stats.whatsapp_enabled ? "Active" : "Off", nav: "settings", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "whatsapp" },
+    { id: "competitor", name: "Competitor Analysis", icon: "ti-spy", desc: "See competitor weaknesses", stat: `Last run: ${stats.last_competitor_analysis || 'Never'}`, nav: "ai-lab", locked: !isAgency, lockMsg: "Upgrade to Agency", category: "ai" },
+    { id: "voice", name: "Voice Reviews", icon: "ti-microphone", desc: "Collect voice feedback", stat: `${stats.voice_notes || 0} received this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "display" },
+    { id: "sendIntel", name: "Send Intelligence", icon: "ti-brain", desc: "AI channel prediction", stat: `${stats.send_intel_rate || 0}% avg conversion`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" }
+  ];
 
+  const grid = document.getElementById("featuresGrid");
+  if (!grid) return;
+
+  // Separate unlocked and locked
+  const unlocked = tiles.filter(t => !t.locked);
+  const locked = tiles.filter(t => t.locked);
+
+  // Border colour map
+  const borderMap = {
+    communication: '#C8A96E',
+    ai: '#8B5CF6',
+    display: '#6A9E7F',
+    whatsapp: '#25D366'
+  };
+
+  // Render unlocked tiles
+  let html = unlocked.map(tile => {
+    const borderColor = borderMap[tile.category] || 'transparent';
+    return `<div class="feature-tile" data-nav="${tile.nav}" onclick="navigateTo('${tile.nav}')" style="border-left:2px solid ${borderColor};">
+      <div class="feature-tile-header"><div class="feature-icon"><i class="ti ${tile.icon}"></i></div></div>
+      <div class="feature-name">${tile.name}</div>
+      <div class="feature-desc">${tile.desc}</div>
+      <div class="feature-stat">${tile.stat}</div>
+    </div>`;
+  }).join('');
+
+  // Render locked tiles as single collapsed card (only if there are locked tiles)
+  if (locked.length > 0) {
+    html += `<div style="background:rgba(200,169,110,0.06); border:1px dashed rgba(200,169,110,0.3); border-radius:12px; padding:16px; grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div style="font-weight:600; margin-bottom:4px;">🔒 ${locked.length} features locked</div>
+        <div style="font-size:0.75rem; color:var(--cream-dim);">${locked.map(t => t.name).join(', ')}</div>
+      </div>
+      <a href="/billing" style="background:var(--accent); color:#1A1A18; border:none; border-radius:8px; padding:10px 20px; font-weight:600; font-size:0.85rem; text-decoration:none; white-space:nowrap;">Upgrade to unlock →</a>
+    </div>`;
+  }
+
+  grid.innerHTML = html;
+}
     async function loadActivityFeed() { const container = document.getElementById("activityList"); if (!container) return; container.innerHTML = Array(5).fill(0).map(() => `<div class="skeleton-row"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-time"></div></div>`).join(''); const res = await fetch("/stats/" + slug); if (!res.ok) return; const stats = await res.json(); const events = stats.recent_events || []; if (events.length === 0) { container.innerHTML = '<div class="activity-item"><div class="activity-left"><div class="activity-icon visit"><i class="ti ti-eye"></i></div><div class="activity-text">No activity yet</div></div></div>'; return; } container.innerHTML = events.slice(0, 10).map(e => { let iconClass = "visit", iconName = "ti-eye", text = ""; if (e.event_type === 'visit') { iconClass = "visit"; iconName = "ti-eye"; text = "👤 Customer visited your funnel"; } else if (e.event_type === 'positive') { iconClass = "positive"; iconName = "ti-thumb-up"; text = "⭐ New 5-star rating received"; } else if (e.event_type === 'negative') { iconClass = "negative"; iconName = "ti-message"; text = "📝 Private feedback captured"; } else if (e.event_type === 'sms_sent') { iconClass = "sms"; iconName = "ti-message-circle"; text = "📱 SMS review request sent"; } else if (e.event_type === 'email_sent') { iconClass = "sms"; iconName = "ti-mail"; text = "📧 Email review request sent"; } else { iconClass = "visit"; iconName = "ti-info-circle"; text = e.event_type.replace('_', ' '); } const timeAgo = e.created_at ? getRelativeTime(e.created_at) : "recently"; return `<div class="activity-item"><div class="activity-left"><div class="activity-icon ${iconClass}"><i class="ti ${iconName}"></i></div><div class="activity-text">${text}</div></div><div class="activity-time">${timeAgo}</div></div>`; }).join(''); }
 
     async function loadPrivateFeedback() { const res = await fetch("/stats/" + slug); const stats = await res.json(); const container = document.getElementById("privateFeedbackList"); if (!container) return; const feedback = stats.feedback || []; if (feedback.length === 0) { container.innerHTML = '<p style="color:var(--cream-dim);font-size:0.85rem;">No private feedback yet. When customers choose \'Could be better\', their message appears here — before it can become a public review.</p>'; return; } container.innerHTML = feedback.map(msg => `<div style="background:var(--surface-2);border-left:3px solid var(--danger);border-radius:8px;padding:14px 16px;margin-bottom:10px;"><p style="font-size:0.85rem;line-height:1.5;">${escapeHtml(msg)}</p></div>`).join(''); }
