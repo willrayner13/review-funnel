@@ -191,14 +191,18 @@
       color: rgba(234, 231, 220, 0.28);
     }
 
-    /* Account type toggle */
+    /* Account type toggle - HIDDEN by default, shown only for agency signups */
     .account-type-toggle {
-      display: flex;
+      display: none;
       gap: 12px;
       margin-bottom: 24px;
       background: var(--surface-2);
       padding: 6px;
       border-radius: 12px;
+    }
+
+    .account-type-toggle.visible {
+      display: flex;
     }
 
     .type-option {
@@ -228,14 +232,6 @@
     }
 
     .agency-fields {
-      display: none;
-    }
-
-    .agency-fields.active {
-      display: block;
-    }
-
-    .business-fields.hide {
       display: none;
     }
 
@@ -461,19 +457,19 @@
     <h2>Create your account</h2>
     <p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial · Card required · £0 charged until day 15</p>
 
-    <!-- Account Type Toggle -->
-    <div class="account-type-toggle">
+    <!-- Account Type Toggle - HIDDEN by default, only shown for agency signups -->
+    <div class="account-type-toggle" id="accountTypeToggle">
       <div class="type-option business" onclick="setAccountType('business')">🏢 I'm a Business</div>
       <div class="type-option agency" onclick="setAccountType('agency')">🏢 I'm an Agency</div>
     </div>
 
     <div class="form-group">
-      <label>Business / Agency name</label>
-      <input id="name" type="text" placeholder="e.g. The Coffee House or Acme Marketing">
+      <label>Business name</label>
+      <input id="name" type="text" placeholder="e.g. The Coffee House">
     </div>
 
-    <!-- Business-specific fields (hidden for agency) -->
-    <div id="businessFields" class="business-fields">
+    <!-- Business-specific fields (shown by default) -->
+    <div id="businessFields">
       <div class="form-group">
         <label>Your industry</label>
         <select id="industry">
@@ -527,8 +523,8 @@
       </div>
     </div>
 
-    <!-- Agency-specific fields -->
-    <div id="agencyFields" class="agency-fields">
+    <!-- Agency-specific fields (hidden by default) -->
+    <div id="agencyFields" style="display:none;">
       <div class="form-group">
         <label>Agency website (optional)</label>
         <input id="agencyWebsite" type="url" placeholder="https://your-agency.com">
@@ -581,7 +577,7 @@
     <div class="login-link">Already have an account? <a href="/login">Sign in</a></div>
   </div>
 
-  <!-- Plan selection (same as before) -->
+  <!-- Plan selection -->
   <div id="planScreen">
     <div class="plan-header">
       <span class="page-eyebrow">✓ Account created</span>
@@ -623,7 +619,7 @@
     <p class="global-trial-note">You'll be taken to Stripe's secure checkout to save your card.<br>Cancel anytime from your dashboard.</p>
   </div>
 
-  <!-- Modal (same as before) -->
+  <!-- Modal -->
   <div class="modal-overlay" id="helpModal" onclick="handleOverlayClick(event)" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); z-index:500; align-items:center; justify-content:center;">
     <div class="modal" style="background:var(--surface); border-radius:20px; max-width:500px; width:100%; padding:32px; position:relative;">
       <button class="modal-close" onclick="closeModal()" style="position:absolute; top:16px; right:16px; background:var(--surface-2); border:none; border-radius:6px; width:32px; height:32px; cursor:pointer;">✕</button>
@@ -653,6 +649,26 @@
 let currentSlug = "";
 let selectedAccountType = "business";
 
+// Check if this is an agency signup (via URL parameter ?type=agency)
+(function checkAgencySignup() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const type = urlParams.get('type');
+  
+  if (type === 'agency') {
+    // Show agency toggle and set to agency mode
+    const toggle = document.getElementById('accountTypeToggle');
+    if (toggle) toggle.classList.add('visible');
+    setAccountType('agency');
+  } else {
+    // Hide agency toggle, force business mode
+    const toggle = document.getElementById('accountTypeToggle');
+    if (toggle) toggle.classList.remove('visible');
+    setAccountType('business');
+    // Disable the ability to switch - hide the toggle completely
+    toggle.style.display = 'none';
+  }
+})();
+
 function setAccountType(type) {
   selectedAccountType = type;
   document.getElementById("accountType").value = type;
@@ -663,19 +679,27 @@ function setAccountType(type) {
   const agencyFields = document.getElementById('agencyFields');
   
   if (type === 'business') {
-    businessOption.style.background = 'var(--accent)';
-    businessOption.style.color = '#1A1A18';
-    agencyOption.style.background = 'transparent';
-    agencyOption.style.color = 'var(--cream-dim)';
-    businessFields.style.display = 'block';
-    agencyFields.style.display = 'none';
+    if (businessOption) {
+      businessOption.style.background = 'var(--accent)';
+      businessOption.style.color = '#1A1A18';
+    }
+    if (agencyOption) {
+      agencyOption.style.background = 'transparent';
+      agencyOption.style.color = 'var(--cream-dim)';
+    }
+    if (businessFields) businessFields.style.display = 'block';
+    if (agencyFields) agencyFields.style.display = 'none';
   } else {
-    agencyOption.style.background = 'var(--accent)';
-    agencyOption.style.color = '#1A1A18';
-    businessOption.style.background = 'transparent';
-    businessOption.style.color = 'var(--cream-dim)';
-    businessFields.style.display = 'none';
-    agencyFields.style.display = 'block';
+    if (agencyOption) {
+      agencyOption.style.background = 'var(--accent)';
+      agencyOption.style.color = '#1A1A18';
+    }
+    if (businessOption) {
+      businessOption.style.background = 'transparent';
+      businessOption.style.color = 'var(--cream-dim)';
+    }
+    if (businessFields) businessFields.style.display = 'none';
+    if (agencyFields) agencyFields.style.display = 'block';
   }
 }
 
