@@ -194,28 +194,60 @@
       </div>
     </div>
 
-    <div id="reviewSection" style="display:none">
-      <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
-      <h2>Thank you!</h2>
-      <div id="voiceNoteSection" style="margin:16px 0;">
-        <p style="font-size:0.85rem;opacity:0.7;margin-bottom:12px;">Or leave a quick voice note instead of typing:</p>
-        <button id="recordBtn" onclick="startRecording()" style="padding:12px 20px;border-radius:40px;cursor:pointer;font-size:0.9rem;">🎤 Tap to record (30s max)</button>
-        <span id="recordingTimer" style="display:none;font-size:0.8rem;margin-left:10px;">0:00</span>
-        <div id="voiceResult" style="margin-top:12px;"></div>
-      </div>
-      <div id="copyGoSection" style="margin:16px 0;">
-        <div id="suggestionLoading" style="text-align:center;padding:16px;"><p>Writing your review...</p></div>
-        <div id="suggestionReady" style="display:none;">
-          <p style="font-size:0.8rem;margin-bottom:8px;">Here's a review you could leave — feel free to edit it:</p>
-          <textarea id="suggestionText" style="min-height:80px;font-size:0.9rem;margin-bottom:10px;width:100%;padding:12px;border-radius:12px;"></textarea>
-          <button onclick="copyAndGo()" id="copyGoBtn" style="padding:12px 20px;border-radius:40px;font-weight:600;cursor:pointer;width:100%;">📋 Copy & open Google</button>
-        </div>
-      </div>
-      <div class="review-prompt">
-        <p>Prefer to write your own review?</p>
-        <button id="leaveReviewBtn" onclick="leaveReview()">Leave a Review →</button>
-      </div>
+   <div id="reviewSection" style="display:none">
+  <div style="font-size:2.4rem;margin-bottom:8px;">🌟</div>
+  <h2>Thanks! Here's how to share it on Google</h2>
+
+  <!-- Loading state -->
+  <div id="suggestionLoading" style="text-align:center;padding:24px;">
+    <p style="opacity:0.7;">Writing your review...</p>
+  </div>
+
+  <!-- Suggestion ready -->
+  <div id="copyGoSection" style="display:none; animation:fadeIn 0.4s ease;">
+    <div style="margin-bottom:16px;">
+      <p style="font-size:0.78rem; opacity:0.6; margin-bottom:8px;">
+        Here's a review you could leave — edit it if you like:
+      </p>
+      <textarea id="suggestionText" rows="4"
+        style="width:100%; padding:14px; border-radius:12px; font-size:0.9rem; line-height:1.6; resize:none; font-family:inherit;"></textarea>
     </div>
+
+    <button id="copyGoBtn" onclick="copyAndOpenGoogle()"
+      style="width:100%; padding:16px; font-size:1rem; font-weight:700; border-radius:40px; cursor:pointer; margin-bottom:10px;">
+      Copy &amp; open Google ↗
+    </button>
+
+    <p style="font-size:0.75rem; opacity:0.5; margin-bottom:16px;">
+      Paste it into Google and hit post — takes 10 seconds
+    </p>
+
+    <button onclick="openGoogleDirectly()"
+      style="background:transparent; border:none; font-size:0.8rem; opacity:0.5; cursor:pointer; text-decoration:underline; display:block; margin:0 auto 16px;">
+      Write my own instead →
+    </button>
+
+    <div id="voiceSection" style="border-top:1px solid; padding-top:16px; opacity:0.6;">
+      <p style="font-size:0.78rem; margin-bottom:8px;">
+        🎤 Or speak your review (30 seconds)
+      </p>
+      <button onclick="startRecording()" id="voiceRecordBtn"
+        style="padding:10px 20px; border-radius:20px; font-size:0.8rem; cursor:pointer;">
+        Start recording
+      </button>
+      <span id="recordingTimer" style="display:none; font-size:0.8rem; margin-left:10px;">0:00</span>
+      <div id="voiceResult" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <!-- Fallback: shown if suggestion fails / times out -->
+  <div id="reviewFallback" style="display:none;">
+    <div class="review-prompt">
+      <p>We'd love it if you shared your experience online — it only takes a moment.</p>
+      <button id="leaveReviewBtn" onclick="leaveReview()">Leave a Review →</button>
+    </div>
+  </div>
+</div>
 
     <div id="reviewSectionLapsed" style="display:none">
       <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
@@ -343,11 +375,7 @@ function showFeedback(){ show(isLapsed ? "feedbackBoxLapsed" : "feedbackBox", tr
   });
 })();
 
-// ========== LEAVE REVIEW ==========
-function leaveReview(){
-  fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug})});
-  window.location.href = window.reviewLink;
-}
+
 
 // ========== COUNTDOWN (LAPSED ACCOUNTS) ==========
 function startCountdown(){
@@ -383,78 +411,161 @@ function sendFeedback(){
 
 // ========== VOICE RECORDING ==========
 let mediaRecorder, audioChunks, recordingTimer, seconds = 0;
+
+
+
+
+// ========== AI REVIEW SUGGESTION (NEW HAPPY PATH) ==========
+async function loadSuggestion(rating) {
+  const loadingEl = document.getElementById('suggestionLoading');
+  const suggestionSection = document.getElementById('copyGoSection');
+  const fallbackEl = document.getElementById('reviewFallback');
+  const textarea = document.getElementById('suggestionText');
+
+  // Show loading
+  loadingEl.style.display = 'block';
+  suggestionSection.style.display = 'none';
+  fallbackEl.style.display = 'none';
+
+  // Create a timeout promise (4 seconds)
+  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000));
+
+  try {
+    const fetchPromise = fetch("/suggest-review/" + window.slug, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        rating,
+        service: window.service || null,
+        business_name: window.businessName || '',
+        industry: window.industry || null
+      })
+    });
+
+    const res = await Promise.race([fetchPromise, timeout]);
+    if (!res.ok) throw new Error('bad response');
+    const data = await res.json();
+
+    if (data.suggestion) {
+      textarea.value = data.suggestion;
+      loadingEl.style.display = 'none';
+      suggestionSection.style.display = 'block';
+      // Set the recording timer display to be handled by the existing voice functions
+      return;
+    }
+  } catch (e) {
+    // Fallback: show plain "Leave a Review" button
+    console.log('Suggestion failed, showing fallback');
+  }
+
+  // If we reach here, show fallback
+  loadingEl.style.display = 'none';
+  fallbackEl.style.display = 'block';
+}
+
+async function copyAndOpenGoogle() {
+  const text = document.getElementById('suggestionText').value;
+  await navigator.clipboard.writeText(text);
+  const btn = document.getElementById('copyGoBtn');
+  btn.textContent = 'Copied! Opening Google...';
+  btn.style.opacity = '0.7';
+  btn.disabled = true;
+  await fetch('/review-click', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ slug: window.slug })
+  });
+  setTimeout(() => window.open(window.reviewLink, '_blank'), 400);
+}
+
+function openGoogleDirectly() {
+  fetch('/review-click', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ slug: window.slug })
+  });
+  window.open(window.reviewLink, '_blank');
+}
+
+// Keep existing leaveReview() unchanged
+function leaveReview() {
+  fetch("/review-click", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug }) });
+  window.location.href = window.reviewLink;
+}
+
+// ========== VOICE RECORDING (unchanged, just ensure ids match) ==========
+// The voice recording functions (startRecording, stopRecording, transcribeAudio) 
+// stay exactly as they were. The only change is the button IDs and the timer span 
+// have been moved inside the new voiceSection. 
+// Update the references in startRecording to use the new IDs:
+
 async function startRecording() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
     audioChunks = [];
-    mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
     mediaRecorder.onstop = async () => {
       stream.getTracks().forEach(t => t.stop());
       const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
       await transcribeAudio(audioBlob);
     };
     mediaRecorder.start();
-    document.getElementById("recordBtn").textContent = "⏹ Stop recording";
-    document.getElementById("recordBtn").onclick = stopRecording;
+    document.getElementById("voiceRecordBtn").textContent = "⏹ Stop recording";
+    document.getElementById("voiceRecordBtn").onclick = stopRecording;
     document.getElementById("recordingTimer").style.display = "inline";
     seconds = 0;
     recordingTimer = setInterval(() => {
       seconds++;
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
-      document.getElementById("recordingTimer").textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
-      if(seconds >= 30) stopRecording();
+      document.getElementById("recordingTimer").textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+      if (seconds >= 30) stopRecording();
     }, 1000);
-  } catch(e) { document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed.</p>'; }
+  } catch (e) {
+    document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed.</p>';
+  }
 }
+
 function stopRecording() {
-  if(mediaRecorder && mediaRecorder.state === "recording"){
+  if (mediaRecorder && mediaRecorder.state === "recording") {
     mediaRecorder.stop();
     clearInterval(recordingTimer);
-    document.getElementById("recordBtn").textContent = "Processing...";
-    document.getElementById("recordBtn").disabled = true;
+    document.getElementById("voiceRecordBtn").textContent = "Processing...";
+    document.getElementById("voiceRecordBtn").disabled = true;
     document.getElementById("recordingTimer").style.display = "none";
   }
 }
+
 async function transcribeAudio(blob) {
   const formData = new FormData();
   formData.append('audio', blob, 'recording.webm');
   try {
     const res = await fetch("/transcribe-voice/" + window.slug, { method: "POST", body: formData });
     const data = await res.json();
-    if(data.sentiment === "positive"){
-      document.getElementById("voiceResult").innerHTML = `<div style="padding:14px;border-radius:12px;margin-bottom:12px;"><p>We heard: "${data.transcription}"</p><button onclick="leaveReview()" style="padding:10px 20px;border-radius:40px;cursor:pointer;width:100%;">Post as Google review →</button></div>`;
+    if (data.sentiment === "positive") {
+      document.getElementById("voiceResult").innerHTML = `
+        <div style="padding:14px;border-radius:12px;margin-bottom:12px;">
+          <p>We heard: "${data.transcription}"</p>
+          <button onclick="leaveReview()" style="padding:10px 20px;border-radius:40px;cursor:pointer;width:100%;">Post as Google review →</button>
+        </div>`;
     } else {
       document.getElementById("voiceResult").innerHTML = `<p>Thank you — your feedback has been saved privately.</p>`;
-      document.querySelector(".review-prompt").style.display = "none";
+      document.querySelector(".review-prompt")?.style.display = "none";
     }
-  } catch(e) { document.getElementById("voiceResult").innerHTML = '<p>Could not process audio. Please try again.</p>'; }
-  document.getElementById("recordBtn").style.display = "none";
+  } catch (e) {
+    document.getElementById("voiceResult").innerHTML = '<p>Could not process audio. Please try again.</p>';
+  }
+  document.getElementById("voiceRecordBtn").style.display = "none";
 }
+
+// Remove any existing loadSuggestion/copyAndGo definitions that conflict.
+// Ensure the initStars function still calls loadSuggestion(rating) after positive rating.
 
 // ========== AI REVIEW SUGGESTION ==========
-async function loadSuggestion(stars){
-  try {
-    const res = await fetch("/suggest-review/" + window.slug, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rating: stars, service: window.service || null }) });
-    const data = await res.json();
-    if(data.suggestion){
-      document.getElementById("suggestionLoading").style.display = "none";
-      document.getElementById("suggestionReady").style.display = "block";
-      document.getElementById("suggestionText").value = data.suggestion;
-    }
-  } catch(e) { document.getElementById("suggestionLoading").innerHTML = '<p>Ready to leave a review below.</p>'; }
-}
 
-function copyAndGo(){
-  const text = document.getElementById("suggestionText").value;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById("copyGoBtn");
-    btn.textContent = "✓ Copied! Google is opening...";
-    btn.disabled = true;
-    setTimeout(() => { fetch("/review-click",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug: window.slug})}); window.open(window.reviewLink, "_blank"); }, 600);
-  });
-}
+
+
 
 // ========== INIT ==========
 const t = document.getElementById("businessTitle");
