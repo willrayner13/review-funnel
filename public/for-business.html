@@ -4220,6 +4220,7 @@ function navigateToMobile(nav) {
 
     // ========== AGENCY CLIENT MANAGEMENT ==========
 
+// Make sure loadAgencyClients is properly defined
 async function loadAgencyClients() {
   try {
     const res = await fetch("/agency/clients");
@@ -4227,20 +4228,28 @@ async function loadAgencyClients() {
     
     if (data.error) {
       console.log("Not an agency account or error:", data.error);
-      document.getElementById("agencyClientsSection").style.display = "none";
+      const agencySection = document.getElementById("agencyClientsSection");
+      if (agencySection) agencySection.style.display = "none";
       return;
     }
     
     // Show the agency section
-    document.getElementById("agencyClientsSection").style.display = "block";
+    const agencySection = document.getElementById("agencyClientsSection");
+    if (agencySection) agencySection.style.display = "block";
     
     // Update stats
-    document.getElementById("clientCount").textContent = data.agency.total_clients;
-    document.getElementById("activeClientCount").textContent = data.agency.active_clients;
-    document.getElementById("remainingSlots").textContent = data.agency.remaining_slots;
+    const clientCount = document.getElementById("clientCount");
+    const activeClientCount = document.getElementById("activeClientCount");
+    const remainingSlots = document.getElementById("remainingSlots");
+    
+    if (clientCount) clientCount.textContent = data.agency.total_clients;
+    if (activeClientCount) activeClientCount.textContent = data.agency.active_clients;
+    if (remainingSlots) remainingSlots.textContent = data.agency.remaining_slots;
     
     // Render clients table
     const tbody = document.getElementById("clientsTableBody");
+    if (!tbody) return;
+    
     if (data.clients.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">No clients yet. Click "Add New Client" to get started.</td></tr>';
       return;
@@ -4281,59 +4290,162 @@ async function loadAgencyClients() {
   }
 }
 
-function openCreateClientModal() {
-  // Create modal dynamically
-  const modalHtml = `
-    <div class="modal-overlay" id="createClientModal" onclick="handleModalOverlay(event, 'createClientModal')">
-      <div class="modal-box" style="max-width:500px;">
-        <button class="modal-close" onclick="closeModal('createClientModal')">✕</button>
-        <span class="modal-icon">👥</span>
-        <h3>Add New Client</h3>
-        <p>Create a new client account. They'll receive an email with login details.</p>
-        
-        <div class="form-group">
-          <label>Business name</label>
-          <input id="clientName" type="text" placeholder="e.g. Joe's Coffee Shop">
-        </div>
-        <div class="form-group">
-          <label>Client email</label>
-          <input id="clientEmail" type="email" placeholder="owner@joescoffee.com">
-        </div>
-        <div class="form-group">
-          <label>Google review link (optional)</label>
-          <input id="clientReviewLink" type="url" placeholder="https://g.page/r/...">
-          <p class="helper-text">They can add this later in their dashboard</p>
-        </div>
-        
-        <button onclick="createClient()" id="createClientBtn" class="btn-full" style="background:var(--accent); color:#1A1A18;">Create Client Account →</button>
-        <p id="createClientMsg" style="margin-top:12px; font-size:0.75rem;"></p>
-      </div>
-    </div>
-  `;
-  
-  // Remove existing modal if any
-  const existing = document.getElementById("createClientModal");
-  if (existing) existing.remove();
-  
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-  openModal("createClientModal");
-}
 
-async function createClient() {
-  const name = document.getElementById("clientName").value.trim();
-  const email = document.getElementById("clientEmail").value.trim();
-  const reviewLink = document.getElementById("clientReviewLink").value.trim();
-  const btn = document.getElementById("createClientBtn");
-  const msg = document.getElementById("createClientMsg");
-  
-  if (!name || !email) {
-    msg.textContent = "Business name and email required";
-    msg.style.color = "#D4897C";
+// Create a simple modal without complex styling dependencies
+function openCreateClientModal() {
+  // Check if modal already exists
+  let modal = document.getElementById("createClientModal");
+  if (modal) {
+    modal.style.display = "flex";
     return;
   }
   
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Creating...';
+  // Create modal container
+  modal = document.createElement("div");
+  modal.id = "createClientModal";
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
+  
+  // Create modal content
+  modal.innerHTML = `
+    <div style="
+      background: var(--surface, #242422);
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      padding: 32px;
+      position: relative;
+      border: 1px solid rgba(200,169,110,0.2);
+    ">
+      <button onclick="closeCreateClientModal()" style="
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: var(--surface-2, #2E2E2B);
+        border: none;
+        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        color: var(--cream-dim, #888);
+        font-size: 1.2rem;
+      ">✕</button>
+      
+      <div style="font-size: 2.5rem; margin-bottom: 16px;">👥</div>
+      <h3 style="font-family: 'Syne', sans-serif; margin-bottom: 8px;">Add New Client</h3>
+      <p style="color: var(--cream-dim, #888); margin-bottom: 24px;">Create a new client account. They'll receive an email with login details.</p>
+      
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; margin-bottom: 6px; font-size: 0.8rem; color: var(--cream-dim, #888);">Business name</label>
+        <input id="newClientName" type="text" placeholder="e.g. Joe's Coffee Shop" style="
+          width: 100%;
+          padding: 12px 14px;
+          background: var(--surface-2, #2E2E2B);
+          border: 1px solid var(--border, #333);
+          border-radius: 8px;
+          color: var(--cream, #EAE7DC);
+          font-size: 0.9rem;
+        ">
+      </div>
+      
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; margin-bottom: 6px; font-size: 0.8rem; color: var(--cream-dim, #888);">Client email</label>
+        <input id="newClientEmail" type="email" placeholder="owner@joescoffee.com" style="
+          width: 100%;
+          padding: 12px 14px;
+          background: var(--surface-2, #2E2E2B);
+          border: 1px solid var(--border, #333);
+          border-radius: 8px;
+          color: var(--cream, #EAE7DC);
+          font-size: 0.9rem;
+        ">
+      </div>
+      
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; margin-bottom: 6px; font-size: 0.8rem; color: var(--cream-dim, #888);">Google review link (optional)</label>
+        <input id="newClientReviewLink" type="url" placeholder="https://g.page/r/..." style="
+          width: 100%;
+          padding: 12px 14px;
+          background: var(--surface-2, #2E2E2B);
+          border: 1px solid var(--border, #333);
+          border-radius: 8px;
+          color: var(--cream, #EAE7DC);
+          font-size: 0.9rem;
+        ">
+        <p style="font-size: 0.7rem; color: rgba(234,231,220,0.3); margin-top: 4px;">They can add this later in their dashboard</p>
+      </div>
+      
+      <button onclick="createClient()" id="createClientSubmitBtn" style="
+        width: 100%;
+        padding: 14px;
+        background: var(--accent, #C8A96E);
+        color: #1A1A18;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+      ">Create Client Account →</button>
+      
+      <div id="createClientModalMsg" style="margin-top: 16px; font-size: 0.75rem; text-align: center;"></div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Close modal when clicking outside
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeCreateClientModal();
+    }
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeCreateClientModal();
+    }
+  });
+}
+
+function closeCreateClientModal() {
+  const modal = document.getElementById("createClientModal");
+  if (modal) {
+    modal.remove();
+  }
+}
+
+async function createClient() {
+  const name = document.getElementById("newClientName")?.value.trim();
+  const email = document.getElementById("newClientEmail")?.value.trim();
+  const reviewLink = document.getElementById("newClientReviewLink")?.value.trim();
+  const btn = document.getElementById("createClientSubmitBtn");
+  const msg = document.getElementById("createClientModalMsg");
+  
+  if (!name || !email) {
+    if (msg) {
+      msg.textContent = "Business name and email required";
+      msg.style.color = "#D4897C";
+    }
+    return;
+  }
+  
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Creating...";
+    btn.style.opacity = "0.6";
+  }
   
   try {
     const res = await fetch("/agency/create-client", {
@@ -4344,28 +4456,41 @@ async function createClient() {
     const data = await res.json();
     
     if (data.success) {
-      msg.innerHTML = `✓ Client created! Temporary password: <strong>${data.client.temporary_password}</strong>`;
-      msg.style.color = "#8EC9A8";
+      if (msg) {
+        msg.innerHTML = `✓ Client created! Temporary password: <strong>${data.client.temporary_password}</strong>`;
+        msg.style.color = "#8EC9A8";
+      }
       
       // Close modal after 2 seconds and refresh list
       setTimeout(() => {
-        closeModal("createClientModal");
-        loadAgencyClients();
-      }, 3000);
+        closeCreateClientModal();
+        loadAgencyClients(); // Refresh the client list
+        showToast("Client created successfully!", "success");
+      }, 2000);
     } else {
-      msg.textContent = data.error || "Could not create client";
-      msg.style.color = "#D4897C";
-      btn.disabled = false;
-      btn.innerHTML = "Create Client Account →";
+      if (msg) {
+        msg.textContent = data.error || "Could not create client";
+        msg.style.color = "#D4897C";
+      }
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Create Client Account →";
+        btn.style.opacity = "1";
+      }
     }
   } catch (e) {
-    msg.textContent = "Something went wrong";
-    msg.style.color = "#D4897C";
-    btn.disabled = false;
-    btn.innerHTML = "Create Client Account →";
+    if (msg) {
+      msg.textContent = "Something went wrong. Please try again.";
+      msg.style.color = "#D4897C";
+    }
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Create Client Account →";
+      btn.style.opacity = "1";
+    }
+    console.error("Create client error:", e);
   }
 }
-
 async function switchToClient(clientSlug) {
   if (!confirm(`Switch to this client's dashboard? You can switch back from your Settings.`)) return;
   
@@ -4383,6 +4508,7 @@ async function switchToClient(clientSlug) {
     showToast("Something went wrong", "error");
   }
 }
+
 
 async function exitClientMode() {
   try {
@@ -4418,7 +4544,6 @@ async function removeClient(clientSlug) {
 
 // Add client mode indicator to top bar if in client mode
 function checkClientMode() {
-  // Check if we're in client mode via session
   fetch("/session")
     .then(r => r.json())
     .then(data => {
@@ -4427,7 +4552,7 @@ function checkClientMode() {
         if (topBar && !document.getElementById("clientModeBanner")) {
           const banner = document.createElement("div");
           banner.id = "clientModeBanner";
-          banner.style.cssText = "background:var(--accent-dim); border-bottom:1px solid var(--accent); padding:8px 20px; text-align:center; font-size:0.8rem; display:flex; align-items:center; justify-content:center; gap:16px;";
+          banner.style.cssText = "background:rgba(200,169,110,0.15); border-bottom:1px solid var(--accent); padding:8px 20px; text-align:center; font-size:0.8rem; display:flex; align-items:center; justify-content:center; gap:16px;";
           banner.innerHTML = `
             <span>👁️ You are viewing a client dashboard</span>
             <button onclick="exitClientMode()" style="background:var(--accent); color:#1A1A18; border:none; padding:6px 16px; border-radius:6px; cursor:pointer;">Exit client mode →</button>
