@@ -317,26 +317,33 @@ app.get("/r/:business", async (req, res) => {
   }
   
   // Escape for JavaScript injection
-  const escapeJS = (str) => str ? str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') : '';
-
+const escapeJS = (str) => {
+  if (!str) return '';
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
+};
   res.send(`
     <html>
       <script>
-window.businessName        = "${data.name.replace(/"/g, '\\"')}";
-window.slug                = "${slug}";
-window.reviewLink          = "${(data.review_link || "").replace(/"/g, '\\"')}";
-window.accountLapsed       = ${isLapsed};
-window.industry            = "${(data.industry || 'local business').replace(/"/g, '\\"')}";
-window.service             = "${(req.query.service || '').replace(/"/g, '\\"')}";
-// Funnel customisation variables
-window.funnelTemplate      = "${data.funnel_template || 'classic'}";
-window.funnelLogoUrl       = "${(data.funnel_logo_url || '').replace(/"/g, '\\"')}";
-window.funnelAccentColor   = "${data.funnel_accent_color || '#C8A96E'}";
+// Replace all the individual escape calls with the escapeJS helper:
+window.businessName        = "${escapeJS(data.name)}";
+window.slug                = "${escapeJS(slug)}";
+window.reviewLink          = "${escapeJS(data.review_link || '')}";
+window.industry            = "${escapeJS(data.industry || 'local business')}";
+window.service             = "${escapeJS(req.query.service || '')}";
+window.funnelTemplate      = "${escapeJS(data.funnel_template || 'classic')}";
+window.funnelLogoUrl       = "${escapeJS(data.funnel_logo_url || '')}";
+window.funnelAccentColor   = "${escapeJS(data.funnel_accent_color || '#C8A96E')}";
 window.funnelHeadline      = "${escapeJS(headline)}";
 window.funnelHappyLabel    = "${escapeJS(happyLabel)}";
 window.funnelUnhappyLabel  = "${escapeJS(unhappyLabel)}";
 window.funnelThankyouMessage = "${escapeJS(thankyouMessage)}";
-window.funnelLanguage      = "${data.funnel_language || 'en'}";
+window.funnelLanguage      = "${escapeJS(data.funnel_language || 'en')}";
       </script>
       ${page}
     </html>
