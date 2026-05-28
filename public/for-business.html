@@ -2821,38 +2821,37 @@
             <div class="fs-settings" id="fsSettingsPanel">
 
               <!-- Template Selection -->
-              <div class="fs-settings-section">
-                <div class="fs-settings-label">🎭 Template</div>
-                <div class="fs-template-grid">
-                  <div class="fs-template-thumb selected" data-template="classic"
-                    onclick="selectFSTemplate('classic', this)">
-                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#1A1A18,#2E2E2B);"></div>
-                    <div class="fs-template-name">Modern Glow</div>
-                    <div class="fs-template-tag">Default</div>
-                  </div>
-                  <div class="fs-template-thumb" data-template="bright" onclick="selectFSTemplate('bright', this)">
-                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#fff,#f0f0f0);"></div>
-                    <div class="fs-template-name">Luxe White</div>
-                    <div class="fs-template-tag">Retail & Food</div>
-                  </div>
-                  <div class="fs-template-thumb" data-template="medical" onclick="selectFSTemplate('medical', this)">
-                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);"></div>
-                    <div class="fs-template-name">Clinical Clean</div>
-                    <div class="fs-template-tag">Healthcare</div>
-                  </div>
-                  <div class="fs-template-thumb" data-template="bold" onclick="selectFSTemplate('bold', this)">
-                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#C8A96E,#A88B5C);"></div>
-                    <div class="fs-template-name">Bold Impact</div>
-                    <div class="fs-template-tag">Trades & Gyms</div>
-                  </div>
-                  <div class="fs-template-thumb" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
-                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);"></div>
-                    <div class="fs-template-name">Elegant Minimal</div>
-                    <div class="fs-template-tag">High-end</div>
-                  </div>
-                </div>
-              </div>
-
+             <!-- Template Selection -->
+<div class="fs-settings-section">
+  <div class="fs-settings-label">🎭 Template</div>
+  <div class="fs-template-grid">
+    <div class="fs-template-thumb" data-template="classic" onclick="selectFSTemplate('classic', this)">
+      <div class="fs-template-preview" style="background:linear-gradient(135deg,#1A1A18,#2E2E2B);"></div>
+      <div class="fs-template-name">Modern Glow</div>
+      <div class="fs-template-tag">Default</div>
+    </div>
+    <div class="fs-template-thumb" data-template="bright" onclick="selectFSTemplate('bright', this)">
+      <div class="fs-template-preview" style="background:linear-gradient(135deg,#fff,#f0f0f0);"></div>
+      <div class="fs-template-name">Luxe White</div>
+      <div class="fs-template-tag">Retail & Food</div>
+    </div>
+    <div class="fs-template-thumb" data-template="medical" onclick="selectFSTemplate('medical', this)">
+      <div class="fs-template-preview" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);"></div>
+      <div class="fs-template-name">Clinical Clean</div>
+      <div class="fs-template-tag">Healthcare</div>
+    </div>
+    <div class="fs-template-thumb" data-template="bold" onclick="selectFSTemplate('bold', this)">
+      <div class="fs-template-preview" style="background:linear-gradient(135deg,#C8A96E,#A88B5C);"></div>
+      <div class="fs-template-name">Bold Impact</div>
+      <div class="fs-template-tag">Trades & Gyms</div>
+    </div>
+    <div class="fs-template-thumb" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
+      <div class="fs-template-preview" style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);"></div>
+      <div class="fs-template-name">Elegant Minimal</div>
+      <div class="fs-template-tag">High-end</div>
+    </div>
+  </div>
+</div>
               <!-- Branding -->
               <div class="fs-settings-section">
                 <div class="fs-settings-label">🎨 Branding</div>
@@ -2966,280 +2965,326 @@
 
       <script>
         // ========== FUNNEL STUDIO ADVANCED STATE ==========
-        let fsState = {
-          template: 'classic',
-          accentColor: '#C8A96E',
-          logoUrl: '',
-          headline: 'How was your experience?',
-          happyLabel: 'Great experience!',
-          sadLabel: 'Could be better',
-          thankyouMsg: 'Thanks for your feedback!',
-          device: 'mobile',
-          zoom: 100,
-          saved: false
-        };
+       let fsState = {
+  template: 'classic',
+  accentColor: '#C8A96E',
+  logoUrl: '',
+  headline: 'How was your experience?',
+  happyLabel: 'Great experience!',
+  sadLabel: 'Could be better',
+  thankyouMsg: 'Thanks for your feedback!',
+  device: 'mobile',
+  zoom: 100,
+  saved: false
+};
 
-        let fsSlug = '';
-
+let fsSlug = '';
         // ========== INIT ==========
-        function initFunnelStudio(slug) {
-          fsSlug = slug;
-          document.getElementById('fsLinkDisplay').textContent = window.location.origin + '/r/' + slug;
-
-          // Load saved settings
-          fetch('/stats/' + slug)
-            .then(r => r.json())
-            .then(stats => {
-              if (stats.funnel_template) fsState.template = stats.funnel_template;
-              if (stats.funnel_accent_color) fsState.accentColor = stats.funnel_accent_color;
-              if (stats.funnel_logo_url) {
-                fsState.logoUrl = stats.funnel_logo_url;
-                document.getElementById('fsLogoUrl').value = stats.funnel_logo_url;
-              }
-              if (stats.funnel_headline) {
-                fsState.headline = stats.funnel_headline;
-                document.getElementById('fsHeadline').value = stats.funnel_headline;
-              }
-              if (stats.funnel_happy_label) {
-                fsState.happyLabel = stats.funnel_happy_label;
-                document.getElementById('fsHappyLabel').value = stats.funnel_happy_label;
-              }
-              if (stats.funnel_unhappy_label) {
-                fsState.sadLabel = stats.funnel_unhappy_label;
-                document.getElementById('fsSadLabel').value = stats.funnel_unhappy_label;
-              }
-
-              // Update UI to match loaded state
-              selectFSTemplate(fsState.template, document.querySelector(`[data-template="${fsState.template}"]`));
-              selectFSColor(fsState.accentColor, document.querySelector(`[data-color="${fsState.accentColor}"]`));
-              updateFSPreview();
-              updateFSCharCount();
-            })
-            .catch(() => updateFSPreview());
-        }
-
+      
         // ========== TEMPLATE SELECTION ==========
-        function selectFSTemplate(template, el) {
-          fsState.template = template;
-          fsState.saved = false;
-
-          document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
-          if (el) el.classList.add('selected');
-
-          updateFSPreview();
-          updateFSSaveStatus();
-        }
+    function selectFSTemplate(template, el) {
+  fsState.template = template;
+  fsState.saved = false;
+  
+  // Update UI
+  document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  
+  // Apply template-specific styling to preview
+  updateFSPreview();
+  updateFSSaveStatus();
+}
 
         // ========== COLOR SELECTION ==========
-        function selectFSColor(color, el) {
-          fsState.accentColor = color;
-          fsState.saved = false;
+function selectFSColor(color, el) {
+  fsState.accentColor = color;
+  fsState.saved = false;
+  
+  // Update UI
+  document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  
+  // Update the color input
+  const colorInput = document.querySelector('.fs-color-input');
+  if (colorInput) colorInput.value = color;
+  
+  updateFSPreview();
+  updateFSSaveStatus();
+}
 
-          document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
-          if (el) el.classList.add('selected');
 
-          // Update the color input
-          const colorInput = document.querySelector('.fs-color-input');
-          if (colorInput) colorInput.value = color;
-
-          updateFSPreview();
-          updateFSSaveStatus();
-        }
 
         // ========== DEVICE TOGGLE ==========
-        function setFSDevice(device) {
-          fsState.device = device;
-
-          const mobileFrame = document.getElementById('fsMobileFrame');
-          const desktopFrame = document.getElementById('fsDesktopFrame');
-          const buttons = document.querySelectorAll('.fs-device-btn');
-
-          buttons.forEach(b => b.classList.remove('active'));
-
-          if (device === 'mobile') {
-            mobileFrame.style.display = 'block';
-            desktopFrame.style.display = 'none';
-            buttons[0].classList.add('active');
-          } else {
-            mobileFrame.style.display = 'none';
-            desktopFrame.style.display = 'block';
-            buttons[1].classList.add('active');
-          }
-        }
+function setFSDevice(device) {
+  fsState.device = device;
+  
+  const mobileFrame = document.getElementById('fsMobileFrame');
+  const desktopFrame = document.getElementById('fsDesktopFrame');
+  const buttons = document.querySelectorAll('.fs-device-btn');
+  
+  buttons.forEach(b => b.classList.remove('active'));
+  
+  if (device === 'mobile') {
+    if (mobileFrame) mobileFrame.style.display = 'block';
+    if (desktopFrame) desktopFrame.style.display = 'none';
+    if (buttons[0]) buttons[0].classList.add('active');
+  } else {
+    if (mobileFrame) mobileFrame.style.display = 'none';
+    if (desktopFrame) desktopFrame.style.display = 'block';
+    if (buttons[1]) buttons[1].classList.add('active');
+  }
+}
 
         // ========== ZOOM ==========
-        function zoomFS(delta) {
-          fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
-          document.getElementById('fsZoomLabel').textContent = fsState.zoom + '%';
-          document.getElementById('fsMobileFrame').style.transform = `scale(${fsState.zoom / 100})`;
-          document.getElementById('fsMobileFrame').style.transformOrigin = 'top center';
-        }
+function zoomFS(delta) {
+  fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
+  const zoomLabel = document.getElementById('fsZoomLabel');
+  const mobileFrame = document.getElementById('fsMobileFrame');
+  
+  if (zoomLabel) zoomLabel.textContent = fsState.zoom + '%';
+  if (mobileFrame) {
+    mobileFrame.style.transform = `scale(${fsState.zoom / 100})`;
+    mobileFrame.style.transformOrigin = 'top center';
+  }
+}
 
         // ========== LIVE PREVIEW UPDATE ==========
-        function updateFSPreview() {
-          // Read current values
-          const headline = document.getElementById('fsHeadline')?.value || fsState.headline;
-          const happyLabel = document.getElementById('fsHappyLabel')?.value || fsState.happyLabel;
-          const sadLabel = document.getElementById('fsSadLabel')?.value || fsState.sadLabel;
-          const logoUrl = document.getElementById('fsLogoUrl')?.value || fsState.logoUrl;
-
-          // Update state
-          fsState.headline = headline;
-          fsState.happyLabel = happyLabel;
-          fsState.sadLabel = sadLabel;
-          fsState.logoUrl = logoUrl;
-
-          // Update Mobile Preview
-          const bizEl = document.getElementById('fsPreviewBiz');
-          const questionEl = document.getElementById('fsPreviewQuestion');
-          const happyEl = document.getElementById('fsPreviewHappy');
-          const sadEl = document.getElementById('fsPreviewSad');
-
-          if (bizEl) bizEl.textContent = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
-          if (questionEl) questionEl.textContent = headline;
-          if (happyEl) happyEl.innerHTML = `😊 ${happyLabel}`;
-          if (sadEl) sadEl.innerHTML = `😕 ${sadLabel}`;
-
-          // Update Desktop Preview
-          const bizDesktop = document.getElementById('fsPreviewBizDesktop');
-          const questionDesktop = document.getElementById('fsPreviewQuestionDesktop');
-          const happyDesktop = document.getElementById('fsPreviewHappyDesktop');
-          const sadDesktop = document.getElementById('fsPreviewSadDesktop');
-
-          if (bizDesktop) bizDesktop.textContent = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
-          if (questionDesktop) questionDesktop.textContent = headline;
-          if (happyDesktop) happyDesktop.innerHTML = `😊 ${happyLabel}`;
-          if (sadDesktop) sadDesktop.innerHTML = `😕 ${sadLabel}`;
-
-          // Update accent color on buttons
-          if (happyEl) {
-            happyEl.style.background = fsState.accentColor === '#C8A96E' ? '#6A9E7F' : fsState.accentColor;
-            happyEl.style.borderColor = fsState.accentColor === '#C8A96E' ? '#6A9E7F' : fsState.accentColor;
-          }
-
-          // Logo preview
-          const logoPreview = document.getElementById('fsLogoPreview');
-          const logoImg = document.getElementById('fsLogoPreviewImg');
-          if (logoUrl && logoPreview && logoImg) {
-            logoImg.src = logoUrl;
-            logoPreview.style.display = 'block';
-          } else if (logoPreview) {
-            logoPreview.style.display = 'none';
-          }
-
-          fsState.saved = false;
-          updateFSSaveStatus();
-        }
-
-        function updateFSCharCount() {
-          const headline = document.getElementById('fsHeadline');
-          const count = document.getElementById('fsHeadlineCount');
-          if (headline && count) {
-            count.textContent = headline.value.length;
-            count.style.color = headline.value.length > 55 ? '#D4897C' : 'var(--cream-dim)';
-          }
-        }
+function updateFSPreview() {
+  // Read current values from inputs
+  const headlineInput = document.getElementById('fsHeadline');
+  const happyInput = document.getElementById('fsHappyLabel');
+  const sadInput = document.getElementById('fsSadLabel');
+  const logoInput = document.getElementById('fsLogoUrl');
+  
+  // Update state from inputs
+  if (headlineInput) fsState.headline = headlineInput.value;
+  if (happyInput) fsState.happyLabel = happyInput.value;
+  if (sadInput) fsState.sadLabel = sadInput.value;
+  if (logoInput) fsState.logoUrl = logoInput.value;
+  
+  // Get business name
+  const businessName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
+  
+  // Update Mobile Preview
+  const bizEl = document.getElementById('fsPreviewBiz');
+  const questionEl = document.getElementById('fsPreviewQuestion');
+  const happyEl = document.getElementById('fsPreviewHappy');
+  const sadEl = document.getElementById('fsPreviewSad');
+  
+  if (bizEl) bizEl.textContent = businessName;
+  if (questionEl) questionEl.textContent = fsState.headline;
+  if (happyEl) happyEl.innerHTML = `😊 ${fsState.happyLabel}`;
+  if (sadEl) sadEl.innerHTML = `😕 ${fsState.sadLabel}`;
+  
+  // Apply accent color to happy button in preview
+  if (happyEl) {
+    happyEl.style.background = fsState.accentColor;
+    happyEl.style.borderColor = fsState.accentColor;
+  }
+  
+  // Update Desktop Preview
+  const bizDesktop = document.getElementById('fsPreviewBizDesktop');
+  const questionDesktop = document.getElementById('fsPreviewQuestionDesktop');
+  const happyDesktop = document.getElementById('fsPreviewHappyDesktop');
+  const sadDesktop = document.getElementById('fsPreviewSadDesktop');
+  
+  if (bizDesktop) bizDesktop.textContent = businessName;
+  if (questionDesktop) questionDesktop.textContent = fsState.headline;
+  if (happyDesktop) happyDesktop.innerHTML = `😊 ${fsState.happyLabel}`;
+  if (sadDesktop) sadDesktop.innerHTML = `😕 ${fsState.sadLabel}`;
+  
+  // Apply accent color to desktop happy button
+  if (happyDesktop) {
+    happyDesktop.style.background = fsState.accentColor;
+    happyDesktop.style.borderColor = fsState.accentColor;
+  }
+  
+  // Logo preview
+  const logoPreview = document.getElementById('fsLogoPreview');
+  const logoImg = document.getElementById('fsLogoPreviewImg');
+  if (fsState.logoUrl && logoPreview && logoImg) {
+    logoImg.src = fsState.logoUrl;
+    logoPreview.style.display = 'block';
+  } else if (logoPreview) {
+    logoPreview.style.display = 'none';
+  }
+  
+  fsState.saved = false;
+  updateFSSaveStatus();
+}
+function updateFSCharCount() {
+  const headline = document.getElementById('fsHeadline');
+  const count = document.getElementById('fsHeadlineCount');
+  if (headline && count) {
+    count.textContent = headline.value.length;
+    if (count.style) {
+      count.style.color = headline.value.length > 55 ? '#D4897C' : 'var(--cream-dim)';
+    }
+  }
+}
 
         // ========== AI SUGGESTIONS ==========
-        function applyAISuggestion(type) {
-          if (type === 'headline') {
-            document.getElementById('fsHeadline').value = 'How did we do today?';
-            updateFSPreview();
-            updateFSCharCount();
-          } else if (type === 'happy') {
-            document.getElementById('fsHappyLabel').value = 'Loved it! ⭐';
-            updateFSPreview();
-          } else if (type === 'color') {
-            selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
-          }
-          updateFSSaveStatus();
-        }
+function applyAISuggestion(type) {
+  if (type === 'headline') {
+    const headlineInput = document.getElementById('fsHeadline');
+    if (headlineInput) {
+      headlineInput.value = 'How did we do today?';
+      updateFSPreview();
+      updateFSCharCount();
+    }
+  } else if (type === 'happy') {
+    const happyInput = document.getElementById('fsHappyLabel');
+    if (happyInput) {
+      happyInput.value = 'Loved it! ⭐';
+      updateFSPreview();
+    }
+  } else if (type === 'color') {
+    selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
+  }
+  updateFSSaveStatus();
+}
 
         // ========== SAVE STATUS ==========
-        function updateFSSaveStatus() {
-          const status = document.getElementById('fsSaveStatus');
-          if (fsState.saved) {
-            status.textContent = '✓ All changes saved';
-            status.className = 'fs-save-status saved';
-          } else {
-            status.textContent = 'Changes not saved';
-            status.className = 'fs-save-status';
-          }
-        }
+function updateFSSaveStatus() {
+  const status = document.getElementById('fsSaveStatus');
+  if (status) {
+    if (fsState.saved) {
+      status.textContent = '✓ All changes saved';
+      status.className = 'fs-save-status saved';
+    } else {
+      status.textContent = 'Changes not saved';
+      status.className = 'fs-save-status';
+    }
+  }
+}
 
         // ========== SAVE SETTINGS ==========
-        async function saveFSSettings() {
-          const btn = document.getElementById('fsSaveBtn');
-          btn.disabled = true;
-          btn.innerHTML = '<span class="spinner"></span> Saving...';
+async function saveFSSettings() {
+  const btn = document.getElementById('fsSaveBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Saving...';
+  }
+  
+  const data = {
+    funnel_template: fsState.template,
+    funnel_accent_color: fsState.accentColor,
+    funnel_logo_url: fsState.logoUrl,
+    funnel_headline: fsState.headline,
+    funnel_happy_label: fsState.happyLabel,
+    funnel_unhappy_label: fsState.sadLabel,
+    funnel_thankyou_message: fsState.thankyouMsg
+  };
+  
+  try {
+    const res = await fetch('/update-funnel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    
+    if (result.success) {
+      fsState.saved = true;
+      updateFSSaveStatus();
+      showToast('Funnel updated! Changes are live.', 'success');
+    } else {
+      showToast(result.error || 'Could not save', 'error');
+    }
+  } catch (e) {
+    showToast('Something went wrong', 'error');
+  }
+  
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
+  }
+}
 
-          const data = {
-            funnel_template: fsState.template,
-            funnel_accent_color: fsState.accentColor,
-            funnel_logo_url: fsState.logoUrl,
-            funnel_headline: fsState.headline,
-            funnel_happy_label: fsState.happyLabel,
-            funnel_unhappy_label: fsState.sadLabel,
-            funnel_thankyou_message: fsState.thankyouMsg
-          };
-
-          try {
-            const res = await fetch('/update-funnel', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            });
-            const result = await res.json();
-
-            if (result.success) {
-              fsState.saved = true;
-              updateFSSaveStatus();
-              showToast('Funnel updated! Changes are live.', 'success');
-            } else {
-              showToast(result.error || 'Could not save', 'error');
-            }
-          } catch (e) {
-            showToast('Something went wrong', 'error');
-          }
-
-          btn.disabled = false;
-          btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
-        }
 
         // ========== COPY LINK ==========
-        function copyFSLink() {
-          const link = document.getElementById('fsLinkDisplay').textContent;
-          navigator.clipboard.writeText(link);
-          showToast('Funnel link copied!', 'success');
-        }
+function copyFSLink() {
+  const link = document.getElementById('fsLinkDisplay');
+  if (link) {
+    navigator.clipboard.writeText(link.textContent);
+    showToast('Funnel link copied!', 'success');
+  }
+}
+
+function initFunnelStudio(slug) {
+  fsSlug = slug;
+  const linkDisplay = document.getElementById('fsLinkDisplay');
+  if (linkDisplay) linkDisplay.textContent = window.location.origin + '/r/' + slug;
+  
+  // Load saved settings
+  fetch('/stats/' + slug)
+    .then(r => r.json())
+    .then(stats => {
+      if (stats.funnel_template) {
+        fsState.template = stats.funnel_template;
+        // Highlight selected template
+        const selectedTemplate = document.querySelector(`[data-template="${fsState.template}"]`);
+        if (selectedTemplate) selectFSTemplate(fsState.template, selectedTemplate);
+      }
+      if (stats.funnel_accent_color) {
+        fsState.accentColor = stats.funnel_accent_color;
+        const colorSwatch = document.querySelector(`[data-color="${fsState.accentColor}"]`);
+        if (colorSwatch) selectFSColor(fsState.accentColor, colorSwatch);
+      }
+      if (stats.funnel_logo_url) {
+        fsState.logoUrl = stats.funnel_logo_url;
+        const logoInput = document.getElementById('fsLogoUrl');
+        if (logoInput) logoInput.value = stats.funnel_logo_url;
+      }
+      if (stats.funnel_headline) {
+        fsState.headline = stats.funnel_headline;
+        const headlineInput = document.getElementById('fsHeadline');
+        if (headlineInput) headlineInput.value = stats.funnel_headline;
+      }
+      if (stats.funnel_happy_label) {
+        fsState.happyLabel = stats.funnel_happy_label;
+        const happyInput = document.getElementById('fsHappyLabel');
+        if (happyInput) happyInput.value = stats.funnel_happy_label;
+      }
+      if (stats.funnel_unhappy_label) {
+        fsState.sadLabel = stats.funnel_unhappy_label;
+        const sadInput = document.getElementById('fsSadLabel');
+        if (sadInput) sadInput.value = stats.funnel_unhappy_label;
+      }
+      
+      updateFSPreview();
+      updateFSCharCount();
+    })
+    .catch(() => updateFSPreview());
+}
+
 
         // ========== KEYBOARD SHORTCUTS ==========
-        document.addEventListener('keydown', function (e) {
-          // Only if Funnel Studio is visible
-          const fsSection = document.getElementById('funnelStudioSection');
-          if (!fsSection || !fsSection.classList.contains('active')) return;
-
-          if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault();
-            saveFSSettings();
-          }
-        });
+document.addEventListener('keydown', function(e) {
+  const fsSection = document.getElementById('funnelStudioSection');
+  if (!fsSection || !fsSection.classList.contains('active')) return;
+  
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveFSSettings();
+  }
+});
 
         // Initialize when section becomes visible
-        const fsObserver = new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            if (mutation.target.id === 'funnelStudioSection' &&
-              mutation.target.classList.contains('active') &&
-              fsSlug) {
-              initFunnelStudio(fsSlug);
-            }
-          });
-        });
+const fsObserver = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.target.id === 'funnelStudioSection' &&
+        mutation.target.classList.contains('active') &&
+        fsSlug) {
+      initFunnelStudio(fsSlug);
+    }
+  });
+});
 
-        const fsSection = document.getElementById('funnelStudioSection');
-        if (fsSection) {
-          fsObserver.observe(fsSection, { attributes: true, attributeFilter: ['class'] });
-        }
+const fsSectionElement = document.getElementById('funnelStudioSection');
+if (fsSectionElement) {
+  fsObserver.observe(fsSectionElement, { attributes: true, attributeFilter: ['class'] });
+}
       </script>
 
       <!-- CUSTOMERS SECTION -->
