@@ -181,10 +181,6 @@
       text-decoration: none;
     }
 
-    .login-link a:hover {
-      text-decoration: underline;
-    }
-
     .stripe-note {
       display: flex;
       align-items: center;
@@ -195,43 +191,52 @@
       color: rgba(234, 231, 220, 0.28);
     }
 
-    .stripe-note svg {
-      opacity: .4;
-    }
-
-    .review-link-row {
+    /* Account type toggle */
+    .account-type-toggle {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      gap: 12px;
+      margin-bottom: 24px;
+      background: var(--surface-2);
+      padding: 6px;
+      border-radius: 12px;
     }
 
-    .review-link-row input {
+    .type-option {
       flex: 1;
-      margin-bottom: 0;
-    }
-
-    .help-btn {
-      flex-shrink: 0;
-      background: var(--accent-dim);
-      border: 1px solid rgba(200, 169, 110, 0.3);
-      color: var(--accent);
+      text-align: center;
+      padding: 12px;
       border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0 14px;
-      height: 52px;
       cursor: pointer;
-      white-space: nowrap;
-      transition: all .2s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      transition: all 0.2s;
+      font-weight: 600;
+      font-size: 0.9rem;
     }
 
-    .help-btn:hover {
-      background: rgba(200, 169, 110, 0.25);
-      border-color: rgba(200, 169, 110, 0.5);
+    .type-option.business {
+      background: var(--accent);
+      color: #1A1A18;
+    }
+
+    .type-option.agency {
+      background: transparent;
+      color: var(--cream-dim);
+    }
+
+    /* Business-specific fields */
+    .business-fields {
+      display: block;
+    }
+
+    .agency-fields {
+      display: none;
+    }
+
+    .agency-fields.active {
+      display: block;
+    }
+
+    .business-fields.hide {
+      display: none;
     }
 
     /* Password eye */
@@ -266,7 +271,6 @@
       box-shadow: none;
     }
 
-    /* Password strength hint */
     .pw-hint {
       font-size: 0.72rem;
       margin-top: 5px;
@@ -274,179 +278,9 @@
       transition: color 0.2s;
     }
 
-    .pw-hint.weak {
-      color: #D4897C;
-    }
-
-    .pw-hint.ok {
-      color: var(--accent);
-    }
-
-    .pw-hint.strong {
-      color: #8EC9A8;
-    }
-
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s;
-    }
-
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border-hover);
-      border-radius: var(--radius-lg);
-      padding: 36px 32px;
-      max-width: 520px;
-      width: 100%;
-      position: relative;
-      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
-      transform: translateY(16px);
-      transition: transform .25s;
-    }
-
-    .modal-overlay.open .modal {
-      transform: translateY(0);
-    }
-
-    .modal::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(234, 231, 220, 0.2), transparent);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--cream-dim);
-      font-size: 1rem;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all .2s;
-    }
-
-    .modal-close:hover {
-      background: var(--surface-3);
-      color: var(--cream);
-    }
-
-    .modal h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .modal > p {
-      font-size: 0.875rem;
-      color: var(--cream-dim);
-      line-height: 1.65;
-      margin-bottom: 24px;
-    }
-
-    .steps-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-
-    .step-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .step-num {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--accent-dim);
-      border: 1px solid rgba(200, 169, 110, 0.3);
-      color: var(--accent);
-      font-size: 0.68rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .step-text strong {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--cream);
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .step-text span {
-      font-size: 0.78rem;
-      color: var(--cream-dim);
-      line-height: 1.5;
-    }
-
-    .url-example {
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.72rem;
-      color: var(--accent);
-      word-break: break-all;
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-
-    .modal-cta {
-      display: block;
-      width: 100%;
-      background: var(--accent);
-      color: #1A1A18;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 13px;
-      border-radius: 8px;
-      text-align: center;
-      transition: all .2s;
-      border: none;
-      cursor: pointer;
-    }
-
-    .modal-cta:hover {
-      background: #D4B87A;
-      transform: translateY(-1px);
-    }
+    .pw-hint.weak { color: #D4897C; }
+    .pw-hint.ok { color: var(--accent); }
+    .pw-hint.strong { color: #8EC9A8; }
 
     /* Plan screen */
     #planScreen {
@@ -463,11 +297,6 @@
     .plan-header h2 {
       font-size: 1.8rem;
       margin-bottom: 10px;
-    }
-
-    .plan-header p {
-      color: var(--cream-dim);
-      font-size: 0.95rem;
     }
 
     .plans-grid {
@@ -591,23 +420,11 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
     }
 
     .plan button:hover {
       background: #D4B87A;
       transform: translateY(-1px);
-    }
-
-    .plan button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .plan.featured button {
-      background: var(--accent);
-      color: #1E1E1C;
     }
 
     .global-trial-note {
@@ -625,93 +442,12 @@
       min-height: 20px;
     }
 
-    /* Laptop responsive */
-    @media (min-width: 1024px) and (max-width: 1366px) {
-      html, body {
-        font-size: 14px;
-      }
-      
-      .container {
-        padding: 36px 32px;
-        max-width: 480px;
-      }
-      
-      .plans-grid {
-        gap: 16px;
-      }
-      
-      .plan {
-        padding: 24px 18px;
-      }
-      
-      .plan-price {
-        font-size: 1.8rem;
-      }
-      
-      .plan-name {
-        font-size: 0.95rem;
-      }
-    }
-
-    /* Tablet responsive */
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
       .plans-grid {
         grid-template-columns: 1fr;
-        max-width: 480px;
-        margin-left: auto;
-        margin-right: auto;
       }
-    }
-
-    /* Mobile responsive */
-    @media (max-width: 700px) {
-      body {
-        padding: 24px 16px 48px;
-      }
-      
       .container {
         padding: 28px 24px;
-      }
-      
-      h2 {
-        font-size: 1.3rem;
-      }
-      
-      .logo {
-        font-size: 18px;
-        margin-bottom: 32px;
-      }
-      
-      .plan-header h2 {
-        font-size: 1.4rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 24px 20px;
-      }
-      
-      h2 {
-        font-size: 1.2rem;
-      }
-      
-      .review-link-row {
-        flex-direction: column;
-      }
-      
-      .help-btn {
-        width: 100%;
-        justify-content: center;
-        height: 44px;
-      }
-      
-      .plan {
-        padding: 20px 16px;
-      }
-      
-      .plan-price {
-        font-size: 1.6rem;
       }
     }
   </style>
@@ -725,70 +461,105 @@
     <h2>Create your account</h2>
     <p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial · Card required · £0 charged until day 15</p>
 
-    <div class="form-group">
-      <label>Business name</label>
-      <input id="name" type="text" placeholder="e.g. The Coffee House">
-    </div>
-
-    <!-- Industry selection -->
-    <div class="form-group">
-      <label>Your industry</label>
-      <select id="industry">
-        <option value="">Select your industry...</option>
-        <option value="dentist">🦷 Dentist</option>
-        <option value="plumber">🔧 Plumber / Heating</option>
-        <option value="electrician">⚡ Electrician</option>
-        <option value="salon">💇 Hair / Beauty Salon</option>
-        <option value="builder">🏗️ Builder / Construction</option>
-        <option value="restaurant">🍽️ Restaurant / Café</option>
-        <option value="gym">🏋️ Gym / Fitness</option>
-        <option value="cleaner">🧹 Cleaning Service</option>
-        <option value="accountant">📊 Accountant</option>
-        <option value="solicitor">⚖️ Solicitor / Legal</option>
-        <option value="estate-agent">🏠 Estate Agent</option>
-        <option value="vet">🐾 Veterinary</option>
-        <option value="physio">💪 Physiotherapy / Health</option>
-        <option value="other">Other</option>
-      </select>
-    </div>
-
-    <!-- Current software -->
-    <div class="form-group">
-      <label>What software do you currently use for bookings?</label>
-      <select id="currentSoftware">
-        <option value="">Select your software...</option>
-        <option value="soe-exact">Soe Exact (Dental)</option>
-        <option value="fresha">Fresha</option>
-        <option value="booksy">Booksy</option>
-        <option value="calendly">Calendly</option>
-        <option value="acuity">Acuity Scheduling</option>
-        <option value="square">Square Appointments</option>
-        <option value="simplybook">SimplyBook.me</option>
-        <option value="setmore">Setmore</option>
-        <option value="cliniko">Cliniko</option>
-        <option value="jane">Jane App</option>
-        <option value="timely">Timely</option>
-        <option value="zapier">Zapier (I'll connect manually)</option>
-        <option value="none">I don't use booking software</option>
-        <option value="other">Other</option>
-      </select>
-      <p class="helper-text">We'll show you how to connect it in 2 minutes after signup.</p>
+    <!-- Account Type Toggle -->
+    <div class="account-type-toggle">
+      <div class="type-option business" onclick="setAccountType('business')">🏢 I'm a Business</div>
+      <div class="type-option agency" onclick="setAccountType('agency')">🏢 I'm an Agency</div>
     </div>
 
     <div class="form-group">
-      <label>Business email</label>
+      <label>Business / Agency name</label>
+      <input id="name" type="text" placeholder="e.g. The Coffee House or Acme Marketing">
+    </div>
+
+    <!-- Business-specific fields (hidden for agency) -->
+    <div id="businessFields" class="business-fields">
+      <div class="form-group">
+        <label>Your industry</label>
+        <select id="industry">
+          <option value="">Select your industry...</option>
+          <option value="dentist">🦷 Dentist</option>
+          <option value="plumber">🔧 Plumber / Heating</option>
+          <option value="electrician">⚡ Electrician</option>
+          <option value="salon">💇 Hair / Beauty Salon</option>
+          <option value="builder">🏗️ Builder / Construction</option>
+          <option value="restaurant">🍽️ Restaurant / Café</option>
+          <option value="gym">🏋️ Gym / Fitness</option>
+          <option value="cleaner">🧹 Cleaning Service</option>
+          <option value="accountant">📊 Accountant</option>
+          <option value="solicitor">⚖️ Solicitor / Legal</option>
+          <option value="estate-agent">🏠 Estate Agent</option>
+          <option value="vet">🐾 Veterinary</option>
+          <option value="physio">💪 Physiotherapy / Health</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>What software do you currently use for bookings?</label>
+        <select id="currentSoftware">
+          <option value="">Select your software...</option>
+          <option value="soe-exact">Soe Exact (Dental)</option>
+          <option value="fresha">Fresha</option>
+          <option value="booksy">Booksy</option>
+          <option value="calendly">Calendly</option>
+          <option value="acuity">Acuity Scheduling</option>
+          <option value="square">Square Appointments</option>
+          <option value="simplybook">SimplyBook.me</option>
+          <option value="setmore">Setmore</option>
+          <option value="cliniko">Cliniko</option>
+          <option value="jane">Jane App</option>
+          <option value="timely">Timely</option>
+          <option value="zapier">Zapier (I'll connect manually)</option>
+          <option value="none">I don't use booking software</option>
+          <option value="other">Other</option>
+        </select>
+        <p class="helper-text">We'll show you how to connect it in 2 minutes after signup.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Your Google review link</label>
+        <div class="review-link-row" style="display:flex; gap:8px;">
+          <input id="review" type="url" placeholder="https://g.page/r/your-business/review">
+          <button class="help-btn" onclick="openModal()" type="button" style="flex-shrink:0; background:var(--accent-dim); border:1px solid rgba(200,169,110,0.3); color:var(--accent); border-radius:8px; padding:0 14px; cursor:pointer;">❓ How to find it</button>
+        </div>
+        <p class="helper-text">Paste your Google review link. Happy customers will be sent here.</p>
+      </div>
+    </div>
+
+    <!-- Agency-specific fields -->
+    <div id="agencyFields" class="agency-fields">
+      <div class="form-group">
+        <label>Agency website (optional)</label>
+        <input id="agencyWebsite" type="url" placeholder="https://your-agency.com">
+      </div>
+      <div class="form-group">
+        <label>How did you hear about us?</label>
+        <select id="agencySource">
+          <option value="">Select an option...</option>
+          <option value="google">Google Search</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="x">X / Twitter</option>
+          <option value="referral">Referral from another agency</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>How many clients do you currently manage?</label>
+        <select id="agencyClientCount">
+          <option value="0">Just starting (0-5 clients)</option>
+          <option value="5">Growing (5-15 clients)</option>
+          <option value="15">Established (15-30 clients)</option>
+          <option value="30">Scale (30+ clients)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email address</label>
       <input id="email" type="email" placeholder="you@yourbusiness.com">
     </div>
-    
-    <div class="form-group">
-      <label>Your review link</label>
-      <div class="review-link-row">
-        <input id="review" type="url" placeholder="https://g.page/r/your-business/review or Trustpilot/Checkatrade link">
-        <button class="help-btn" onclick="openModal()" type="button">❓ How to find it</button>
-      </div>
-      <p class="helper-text">Paste your Google, Trustpilot, Checkatrade, or any review platform link. Happy customers will be sent here.</p>
-    </div>
-    
+
     <div class="form-group">
       <label>Dashboard password</label>
       <div class="pw-wrap">
@@ -798,6 +569,8 @@
       <p class="pw-hint" id="pwHint"></p>
     </div>
 
+    <input type="hidden" id="accountType" value="business">
+
     <button class="btn-full" id="createBtn" onclick="createBusiness()" style="margin-top:8px;">Continue to plan selection →</button>
     <p id="result"></p>
 
@@ -805,10 +578,10 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       Payments processed securely by Stripe
     </div>
-    <div class="login-link" style="margin-top:16px;">Already have an account? <a href="/login">Sign in</a></div>
+    <div class="login-link">Already have an account? <a href="/login">Sign in</a></div>
   </div>
 
-  <!-- STEP 2: Plan selection -->
+  <!-- Plan selection (same as before) -->
   <div id="planScreen">
     <div class="plan-header">
       <span class="page-eyebrow">✓ Account created</span>
@@ -821,9 +594,9 @@
         <div class="plan-price"><sup>£</sup>9.99<span>/mo</span></div>
         <div class="plan-desc">Everything you need to start collecting more reviews and capturing feedback privately.</div>
         <ul class="plan-features">
-          <li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li><li>Review link embedding</li>
+          <li>Smart review funnel page</li><li>Analytics dashboard</li><li>QR code generator</li><li>Private feedback capture</li>
         </ul>
-        <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £9.99/mo. Cancel before day 14 to pay nothing.</div>
+        <div class="plan-trial-note">🔒 £0 today. £9.99/mo after trial. Cancel before day 14.</div>
         <button onclick="subscribe('starter')">Start free trial</button>
       </div>
       <div class="plan featured">
@@ -831,9 +604,9 @@
         <div class="plan-price"><sup>£</sup>24.99<span>/mo</span></div>
         <div class="plan-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</div>
         <ul class="plan-features">
-          <li>Everything in Starter</li><li>AI review reply generator</li><li>SMS review requests</li><li>Email review campaigns</li><li>Advanced analytics</li><li>Feedback AI summaries</li>
+          <li>Everything in Starter</li><li>AI review reply generator</li><li>SMS & email campaigns</li><li>Advanced analytics</li>
         </ul>
-        <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £24.99/mo. Cancel before day 14 to pay nothing.</div>
+        <div class="plan-trial-note">🔒 £0 today. £24.99/mo after trial. Cancel before day 14.</div>
         <button onclick="subscribe('pro')">Start free trial</button>
       </div>
       <div class="plan">
@@ -841,36 +614,70 @@
         <div class="plan-price"><sup>£</sup>79<span>/mo</span></div>
         <div class="plan-desc">White-label ReviewLift for up to 10 clients. Earn commission on every referral.</div>
         <ul class="plan-features">
-          <li>Everything in Pro</li><li>Up to 10 client accounts</li><li>White-label branding</li><li>Monthly PDF reports</li><li>Competitor analysis</li><li>30% affiliate commission</li>
+          <li>Everything in Pro</li><li>Up to 10 client accounts</li><li>White-label branding</li><li>Monthly PDF reports</li><li>30% affiliate commission</li>
         </ul>
-        <div class="plan-trial-note">🔒 £0 charged today. After your 14-day trial, you'll be billed £79/mo. Cancel before day 14 to pay nothing.</div>
+        <div class="plan-trial-note">🔒 £0 today. £79/mo after trial. Cancel before day 14.</div>
         <button onclick="subscribe('agency')">Start free trial</button>
       </div>
     </div>
-    <p class="global-trial-note">You'll be taken to Stripe's secure checkout to save your card.<br>Cancel anytime from your dashboard — no phone calls, no hassle.</p>
+    <p class="global-trial-note">You'll be taken to Stripe's secure checkout to save your card.<br>Cancel anytime from your dashboard.</p>
   </div>
 
-  <!-- Review link helper modal -->
-  <div class="modal-overlay" id="helpModal" onclick="handleOverlayClick(event)">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal()">✕</button>
+  <!-- Modal (same as before) -->
+  <div class="modal-overlay" id="helpModal" onclick="handleOverlayClick(event)" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); z-index:500; align-items:center; justify-content:center;">
+    <div class="modal" style="background:var(--surface); border-radius:20px; max-width:500px; width:100%; padding:32px; position:relative;">
+      <button class="modal-close" onclick="closeModal()" style="position:absolute; top:16px; right:16px; background:var(--surface-2); border:none; border-radius:6px; width:32px; height:32px; cursor:pointer;">✕</button>
       <h3>🔍 How to find your review link</h3>
-      <p>Paste the link to your review page—Google, Trustpilot, Checkatrade, or any platform you use. Here's how to find the most common ones:</p>
-      <div class="steps-list">
-        <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Go to Google Maps</strong><span>Open <a href="https://maps.google.com" target="_blank" style="color:var(--accent)">maps.google.com</a> and search for your exact business name and town.</span></div></div>
-        <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Click on your business listing</strong><span>It appears in the left panel. Make sure it's your official Google Business Profile.</span></div></div>
-        <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>Click "Write a review"</strong><span>You'll see this button in the profile panel. Click it — a review popup will open.</span></div></div>
-        <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>Copy the URL from your browser address bar</strong><span>The URL will look like this:</span></div></div>
+      <p>Paste the link to your review page—Google, Trustpilot, Checkatrade, or any platform you use.</p>
+      <div class="steps-list" style="margin:20px 0;">
+        <div style="margin-bottom:12px;"><strong>1.</strong> Go to Google Maps and search for your business</div>
+        <div style="margin-bottom:12px;"><strong>2.</strong> Click on your business listing</div>
+        <div style="margin-bottom:12px;"><strong>3.</strong> Click "Write a review"</div>
+        <div><strong>4.</strong> Copy the URL from your browser address bar</div>
       </div>
-      <div class="url-example">https://search.google.com/local/writereview?placeid=ChIJxxxxxxxxxxxxxxxx</div>
-      <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:20px;line-height:1.55;">Alternatively, log into your <a href="https://business.google.com" target="_blank" style="color:var(--accent)">Google Business Profile</a> and look for <strong style="color:var(--cream)">"Get more reviews"</strong> — Google gives you a short shareable link there too.</p>
-      <p style="font-size:0.8rem;color:var(--cream-dim);margin-top:16px;line-height:1.55;"><strong>Trustpilot:</strong> Go to your Trustpilot page, click "Share," and copy the link.<br><strong>Checkatrade:</strong> Visit your Checkatrade profile and copy the URL from your browser.</p>
-      <button class="modal-cta" onclick="closeModal()">Got it — back to sign up</button>
+      <div class="url-example" style="background:var(--surface-3); padding:12px; border-radius:8px; font-family:monospace; font-size:0.7rem;">https://search.google.com/local/writereview?placeid=ChIJ...</div>
+      <button class="modal-cta" onclick="closeModal()" style="margin-top:20px; width:100%; padding:12px; background:var(--accent); border:none; border-radius:8px; cursor:pointer;">Got it — back to sign up</button>
     </div>
   </div>
 
+  <style>
+    .modal-overlay {
+      display: none;
+    }
+    .modal-overlay.open {
+      display: flex !important;
+    }
+  </style>
+
 <script>
 let currentSlug = "";
+let selectedAccountType = "business";
+
+function setAccountType(type) {
+  selectedAccountType = type;
+  document.getElementById("accountType").value = type;
+  
+  const businessOption = document.querySelector('.type-option.business');
+  const agencyOption = document.querySelector('.type-option.agency');
+  const businessFields = document.getElementById('businessFields');
+  const agencyFields = document.getElementById('agencyFields');
+  
+  if (type === 'business') {
+    businessOption.style.background = 'var(--accent)';
+    businessOption.style.color = '#1A1A18';
+    agencyOption.style.background = 'transparent';
+    agencyOption.style.color = 'var(--cream-dim)';
+    businessFields.style.display = 'block';
+    agencyFields.style.display = 'none';
+  } else {
+    agencyOption.style.background = 'var(--accent)';
+    agencyOption.style.color = '#1A1A18';
+    businessOption.style.background = 'transparent';
+    businessOption.style.color = 'var(--cream-dim)';
+    businessFields.style.display = 'none';
+    agencyFields.style.display = 'block';
+  }
+}
 
 function togglePw(){
   const input = document.getElementById("password");
@@ -888,12 +695,18 @@ function checkPwStrength(val){
   else { hint.textContent = "Strong ✓"; hint.className = "pw-hint strong"; }
 }
 
-function openModal(){ document.getElementById('helpModal').classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(){ document.getElementById('helpModal').classList.remove('open'); document.body.style.overflow=''; }
-function handleOverlayClick(e){ if(e.target===document.getElementById('helpModal')) closeModal(); }
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+function openModal(){ 
+  document.getElementById('helpModal').classList.add('open'); 
+  document.body.style.overflow='hidden'; 
+}
+function closeModal(){ 
+  document.getElementById('helpModal').classList.remove('open'); 
+  document.body.style.overflow=''; 
+}
+function handleOverlayClick(e){ 
+  if(e.target === document.getElementById('helpModal')) closeModal(); 
+}
 
-// DOMContentLoaded: handle returning users who already created account but didn't subscribe
 window.addEventListener("DOMContentLoaded", () => {
   const skipToPlans = sessionStorage.getItem("skipToPlans");
   const savedSlug = sessionStorage.getItem("currentSlug");
@@ -905,18 +718,10 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-  if (ref) {
-    const d = new Date();
-    d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
-    document.cookie = "rl_ref=" + ref + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }
-})();
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
 
 async function createBusiness(){
   const btn = document.getElementById("createBtn");
@@ -924,12 +729,22 @@ async function createBusiness(){
 
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
-  const review = document.getElementById("review").value.trim();
   const password = document.getElementById("password").value;
+  const accountType = document.getElementById("accountType").value;
+  
+  // Business-specific fields
+  const review = document.getElementById("review")?.value.trim() || "";
+  const industry = document.getElementById("industry")?.value || "";
+  const currentSoftware = document.getElementById("currentSoftware")?.value || "";
+  
+  // Agency-specific fields
+  const agencyWebsite = document.getElementById("agencyWebsite")?.value.trim() || "";
+  const agencySource = document.getElementById("agencySource")?.value || "";
+  const agencyClientCount = document.getElementById("agencyClientCount")?.value || "";
 
   const result = document.getElementById("result");
   if(!name){
-    result.innerText = "Please enter your business name.";
+    result.innerText = "Please enter your business/agency name.";
     result.style.color = "#D4897C";
     btn.disabled=false; btn.textContent='Continue to plan selection →'; return;
   }
@@ -949,15 +764,23 @@ async function createBusiness(){
     btn.disabled=false; btn.textContent='Continue to plan selection →'; return;
   }
 
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : null;
-  }
-  
-  const industry = document.getElementById('industry').value;
-  const currentSoftware = document.getElementById('currentSoftware').value;
   const referral = getCookie('rl_ref') || sessionStorage.getItem('referral_code') || '';
-  const res = await fetch("/create-business", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name, email, review, password, referral, industry, currentSoftware}) });
+  
+  const payload = {
+    name, email, review, password, referral,
+    industry: accountType === 'business' ? industry : null,
+    currentSoftware: accountType === 'business' ? currentSoftware : null,
+    account_type: accountType,
+    agency_website: accountType === 'agency' ? agencyWebsite : null,
+    agency_source: accountType === 'agency' ? agencySource : null,
+    agency_client_count: accountType === 'agency' ? agencyClientCount : null
+  };
+  
+  const res = await fetch("/create-business", { 
+    method:"POST", 
+    headers:{"Content-Type":"application/json"}, 
+    body:JSON.stringify(payload) 
+  });
   const data = await res.json();
 
   if(data.success){
@@ -980,7 +803,11 @@ async function createBusiness(){
 async function subscribe(plan){
   document.querySelectorAll('.plan button').forEach(b=>{b.disabled=true;b.textContent='Taking you to Stripe...';});
   try {
-    const res = await fetch("/create-checkout", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({slug:currentSlug,plan}) });
+    const res = await fetch("/create-checkout", { 
+      method:"POST", 
+      headers:{"Content-Type":"application/json"}, 
+      body:JSON.stringify({slug:currentSlug, plan}) 
+    });
     const data = await res.json();
     if(data.url) window.location = data.url;
     else {
@@ -991,8 +818,11 @@ async function subscribe(plan){
   }
 }
 
-window.addEventListener('pageshow', e => { if(e.persisted){ document.querySelectorAll('.plan button').forEach(b=>{b.disabled=false; b.textContent='Start free trial';}); } });
-window.addEventListener('focus', () => { document.querySelectorAll('.plan button').forEach(b=>{if(b.disabled){b.disabled=false; b.textContent='Start free trial';}}); });
+window.addEventListener('pageshow', e => { 
+  if(e.persisted){ 
+    document.querySelectorAll('.plan button').forEach(b=>{b.disabled=false; b.textContent='Start free trial';}); 
+  } 
+});
 </script>
 </body>
 </html>

@@ -921,7 +921,7 @@ app.get("/admin/nfc-orders", async (req, res) => {
 // ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
 app.post("/create-business", async (req, res) => {
   try {
-    const { name, email, review, password, referral, industry, currentSoftware } = req.body;
+    const { account_type, agency_website, agency_source, agency_client_count } = req.body;
     if (!password) return res.status(400).json({ error: "Password is required." });
     if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
  
@@ -947,6 +947,10 @@ const { error } = await supabase.from("businesses").insert({
   referred_by: referral || null,
   industry: industry || null,
   current_software: currentSoftware || null,
+   account_type: account_type || "business",  // Add this column to your table
+  agency_website: agency_website || null,
+  agency_source: agency_source || null,
+  agency_client_count: agency_client_count || null
 });
  
     if (error) {
