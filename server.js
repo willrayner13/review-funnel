@@ -919,39 +919,82 @@ app.get("/admin/nfc-orders", async (req, res) => {
 });
 
 // ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
+// ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
 app.post("/create-business", async (req, res) => {
   try {
-    const { account_type, agency_website, agency_source, agency_client_count } = req.body;
+    // Destructure ALL fields from req.body
+    const { 
+      name, 
+      email, 
+      review, 
+      password, 
+      referral, 
+      industry, 
+      currentSoftware,
+      account_type, 
+      agency_website, 
+      agency_source, 
+      agency_client_count 
+    } = req.body;
+    
+    // VALIDATION - check required fields
+    if (!name) return res.status(400).json({ error: "Business name is required." });
+    if (!email) return res.status(400).json({ error: "Email is required." });
     if (!password) return res.status(400).json({ error: "Password is required." });
     if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
  
-    const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
+    // Generate slug from business name
+    let slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
+    
+    // Ensure slug is unique
+    let slugExists = true;
+    while (slugExists) {
+      const { data: existing } = await supabase
+        .from("businesses")
+        .select("slug")
+        .eq("slug", slug)
+        .single();
+      if (!existing) {
+        slugExists = false;
+      } else {
+        slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Math.floor(Math.random() * 10000);
+      }
+    }
+    
     const hashedPassword = await bcrypt.hash(password, 10);
-  
  
-    const { data: existing } = await supabase.from("businesses").select("email").eq("email", email).maybeSingle();
+    // Check if email already exists
+    const { data: existing } = await supabase
+      .from("businesses")
+      .select("email")
+      .eq("email", email)
+      .maybeSingle();
+      
     if (existing) return res.status(400).json({ error: "Email already exists" });
  
     const trialEnd = new Date();
     trialEnd.setDate(trialEnd.getDate() + 14);
  
-const { error } = await supabase.from("businesses").insert({
-  name,
-  email,
-  review_link: review,
-  slug,
-  password: hashedPassword,
-  plan_type: "starter",
-  subscription_active: false,
-  trial_ends_at: trialEnd.toISOString(),
-  referred_by: referral || null,
-  industry: industry || null,
-  current_software: currentSoftware || null,
-   account_type: account_type || "business",  // Add this column to your table
-  agency_website: agency_website || null,
-  agency_source: agency_source || null,
-  agency_client_count: agency_client_count || null
-});
+    // For agency accounts, they don't need a review link initially
+    const finalReviewLink = account_type === 'agency' ? null : (review || null);
+    
+    const { error } = await supabase.from("businesses").insert({
+      name: name.trim(),
+      email: email.trim(),
+      review_link: finalReviewLink,
+      slug: slug,
+      password: hashedPassword,
+      plan_type: account_type === 'agency' ? "agency" : "starter",
+      subscription_active: account_type === 'agency' ? false : false,
+      trial_ends_at: trialEnd.toISOString(),
+      referred_by: referral || null,
+      industry: account_type === 'business' ? (industry || null) : null,
+      current_software: account_type === 'business' ? (currentSoftware || null) : null,
+      account_type: account_type || "business",
+      agency_website: agency_website || null,
+      agency_source: agency_source || null,
+      agency_client_count: agency_client_count || null
+    });
  
     if (error) {
       console.error("Supabase insert error /create-business:", JSON.stringify(error));
@@ -961,7 +1004,7 @@ const { error } = await supabase.from("businesses").insert({
       return res.status(500).json({ error: error.message || "Could not create account. Please try again." });
     }
 
-    // ✅ FIX: Wait for session to save before responding
+    // Save session
     req.session.slug = slug;
     req.session.save(async (err) => {
       if (err) {
@@ -969,52 +1012,81 @@ const { error } = await supabase.from("businesses").insert({
         return res.status(500).json({ error: "Session save failed. Please try again." });
       }
 
-      // Send welcome email (non‑blocking—don't await it)
+      // Send welcome email (non‑blocking)
       try {
         const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
         const dashboardUrl = `${process.env.BASE_URL}/for-business`;
-        await resend.emails.send({
-          from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-          to: email,
-          subject: `Welcome to ReviewLift, ${name}`,
-          html: `
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-            <body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:32px 16px;">
-                <tr><td align="center">
-                  <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                    <tr><td style="background:#1E1E1C;padding:22px 32px;">
-                      <p style="margin:0;font-family:Arial,sans-serif;font-size:18px;font-weight:bold;color:#EAE7DC;">⭐ ReviewLift</p>
-                    </td></tr>
-                    <tr><td style="padding:36px 32px 28px;">
-                      <h2 style="margin:0 0 14px;font-size:21px;color:#1E1E1C;font-family:Arial,sans-serif;font-weight:700;line-height:1.3;">You're in, ${name}.</h2>
-                      <p style="margin:0 0 12px;font-size:15px;color:#555;line-height:1.65;">Your review funnel for <strong style="color:#1E1E1C;">${name}</strong> is live. Customers can already use it — share the link below to start collecting reviews.</p>
-                      <p style="margin:0 0 6px;font-size:13px;color:#888;">Your dashboard link:</p>
-                      <p style="margin:0 0 24px;font-size:14px;font-family:'Courier New',monospace;background:#f5f5f3;padding:10px 14px;border-radius:6px;color:#333;word-break:break-all;">${dashboardUrl}</p>
-                      <p style="margin:0 0 10px;font-size:15px;color:#555;line-height:1.65;">Your next step: choose a plan so your account stays active after the 14-day trial.</p>
-                      <table cellpadding="0" cellspacing="0" style="margin-top:4px;">
-                        <tr><td>
-                          <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 32px;border-radius:8px;font-family:Arial,sans-serif;">Go to your dashboard →</a>
-                        </td></tr>
-                      </table>
-                    </td></tr>
-                    <tr><td style="padding:16px 32px 24px;border-top:1px solid #eee;">
-                      <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Questions? Reply to this email or contact <a href="mailto:billy@reviewlift.app" style="color:#C8A96E;text-decoration:none;">billy@reviewlift.app</a></p>
-                    </td></tr>
-                  </table>
-                </td></tr>
-              </table>
-            </body>
-            </html>
-          `,
-        });
+        
+        // Different email for agency vs business
+        if (account_type === 'agency') {
+          await resend.emails.send({
+            from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+            to: email,
+            subject: `Welcome to ReviewLift Agency Program, ${name}`,
+            html: `
+              <!DOCTYPE html>
+              <html>
+              <head><meta charset="UTF-8"></head>
+              <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,sans-serif;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+                  <tr><td align="center">
+                    <table width="500" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;">
+                      <tr><td style="padding:32px;">
+                        <h2 style="color:#C8A96E;margin:0 0 16px;">Welcome to the Agency Program, ${name}!</h2>
+                        <p style="color:#EAE7DC;margin-bottom:16px;">You've created your agency account. Here's what you can do next:</p>
+                        <ul style="color:rgba(234,231,220,0.7);margin-bottom:20px;">
+                          <li>Get your unique referral link</li>
+                          <li>Earn 30% recurring commission on every client you refer</li>
+                          <li>Upgrade to Agency Pro (£79/mo) for white-label and client management</li>
+                        </ul>
+                        <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;">Go to your dashboard →</a>
+                      </td>
+                    </tr>
+                    </table>
+                   </td>
+                 </tr>
+                </table>
+              </body>
+              </html>
+            `,
+          });
+        } else {
+          await resend.emails.send({
+            from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+            to: email,
+            subject: `Welcome to ReviewLift, ${name}`,
+            html: `
+              <!DOCTYPE html>
+              <html>
+              <head><meta charset="UTF-8"></head>
+              <body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,sans-serif;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:32px 16px;">
+                  <tr><td align="center">
+                    <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;">
+                      <tr><td style="background:#1E1E1C;padding:22px 32px;">
+                        <p style="margin:0;font-size:18px;font-weight:bold;color:#EAE7DC;">⭐ ReviewLift</p>
+                       </tr>
+                      <tr><td style="padding:36px 32px 28px;">
+                        <h2 style="margin:0 0 14px;font-size:21px;color:#1E1E1C;">You're in, ${name}.</h2>
+                        <p style="margin:0 0 12px;font-size:15px;color:#555;">Your review funnel for <strong>${name}</strong> is live.</p>
+                        <p style="margin:0 0 24px;font-size:14px;background:#f5f5f3;padding:10px 14px;border-radius:6px;">${funnelUrl}</p>
+                        <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;">Go to your dashboard →</a>
+                       </td>
+                     </tr>
+                    </table>
+                   </td>
+                 </tr>
+                </table>
+              </body>
+              </html>
+            `,
+          });
+        }
       } catch (emailErr) {
         console.error("Welcome email failed (non-fatal):", emailErr.message);
       }
 
-      // ✅ Now respond — session is saved
+      // Respond with success
       res.json({ success: true, slug });
     });
   } catch (err) {
