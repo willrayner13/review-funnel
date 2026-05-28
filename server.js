@@ -20,6 +20,11 @@ const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 const smsLimiter = rateLimit({ windowMs: 60 * 1000, max: 5 });
+const authLimiter = rateLimit({ 
+  windowMs: 15 * 60 * 1000, 
+  max: 10,
+  message: { error: "Too many attempts. Please try again in 15 minutes." }
+});
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -327,8 +332,9 @@ const escapeJS = (str) => {
     .replace(/\r/g, '\\r')
     .replace(/\t/g, '\\t');
 };
-  res.send(`
+res.send(`
     <html>
+    <title>${escapeJS(data.name)} — Share your experience</title>
       <script>
 // Replace all the individual escape calls with the escapeJS helper:
 window.businessName        = "${escapeJS(data.name)}";
@@ -352,6 +358,15 @@ window.funnelLanguage      = "${escapeJS(data.funnel_language || 'en')}";
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 app.post("/positive", async (req, res) => {
   const { slug } = req.body;
+
+  if (!slug) return res.status(400).json({ error: "Missing slug" });
+  const { data: bizCheck } = await supabase
+    .from("businesses")
+    .select("slug")
+    .eq("slug", slug)
+    .single();
+  if (!bizCheck) return res.status(404).json({ error: "Business not found" });
+
   const { error } = await supabase.from("events").insert({ business_slug: slug, event_type: "positive" });
   if (error) return res.status(500).json(error);
   
@@ -400,57 +415,52 @@ app.post("/positive", async (req, res) => {
           const milestoneUrl = `${process.env.BASE_URL}/milestone/${slug}/${matchedMilestone}`;
           
           // Send celebration email via Resend
-          await resend.emails.send({
-            from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-            to: business.email,
-            subject: `🎉 You just hit ${matchedMilestone} reviews, ${business.name}!`,
-            html: `
-              <!DOCTYPE html>
-              <html>
-              <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-              <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,Helvetica,sans-serif;">
-                <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
-                  <tr><td align="center">
-                    <table width="540" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
-                      <tr><td style="background:#1E1E1C;padding:22px 32px;">
-                        <p style="margin:0;font-family:Arial,sans-serif;font-size:17px;font-weight:bold;color:#C8A96E;">⭐ ReviewLift</p>
-                      </td></tr>
-                      <tr><td style="padding:32px 32px 24px;text-align:center;">
-                        <div style="font-family:'Syne',Arial,sans-serif;font-size:4rem;font-weight:800;color:#C8A96E;line-height:1;">${matchedMilestone}</div>
-                        <div style="font-size:0.9rem;color:rgba(234,231,220,0.45);letter-spacing:2px;margin-bottom:20px;">GOOGLE REVIEWS AND COUNTING</div>
-                        
-                        <div style="background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.15);border-radius:12px;padding:20px;margin:20px 0;">
-                          <p style="margin:0;font-size:1rem;color:#EAE7DC;line-height:1.6;">"${congratsMessage}"</p>
-                        </div>
-                        
-                        <!-- Shareable graphic card -->
-                        <div style="background:#1A1A18;border:1px solid rgba(200,169,110,0.3);border-radius:16px;padding:32px;margin:24px 0;text-align:center;">
-                          <div style="font-family:'Syne',Arial,sans-serif;font-size:0.8rem;font-weight:700;color:#C8A96E;letter-spacing:2px;margin-bottom:12px;">${business.name.toUpperCase()}</div>
-                          <div style="font-family:'Syne',Arial,sans-serif;font-size:3.5rem;font-weight:800;color:#EAE7DC;line-height:1.1;">${matchedMilestone} ⭐ Reviews</div>
-                          <div style="font-size:0.8rem;color:rgba(234,231,220,0.35);margin-top:12px;">And growing — powered by ReviewLift</div>
-                        </div>
-                        
-                        <p style="font-size:0.85rem;color:rgba(234,231,220,0.55);line-height:1.6;margin:20px 0;">Share this on Instagram, Facebook, or your website to show customers how trusted you are.</p>
-                        
-                        <div style="margin:24px 0;">
-                          <div style="background:var(--surface-3);border-radius:8px;padding:12px;margin-bottom:12px;">
-                            <code style="font-size:0.7rem;color:#C8A96E;word-break:break-all;">${milestoneUrl}</code>
-                          </div>
-                          <a href="${milestoneUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:0.9rem;padding:12px 28px;border-radius:8px;">Share your milestone →</a>
-                        </div>
-                        
-                        <a href="${process.env.BASE_URL}/for-business" style="display:inline-block;background:transparent;color:#C8A96E;text-decoration:none;font-size:0.85rem;border:1px solid rgba(200,169,110,0.3);padding:10px 24px;border-radius:8px;">View your dashboard</a>
-                      </td></tr>
-                      <tr><td style="padding:16px 32px 24px;border-top:1px solid rgba(234,231,220,0.06);text-align:center;">
-                        <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.2);">Powered by ReviewLift · Keep collecting those 5-star reviews</p>
-                      </td></tr>
-                    </table>
-                  </td></tr>
-                </table>
-              </body>
-              </html>
-            `
-          });
+          // WELCOME EMAIL - Updated with premium design
+await resend.emails.send({
+  from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+  to: email,
+  subject: `Your review funnel is live, ${name} — share this link to start`,
+  html: `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+    <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,Helvetica,sans-serif;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+        <tr><td align="center">
+          <table width="540" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;overflow:hidden;max-width:540px;width:100%;">
+            <!-- HEADER -->
+            <tr><td style="background:#1A1A18;padding:20px 32px;">
+              <table cellpadding="0" cellspacing="0">
+                <tr><td style="width:8px;height:8px;background:#C8A96E;border-radius:50%;vertical-align:middle;"></td>
+                <td style="padding-left:8px;font-family:Arial,sans-serif;font-size:16px;font-weight:800;color:#EAE7DC;vertical-align:middle;letter-spacing:-0.3px;">ReviewLift</td></tr>
+              </table>
+            </td></tr>
+            <!-- BODY -->
+            <tr><td style="padding:32px 32px 24px;">
+              <h2 style="margin:0 0 16px;font-size:20px;color:#EAE7DC;">You're in, ${name}.</h2>
+              <p style="margin:0 0 16px;font-size:14px;color:rgba(234,231,220,0.55);line-height:1.6;">Your review funnel for <strong>${name}</strong> is live and ready to collect feedback.</p>
+              <!-- Prominent link box -->
+              <div style="background:#1A1A18;border:1px solid rgba(200,169,110,0.25);border-radius:10px;padding:16px 20px;text-align:center;margin:20px 0;">
+                <p style="margin:0 0 8px;font-size:12px;color:rgba(234,231,220,0.4);">Your review funnel link</p>
+                <p style="margin:0 0 12px;font-family:'Courier New',monospace;font-size:13px;color:#C8A96E;word-break:break-all;">${funnelUrl}</p>
+                <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.35);">Share this link anywhere — WhatsApp, invoices, your website, a QR code</p>
+              </div>
+              <p style="margin:0 0 8px;font-size:12px;color:rgba(234,231,220,0.4);">Your first review could come in today. Share this link.</p>
+              <div style="margin-top:24px;">
+                <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">Go to your dashboard →</a>
+              </div>
+            </td></tr>
+            <!-- FOOTER -->
+            <tr><td style="padding:16px 32px 20px;border-top:1px solid rgba(234,231,220,0.06);text-align:center;">
+              <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.25);line-height:1.6;">ReviewLift · The review system that runs itself · <a href="https://reviewlift.app" style="color:rgba(200,169,110,0.5);text-decoration:none;">reviewlift.app</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+    </body>
+    </html>
+  `,
+});
           
           // Update last_milestone_sent
           await supabase
@@ -469,6 +479,16 @@ app.post("/positive", async (req, res) => {
 
 app.post("/rating", async (req, res) => {
   const { slug, rating } = req.body;
+
+  // Add slug validation
+  if (!slug) return res.status(400).json({ error: "Missing slug" });
+  const { data: bizCheck } = await supabase
+    .from("businesses")
+    .select("slug")
+    .eq("slug", slug)
+    .single();
+  if (!bizCheck) return res.status(404).json({ error: "Business not found" });
+
   const { error } = await supabase.from("events").insert({ business_slug: slug, event_type: "rating", rating });
   if (error) return res.status(500).json(error);
   res.json({ success: true });
@@ -476,6 +496,16 @@ app.post("/rating", async (req, res) => {
 
 app.post("/review-click", async (req, res) => {
   const { slug } = req.body;
+
+  // Add slug validation
+  if (!slug) return res.status(400).json({ error: "Missing slug" });
+  const { data: bizCheck } = await supabase
+    .from("businesses")
+    .select("slug")
+    .eq("slug", slug)
+    .single();
+  if (!bizCheck) return res.status(404).json({ error: "Business not found" });
+
   const { error } = await supabase.from("events").insert({ business_slug: slug, event_type: "review_click" });
   if (error) return res.status(500).json(error);
   res.json({ success: true });
@@ -483,42 +513,109 @@ app.post("/review-click", async (req, res) => {
 
 app.post("/feedback", async (req, res) => {
   const { business, message } = req.body;
+
+  if (!business) return res.status(400).json({ error: "Missing slug" });
+  const { data: bizCheck } = await supabase
+    .from("businesses")
+    .select("slug")
+    .eq("slug", business)
+    .single();
+  if (!bizCheck) return res.status(404).json({ error: "Business not found" });
+
   const { error } = await supabase.from("events").insert({ business_slug: business, event_type: "negative", message });
   if (error) return res.status(500).json(error);
   
   // ─── SEND SMS ALERT TO BUSINESS OWNER ───
+    // ─── SEND ALERTS TO BUSINESS OWNER ───
   try {
     // Get business details including alert settings
     const { data: businessData } = await supabase
       .from("businesses")
-      .select("name, alert_enabled, alert_phone, subscription_active, plan_type")
+      .select("name, email, alert_enabled, alert_phone, subscription_active, plan_type")
       .eq("slug", business)
       .single();
     
-    // Only send if alerts are enabled and they have a phone number
-    if (businessData && businessData.alert_enabled && businessData.alert_phone) {
-      const shortMessage = message.length > 100 ? message.substring(0, 97) + "..." : message;
+    if (businessData && businessData.alert_enabled) {
+      const shortMessage = message.length > 200 ? message.substring(0, 197) + "..." : message;
       const businessName = businessData.name || "a customer";
+      const dashboardUrl = `${process.env.BASE_URL}/for-business`;
       
-      const alertText = `⚠️ COMPLAINT from ${businessName}: "${shortMessage}"\n\nLog in to respond: ${process.env.BASE_URL}/for-business`;
-      
-      // Send SMS via Twilio
-      const normalisedPhone = normalisePhone(businessData.alert_phone);
-      
-      if (normalisedPhone.startsWith('+44')) {
-        await twilioClient.messages.create({
-          from: process.env.TWILIO_PHONE,
-          to: normalisedPhone,
-          body: alertText
+      // ─── SEND EMAIL ALERT (always send email if alerts enabled) ───
+      try {
+        await resend.emails.send({
+          from: `ReviewLift Alerts <alerts@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+          to: businessData.email,
+          subject: `⚠️ New complaint received — ${businessName}`,
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+            <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,Helvetica,sans-serif;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+                <tr><td align="center">
+                  <table width="540" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;overflow:hidden;max-width:540px;width:100%;">
+                    <tr>
+                      <td style="background:#1A1A18;padding:20px 32px;">
+                        <table cellpadding="0" cellspacing="0">
+                          <tr><td style="width:8px;height:8px;background:#C8A96E;border-radius:50%;vertical-align:middle;"></td>
+                          <td style="padding-left:8px;font-family:Arial,sans-serif;font-size:16px;font-weight:800;color:#EAE7DC;vertical-align:middle;">⚠️ Alert</td></tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:32px 32px 24px;">
+                        <h2 style="margin:0 0 8px;color:#D4897C;font-size:18px;">New complaint received</h2>
+                        <p style="margin:0 0 16px;font-size:13px;color:rgba(234,231,220,0.55);">${businessName} left private feedback:</p>
+                        <div style="background:#1A1A18;border-left:3px solid #D4897C;border-radius:8px;padding:16px;margin:8px 0 20px;">
+                          <p style="margin:0;font-size:13px;color:#EAE7DC;line-height:1.6;">"${shortMessage.replace(/"/g, '&quot;')}"</p>
+                        </div>
+                        <p style="margin:0 0 20px;font-size:12px;color:rgba(234,231,220,0.4);">This complaint was captured privately — it never reached Google.</p>
+                        <a href="${dashboardUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px;">View in dashboard →</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:16px 32px 20px;border-top:1px solid rgba(234,231,220,0.06);text-align:center;">
+                        <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.25);">ReviewLift · The review system that runs itself · <a href="https://reviewlift.app" style="color:rgba(200,169,110,0.5);text-decoration:none;">reviewlift.app</a></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+          </html>
+          `
         });
-        console.log(`Alert SMS sent to ${normalisedPhone} for complaint from ${business}`);
-      } else {
-        console.log(`Invalid UK number for alerts: ${normalisedPhone}`);
+        console.log(`Alert email sent to ${businessData.email} for complaint from ${business}`);
+      } catch (emailAlertErr) {
+        console.error("Alert email failed (non-fatal):", emailAlertErr.message);
+      }
+      
+      // ─── SEND SMS ALERT (only if phone number is set) ───
+      if (businessData.alert_phone) {
+        const normalisedPhone = normalisePhone(businessData.alert_phone);
+        const smsMessage = message.length > 100 ? message.substring(0, 97) + "..." : message;
+        const alertText = `⚠️ COMPLAINT from ${businessName}: "${smsMessage}"\n\nLog in to respond: ${process.env.BASE_URL}/for-business`;
+        
+        if (normalisedPhone.startsWith('+44')) {
+          try {
+            await twilioClient.messages.create({
+              from: process.env.TWILIO_PHONE,
+              to: normalisedPhone,
+              body: alertText
+            });
+            console.log(`Alert SMS sent to ${normalisedPhone} for complaint from ${business}`);
+          } catch (smsErr) {
+            console.error("Alert SMS failed:", smsErr.message);
+          }
+        } else {
+          console.log(`Invalid UK number for alerts: ${normalisedPhone}`);
+        }
       }
     }
   } catch (alertErr) {
     // Don't fail the request if alert fails - just log it
-    console.error("Alert SMS failed (non-fatal):", alertErr.message);
+    console.error("Alert failed (non-fatal):", alertErr.message);
   }
   
   res.json({ success: true });
@@ -920,7 +1017,7 @@ app.get("/admin/nfc-orders", async (req, res) => {
 
 // ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
 // ─── CREATE BUSINESS ──────────────────────────────────────────────────────────
-app.post("/create-business", async (req, res) => {
+app.post("/create-business", authLimiter, async (req, res) => {
   try {
     // Destructure ALL fields from req.body
     const { 
@@ -979,22 +1076,22 @@ app.post("/create-business", async (req, res) => {
     const finalReviewLink = account_type === 'agency' ? null : (review || null);
     
     const { error } = await supabase.from("businesses").insert({
-      name: name.trim(),
-      email: email.trim(),
-      review_link: finalReviewLink,
-      slug: slug,
-      password: hashedPassword,
-      plan_type: account_type === 'agency' ? "agency" : "starter",
-      subscription_active: account_type === 'agency' ? false : false,
-      trial_ends_at: trialEnd.toISOString(),
-      referred_by: referral || null,
-      industry: account_type === 'business' ? (industry || null) : null,
-      current_software: account_type === 'business' ? (currentSoftware || null) : null,
-      account_type: account_type || "business",
-      agency_website: agency_website || null,
-      agency_source: agency_source || null,
-      agency_client_count: agency_client_count || null
-    });
+  name: name.trim(),
+  email: email.trim(),
+  review_link: account_type === 'agency' ? (review || null) : (review || ""),
+  slug: slug,
+  password: hashedPassword,
+  plan_type: account_type === 'agency' ? "agency" : "starter",
+  subscription_active: account_type === 'agency' ? false : false,
+  trial_ends_at: trialEnd.toISOString(),
+  referred_by: referral || null,
+  industry: account_type === 'business' ? (industry || null) : null,
+  current_software: account_type === 'business' ? (currentSoftware || null) : null,
+  account_type: account_type || "business",
+  agency_website: agency_website || null,
+  agency_source: agency_source || null,
+  agency_client_count: agency_client_count || null
+});
  
     if (error) {
       console.error("Supabase insert error /create-business:", JSON.stringify(error));
@@ -1096,7 +1193,7 @@ app.post("/create-business", async (req, res) => {
 });
 
 // ─── VERIFY LOGIN ─────────────────────────────────────────────────────────────
-app.post("/verify-login", async (req, res) => {
+app.post("/verify-login", authLimiter, async (req, res) => {
   const { email, password } = req.body;
   const { data } = await supabase.from("businesses").select("*").eq("email", email).single();
   if (!data) return res.json({ success: false });
@@ -1324,39 +1421,35 @@ app.post("/send-email", async (req, res) => {
 
     const reviewUrl = `${process.env.BASE_URL}/r/${slug}`;
     await resend.emails.send({
-      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-      to: email,
+from: `${business.name} <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,      to: email,
       subject: `How was your visit to ${business.name}?`,
       html: `
-        <!DOCTYPE html>
-        <html>
-        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-        <body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2;padding:32px 16px;">
-            <tr><td align="center">
-              <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;max-width:540px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                <tr><td style="background:#1E1E1C;padding:22px 32px;">
-                  <p style="margin:0;font-family:Arial,sans-serif;font-size:17px;font-weight:bold;color:#EAE7DC;">⭐ ${business.name}</p>
-                </td></tr>
-                <tr><td style="padding:36px 32px 28px;">
-                  <h2 style="margin:0 0 14px;font-size:20px;color:#1E1E1C;font-family:Arial,sans-serif;font-weight:700;line-height:1.3;">How was your recent visit?</h2>
-                  <p style="margin:0 0 10px;font-size:15px;color:#555;line-height:1.65;">Thanks for coming in — we hope you had a great experience.</p>
-                  <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.65;">Your feedback, whether good or not, genuinely helps us improve. It only takes <strong>30 seconds</strong> and there's just one question.</p>
-                  <table cellpadding="0" cellspacing="0">
-                    <tr><td>
-                      <a href="${reviewUrl}" style="display:inline-block;background:#C8A96E;color:#1E1E1C;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 32px;border-radius:8px;font-family:Arial,sans-serif;">Share how it went →</a>
-                    </td></tr>
-                  </table>
-                </td></tr>
-                <tr><td style="padding:16px 32px 24px;border-top:1px solid #eee;">
-                  <p style="margin:0;font-size:12px;color:#aaa;font-family:Arial,sans-serif;">Sent by ${business.name} · Powered by <a href="https://www.reviewlift.app" style="color:#C8A96E;text-decoration:none;">ReviewLift</a></p>
-                </td></tr>
-              </table>
-            </td></tr>
-          </table>
-        </body>
-        </html>
-      `,
+  <!DOCTYPE html>
+  <html>
+  <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+  <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,Helvetica,sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+      <tr><td align="center">
+        <table width="540" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;overflow:hidden;max-width:540px;width:100%;">
+          <tr><td style="background:#1A1A18;padding:20px 32px;">
+            <table cellpadding="0" cellspacing="0"><tr><td style="width:8px;height:8px;background:#C8A96E;border-radius:50%;vertical-align:middle;"></td>
+            <td style="padding-left:8px;font-family:Arial,sans-serif;font-size:16px;font-weight:800;color:#EAE7DC;vertical-align:middle;">${business.name}</td></tr>
+           </td></tr>
+          <tr><td style="padding:32px 32px 24px;">
+            <h2 style="margin:0 0 14px;font-size:20px;color:#EAE7DC;">How was your recent visit?</h2>
+            <p style="margin:0 0 10px;font-size:14px;color:rgba(234,231,220,0.55);line-height:1.65;">Thanks for coming in — we hope you had a great experience.</p>
+            <p style="margin:0 0 24px;font-size:14px;color:rgba(234,231,220,0.55);line-height:1.65;">Your feedback, whether good or not, genuinely helps us improve. It only takes <strong>30 seconds</strong> and there's just one question.</p>
+            <table cellpadding="0" cellspacing="0"><tr><td><a href="${reviewUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:14px;padding:14px 32px;border-radius:8px;">Share how it went →</a></td></tr></table>
+           </td></tr>
+          <tr><td style="padding:16px 32px 20px;border-top:1px solid rgba(234,231,220,0.06);text-align:center;">
+            <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.25);">ReviewLift · The review system that runs itself · <a href="https://reviewlift.app" style="color:rgba(200,169,110,0.5);text-decoration:none;">reviewlift.app</a></p>
+           </td></tr>
+         </table>
+       </td></td>
+     </table>
+  </body>
+  </html>
+`,
     });
     
     // Log the email send event
@@ -2097,14 +2190,25 @@ app.get("/milestone/:slug/:number", async (req, res) => {
   const isWhiteLabel = business.agency_name && business.agency_name.trim().length > 0;
   const displayName = isWhiteLabel ? business.agency_name : business.name;
   const footerBrand = isWhiteLabel ? business.agency_name : "ReviewLift";
-  const footerLink = isWhiteLabel ? `${process.env.BASE_URL}?ref=${slug}` : process.env.BASE_URL;
-  const reviewLink = business.review_link || `${process.env.BASE_URL}/r/${slug}`;
+const footerLink = isWhiteLabel ? `${process.env.BASE_URL}?ref=${slug}` : `${process.env.BASE_URL}/admin?ref=${slug}`;  const reviewLink = business.review_link || `${process.env.BASE_URL}/r/${slug}`;
   
   // Increment view count (optional)
+  // Increment view count (optional)
+try {
+  const { data: current } = await supabase
+    .from("businesses")
+    .select("milestone_page_views")
+    .eq("slug", slug)
+    .single();
+  const newCount = (current?.milestone_page_views || 0) + 1;
   await supabase
     .from("businesses")
-    .update({ milestone_page_views: supabase.sql`milestone_page_views + 1` })
+    .update({ milestone_page_views: newCount })
     .eq("slug", slug);
+} catch(e) {
+  // Non-fatal, continue
+  console.log("Milestone view increment error:", e.message);
+}
   
   res.send(`
     <!DOCTYPE html>
@@ -2226,8 +2330,7 @@ app.get("/milestone/:slug/:number", async (req, res) => {
           <a href="${reviewLink}" class="btn">Leave a review →</a>
         </div>
         <div class="footer">
-          Powered by <a href="${footerLink}">${escapeHtml(footerBrand)}</a>
-        </div>
+Powered by <a href="${process.env.BASE_URL}/admin?ref=${slug}">${escapeHtml(footerBrand)}</a>        </div>
       </div>
     </body>
     </html>
@@ -2453,8 +2556,7 @@ app.get("/wall/:slug", async (req, res) => {
   const isWhiteLabel = business.agency_name && business.agency_name.trim().length > 0;
   const displayName = isWhiteLabel ? business.agency_name : business.name;
   const footerBrand = isWhiteLabel ? business.agency_name : "ReviewLift";
-  const footerLink = isWhiteLabel ? `${process.env.BASE_URL}?ref=${slug}` : process.env.BASE_URL;
-  
+const footerLink = isWhiteLabel ? `${process.env.BASE_URL}?ref=${slug}` : `${process.env.BASE_URL}/admin?ref=${slug}`;  
   // Get positive events with messages
   const { data: events } = await supabase
     .from("events")
@@ -2642,8 +2744,7 @@ app.get("/wall/:slug", async (req, res) => {
         </div>
         
         <div class="footer">
-          Powered by <a href="${footerLink}">${escapeHtml(footerBrand)}</a> — Collect more reviews for your business
-        </div>
+Powered by <a href="${process.env.BASE_URL}/admin?ref=${slug}">${escapeHtml(footerBrand)}</a>        </div>
       </div>
       
       <script>
@@ -3256,6 +3357,74 @@ app.post("/agency/exit-client-mode", async (req, res) => {
     res.json({ success: true, message: "Returned to agency view" });
   } else {
     res.json({ success: false, message: "Not in client mode" });
+  }
+});
+
+// ─── FORGOT PASSWORD ─────────────────────────────────────────────────────────
+const forgotLimiter = rateLimit({ 
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3,
+  message: { error: "Too many requests. Please try again in an hour." }
+});
+
+app.post("/forgot-password", forgotLimiter, async (req, res) => {
+  const { email } = req.body;
+  
+  // Always return success to prevent email enumeration
+  if (!email) return res.json({ success: true });
+  
+  try {
+    const { data: business } = await supabase
+      .from("businesses")
+      .select("email, name")
+      .eq("email", email)
+      .single();
+    
+    // Always return success regardless of whether email exists
+    if (business) {
+      await resend.emails.send({
+        from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+        to: email,
+        subject: "Reset your ReviewLift password",
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head><meta charset="UTF-8"></head>
+          <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
+              <tr><td align="center">
+                <table width="500" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;">
+                  <tr><td style="background:#1E1E1C;padding:22px 32px;">
+                    <p style="margin:0;font-size:16px;font-weight:bold;color:#C8A96E;">⭐ ReviewLift</p>
+                  </td></tr>
+                  <tr><td style="padding:32px;">
+                    <h2 style="color:#EAE7DC;margin:0 0 16px;">Password reset request</h2>
+                    <p style="color:rgba(234,231,220,0.55);margin-bottom:16px;">Hi ${business.name || 'there'},</p>
+                    <p style="color:rgba(234,231,220,0.55);margin-bottom:24px;">Someone requested a password reset for your ReviewLift account. If this was you, reply to this email and we'll sort it manually within a few hours.</p>
+                    <div style="background:#1A1A18;border:1px solid rgba(200,169,110,0.25);border-radius:8px;padding:16px;margin-bottom:24px;">
+                      <p style="margin:0;font-size:12px;color:rgba(234,231,220,0.35);">Simply reply to this email with:</p>
+                      <p style="margin:8px 0 0;font-family:monospace;font-size:12px;color:#C8A96E;">"I need to reset my password"</p>
+                    </div>
+                    <p style="color:rgba(234,231,220,0.4);font-size:12px;margin-bottom:8px;">If you didn't request this, you can safely ignore this email.</p>
+                    <p style="color:rgba(234,231,220,0.3);font-size:11px;">— The ReviewLift team</p>
+                  </td></tr>
+                  <tr><td style="padding:16px 32px 20px;border-top:1px solid rgba(234,231,220,0.06);text-align:center;">
+                    <p style="margin:0;font-size:11px;color:rgba(234,231,220,0.25);">ReviewLift · The review system that runs itself · <a href="https://reviewlift.app" style="color:rgba(200,169,110,0.5);text-decoration:none;">reviewlift.app</a></p>
+                  </td></tr>
+                </table>
+              </td></tr>
+            </table>
+          </body>
+          </html>
+        `
+      });
+    }
+    
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Forgot password error:", err.message);
+    // Still return success to prevent email enumeration
+    res.json({ success: true });
   }
 });
 

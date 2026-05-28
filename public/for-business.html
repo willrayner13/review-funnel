@@ -1018,6 +1018,288 @@
       color: var(--cream-dim);
     }
 
+    /* ===== AGENCY-SPECIFIC STYLES ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .stat-card-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-card-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--cream-dim);
+      margin-top: 8px;
+    }
+
+    .clients-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .clients-table th {
+      text-align: left;
+      padding: 12px 8px;
+      font-size: 0.7rem;
+      color: var(--cream-dim);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .clients-table td {
+      padding: 12px 8px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background: rgba(106, 158, 127, 0.15);
+      color: #8EC9A8;
+    }
+
+    .status-trial {
+      background: rgba(200, 169, 110, 0.1);
+      color: var(--accent);
+    }
+
+    .earnings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .earnings-card {
+      background: linear-gradient(135deg, var(--surface-2) 0%, rgba(200, 169, 110, 0.04) 100%);
+      border: 1px solid rgba(200, 169, 110, 0.2);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .earnings-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .panel h3 {
+      font-size: 0.9rem;
+      color: var(--cream-dim);
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .btn-full {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #1A1A18;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-full:hover {
+      background: #D4B87A;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--cream);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-3);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-row input {
+      flex: 1;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--cream);
+      font-size: 0.9rem;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        margin-left: 0;
+        margin-bottom: 70px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .earnings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .clients-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      padding: 32px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--surface-2);
+      border: none;
+      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      color: var(--cream-dim);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface-2);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 0.85rem;
+      z-index: 1100;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(26, 26, 24, 0.3);
+      border-top-color: #1A1A18;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .color-swatch {
       width: 32px;
       height: 32px;
@@ -1306,20 +1588,23 @@
     }
 
     /* Base laptop adjustments */
-@media (min-width: 1024px) and (max-width: 1366px) {
-  html, body {
-    font-size: 14px;
-  }
-  
-  .container, .dashboard-container {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  
-  * {
-    max-width: 100%;
-  }
-}
+    @media (min-width: 1024px) and (max-width: 1366px) {
+
+      html,
+      body {
+        font-size: 14px;
+      }
+
+      .container,
+      .dashboard-container {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      * {
+        max-width: 100%;
+      }
+    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1000px) {
@@ -1654,14 +1939,14 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <span class="dot"></span>
-          <span>ReviewLift</span>
-        </div>
+  <span class="dot"></span>
+  <span>ReviewLift</span>
+</div>
+<div style="font-size:0.65rem; color:rgba(234,231,220,0.35); margin-top:4px; padding-left:12px;">The review system that runs itself.</div>
         <div class="sidebar-biz" id="sidebarBizName">Loading...</div>
       </div>
 
-      <nav class="sidebar-nav">
-        <!-- MAIN -->
+      <nav class="sidebar-nav" id="sidebarNav"> <!-- MAIN -->
         <div style="padding: 0 12px 8px 12px;"><span
             style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.7;">Main</span>
         </div>
@@ -1733,136 +2018,104 @@
 
       <!-- OVERVIEW SECTION -->
       <div id="overviewSection" class="content-section active">
-        <div class="rep-hero">
-  <div class="rep-score">
-    <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); margin-bottom:6px;">Reputation Score</div>
-    <div class="rep-score-value" id="heroScore">—</div>
-    <div class="rep-score-trend" id="heroTrend"></div>
+  
+  <!-- BUSINESS OVERVIEW (default) -->
+  <div id="businessOverview">
+    <div class="rep-hero">
+      ...
+    </div>
+    <div class="stats-row">...</div>
+    <div class="panel" style="margin-bottom:32px; overflow-x:auto;">...</div>
+    <div style="margin-bottom:32px;">...</div>
+    <div class="features-grid" id="featuresGrid"></div>
+    <div class="activity-list">...</div>
+    <canvas id="ratingChart" style="display: none;"></canvas>
   </div>
-  <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; flex:1; min-width:200px;">
-    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
-      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="avgRatingDisplay">—</div>
-      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Average Rating</div>
+
+  <!-- AGENCY OVERVIEW (hidden by default) -->
+  <div id="agencyOverview" style="display:none;">
+    
+    <!-- Commission Hero -->
+    <div style="background:linear-gradient(135deg,var(--surface) 0%,rgba(139,92,246,0.05) 100%); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px 32px; margin-bottom:24px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px;">
+      
+      <div>
+        <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:rgba(139,92,246,0.7); margin-bottom:6px; font-weight:600;">Monthly commission</div>
+        <div style="font-family:'Syne',sans-serif; font-size:2.8rem; font-weight:800; color:var(--accent); line-height:1;" id="agencyCommission">£0.00</div>
+        <div style="font-size:0.75rem; color:var(--cream-dim); margin-top:6px;" id="agencyPayoutDate">Next payout: 1st of next month</div>
+      </div>
+      
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+        <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--cream);" id="agencyTotalClients">0</div>
+          <div style="font-size:0.65rem; color:var(--cream-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">Total clients</div>
+        </div>
+        <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--success);" id="agencyPayingClients">0</div>
+          <div style="font-size:0.65rem; color:var(--cream-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">Paying</div>
+        </div>
+        <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--accent);" id="agencyTrialClients">0</div>
+          <div style="font-size:0.65rem; color:var(--cream-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">On trial</div>
+        </div>
+      </div>
     </div>
-    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
-      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="velocityDisplay">—</div>
-      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Review Velocity</div>
+
+    <!-- Client Table -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:24px;">
+      <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-weight:600; font-family:'Syne',sans-serif;">Client accounts</span>
+        <button onclick="openAddClientModal()" style="background:rgba(139,92,246,0.15); color:#A78BFA; border:1px solid rgba(139,92,246,0.3); border-radius:8px; padding:7px 16px; font-size:0.8rem; cursor:pointer; font-weight:600;">+ Add client</button>
+      </div>
+      <div id="agencyClientsList"></div>
     </div>
-    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
-      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="positivePercentDisplay">—</div>
-      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Positive %</div>
+
+    <!-- White-label Status Bar -->
+    <div style="background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.2); border-radius:var(--radius); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div style="font-size:0.85rem; font-weight:600; margin-bottom:4px;">White-label settings</div>
+        <div style="font-size:0.75rem; color:var(--cream-dim);" id="whitelabelStatus">Not configured — clients see ReviewLift branding</div>
+      </div>
+      <button onclick="navigateTo('settings')" style="background:rgba(139,92,246,0.15); color:#A78BFA; border:1px solid rgba(139,92,246,0.3); border-radius:8px; padding:8px 16px; font-size:0.8rem; cursor:pointer;">Configure →</button>
     </div>
-    <div style="background:var(--surface-2); border-radius:8px; padding:10px; text-align:center;">
-      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800;" id="reviewsCapturedDisplay">—</div>
-      <div style="font-size:9px; text-transform:uppercase; color:var(--cream-dim);">Reviews Captured</div>
+
+  </div>
+  
+</div>
+
+<!-- REPORTS SECTION (Agency only) -->
+<div id="reportsSection" class="content-section">
+  <h2 style="margin-bottom: 20px;">Monthly Reports</h2>
+  <p style="color:var(--cream-dim);margin-bottom:28px;">Download client-ready PDF reports with your branding.</p>
+  
+  <div class="panel">
+    <h3>📄 Generate Report</h3>
+    <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Generate a full reputation report for your agency or for individual clients.</p>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block; margin-bottom:8px; font-size:0.8rem;">Report type</label>
+      <select id="reportType" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; color:var(--cream);">
+        <option value="agency">My Agency Report (overview of all clients)</option>
+        <option value="client">Individual Client Report</option>
+      </select>
+    </div>
+    
+    <div id="clientSelectWrapper" style="display:none; margin-bottom:20px;">
+      <label style="display:block; margin-bottom:8px; font-size:0.8rem;">Select client</label>
+      <select id="clientSelect" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; color:var(--cream);">
+        <option value="">Loading clients...</option>
+      </select>
+    </div>
+    
+    <button onclick="downloadReport()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Download PDF Report →</button>
+  </div>
+  
+  <div class="panel">
+    <h3>📁 Previous Reports</h3>
+    <div id="previousReportsList">
+      <p style="color:var(--cream-dim);font-size:0.85rem;">Generate your first report to see history here.</p>
     </div>
   </div>
 </div>
-
-        <div class="stats-row">
-          <div class="stat-tile">
-            <div class="stat-header"><i class="ti ti-eye"></i></div>
-            <div class="stat-number" id="statVisits">—</div>
-            <div class="stat-label">Total visits</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-header"><i class="ti ti-thumb-up"></i></div>
-            <div class="stat-number" id="statPositive">—</div>
-            <div class="stat-label">Positive ratings</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-header"><i class="ti ti-star"></i></div>
-            <div class="stat-number" id="statReviews">—</div>
-            <div class="stat-label">Reviews captured</div>
-          </div>
-          <div class="stat-tile">
-            <div class="stat-header"><i class="ti ti-message"></i></div>
-            <div class="stat-number" id="statNegative">—</div>
-            <div class="stat-label">Feedback captured</div>
-          </div>
-        </div>
-
-        <!-- Customer Journey Map -->
-        <div class="panel" style="margin-bottom:32px; overflow-x:auto;">
-          <h3 style="margin-bottom:20px;">📊 Customer Journey</h3>
-          <div
-            style="display:flex; align-items:center; justify-content:space-between; min-width:100%; flex-wrap:wrap; gap:8px;">
-            <div style="text-align:center; flex:1; min-width:80px;">
-              <div
-                style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-eye" style="color:var(--accent);"></i>
-              </div>
-              <div style="font-size:0.7rem; color:var(--cream-dim);">Visit</div>
-              <div class="journey-count" id="journeyVisits" style="font-size:1.2rem; font-weight:700;">0</div>
-            </div>
-            <i class="ti ti-arrow-right" style="color:var(--accent); font-size:1.2rem;"></i>
-            <div style="text-align:center; flex:1; min-width:80px;">
-              <div
-                style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-star" style="color:var(--accent);"></i>
-              </div>
-              <div style="font-size:0.7rem; color:var(--cream-dim);">Rating</div>
-              <div class="journey-count" id="journeyRatings" style="font-size:1.2rem; font-weight:700;">0</div>
-            </div>
-            <i class="ti ti-arrow-right" style="color:var(--accent); font-size:1.2rem;"></i>
-            <div style="text-align:center; flex:1; min-width:80px;">
-              <div
-                style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-click" style="color:var(--accent);"></i>
-              </div>
-              <div style="font-size:0.7rem; color:var(--cream-dim);">Review Click</div>
-              <div class="journey-count" id="journeyClicks" style="font-size:1.2rem; font-weight:700;">0</div>
-            </div>
-            <i class="ti ti-arrow-right" style="color:var(--accent); font-size:1.2rem;"></i>
-            <div style="text-align:center; flex:1; min-width:80px;">
-              <div
-                style="width:40px; height:40px; background:var(--accent-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">
-                <i class="ti ti-brand-google" style="color:var(--accent);"></i>
-              </div>
-              <div style="font-size:0.7rem; color:var(--cream-dim);">Review Posted</div>
-              <div class="journey-count" id="journeyPosted" style="font-size:1.2rem; font-weight:700;">0</div>
-            </div>
-          </div>
-          <div style="margin-top:16px; height:4px; background:var(--surface-2); border-radius:2px; overflow:hidden;">
-            <div id="journeyProgress"
-              style="width:0%; height:100%; background:var(--accent); transition:width 0.5s ease;"></div>
-          </div>
-        </div>
-        <!-- Quick Actions -->
-        <div style="margin-bottom:32px;">
-          <h3 style="margin-bottom:16px; font-size:0.9rem;">Quick actions</h3>
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px;">
-            <button onclick="navigateTo('campaigns')"
-              style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:left; cursor:pointer; transition:all 0.2s;">
-              <i class="ti ti-send"
-                style="color:var(--accent); font-size:1.2rem; margin-bottom:8px; display:block;"></i>
-              <div style="font-weight:600; margin-bottom:4px;">Send campaign</div>
-              <div style="font-size:0.7rem; color:var(--cream-dim);">Request reviews via SMS or email</div>
-            </button>
-            <button onclick="navigateTo('assets')"
-              style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:left; cursor:pointer; transition:all 0.2s;">
-              <i class="ti ti-qrcode"
-                style="color:var(--accent); font-size:1.2rem; margin-bottom:8px; display:block;"></i>
-              <div style="font-weight:600; margin-bottom:4px;">Get QR code</div>
-              <div style="font-size:0.7rem; color:var(--cream-dim);">Print-ready for counters and receipts</div>
-            </button>
-            <button onclick="navigateTo('automations')"
-              style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:left; cursor:pointer; transition:all 0.2s;">
-              <i class="ti ti-zap" style="color:var(--accent); font-size:1.2rem; margin-bottom:8px; display:block;"></i>
-              <div style="font-weight:600; margin-bottom:4px;">Set up automation</div>
-              <div style="font-size:0.7rem; color:var(--cream-dim);">Auto-send after appointments</div>
-            </button>
-          </div>
-        </div>
-        <div class="features-grid" id="featuresGrid"></div>
-        <div class="activity-list">
-          <div class="activity-header">📋 Recent activity</div>
-          <div id="activityList"></div>
-        </div>
-        <canvas id="ratingChart" style="display: none;"></canvas>
-      </div>
-
-
 
       <!-- FUNNEL STUDIO SECTION — Advanced Redesign -->
       <div id="funnelStudioSection" class="content-section">
@@ -2837,37 +3090,37 @@
             <div class="fs-settings" id="fsSettingsPanel">
 
               <!-- Template Selection -->
-             <!-- Template Selection -->
-<div class="fs-settings-section">
-  <div class="fs-settings-label">🎭 Template</div>
-  <div class="fs-template-grid">
-    <div class="fs-template-thumb" data-template="classic" onclick="selectFSTemplate('classic', this)">
-      <div class="fs-template-preview" style="background:linear-gradient(135deg,#1A1A18,#2E2E2B);"></div>
-      <div class="fs-template-name">Modern Glow</div>
-      <div class="fs-template-tag">Default</div>
-    </div>
-    <div class="fs-template-thumb" data-template="bright" onclick="selectFSTemplate('bright', this)">
-      <div class="fs-template-preview" style="background:linear-gradient(135deg,#fff,#f0f0f0);"></div>
-      <div class="fs-template-name">Luxe White</div>
-      <div class="fs-template-tag">Retail & Food</div>
-    </div>
-    <div class="fs-template-thumb" data-template="medical" onclick="selectFSTemplate('medical', this)">
-      <div class="fs-template-preview" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);"></div>
-      <div class="fs-template-name">Clinical Clean</div>
-      <div class="fs-template-tag">Healthcare</div>
-    </div>
-    <div class="fs-template-thumb" data-template="bold" onclick="selectFSTemplate('bold', this)">
-      <div class="fs-template-preview" style="background:linear-gradient(135deg,#C8A96E,#A88B5C);"></div>
-      <div class="fs-template-name">Bold Impact</div>
-      <div class="fs-template-tag">Trades & Gyms</div>
-    </div>
-    <div class="fs-template-thumb" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
-      <div class="fs-template-preview" style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);"></div>
-      <div class="fs-template-name">Elegant Minimal</div>
-      <div class="fs-template-tag">High-end</div>
-    </div>
-  </div>
-</div>
+              <!-- Template Selection -->
+              <div class="fs-settings-section">
+                <div class="fs-settings-label">🎭 Template</div>
+                <div class="fs-template-grid">
+                  <div class="fs-template-thumb" data-template="classic" onclick="selectFSTemplate('classic', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#1A1A18,#2E2E2B);"></div>
+                    <div class="fs-template-name">Modern Glow</div>
+                    <div class="fs-template-tag">Default</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="bright" onclick="selectFSTemplate('bright', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#fff,#f0f0f0);"></div>
+                    <div class="fs-template-name">Luxe White</div>
+                    <div class="fs-template-tag">Retail & Food</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="medical" onclick="selectFSTemplate('medical', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);"></div>
+                    <div class="fs-template-name">Clinical Clean</div>
+                    <div class="fs-template-tag">Healthcare</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="bold" onclick="selectFSTemplate('bold', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#C8A96E,#A88B5C);"></div>
+                    <div class="fs-template-name">Bold Impact</div>
+                    <div class="fs-template-tag">Trades & Gyms</div>
+                  </div>
+                  <div class="fs-template-thumb" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
+                    <div class="fs-template-preview" style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);"></div>
+                    <div class="fs-template-name">Elegant Minimal</div>
+                    <div class="fs-template-tag">High-end</div>
+                  </div>
+                </div>
+              </div>
               <!-- Branding -->
               <div class="fs-settings-section">
                 <div class="fs-settings-label">🎨 Branding</div>
@@ -2981,326 +3234,326 @@
 
       <script>
         // ========== FUNNEL STUDIO ADVANCED STATE ==========
-       let fsState = {
-  template: 'classic',
-  accentColor: '#C8A96E',
-  logoUrl: '',
-  headline: 'How was your experience?',
-  happyLabel: 'Great experience!',
-  sadLabel: 'Could be better',
-  thankyouMsg: 'Thanks for your feedback!',
-  device: 'mobile',
-  zoom: 100,
-  saved: false
-};
+        let fsState = {
+          template: 'classic',
+          accentColor: '#C8A96E',
+          logoUrl: '',
+          headline: 'How was your experience?',
+          happyLabel: 'Great experience!',
+          sadLabel: 'Could be better',
+          thankyouMsg: 'Thanks for your feedback!',
+          device: 'mobile',
+          zoom: 100,
+          saved: false
+        };
 
-let fsSlug = '';
+        let fsSlug = '';
         // ========== INIT ==========
-      
+
         // ========== TEMPLATE SELECTION ==========
-    function selectFSTemplate(template, el) {
-  fsState.template = template;
-  fsState.saved = false;
-  
-  // Update UI
-  document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  
-  // Apply template-specific styling to preview
-  updateFSPreview();
-  updateFSSaveStatus();
-}
+        function selectFSTemplate(template, el) {
+          fsState.template = template;
+          fsState.saved = false;
+
+          // Update UI
+          document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
+          if (el) el.classList.add('selected');
+
+          // Apply template-specific styling to preview
+          updateFSPreview();
+          updateFSSaveStatus();
+        }
 
         // ========== COLOR SELECTION ==========
-function selectFSColor(color, el) {
-  fsState.accentColor = color;
-  fsState.saved = false;
-  
-  // Update UI
-  document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  
-  // Update the color input
-  const colorInput = document.querySelector('.fs-color-input');
-  if (colorInput) colorInput.value = color;
-  
-  updateFSPreview();
-  updateFSSaveStatus();
-}
+        function selectFSColor(color, el) {
+          fsState.accentColor = color;
+          fsState.saved = false;
+
+          // Update UI
+          document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
+          if (el) el.classList.add('selected');
+
+          // Update the color input
+          const colorInput = document.querySelector('.fs-color-input');
+          if (colorInput) colorInput.value = color;
+
+          updateFSPreview();
+          updateFSSaveStatus();
+        }
 
 
 
         // ========== DEVICE TOGGLE ==========
-function setFSDevice(device) {
-  fsState.device = device;
-  
-  const mobileFrame = document.getElementById('fsMobileFrame');
-  const desktopFrame = document.getElementById('fsDesktopFrame');
-  const buttons = document.querySelectorAll('.fs-device-btn');
-  
-  buttons.forEach(b => b.classList.remove('active'));
-  
-  if (device === 'mobile') {
-    if (mobileFrame) mobileFrame.style.display = 'block';
-    if (desktopFrame) desktopFrame.style.display = 'none';
-    if (buttons[0]) buttons[0].classList.add('active');
-  } else {
-    if (mobileFrame) mobileFrame.style.display = 'none';
-    if (desktopFrame) desktopFrame.style.display = 'block';
-    if (buttons[1]) buttons[1].classList.add('active');
-  }
-}
+        function setFSDevice(device) {
+          fsState.device = device;
+
+          const mobileFrame = document.getElementById('fsMobileFrame');
+          const desktopFrame = document.getElementById('fsDesktopFrame');
+          const buttons = document.querySelectorAll('.fs-device-btn');
+
+          buttons.forEach(b => b.classList.remove('active'));
+
+          if (device === 'mobile') {
+            if (mobileFrame) mobileFrame.style.display = 'block';
+            if (desktopFrame) desktopFrame.style.display = 'none';
+            if (buttons[0]) buttons[0].classList.add('active');
+          } else {
+            if (mobileFrame) mobileFrame.style.display = 'none';
+            if (desktopFrame) desktopFrame.style.display = 'block';
+            if (buttons[1]) buttons[1].classList.add('active');
+          }
+        }
 
         // ========== ZOOM ==========
-function zoomFS(delta) {
-  fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
-  const zoomLabel = document.getElementById('fsZoomLabel');
-  const mobileFrame = document.getElementById('fsMobileFrame');
-  
-  if (zoomLabel) zoomLabel.textContent = fsState.zoom + '%';
-  if (mobileFrame) {
-    mobileFrame.style.transform = `scale(${fsState.zoom / 100})`;
-    mobileFrame.style.transformOrigin = 'top center';
-  }
-}
+        function zoomFS(delta) {
+          fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
+          const zoomLabel = document.getElementById('fsZoomLabel');
+          const mobileFrame = document.getElementById('fsMobileFrame');
+
+          if (zoomLabel) zoomLabel.textContent = fsState.zoom + '%';
+          if (mobileFrame) {
+            mobileFrame.style.transform = `scale(${fsState.zoom / 100})`;
+            mobileFrame.style.transformOrigin = 'top center';
+          }
+        }
 
         // ========== LIVE PREVIEW UPDATE ==========
-function updateFSPreview() {
-  // Read current values from inputs
-  const headlineInput = document.getElementById('fsHeadline');
-  const happyInput = document.getElementById('fsHappyLabel');
-  const sadInput = document.getElementById('fsSadLabel');
-  const logoInput = document.getElementById('fsLogoUrl');
-  
-  // Update state from inputs
-  if (headlineInput) fsState.headline = headlineInput.value;
-  if (happyInput) fsState.happyLabel = happyInput.value;
-  if (sadInput) fsState.sadLabel = sadInput.value;
-  if (logoInput) fsState.logoUrl = logoInput.value;
-  
-  // Get business name
-  const businessName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
-  
-  // Update Mobile Preview
-  const bizEl = document.getElementById('fsPreviewBiz');
-  const questionEl = document.getElementById('fsPreviewQuestion');
-  const happyEl = document.getElementById('fsPreviewHappy');
-  const sadEl = document.getElementById('fsPreviewSad');
-  
-  if (bizEl) bizEl.textContent = businessName;
-  if (questionEl) questionEl.textContent = fsState.headline;
-  if (happyEl) happyEl.innerHTML = `😊 ${fsState.happyLabel}`;
-  if (sadEl) sadEl.innerHTML = `😕 ${fsState.sadLabel}`;
-  
-  // Apply accent color to happy button in preview
-  if (happyEl) {
-    happyEl.style.background = fsState.accentColor;
-    happyEl.style.borderColor = fsState.accentColor;
-  }
-  
-  // Update Desktop Preview
-  const bizDesktop = document.getElementById('fsPreviewBizDesktop');
-  const questionDesktop = document.getElementById('fsPreviewQuestionDesktop');
-  const happyDesktop = document.getElementById('fsPreviewHappyDesktop');
-  const sadDesktop = document.getElementById('fsPreviewSadDesktop');
-  
-  if (bizDesktop) bizDesktop.textContent = businessName;
-  if (questionDesktop) questionDesktop.textContent = fsState.headline;
-  if (happyDesktop) happyDesktop.innerHTML = `😊 ${fsState.happyLabel}`;
-  if (sadDesktop) sadDesktop.innerHTML = `😕 ${fsState.sadLabel}`;
-  
-  // Apply accent color to desktop happy button
-  if (happyDesktop) {
-    happyDesktop.style.background = fsState.accentColor;
-    happyDesktop.style.borderColor = fsState.accentColor;
-  }
-  
-  // Logo preview
-  const logoPreview = document.getElementById('fsLogoPreview');
-  const logoImg = document.getElementById('fsLogoPreviewImg');
-  if (fsState.logoUrl && logoPreview && logoImg) {
-    logoImg.src = fsState.logoUrl;
-    logoPreview.style.display = 'block';
-  } else if (logoPreview) {
-    logoPreview.style.display = 'none';
-  }
-  
-  fsState.saved = false;
-  updateFSSaveStatus();
-}
-function updateFSCharCount() {
-  const headline = document.getElementById('fsHeadline');
-  const count = document.getElementById('fsHeadlineCount');
-  if (headline && count) {
-    count.textContent = headline.value.length;
-    if (count.style) {
-      count.style.color = headline.value.length > 55 ? '#D4897C' : 'var(--cream-dim)';
-    }
-  }
-}
+        function updateFSPreview() {
+          // Read current values from inputs
+          const headlineInput = document.getElementById('fsHeadline');
+          const happyInput = document.getElementById('fsHappyLabel');
+          const sadInput = document.getElementById('fsSadLabel');
+          const logoInput = document.getElementById('fsLogoUrl');
+
+          // Update state from inputs
+          if (headlineInput) fsState.headline = headlineInput.value;
+          if (happyInput) fsState.happyLabel = happyInput.value;
+          if (sadInput) fsState.sadLabel = sadInput.value;
+          if (logoInput) fsState.logoUrl = logoInput.value;
+
+          // Get business name
+          const businessName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
+
+          // Update Mobile Preview
+          const bizEl = document.getElementById('fsPreviewBiz');
+          const questionEl = document.getElementById('fsPreviewQuestion');
+          const happyEl = document.getElementById('fsPreviewHappy');
+          const sadEl = document.getElementById('fsPreviewSad');
+
+          if (bizEl) bizEl.textContent = businessName;
+          if (questionEl) questionEl.textContent = fsState.headline;
+          if (happyEl) happyEl.innerHTML = `😊 ${fsState.happyLabel}`;
+          if (sadEl) sadEl.innerHTML = `😕 ${fsState.sadLabel}`;
+
+          // Apply accent color to happy button in preview
+          if (happyEl) {
+            happyEl.style.background = fsState.accentColor;
+            happyEl.style.borderColor = fsState.accentColor;
+          }
+
+          // Update Desktop Preview
+          const bizDesktop = document.getElementById('fsPreviewBizDesktop');
+          const questionDesktop = document.getElementById('fsPreviewQuestionDesktop');
+          const happyDesktop = document.getElementById('fsPreviewHappyDesktop');
+          const sadDesktop = document.getElementById('fsPreviewSadDesktop');
+
+          if (bizDesktop) bizDesktop.textContent = businessName;
+          if (questionDesktop) questionDesktop.textContent = fsState.headline;
+          if (happyDesktop) happyDesktop.innerHTML = `😊 ${fsState.happyLabel}`;
+          if (sadDesktop) sadDesktop.innerHTML = `😕 ${fsState.sadLabel}`;
+
+          // Apply accent color to desktop happy button
+          if (happyDesktop) {
+            happyDesktop.style.background = fsState.accentColor;
+            happyDesktop.style.borderColor = fsState.accentColor;
+          }
+
+          // Logo preview
+          const logoPreview = document.getElementById('fsLogoPreview');
+          const logoImg = document.getElementById('fsLogoPreviewImg');
+          if (fsState.logoUrl && logoPreview && logoImg) {
+            logoImg.src = fsState.logoUrl;
+            logoPreview.style.display = 'block';
+          } else if (logoPreview) {
+            logoPreview.style.display = 'none';
+          }
+
+          fsState.saved = false;
+          updateFSSaveStatus();
+        }
+        function updateFSCharCount() {
+          const headline = document.getElementById('fsHeadline');
+          const count = document.getElementById('fsHeadlineCount');
+          if (headline && count) {
+            count.textContent = headline.value.length;
+            if (count.style) {
+              count.style.color = headline.value.length > 55 ? '#D4897C' : 'var(--cream-dim)';
+            }
+          }
+        }
 
         // ========== AI SUGGESTIONS ==========
-function applyAISuggestion(type) {
-  if (type === 'headline') {
-    const headlineInput = document.getElementById('fsHeadline');
-    if (headlineInput) {
-      headlineInput.value = 'How did we do today?';
-      updateFSPreview();
-      updateFSCharCount();
-    }
-  } else if (type === 'happy') {
-    const happyInput = document.getElementById('fsHappyLabel');
-    if (happyInput) {
-      happyInput.value = 'Loved it! ⭐';
-      updateFSPreview();
-    }
-  } else if (type === 'color') {
-    selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
-  }
-  updateFSSaveStatus();
-}
+        function applyAISuggestion(type) {
+          if (type === 'headline') {
+            const headlineInput = document.getElementById('fsHeadline');
+            if (headlineInput) {
+              headlineInput.value = 'How did we do today?';
+              updateFSPreview();
+              updateFSCharCount();
+            }
+          } else if (type === 'happy') {
+            const happyInput = document.getElementById('fsHappyLabel');
+            if (happyInput) {
+              happyInput.value = 'Loved it! ⭐';
+              updateFSPreview();
+            }
+          } else if (type === 'color') {
+            selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
+          }
+          updateFSSaveStatus();
+        }
 
         // ========== SAVE STATUS ==========
-function updateFSSaveStatus() {
-  const status = document.getElementById('fsSaveStatus');
-  if (status) {
-    if (fsState.saved) {
-      status.textContent = '✓ All changes saved';
-      status.className = 'fs-save-status saved';
-    } else {
-      status.textContent = 'Changes not saved';
-      status.className = 'fs-save-status';
-    }
-  }
-}
+        function updateFSSaveStatus() {
+          const status = document.getElementById('fsSaveStatus');
+          if (status) {
+            if (fsState.saved) {
+              status.textContent = '✓ All changes saved';
+              status.className = 'fs-save-status saved';
+            } else {
+              status.textContent = 'Changes not saved';
+              status.className = 'fs-save-status';
+            }
+          }
+        }
 
         // ========== SAVE SETTINGS ==========
-async function saveFSSettings() {
-  const btn = document.getElementById('fsSaveBtn');
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Saving...';
-  }
-  
-  const data = {
-    funnel_template: fsState.template,
-    funnel_accent_color: fsState.accentColor,
-    funnel_logo_url: fsState.logoUrl,
-    funnel_headline: fsState.headline,
-    funnel_happy_label: fsState.happyLabel,
-    funnel_unhappy_label: fsState.sadLabel,
-    funnel_thankyou_message: fsState.thankyouMsg
-  };
-  
-  try {
-    const res = await fetch('/update-funnel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    
-    if (result.success) {
-      fsState.saved = true;
-      updateFSSaveStatus();
-      showToast('Funnel updated! Changes are live.', 'success');
-    } else {
-      showToast(result.error || 'Could not save', 'error');
-    }
-  } catch (e) {
-    showToast('Something went wrong', 'error');
-  }
-  
-  if (btn) {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
-  }
-}
+        async function saveFSSettings() {
+          const btn = document.getElementById('fsSaveBtn');
+          if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Saving...';
+          }
+
+          const data = {
+            funnel_template: fsState.template,
+            funnel_accent_color: fsState.accentColor,
+            funnel_logo_url: fsState.logoUrl,
+            funnel_headline: fsState.headline,
+            funnel_happy_label: fsState.happyLabel,
+            funnel_unhappy_label: fsState.sadLabel,
+            funnel_thankyou_message: fsState.thankyouMsg
+          };
+
+          try {
+            const res = await fetch('/update-funnel', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            const result = await res.json();
+
+            if (result.success) {
+              fsState.saved = true;
+              updateFSSaveStatus();
+              showToast('Funnel updated! Changes are live.', 'success');
+            } else {
+              showToast(result.error || 'Could not save', 'error');
+            }
+          } catch (e) {
+            showToast('Something went wrong', 'error');
+          }
+
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
+          }
+        }
 
 
         // ========== COPY LINK ==========
-function copyFSLink() {
-  const link = document.getElementById('fsLinkDisplay');
-  if (link) {
-    navigator.clipboard.writeText(link.textContent);
-    showToast('Funnel link copied!', 'success');
-  }
-}
+        function copyFSLink() {
+          const link = document.getElementById('fsLinkDisplay');
+          if (link) {
+            navigator.clipboard.writeText(link.textContent);
+            showToast('Funnel link copied!', 'success');
+          }
+        }
 
-function initFunnelStudio(slug) {
-  fsSlug = slug;
-  const linkDisplay = document.getElementById('fsLinkDisplay');
-  if (linkDisplay) linkDisplay.textContent = window.location.origin + '/r/' + slug;
-  
-  // Load saved settings
-  fetch('/stats/' + slug)
-    .then(r => r.json())
-    .then(stats => {
-      if (stats.funnel_template) {
-        fsState.template = stats.funnel_template;
-        // Highlight selected template
-        const selectedTemplate = document.querySelector(`[data-template="${fsState.template}"]`);
-        if (selectedTemplate) selectFSTemplate(fsState.template, selectedTemplate);
-      }
-      if (stats.funnel_accent_color) {
-        fsState.accentColor = stats.funnel_accent_color;
-        const colorSwatch = document.querySelector(`[data-color="${fsState.accentColor}"]`);
-        if (colorSwatch) selectFSColor(fsState.accentColor, colorSwatch);
-      }
-      if (stats.funnel_logo_url) {
-        fsState.logoUrl = stats.funnel_logo_url;
-        const logoInput = document.getElementById('fsLogoUrl');
-        if (logoInput) logoInput.value = stats.funnel_logo_url;
-      }
-      if (stats.funnel_headline) {
-        fsState.headline = stats.funnel_headline;
-        const headlineInput = document.getElementById('fsHeadline');
-        if (headlineInput) headlineInput.value = stats.funnel_headline;
-      }
-      if (stats.funnel_happy_label) {
-        fsState.happyLabel = stats.funnel_happy_label;
-        const happyInput = document.getElementById('fsHappyLabel');
-        if (happyInput) happyInput.value = stats.funnel_happy_label;
-      }
-      if (stats.funnel_unhappy_label) {
-        fsState.sadLabel = stats.funnel_unhappy_label;
-        const sadInput = document.getElementById('fsSadLabel');
-        if (sadInput) sadInput.value = stats.funnel_unhappy_label;
-      }
-      
-      updateFSPreview();
-      updateFSCharCount();
-    })
-    .catch(() => updateFSPreview());
-}
+        function initFunnelStudio(slug) {
+          fsSlug = slug;
+          const linkDisplay = document.getElementById('fsLinkDisplay');
+          if (linkDisplay) linkDisplay.textContent = window.location.origin + '/r/' + slug;
+
+          // Load saved settings
+          fetch('/stats/' + slug)
+            .then(r => r.json())
+            .then(stats => {
+              if (stats.funnel_template) {
+                fsState.template = stats.funnel_template;
+                // Highlight selected template
+                const selectedTemplate = document.querySelector(`[data-template="${fsState.template}"]`);
+                if (selectedTemplate) selectFSTemplate(fsState.template, selectedTemplate);
+              }
+              if (stats.funnel_accent_color) {
+                fsState.accentColor = stats.funnel_accent_color;
+                const colorSwatch = document.querySelector(`[data-color="${fsState.accentColor}"]`);
+                if (colorSwatch) selectFSColor(fsState.accentColor, colorSwatch);
+              }
+              if (stats.funnel_logo_url) {
+                fsState.logoUrl = stats.funnel_logo_url;
+                const logoInput = document.getElementById('fsLogoUrl');
+                if (logoInput) logoInput.value = stats.funnel_logo_url;
+              }
+              if (stats.funnel_headline) {
+                fsState.headline = stats.funnel_headline;
+                const headlineInput = document.getElementById('fsHeadline');
+                if (headlineInput) headlineInput.value = stats.funnel_headline;
+              }
+              if (stats.funnel_happy_label) {
+                fsState.happyLabel = stats.funnel_happy_label;
+                const happyInput = document.getElementById('fsHappyLabel');
+                if (happyInput) happyInput.value = stats.funnel_happy_label;
+              }
+              if (stats.funnel_unhappy_label) {
+                fsState.sadLabel = stats.funnel_unhappy_label;
+                const sadInput = document.getElementById('fsSadLabel');
+                if (sadInput) sadInput.value = stats.funnel_unhappy_label;
+              }
+
+              updateFSPreview();
+              updateFSCharCount();
+            })
+            .catch(() => updateFSPreview());
+        }
 
 
         // ========== KEYBOARD SHORTCUTS ==========
-document.addEventListener('keydown', function(e) {
-  const fsSection = document.getElementById('funnelStudioSection');
-  if (!fsSection || !fsSection.classList.contains('active')) return;
-  
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    saveFSSettings();
-  }
-});
+        document.addEventListener('keydown', function (e) {
+          const fsSection = document.getElementById('funnelStudioSection');
+          if (!fsSection || !fsSection.classList.contains('active')) return;
+
+          if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            saveFSSettings();
+          }
+        });
 
         // Initialize when section becomes visible
-const fsObserver = new MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    if (mutation.target.id === 'funnelStudioSection' &&
-        mutation.target.classList.contains('active') &&
-        fsSlug) {
-      initFunnelStudio(fsSlug);
-    }
-  });
-});
+        const fsObserver = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.target.id === 'funnelStudioSection' &&
+              mutation.target.classList.contains('active') &&
+              fsSlug) {
+              initFunnelStudio(fsSlug);
+            }
+          });
+        });
 
-const fsSectionElement = document.getElementById('funnelStudioSection');
-if (fsSectionElement) {
-  fsObserver.observe(fsSectionElement, { attributes: true, attributeFilter: ['class'] });
-}
+        const fsSectionElement = document.getElementById('funnelStudioSection');
+        if (fsSectionElement) {
+          fsObserver.observe(fsSectionElement, { attributes: true, attributeFilter: ['class'] });
+        }
       </script>
 
       <!-- CUSTOMERS SECTION -->
@@ -3786,54 +4039,77 @@ if (fsSectionElement) {
       </div>
 
       <!-- AGENCY CLIENTS SECTION - Only visible to agency plan -->
-<div id="agencyClientsSection" class="panel" style="display:none;">
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
-    <div>
-      <h3 style="margin:0;">👥 Client Management</h3>
-      <p style="font-size:0.85rem; color:var(--cream-dim); margin:4px 0 0;">Manage your client accounts and resell ReviewLift under your brand</p>
-    </div>
-    <button onclick="openCreateClientModal()" class="btn-full" style="width:auto; padding:10px 20px; background:var(--accent); color:#1A1A18;">
-      + Add New Client
-    </button>
-  </div>
-  
-  <!-- Usage stats -->
-  <div id="agencyUsageStats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px;">
-    <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
-      <div style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="clientCount">0</div>
-      <div style="font-size:0.7rem; color:var(--cream-dim);">Total Clients</div>
-    </div>
-    <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
-      <div style="font-size:1.8rem; font-weight:800; color:#8EC9A8;" id="activeClientCount">0</div>
-      <div style="font-size:0.7rem; color:var(--cream-dim);">Active</div>
-    </div>
-    <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
-      <div style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="remainingSlots">10</div>
-      <div style="font-size:0.7rem; color:var(--cream-dim);">Remaining Slots</div>
-    </div>
-  </div>
-  
-  <!-- Client list -->
-  <div style="overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse;">
-      <thead>
-        <tr style="border-bottom:1px solid var(--border);">
-          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Business</th>
-          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Plan</th>
-          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Reviews (30d)</th>
-          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Conv. Rate</th>
-          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Status</th>
-          <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="clientsTableBody">
-        <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">Loading clients...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+      <div id="agencyClientsSection" class="panel" style="display:none;">
+        <div
+          style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h3 style="margin:0;">👥 Client Management</h3>
+            <p style="font-size:0.85rem; color:var(--cream-dim); margin:4px 0 0;">Manage your client accounts and resell
+              ReviewLift under your brand</p>
+          </div>
+          <button onclick="openCreateClientModal()" class="btn-full"
+            style="width:auto; padding:10px 20px; background:var(--accent); color:#1A1A18;">
+            + Add New Client
+          </button>
+        </div>
+
+        <!-- Usage stats -->
+        <div id="agencyUsageStats"
+          style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px;">
+          <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="clientCount">0</div>
+            <div style="font-size:0.7rem; color:var(--cream-dim);">Total Clients</div>
+          </div>
+          <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:1.8rem; font-weight:800; color:#8EC9A8;" id="activeClientCount">0</div>
+            <div style="font-size:0.7rem; color:var(--cream-dim);">Active</div>
+          </div>
+          <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="remainingSlots">10</div>
+            <div style="font-size:0.7rem; color:var(--cream-dim);">Remaining Slots</div>
+          </div>
+        </div>
+
+        <!-- Client list -->
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Business</th>
+                <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Plan</th>
+                <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Reviews (30d)
+                </th>
+                <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Conv. Rate</th>
+                <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Status</th>
+                <th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody">
+              <tr>
+                <td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">Loading clients...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
   </div>
+
+  <!-- Add Client Modal -->
+<div class="modal-overlay" id="addClientModal" onclick="handleModalOverlay(event,'addClientModal')">
+  <div class="modal-box" style="max-width:480px;">
+    <button class="modal-close" onclick="closeModal('addClientModal')">✕</button>
+    <span class="modal-icon">👥</span>
+    <h3>Add a client to your agency</h3>
+    <p style="margin-bottom:20px;">Send your client this link. When they sign up through it, they'll appear in your dashboard automatically and you'll earn 30% commission on their subscription.</p>
+    <label style="font-size:0.75rem; color:var(--cream-dim); display:block; margin-bottom:8px;">Your client signup link</label>
+    <div class="input-row" style="margin-bottom:16px;">
+      <input id="agencyReferralLink" readonly style="background:var(--surface-2);">
+      <button onclick="copyAgencyLink()" style="background:var(--accent); color:#1A1A18; border:none; border-radius:6px; padding:0 20px;">Copy</button>
+    </div>
+    <p style="font-size:0.75rem; color:var(--cream-dim);">You can also go to their business, set up their account yourself, and earn commission automatically. All accounts signed up through your link appear here.</p>
+  </div>
+</div>
 
   <!-- MODALS -->
   <div class="modal-overlay" id="nfcModal" onclick="handleModalOverlay(event, 'nfcModal')">
@@ -3923,13 +4199,15 @@ if (fsSectionElement) {
       }
 
       .mobile-tab.active {
-  opacity: 1 !important;
-  color: var(--accent) !important;
-}
+        opacity: 1 !important;
+        color: var(--accent) !important;
+      }
     }
   </style>
 
   <script>
+
+    let analyticsChartInstance = null;
 
     // ========== AUTOMATIONS & INTEGRATIONS ==========
     const integrationsData = [
@@ -4031,22 +4309,22 @@ if (fsSectionElement) {
     function handleHash() { const hash = window.location.hash.slice(1); if (hash) { const targetNav = document.querySelector(`.nav-item[data-nav="${hash}"]`); if (targetNav) targetNav.click(); } }
 
     function navigateTo(nav) { const targetNav = document.querySelector(`.nav-item[data-nav="${nav}"]`); if (targetNav) targetNav.click(); }
-function navigateToMobile(nav) {
-  navigateTo(nav);
-  document.querySelectorAll('.mobile-tab').forEach(tab => {
-    tab.classList.remove('active');
-    tab.style.opacity = '0.6';
-    const icon = tab.querySelector('i');
-    if (icon) icon.style.color = '';
-  });
-  const activeTab = document.querySelector(`.mobile-tab[data-tab="${nav}"]`);
-  if (activeTab) {
-    activeTab.classList.add('active');
-    activeTab.style.opacity = '1';
-    const icon = activeTab.querySelector('i');
-    if (icon) icon.style.color = 'var(--accent)';
-  }
-}    document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { const target = item.dataset.nav; document.querySelectorAll('.mobile-tab').forEach(tab => { tab.classList.remove('active'); if (tab.getAttribute('data-tab') === target) tab.classList.add('active'); }); }); });
+    function navigateToMobile(nav) {
+      navigateTo(nav);
+      document.querySelectorAll('.mobile-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.opacity = '0.6';
+        const icon = tab.querySelector('i');
+        if (icon) icon.style.color = '';
+      });
+      const activeTab = document.querySelector(`.mobile-tab[data-tab="${nav}"]`);
+      if (activeTab) {
+        activeTab.classList.add('active');
+        activeTab.style.opacity = '1';
+        const icon = activeTab.querySelector('i');
+        if (icon) icon.style.color = 'var(--accent)';
+      }
+    } document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { const target = item.dataset.nav; document.querySelectorAll('.mobile-tab').forEach(tab => { tab.classList.remove('active'); if (tab.getAttribute('data-tab') === target) tab.classList.add('active'); }); }); });
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -4206,56 +4484,84 @@ function navigateToMobile(nav) {
       const positivePercentDisplay = document.getElementById('positivePercentDisplay');
       if (positivePercentDisplay) positivePercentDisplay.innerHTML = `${positivePercent}%`;
 
-      
-      
-            const reviewsCapturedDisplay = document.getElementById('reviewsCapturedDisplay');
-      if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0; loadReputationScore(); loadFunnelSettings(); loadAlertSettings(); if (stats.recent_events) updateTicker(stats.recent_events); buildFeatureTiles(stats); loadActivityFeed(); 
-      
+
+
+      const reviewsCapturedDisplay = document.getElementById('reviewsCapturedDisplay');
+      if (reviewsCapturedDisplay) reviewsCapturedDisplay.innerHTML = stats.reviews || 0; loadReputationScore(); loadFunnelSettings(); loadAlertSettings(); if (stats.recent_events) updateTicker(stats.recent_events); buildFeatureTiles(stats); loadActivityFeed();
+
       // Load agency clients if user is on agency plan
       if (stats.plan_type === "agency") {
         loadAgencyClients();
-      }const reviewLink = window.location.origin + "/r/" + slug; const wallUrlEl = document.getElementById("wallUrl"); if (wallUrlEl) wallUrlEl.value = reviewLink; const wallPreviewEl = document.getElementById("wallPreviewLink"); if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug; const embedCodeEl = document.getElementById("embedCode"); if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`; const webhookUrlEl = document.getElementById("webhookUrl"); if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug; const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug; const bizNameEl = document.getElementById("bizNameInput"); if (bizNameEl) bizNameEl.value = stats.business_name || ""; const reviewLinkInputEl = document.getElementById("reviewLinkInput"); if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || ""; const assetReviewLinkEl = document.getElementById("assetReviewLink"); if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug; const qrDownloadLink = document.getElementById("qrDownloadLink"); if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug; const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"); document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("smsLocked").style.display = hasPro ? "none" : "block"; document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("emailLocked").style.display = hasPro ? "none" : "block"; document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("aiLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block"; const isAgency = stats.plan_type === "agency"; document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none"; document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block"; if (hasPro) { loadSentimentTrends(); loadSendIntelligence(); loadGrowthChart(); document.getElementById("proAnalyticsPreview").style.display = "block"; document.getElementById("analyticsUpgradePrompt").style.display = "none"; } if (chartInstance) { chartInstance.destroy(); chartInstance = null; } const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d"); if (ctx && canvas && canvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; chartInstance = new Chart(ctx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } else if (canvas && stats.rating_count === 0) { const placeholderCtx = canvas.getContext("2d"); if (placeholderCtx) { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; placeholderCtx.font = "14px 'DM Sans'"; placeholderCtx.fillStyle = "#EAE7DC"; placeholderCtx.textAlign = "center"; placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); } } const smsCounter = document.getElementById("smsCounter"); if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`; const emailCounter = document.getElementById("emailCounter"); if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`; const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d"); if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; new Chart(analyticsCtx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } lastStats = stats;
-    }
+      } const reviewLink = window.location.origin + "/r/" + slug; const wallUrlEl = document.getElementById("wallUrl"); if (wallUrlEl) wallUrlEl.value = reviewLink; const wallPreviewEl = document.getElementById("wallPreviewLink"); if (wallPreviewEl) wallPreviewEl.href = "/wall/" + slug; const embedCodeEl = document.getElementById("embedCode"); if (embedCodeEl) embedCodeEl.value = `<a href="${reviewLink}" target="_blank">Leave us a review</a>`; const webhookUrlEl = document.getElementById("webhookUrl"); if (webhookUrlEl) webhookUrlEl.value = window.location.origin + "/api/hook/" + slug; const invoiceWebhookEl = document.getElementById("invoiceWebhookUrl"); if (invoiceWebhookEl) invoiceWebhookEl.value = window.location.origin + "/api/invoice-hook/" + slug; const bizNameEl = document.getElementById("bizNameInput"); if (bizNameEl) bizNameEl.value = stats.business_name || ""; const reviewLinkInputEl = document.getElementById("reviewLinkInput"); if (reviewLinkInputEl) reviewLinkInputEl.value = stats.review_link || ""; const assetReviewLinkEl = document.getElementById("assetReviewLink"); if (assetReviewLinkEl) assetReviewLinkEl.value = window.location.origin + "/r/" + slug; const qrDownloadLink = document.getElementById("qrDownloadLink"); if (qrDownloadLink) qrDownloadLink.href = "/qr-download/" + slug; const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"); document.getElementById("smsUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("smsLocked").style.display = hasPro ? "none" : "block"; document.getElementById("emailUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("emailLocked").style.display = hasPro ? "none" : "block"; document.getElementById("aiUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("aiLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sentimentUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sentimentLocked").style.display = hasPro ? "none" : "block"; document.getElementById("sendIntelUnlocked").style.display = hasPro ? "block" : "none"; document.getElementById("sendIntelLocked").style.display = hasPro ? "none" : "block";       const isAgency = stats.plan_type === "agency";  // Keep only THIS declaration
+      document.getElementById("competitorUnlocked").style.display = isAgency ? "block" : "none";
+      document.getElementById("competitorLocked").style.display = isAgency ? "none" : "block";
+      if (hasPro) { loadSentimentTrends(); loadSendIntelligence(); loadGrowthChart(); document.getElementById("proAnalyticsPreview").style.display = "block"; document.getElementById("analyticsUpgradePrompt").style.display = "none"; }
+      if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+      const canvas = document.getElementById("ratingChart"), ctx = canvas?.getContext("2d");
+      if (ctx && canvas && canvas.offsetParent !== null) { const dist = stats.rating_distribution || {}; chartInstance = new Chart(ctx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } }); } else if (canvas && stats.rating_count === 0) { const placeholderCtx = canvas.getContext("2d"); if (placeholderCtx) { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; placeholderCtx.font = "14px 'DM Sans'"; placeholderCtx.fillStyle = "#EAE7DC"; placeholderCtx.textAlign = "center"; placeholderCtx.fillText("No ratings yet. Share your funnel to start collecting reviews!", canvas.width / 2, canvas.height / 2); } } const smsCounter = document.getElementById("smsCounter"); if (smsCounter) smsCounter.textContent = `You've sent ${stats.sms_sent_this_month || 0} requests this month`; const emailCounter = document.getElementById("emailCounter"); if (emailCounter) emailCounter.textContent = `You've sent ${stats.email_sent_this_month || 0} requests this month`;
+      const analyticsCanvas = document.getElementById("ratingChartAnalytics"), analyticsCtx = analyticsCanvas?.getContext("2d");
+      if (analyticsCtx && analyticsCanvas && analyticsCanvas.offsetParent !== null) {
+        if (analyticsChartInstance) {
+          analyticsChartInstance.destroy();
+          analyticsChartInstance = null;
+        }
+        const dist = stats.rating_distribution || {};
+        analyticsChartInstance = new Chart(analyticsCtx, { type: "bar", data: { labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"], datasets: [{ data: [dist[1] || 0, dist[2] || 0, dist[3] || 0, dist[4] || 0, dist[5] || 0], backgroundColor: ["#C0675A", "#C07A5A", "#C8A96E", "#8BAC6A", "#6A9E7F"], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
+      }
 
+      // Use the existing isAgency variable (don't redeclare it!)
+      if (isAgency) {
+        updateNavForAgency(true);
+        loadAgencyDashboard(stats);
+      } else {
+        // Hide agency overview if it was showing
+        const agencyOverview = document.getElementById('agencyOverview');
+        const businessOverview = document.getElementById('businessOverview');
+        if (agencyOverview) agencyOverview.style.display = 'none';
+        if (businessOverview) businessOverview.style.display = 'block';
+      }
+      
+      lastStats = stats;
+    }
 
     // ========== AGENCY CLIENT MANAGEMENT ==========
 
-// Make sure loadAgencyClients is properly defined
-async function loadAgencyClients() {
-  try {
-    const res = await fetch("/agency/clients");
-    const data = await res.json();
-    
-    if (data.error) {
-      console.log("Not an agency account or error:", data.error);
-      const agencySection = document.getElementById("agencyClientsSection");
-      if (agencySection) agencySection.style.display = "none";
-      return;
-    }
-    
-    // Show the agency section
-    const agencySection = document.getElementById("agencyClientsSection");
-    if (agencySection) agencySection.style.display = "block";
-    
-    // Update stats
-    const clientCount = document.getElementById("clientCount");
-    const activeClientCount = document.getElementById("activeClientCount");
-    const remainingSlots = document.getElementById("remainingSlots");
-    
-    if (clientCount) clientCount.textContent = data.agency.total_clients;
-    if (activeClientCount) activeClientCount.textContent = data.agency.active_clients;
-    if (remainingSlots) remainingSlots.textContent = data.agency.remaining_slots;
-    
-    // Render clients table
-    const tbody = document.getElementById("clientsTableBody");
-    if (!tbody) return;
-    
-    if (data.clients.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">No clients yet. Click "Add New Client" to get started.</td></tr>';
-      return;
-    }
-    
-    tbody.innerHTML = data.clients.map(client => `
+    // Make sure loadAgencyClients is properly defined
+    async function loadAgencyClients() {
+      try {
+        const res = await fetch("/agency/clients");
+        const data = await res.json();
+
+        if (data.error) {
+          console.log("Not an agency account or error:", data.error);
+          const agencySection = document.getElementById("agencyClientsSection");
+          if (agencySection) agencySection.style.display = "none";
+          return;
+        }
+
+        // Show the agency section
+        const agencySection = document.getElementById("agencyClientsSection");
+        if (agencySection) agencySection.style.display = "block";
+
+        // Update stats
+        const clientCount = document.getElementById("clientCount");
+        const activeClientCount = document.getElementById("activeClientCount");
+        const remainingSlots = document.getElementById("remainingSlots");
+
+        if (clientCount) clientCount.textContent = data.agency.total_clients;
+        if (activeClientCount) activeClientCount.textContent = data.agency.active_clients;
+        if (remainingSlots) remainingSlots.textContent = data.agency.remaining_slots;
+
+        // Render clients table
+        const tbody = document.getElementById("clientsTableBody");
+        if (!tbody) return;
+
+        if (data.clients.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">No clients yet. Click "Add New Client" to get started.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.clients.map(client => `
       <tr style="border-bottom:1px solid var(--border);">
         <td style="padding:12px 8px;">
           <div style="font-weight:600;">${escapeHtml(client.name)}</div>
@@ -4269,8 +4575,8 @@ async function loadAgencyClients() {
         <td style="padding:12px 8px; font-weight:600;">${client.positive_count}</td>
         <td style="padding:12px 8px;">${client.conversion_rate}%</td>
         <td style="padding:12px 8px;">
-          ${client.active_subscription ? 
-            '<span style="color:#8EC9A8;">● Active</span>' : 
+          ${client.active_subscription ?
+            '<span style="color:#8EC9A8;">● Active</span>' :
             '<span style="color:rgba(234,231,220,0.3);">○ Trial</span>'
           }
         </td>
@@ -4284,26 +4590,26 @@ async function loadAgencyClients() {
         </td>
       </tr>
     `).join('');
-    
-  } catch (e) {
-    console.error("Load agency clients error:", e);
-  }
-}
+
+      } catch (e) {
+        console.error("Load agency clients error:", e);
+      }
+    }
 
 
-// Create a simple modal without complex styling dependencies
-function openCreateClientModal() {
-  // Check if modal already exists
-  let modal = document.getElementById("createClientModal");
-  if (modal) {
-    modal.style.display = "flex";
-    return;
-  }
-  
-  // Create modal container
-  modal = document.createElement("div");
-  modal.id = "createClientModal";
-  modal.style.cssText = `
+    // Create a simple modal without complex styling dependencies
+    function openCreateClientModal() {
+      // Check if modal already exists
+      let modal = document.getElementById("createClientModal");
+      if (modal) {
+        modal.style.display = "flex";
+        return;
+      }
+
+      // Create modal container
+      modal = document.createElement("div");
+      modal.id = "createClientModal";
+      modal.style.cssText = `
     position: fixed;
     top: 0;
     left: 0;
@@ -4316,9 +4622,9 @@ function openCreateClientModal() {
     align-items: center;
     justify-content: center;
   `;
-  
-  // Create modal content
-  modal.innerHTML = `
+
+      // Create modal content
+      modal.innerHTML = `
     <div style="
       background: var(--surface, #242422);
       border-radius: 20px;
@@ -4401,275 +4707,437 @@ function openCreateClientModal() {
       <div id="createClientModalMsg" style="margin-top: 16px; font-size: 0.75rem; text-align: center;"></div>
     </div>
   `;
-  
-  document.body.appendChild(modal);
-  
-  // Close modal when clicking outside
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) {
-      closeCreateClientModal();
-    }
-  });
-  
-  // Close on Escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeCreateClientModal();
-    }
-  });
-}
 
-function closeCreateClientModal() {
-  const modal = document.getElementById("createClientModal");
-  if (modal) {
-    modal.remove();
-  }
-}
+      document.body.appendChild(modal);
 
-async function createClient() {
-  const name = document.getElementById("newClientName")?.value.trim();
-  const email = document.getElementById("newClientEmail")?.value.trim();
-  const reviewLink = document.getElementById("newClientReviewLink")?.value.trim();
-  const btn = document.getElementById("createClientSubmitBtn");
-  const msg = document.getElementById("createClientModalMsg");
-  
-  if (!name || !email) {
-    if (msg) {
-      msg.textContent = "Business name and email required";
-      msg.style.color = "#D4897C";
+      // Close modal when clicking outside
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+          closeCreateClientModal();
+        }
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeCreateClientModal();
+        }
+      });
     }
-    return;
-  }
-  
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = "Creating...";
-    btn.style.opacity = "0.6";
-  }
-  
-  try {
-    const res = await fetch("/agency/create-client", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, review_link: reviewLink })
-    });
-    const data = await res.json();
-    
-    if (data.success) {
-      if (msg) {
-        msg.innerHTML = `✓ Client created! Temporary password: <strong>${data.client.temporary_password}</strong>`;
-        msg.style.color = "#8EC9A8";
+
+    function closeCreateClientModal() {
+      const modal = document.getElementById("createClientModal");
+      if (modal) {
+        modal.remove();
       }
-      
-      // Close modal after 2 seconds and refresh list
-      setTimeout(() => {
-        closeCreateClientModal();
-        loadAgencyClients(); // Refresh the client list
-        showToast("Client created successfully!", "success");
-      }, 2000);
-    } else {
-      if (msg) {
-        msg.textContent = data.error || "Could not create client";
-        msg.style.color = "#D4897C";
+    }
+
+    async function createClient() {
+      const name = document.getElementById("newClientName")?.value.trim();
+      const email = document.getElementById("newClientEmail")?.value.trim();
+      const reviewLink = document.getElementById("newClientReviewLink")?.value.trim();
+      const btn = document.getElementById("createClientSubmitBtn");
+      const msg = document.getElementById("createClientModalMsg");
+
+      if (!name || !email) {
+        if (msg) {
+          msg.textContent = "Business name and email required";
+          msg.style.color = "#D4897C";
+        }
+        return;
       }
+
       if (btn) {
-        btn.disabled = false;
-        btn.textContent = "Create Client Account →";
-        btn.style.opacity = "1";
+        btn.disabled = true;
+        btn.textContent = "Creating...";
+        btn.style.opacity = "0.6";
+      }
+
+      try {
+        const res = await fetch("/agency/create-client", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, review_link: reviewLink })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          if (msg) {
+            msg.innerHTML = `✓ Client created! Temporary password: <strong>${data.client.temporary_password}</strong>`;
+            msg.style.color = "#8EC9A8";
+          }
+
+          // Close modal after 2 seconds and refresh list
+          setTimeout(() => {
+            closeCreateClientModal();
+            loadAgencyClients(); // Refresh the client list
+            showToast("Client created successfully!", "success");
+          }, 2000);
+        } else {
+          if (msg) {
+            msg.textContent = data.error || "Could not create client";
+            msg.style.color = "#D4897C";
+          }
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Create Client Account →";
+            btn.style.opacity = "1";
+          }
+        }
+      } catch (e) {
+        if (msg) {
+          msg.textContent = "Something went wrong. Please try again.";
+          msg.style.color = "#D4897C";
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Create Client Account →";
+          btn.style.opacity = "1";
+        }
+        console.error("Create client error:", e);
       }
     }
-  } catch (e) {
-    if (msg) {
-      msg.textContent = "Something went wrong. Please try again.";
-      msg.style.color = "#D4897C";
+    async function switchToClient(clientSlug) {
+      if (!confirm(`Switch to this client's dashboard? You can switch back from your Settings.`)) return;
+
+      try {
+        const res = await fetch(`/agency/switch-client/${clientSlug}`, { method: "POST" });
+        const data = await res.json();
+
+        if (data.success) {
+          showToast(`Switched to client view`, "success");
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          showToast(data.error || "Could not switch", "error");
+        }
+      } catch (e) {
+        showToast("Something went wrong", "error");
+      }
     }
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = "Create Client Account →";
-      btn.style.opacity = "1";
-    }
-    console.error("Create client error:", e);
-  }
-}
-async function switchToClient(clientSlug) {
-  if (!confirm(`Switch to this client's dashboard? You can switch back from your Settings.`)) return;
-  
-  try {
-    const res = await fetch(`/agency/switch-client/${clientSlug}`, { method: "POST" });
-    const data = await res.json();
-    
-    if (data.success) {
-      showToast(`Switched to client view`, "success");
-      setTimeout(() => window.location.reload(), 1000);
-    } else {
-      showToast(data.error || "Could not switch", "error");
-    }
-  } catch (e) {
-    showToast("Something went wrong", "error");
-  }
-}
 
 
-async function exitClientMode() {
-  try {
-    const res = await fetch("/agency/exit-client-mode", { method: "POST" });
-    const data = await res.json();
-    
-    if (data.success) {
-      showToast("Returned to agency view", "success");
-      setTimeout(() => window.location.reload(), 1000);
-    }
-  } catch (e) {
-    console.error("Exit client mode error:", e);
-  }
-}
+    async function exitClientMode() {
+      try {
+        const res = await fetch("/agency/exit-client-mode", { method: "POST" });
+        const data = await res.json();
 
-async function removeClient(clientSlug) {
-  if (!confirm(`Remove this client? They will lose access to their dashboard.`)) return;
-  
-  try {
-    const res = await fetch(`/agency/remove-client/${clientSlug}`, { method: "DELETE" });
-    const data = await res.json();
-    
-    if (data.success) {
-      showToast("Client removed", "success");
-      loadAgencyClients();
-    } else {
-      showToast(data.error || "Could not remove", "error");
+        if (data.success) {
+          showToast("Returned to agency view", "success");
+          setTimeout(() => window.location.reload(), 1000);
+        }
+      } catch (e) {
+        console.error("Exit client mode error:", e);
+      }
     }
-  } catch (e) {
-    showToast("Something went wrong", "error");
-  }
-}
 
-// Add client mode indicator to top bar if in client mode
-function checkClientMode() {
-  fetch("/session")
-    .then(r => r.json())
-    .then(data => {
-      if (data.agency_mode) {
-        const topBar = document.querySelector(".top-bar");
-        if (topBar && !document.getElementById("clientModeBanner")) {
-          const banner = document.createElement("div");
-          banner.id = "clientModeBanner";
-          banner.style.cssText = "background:rgba(200,169,110,0.15); border-bottom:1px solid var(--accent); padding:8px 20px; text-align:center; font-size:0.8rem; display:flex; align-items:center; justify-content:center; gap:16px;";
-          banner.innerHTML = `
+    async function removeClient(clientSlug) {
+      if (!confirm(`Remove this client? They will lose access to their dashboard.`)) return;
+
+      try {
+        const res = await fetch(`/agency/remove-client/${clientSlug}`, { method: "DELETE" });
+        const data = await res.json();
+
+        if (data.success) {
+          showToast("Client removed", "success");
+          loadAgencyClients();
+        } else {
+          showToast(data.error || "Could not remove", "error");
+        }
+      } catch (e) {
+        showToast("Something went wrong", "error");
+      }
+    }
+
+    // Add client mode indicator to top bar if in client mode
+    function checkClientMode() {
+      fetch("/session")
+        .then(r => r.json())
+        .then(data => {
+          if (data.agency_mode) {
+            const topBar = document.querySelector(".top-bar");
+            if (topBar && !document.getElementById("clientModeBanner")) {
+              const banner = document.createElement("div");
+              banner.id = "clientModeBanner";
+              banner.style.cssText = "background:rgba(200,169,110,0.15); border-bottom:1px solid var(--accent); padding:8px 20px; text-align:center; font-size:0.8rem; display:flex; align-items:center; justify-content:center; gap:16px;";
+              banner.innerHTML = `
             <span>👁️ You are viewing a client dashboard</span>
             <button onclick="exitClientMode()" style="background:var(--accent); color:#1A1A18; border:none; padding:6px 16px; border-radius:6px; cursor:pointer;">Exit client mode →</button>
           `;
-          document.querySelector(".main").insertBefore(banner, document.querySelector(".main").firstChild);
-        }
+              document.querySelector(".main").insertBefore(banner, document.querySelector(".main").firstChild);
+            }
+          }
+        });
+    }
+
+    // ========== AGENCY DASHBOARD FUNCTIONS ==========
+
+function loadAgencyDashboard(stats) {
+  document.getElementById('agencyOverview').style.display = 'block';
+  document.getElementById('businessOverview').style.display = 'none';
+  
+  // Update top bar greeting
+  document.getElementById("greetingText").innerHTML = `Welcome back, <span style="color:var(--accent);">${stats.business_name}</span>`;
+  document.getElementById("greetingBusiness").innerHTML = 'Agency Dashboard';
+  
+  // Fetch agency stats from affiliate endpoint
+  const agencyCode = slug;
+  
+  fetch('/affiliate-stats/' + agencyCode)
+    .then(res => res.json())
+    .then(data => {
+      // Commission
+      document.getElementById('agencyCommission').textContent = '£' + (data.monthly_earnings || 0).toFixed(2);
+      
+      // Client counts  
+      document.getElementById('agencyTotalClients').textContent = data.total_signups || 0;
+      document.getElementById('agencyPayingClients').textContent = data.active_customers || 0;
+      document.getElementById('agencyTrialClients').textContent = data.trial_customers || 0;
+      
+      // Payout date
+      const now = new Date();
+      const nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      document.getElementById('agencyPayoutDate').textContent = 'Next payout: ' + nextFirst.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      
+      // Render client list
+      const list = document.getElementById('agencyClientsList');
+      if (!data.referrals || data.referrals.length === 0) {
+        list.innerHTML = `
+          <div style="padding:40px; text-align:center; color:var(--cream-dim);">
+            <div style="font-size:2rem; margin-bottom:12px;">👥</div>
+            <div style="font-size:0.9rem; font-weight:600; margin-bottom:6px;">No clients yet</div>
+            <div style="font-size:0.8rem;">Add your first client using the button above. They'll appear here once they've signed up.</div>
+          </div>`;
+        return;
       }
-    });
+      
+      list.innerHTML = data.referrals.map(client => {
+        const statusColor = client.status === 'active' ? 'var(--success)' : client.status === 'trial' ? 'var(--accent)' : 'var(--danger)';
+        const statusBg = client.status === 'active' ? 'rgba(106,158,127,0.15)' : client.status === 'trial' ? 'rgba(200,169,110,0.15)' : 'rgba(192,103,90,0.15)';
+        const statusLabel = client.status === 'active' ? 'Paying' : client.status === 'trial' ? 'Trial' : 'Cancelled';
+        const commission = client.commission > 0 ? '£' + client.commission.toFixed(2) + '/mo' : '—';
+        
+        return `
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--border);">
+            <div style="flex:1;">
+              <div style="font-size:0.9rem; font-weight:600; margin-bottom:2px;">${escapeHtml(client.business_name)}</div>
+              <div style="font-size:0.7rem; color:var(--cream-dim);">${client.plan ? client.plan.charAt(0).toUpperCase() + client.plan.slice(1) : 'Starter'} · Joined ${new Date(client.created_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}</div>
+            </div>
+            <div style="font-size:0.8rem; color:var(--accent); min-width:80px; text-align:right;">${commission}</div>
+            <div style="margin-left:16px;">
+              <span style="font-size:0.7rem; font-weight:600; color:${statusColor}; background:${statusBg}; padding:4px 12px; border-radius:20px;">${statusLabel}</span>
+            </div>
+          </div>`;
+      }).join('');
+      
+      // White-label status
+      if (stats.agency_name) {
+        document.getElementById('whitelabelStatus').textContent = '✓ White-labelled as "' + stats.agency_name + '" — clients see your branding';
+      }
+    })
+    .catch(e => console.error('Agency dashboard error:', e));
+  
+  // Load client select dropdown for reports
+  loadClientSelect();
 }
 
-function buildFeatureTiles(stats) {
-  const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"),
-    isAgency = stats.plan_type === "agency";
-  const tiles = [
-    { id: "sms", name: "SMS Review Requests", icon: "ti-message", desc: "Send review requests via text", stat: `${stats.sms_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "communication" },
-    { id: "email", name: "Email Campaigns", icon: "ti-mail", desc: "Send review requests via email", stat: `${stats.email_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "communication" },
-    { id: "ai", name: "AI Reply Generator", icon: "ti-sparkles", desc: "Generate replies to reviews", stat: `${stats.ai_replies_generated || 0} replies this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" },
-    { id: "webhook", name: "Webhook Integration", icon: "ti-webhook", desc: "Auto-send review requests", stat: stats.webhook_configured ? "Connected" : "Not set up", nav: "assets", locked: false, category: "communication" },
-    { id: "reviewWall", name: "Review Wall", icon: "ti-layout-grid", desc: "Share customer love", stat: `${stats.positive || 0} reviews displayed`, nav: "customers", locked: false, category: "display" },
-    { id: "widget", name: "Website Widget", icon: "ti-code", desc: "Embed on your site", stat: "Copy code to install", nav: "assets", locked: false, category: "display" },
-    { id: "sentiment", name: "Sentiment Trends", icon: "ti-chart-dots", desc: "AI analysis of feedback", stat: `${stats.feedback_themes || 0} themes identified`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" },
-    { id: "whatsapp", name: "WhatsApp Alerts", icon: "ti-brand-whatsapp", desc: "Instant complaint alerts", stat: stats.whatsapp_enabled ? "Active" : "Off", nav: "settings", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "whatsapp" },
-    { id: "competitor", name: "Competitor Analysis", icon: "ti-spy", desc: "See competitor weaknesses", stat: `Last run: ${stats.last_competitor_analysis || 'Never'}`, nav: "ai-lab", locked: !isAgency, lockMsg: "Upgrade to Agency", category: "ai" },
-    { id: "voice", name: "Voice Reviews", icon: "ti-microphone", desc: "Collect voice feedback", stat: `${stats.voice_notes || 0} received this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "display" },
-    { id: "sendIntel", name: "Send Intelligence", icon: "ti-brain", desc: "AI channel prediction", stat: `${stats.send_intel_rate || 0}% avg conversion`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" }
-  ];
+function openAddClientModal() {
+  const link = window.location.origin + '?ref=' + slug;
+  document.getElementById('agencyReferralLink').value = link;
+  openModal('addClientModal');
+}
 
-  const grid = document.getElementById("featuresGrid");
-  if (!grid) return;
+function copyAgencyLink() {
+  const input = document.getElementById('agencyReferralLink');
+  navigator.clipboard.writeText(input.value);
+  showToast('Client signup link copied!', 'success');
+}
 
-  // Separate unlocked and locked
-  const unlocked = tiles.filter(t => !t.locked);
-  const locked = tiles.filter(t => t.locked);
+function loadClientSelect() {
+  fetch('/affiliate-stats/' + slug)
+    .then(res => res.json())
+    .then(data => {
+      const select = document.getElementById('clientSelect');
+      if (select && data.referrals && data.referrals.length > 0) {
+        select.innerHTML = '<option value="">Select a client...</option>' + 
+          data.referrals.map(client => `<option value="${client.slug}">${escapeHtml(client.business_name)}</option>`).join('');
+      } else if (select) {
+        select.innerHTML = '<option value="">No clients yet</option>';
+      }
+    })
+    .catch(() => {});
+}
 
-  // Border colour map
-  const borderMap = {
-    communication: '#C8A96E',
-    ai: '#8B5CF6',
-    display: '#6A9E7F',
-    whatsapp: '#25D366'
-  };
+function downloadReport() {
+  const reportType = document.getElementById('reportType').value;
+  const clientSelect = document.getElementById('clientSelect');
+  const clientSlug = clientSelect ? clientSelect.value : null;
+  
+  let url;
+  if (reportType === 'client' && clientSlug) {
+    url = '/report/' + clientSlug;
+  } else {
+    url = '/report/' + slug;
+  }
+  
+  window.open(url, '_blank');
+}
 
-  // Render unlocked tiles
-  let html = unlocked.map(tile => {
-    const borderColor = borderMap[tile.category] || 'transparent';
-    return `<div class="feature-tile" data-nav="${tile.nav}" onclick="navigateTo('${tile.nav}')" style="border-left:2px solid ${borderColor};">
+// Update loadDashboardData to call agency dashboard when appropriate
+// Find the existing loadDashboardData function and add this inside after getting stats:
+
+// Add this line at the end of loadDashboardData, after all the existing code:
+// const isAgency = stats.plan_type === 'agency';
+// if (isAgency) loadAgencyDashboard(stats);
+
+// Also update the nav items for agency users - add this function
+function updateNavForAgency(isAgency) {
+  if (!isAgency) return;
+  
+  // Update nav labels
+  const overviewNav = document.querySelector('.nav-item[data-nav="overview"]');
+  if (overviewNav) overviewNav.querySelector('span').textContent = 'Agency Hub';
+  
+  const customersNav = document.querySelector('.nav-item[data-nav="customers"]');
+  if (customersNav) customersNav.querySelector('span').textContent = 'Clients';
+  
+  // Hide campaigns nav for agency
+  const campaignsNav = document.querySelector('.nav-item[data-nav="campaigns"]');
+  if (campaignsNav) campaignsNav.style.display = 'none';
+  
+  // Add Reports nav if it doesn't exist
+  let reportsNav = document.querySelector('.nav-item[data-nav="reports"]');
+  if (!reportsNav) {
+    const aiLabNav = document.querySelector('.nav-item[data-nav="ai-lab"]');
+    const reportsHtml = `<div class="nav-item" data-nav="reports" data-tooltip="Reports"><i class="ti ti-file-text"></i><span>Reports</span></div>`;
+    if (aiLabNav) {
+      aiLabNav.insertAdjacentHTML('beforebegin', reportsHtml);
+    }
+    
+    // Add click handler for reports
+    document.querySelector('.nav-item[data-nav="reports"]').addEventListener('click', () => {
+      showNavTransition();
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      document.querySelector('.nav-item[data-nav="reports"]').classList.add('active');
+      document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+      document.getElementById('reportsSection').classList.add('active');
+      window.location.hash = 'reports';
+    });
+  }
+}
+
+function loadBusinessDashboard(stats) {
+  // Move all the existing dashboard building code here
+  // This is the original loadDashboardData content
+  // ... (keep all existing stats display code)
+}
+
+    function buildFeatureTiles(stats) {
+      const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency"),
+        isAgency = stats.plan_type === "agency";
+      const tiles = [
+        { id: "sms", name: "SMS Review Requests", icon: "ti-message", desc: "Send review requests via text", stat: `${stats.sms_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "communication" },
+        { id: "email", name: "Email Campaigns", icon: "ti-mail", desc: "Send review requests via email", stat: `${stats.email_sent_this_month || 0} sent this month`, nav: "campaigns", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "communication" },
+        { id: "ai", name: "AI Reply Generator", icon: "ti-sparkles", desc: "Generate replies to reviews", stat: `${stats.ai_replies_generated || 0} replies this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" },
+        { id: "webhook", name: "Webhook Integration", icon: "ti-webhook", desc: "Auto-send review requests", stat: stats.webhook_configured ? "Connected" : "Not set up", nav: "assets", locked: false, category: "communication" },
+        { id: "reviewWall", name: "Review Wall", icon: "ti-layout-grid", desc: "Share customer love", stat: `${stats.positive || 0} reviews displayed`, nav: "customers", locked: false, category: "display" },
+        { id: "widget", name: "Website Widget", icon: "ti-code", desc: "Embed on your site", stat: "Copy code to install", nav: "assets", locked: false, category: "display" },
+        { id: "sentiment", name: "Sentiment Trends", icon: "ti-chart-dots", desc: "AI analysis of feedback", stat: `${stats.feedback_themes || 0} themes identified`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" },
+        { id: "whatsapp", name: "WhatsApp Alerts", icon: "ti-brand-whatsapp", desc: "Instant complaint alerts", stat: stats.whatsapp_enabled ? "Active" : "Off", nav: "settings", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "whatsapp" },
+        { id: "competitor", name: "Competitor Analysis", icon: "ti-spy", desc: "See competitor weaknesses", stat: `Last run: ${stats.last_competitor_analysis || 'Never'}`, nav: "ai-lab", locked: !isAgency, lockMsg: "Upgrade to Agency", category: "ai" },
+        { id: "voice", name: "Voice Reviews", icon: "ti-microphone", desc: "Collect voice feedback", stat: `${stats.voice_notes || 0} received this month`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "display" },
+        { id: "sendIntel", name: "Send Intelligence", icon: "ti-brain", desc: "AI channel prediction", stat: `${stats.send_intel_rate || 0}% avg conversion`, nav: "ai-lab", locked: !hasPro, lockMsg: "Upgrade to Pro", category: "ai" }
+      ];
+
+      const grid = document.getElementById("featuresGrid");
+      if (!grid) return;
+
+      // Separate unlocked and locked
+      const unlocked = tiles.filter(t => !t.locked);
+      const locked = tiles.filter(t => t.locked);
+
+      // Border colour map
+      const borderMap = {
+        communication: '#C8A96E',
+        ai: '#8B5CF6',
+        display: '#6A9E7F',
+        whatsapp: '#25D366'
+      };
+
+      // Render unlocked tiles
+      let html = unlocked.map(tile => {
+        const borderColor = borderMap[tile.category] || 'transparent';
+        return `<div class="feature-tile" data-nav="${tile.nav}" onclick="navigateTo('${tile.nav}')" style="border-left:2px solid ${borderColor};">
       <div class="feature-tile-header"><div class="feature-icon"><i class="ti ${tile.icon}"></i></div></div>
       <div class="feature-name">${tile.name}</div>
       <div class="feature-desc">${tile.desc}</div>
       <div class="feature-stat">${tile.stat}</div>
     </div>`;
-  }).join('');
+      }).join('');
 
-  // Render locked tiles as single collapsed card (only if there are locked tiles)
-  if (locked.length > 0) {
-    html += `<div style="background:rgba(200,169,110,0.06); border:1px dashed rgba(200,169,110,0.3); border-radius:12px; padding:16px; grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      // Render locked tiles as single collapsed card (only if there are locked tiles)
+      if (locked.length > 0) {
+        html += `<div style="background:rgba(200,169,110,0.06); border:1px dashed rgba(200,169,110,0.3); border-radius:12px; padding:16px; grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
       <div>
         <div style="font-weight:600; margin-bottom:4px;">🔒 ${locked.length} features locked</div>
         <div style="font-size:0.75rem; color:var(--cream-dim);">${locked.map(t => t.name).join(', ')}</div>
       </div>
       <a href="/billing" style="background:var(--accent); color:#1A1A18; border:none; border-radius:8px; padding:10px 20px; font-weight:600; font-size:0.85rem; text-decoration:none; white-space:nowrap;">Upgrade to unlock →</a>
     </div>`;
-  }
+      }
 
-  grid.innerHTML = html;
-}
+      grid.innerHTML = html;
+    }
     async function loadActivityFeed() { const container = document.getElementById("activityList"); if (!container) return; container.innerHTML = Array(5).fill(0).map(() => `<div class="skeleton-row"><div class="skeleton-icon"></div><div class="skeleton-text"></div><div class="skeleton-time"></div></div>`).join(''); const res = await fetch("/stats/" + slug); if (!res.ok) return; const stats = await res.json(); const events = stats.recent_events || []; if (events.length === 0) { container.innerHTML = '<div class="activity-item"><div class="activity-left"><div class="activity-icon visit"><i class="ti ti-eye"></i></div><div class="activity-text">No activity yet</div></div></div>'; return; } container.innerHTML = events.slice(0, 10).map(e => { let iconClass = "visit", iconName = "ti-eye", text = ""; if (e.event_type === 'visit') { iconClass = "visit"; iconName = "ti-eye"; text = "👤 Customer visited your funnel"; } else if (e.event_type === 'positive') { iconClass = "positive"; iconName = "ti-thumb-up"; text = "⭐ New 5-star rating received"; } else if (e.event_type === 'negative') { iconClass = "negative"; iconName = "ti-message"; text = "📝 Private feedback captured"; } else if (e.event_type === 'sms_sent') { iconClass = "sms"; iconName = "ti-message-circle"; text = "📱 SMS review request sent"; } else if (e.event_type === 'email_sent') { iconClass = "sms"; iconName = "ti-mail"; text = "📧 Email review request sent"; } else { iconClass = "visit"; iconName = "ti-info-circle"; text = e.event_type.replace('_', ' '); } const timeAgo = e.created_at ? getRelativeTime(e.created_at) : "recently"; return `<div class="activity-item"><div class="activity-left"><div class="activity-icon ${iconClass}"><i class="ti ${iconName}"></i></div><div class="activity-text">${text}</div></div><div class="activity-time">${timeAgo}</div></div>`; }).join(''); }
 
     async function loadPrivateFeedback() { const res = await fetch("/stats/" + slug); const stats = await res.json(); const container = document.getElementById("privateFeedbackList"); if (!container) return; const feedback = stats.feedback || []; if (feedback.length === 0) { container.innerHTML = '<p style="color:var(--cream-dim);font-size:0.85rem;">No private feedback yet. When customers choose \'Could be better\', their message appears here — before it can become a public review.</p>'; return; } container.innerHTML = feedback.map(msg => `<div style="background:var(--surface-2);border-left:3px solid var(--danger);border-radius:8px;padding:14px 16px;margin-bottom:10px;"><p style="font-size:0.85rem;line-height:1.5;">${escapeHtml(msg)}</p></div>`).join(''); }
 
     function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
-    async function loadReputationScore() { 
-      try { 
-        const res = await fetch("/reputation/" + slug); 
-        const data = await res.json(); 
-        const score = data.score, lastMonth = data.last_month_score, b = data.breakdown; 
-        
+    async function loadReputationScore() {
+      try {
+        const res = await fetch("/reputation/" + slug);
+        const data = await res.json();
+        const score = data.score, lastMonth = data.last_month_score, b = data.breakdown;
+
         // Update hero score
         const heroScoreEl = document.getElementById("heroScore");
         if (heroScoreEl) heroScoreEl.innerHTML = `${score}/100`;
-        
+
         // Update trend
-        const trendEl = document.getElementById("heroTrend"); 
-        if (trendEl && lastMonth !== null) { 
-          const diff = score - lastMonth; 
-          if (diff > 0) trendEl.innerHTML = `<span class="up">↑ ${diff} points from last month</span>`; 
-          else if (diff < 0) trendEl.innerHTML = `<span class="down">↓ ${Math.abs(diff)} points from last month</span>`; 
-          else trendEl.innerHTML = `<span>No change from last month</span>`; 
-        } 
-        
+        const trendEl = document.getElementById("heroTrend");
+        if (trendEl && lastMonth !== null) {
+          const diff = score - lastMonth;
+          if (diff > 0) trendEl.innerHTML = `<span class="up">↑ ${diff} points from last month</span>`;
+          else if (diff < 0) trendEl.innerHTML = `<span class="down">↓ ${Math.abs(diff)} points from last month</span>`;
+          else trendEl.innerHTML = `<span>No change from last month</span>`;
+        }
+
         // Update the breakdown bars in the rep-hero section
         const barsContainer = document.querySelector('.rep-bars');
         if (barsContainer) {
-          const bars = [ 
-            { label: "Average Rating", value: b.rating, max: 40, color: "#8EC9A8" }, 
-            { label: "Review Velocity", value: b.velocity, max: 20, color: "#C8A96E" }, 
-            { label: "Feedback Ratio", value: b.feedback, max: 25, color: "#D4897C" }, 
+          const bars = [
+            { label: "Average Rating", value: b.rating, max: 40, color: "#8EC9A8" },
+            { label: "Review Velocity", value: b.velocity, max: 20, color: "#C8A96E" },
+            { label: "Feedback Ratio", value: b.feedback, max: 25, color: "#D4897C" },
             { label: "Send Activity", value: b.activity, max: 15, color: "#C8A96E" }
-          ]; 
-          
-          const barsHtml = bars.map(bar => { 
-            const pct = (bar.value / bar.max) * 100; 
+          ];
+
+          const barsHtml = bars.map(bar => {
+            const pct = (bar.value / bar.max) * 100;
             return `<div class="rep-bar-item">
               <div class="rep-bar-label">${bar.label}</div>
               <div class="rep-bar-track">
                 <div class="rep-bar-fill" style="width:${pct}%;background:${bar.color};"></div>
               </div>
               <div style="font-size:0.7rem;min-width:35px;">${bar.value}/${bar.max}</div>
-            </div>`; 
-          }).join(''); 
+            </div>`;
+          }).join('');
           barsContainer.innerHTML = barsHtml;
         }
-      } catch (e) { 
-        console.log("Reputation score error:", e); 
-      } 
-    }    async function loadFunnelSettings() { const res = await fetch("/stats/" + slug); const stats = await res.json(); const funnelUrl = window.location.origin + "/r/" + slug; const funnelUrlDisplay = document.getElementById('funnelUrlDisplay'); if (funnelUrlDisplay) funnelUrlDisplay.textContent = funnelUrl; currentFunnelSettings = { funnel_template: stats.funnel_template || 'classic', funnel_logo_url: stats.funnel_logo_url || '', funnel_accent_color: stats.funnel_accent_color || '#C8A96E', funnel_headline: stats.funnel_headline || '', funnel_happy_label: stats.funnel_happy_label || '', funnel_unhappy_label: stats.funnel_unhappy_label || '', funnel_thankyou_message: stats.funnel_thankyou_message || '', funnel_custom_domain: stats.funnel_custom_domain || '', funnel_language: stats.funnel_language || 'en' }; const hasPro = stats.plan_type === 'pro' || stats.plan_type === 'agency'; const proFeatures = document.getElementById('funnelStudioProFeatures'), upgradePrompt = document.getElementById('funnelStudioUpgradePrompt'); if (hasPro && proFeatures && upgradePrompt) { proFeatures.style.display = 'block'; upgradePrompt.style.display = 'none'; const logoUrl = document.getElementById('funnelLogoUrl'), accentColor = document.getElementById('funnelAccentColor'), headline = document.getElementById('funnelHeadline'), happyLabel = document.getElementById('funnelHappyLabel'), unhappyLabel = document.getElementById('funnelUnhappyLabel'), thankyouMessage = document.getElementById('funnelThankyouMessage'); if (logoUrl) logoUrl.value = currentFunnelSettings.funnel_logo_url; if (accentColor) accentColor.value = currentFunnelSettings.funnel_accent_color; if (headline) headline.value = currentFunnelSettings.funnel_headline; if (happyLabel) happyLabel.value = currentFunnelSettings.funnel_happy_label; if (unhappyLabel) unhappyLabel.value = currentFunnelSettings.funnel_unhappy_label; if (thankyouMessage) thankyouMessage.value = currentFunnelSettings.funnel_thankyou_message; const previewMobile = document.getElementById('funnelPreviewMobile'), previewDesktop = document.getElementById('funnelPreviewDesktop'); if (previewMobile) previewMobile.src = '/r/' + slug + '?preview=true&t=' + Date.now(); if (previewDesktop) previewDesktop.src = '/r/' + slug + '?preview=true&t=' + Date.now(); const logoPreview = document.getElementById('logoPreview'), logoPreviewImg = document.getElementById('logoPreviewImg'); if (logoUrl && logoPreview && logoPreviewImg) { logoUrl.addEventListener('input', () => { const url = logoUrl.value.trim(); if (url) { logoPreviewImg.src = url; logoPreview.style.display = 'block'; } else logoPreview.style.display = 'none'; }); } const headlineInput = document.getElementById('funnelHeadline'), headlineCounter = document.getElementById('headlineCounter'); if (headlineInput && headlineCounter) { headlineInput.addEventListener('input', () => { const len = headlineInput.value.length; headlineCounter.textContent = `(${len}/60)`; headlineCounter.style.color = len > 55 ? '#D4897C' : 'var(--accent)'; }); } const funnelLinkDisplay = document.getElementById('funnelLinkDisplay'); if (funnelLinkDisplay) funnelLinkDisplay.textContent = window.location.origin + "/r/" + slug; const livePreviewInputs = ['funnelAccentColor', 'funnelLogoUrl', 'funnelHeadline', 'funnelHappyLabel', 'funnelUnhappyLabel']; livePreviewInputs.forEach(id => { const el = document.getElementById(id); if (el) { if (id === 'funnelLogoUrl') { let debounceTimer; el.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => updateLivePreview(), 500); }); } else el.addEventListener('input', () => updateLivePreview()); } }); } else if (upgradePrompt && proFeatures) { proFeatures.style.display = 'none'; upgradePrompt.style.display = 'block'; } }
+      } catch (e) {
+        console.log("Reputation score error:", e);
+      }
+    } async function loadFunnelSettings() { const res = await fetch("/stats/" + slug); const stats = await res.json(); const funnelUrl = window.location.origin + "/r/" + slug; const funnelUrlDisplay = document.getElementById('funnelUrlDisplay'); if (funnelUrlDisplay) funnelUrlDisplay.textContent = funnelUrl; currentFunnelSettings = { funnel_template: stats.funnel_template || 'classic', funnel_logo_url: stats.funnel_logo_url || '', funnel_accent_color: stats.funnel_accent_color || '#C8A96E', funnel_headline: stats.funnel_headline || '', funnel_happy_label: stats.funnel_happy_label || '', funnel_unhappy_label: stats.funnel_unhappy_label || '', funnel_thankyou_message: stats.funnel_thankyou_message || '', funnel_custom_domain: stats.funnel_custom_domain || '', funnel_language: stats.funnel_language || 'en' }; const hasPro = stats.plan_type === 'pro' || stats.plan_type === 'agency'; const proFeatures = document.getElementById('funnelStudioProFeatures'), upgradePrompt = document.getElementById('funnelStudioUpgradePrompt'); if (hasPro && proFeatures && upgradePrompt) { proFeatures.style.display = 'block'; upgradePrompt.style.display = 'none'; const logoUrl = document.getElementById('funnelLogoUrl'), accentColor = document.getElementById('funnelAccentColor'), headline = document.getElementById('funnelHeadline'), happyLabel = document.getElementById('funnelHappyLabel'), unhappyLabel = document.getElementById('funnelUnhappyLabel'), thankyouMessage = document.getElementById('funnelThankyouMessage'); if (logoUrl) logoUrl.value = currentFunnelSettings.funnel_logo_url; if (accentColor) accentColor.value = currentFunnelSettings.funnel_accent_color; if (headline) headline.value = currentFunnelSettings.funnel_headline; if (happyLabel) happyLabel.value = currentFunnelSettings.funnel_happy_label; if (unhappyLabel) unhappyLabel.value = currentFunnelSettings.funnel_unhappy_label; if (thankyouMessage) thankyouMessage.value = currentFunnelSettings.funnel_thankyou_message; const previewMobile = document.getElementById('funnelPreviewMobile'), previewDesktop = document.getElementById('funnelPreviewDesktop'); if (previewMobile) previewMobile.src = '/r/' + slug + '?preview=true&t=' + Date.now(); if (previewDesktop) previewDesktop.src = '/r/' + slug + '?preview=true&t=' + Date.now(); const logoPreview = document.getElementById('logoPreview'), logoPreviewImg = document.getElementById('logoPreviewImg'); if (logoUrl && logoPreview && logoPreviewImg) { logoUrl.addEventListener('input', () => { const url = logoUrl.value.trim(); if (url) { logoPreviewImg.src = url; logoPreview.style.display = 'block'; } else logoPreview.style.display = 'none'; }); } const headlineInput = document.getElementById('funnelHeadline'), headlineCounter = document.getElementById('headlineCounter'); if (headlineInput && headlineCounter) { headlineInput.addEventListener('input', () => { const len = headlineInput.value.length; headlineCounter.textContent = `(${len}/60)`; headlineCounter.style.color = len > 55 ? '#D4897C' : 'var(--accent)'; }); } const funnelLinkDisplay = document.getElementById('funnelLinkDisplay'); if (funnelLinkDisplay) funnelLinkDisplay.textContent = window.location.origin + "/r/" + slug; const livePreviewInputs = ['funnelAccentColor', 'funnelLogoUrl', 'funnelHeadline', 'funnelHappyLabel', 'funnelUnhappyLabel']; livePreviewInputs.forEach(id => { const el = document.getElementById(id); if (el) { if (id === 'funnelLogoUrl') { let debounceTimer; el.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => updateLivePreview(), 500); }); } else el.addEventListener('input', () => updateLivePreview()); } }); } else if (upgradePrompt && proFeatures) { proFeatures.style.display = 'none'; upgradePrompt.style.display = 'block'; } }
 
     async function loadSentimentTrends() { try { const res = await fetch("/sentiment/" + slug); const data = await res.json(); if (!data.count || data.count < 3) { document.getElementById("sentimentContent").innerHTML = `<p>${data.count || 0} feedback messages collected. Collect 3+ to unlock insights.</p>`; return; } const completion = await fetch("/generate-reply", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ review: `ANALYSIS_MODE: Analyse private feedback: ${data.messages.join('\n\n')}. Return JSON: { "themes": [ { "issue": "...", "advice": "..." } ] }` }) }); const result = await completion.json(); document.getElementById("sentimentContent").innerHTML = `<div>${result.reply || "Analysis complete"}</div>`; } catch (e) { document.getElementById("sentimentContent").innerHTML = `<p>Could not load insights.</p>`; } }
 
@@ -4703,27 +5171,38 @@ function buildFeatureTiles(stats) {
 
     function startPolling() { if (pollingInterval) clearInterval(pollingInterval); pollingInterval = setInterval(async () => { const res = await fetch("/stats/" + slug); if (!res.ok) return; const newStats = await res.json(); document.getElementById("statVisits").innerText = newStats.visits ?? 0; document.getElementById("statPositive").innerText = newStats.positive ?? 0; document.getElementById("statReviews").innerText = newStats.reviews ?? 0; document.getElementById("statNegative").innerText = newStats.negative ?? 0; if (newStats.recent_events) updateTicker(newStats.recent_events); loadActivityFeed(); loadReputationScore(); }, 30000); }
 
-        async function checkSession() { 
-      const res = await fetch("/session"); 
-      const data = await res.json(); 
-      if (!data.loggedIn) { 
-        window.location = "/login"; 
-        return; 
-      } 
-      slug = data.slug; 
-      await loadDashboardData(); 
-      startPolling(); 
+    async function checkSession() {
+      const res = await fetch("/session");
+      const data = await res.json();
+      if (!data.loggedIn) {
+        window.location = "/login";
+        return;
+      }
+      slug = data.slug;
+      await loadDashboardData();
+      startPolling();
       handleHash();
       checkClientMode(); // Check if we're in client mode (agency viewing client)
     }
     checkSession();
 
-    // FAB
-    const fabMain = document.getElementById('fabMain'), fabMenu = document.getElementById('fabMenu');
-    let fabOpen = false;
-    if (fabMain) { fabMain.addEventListener('click', () => { fabOpen = !fabOpen; if (fabMenu) fabMenu.style.display = fabOpen ? 'flex' : 'none'; fabMain.style.transform = fabOpen ? 'rotate(45deg)' : 'rotate(0deg)'; }); }
-    function closeFab() { fabOpen = false; if (fabMenu) fabMenu.style.display = 'none'; if (fabMain) fabMain.style.transform = 'rotate(0deg)'; }
-    document.addEventListener('click', (e) => { if (fabOpen && fabMain && fabMenu && !fabMain.contains(e.target) && !fabMenu.contains(e.target)) closeFab(); });
+   
+    // ========== AGENCY DASHBOARD FUNCTIONS ==========
+
+  
+
+
+
+
+
+
+
+    // Update nav items for agency users
+   
+
+    
+
+    
   </script>
 
 </body>

@@ -455,8 +455,13 @@
   <div class="container" id="signupCard">
     <span class="page-eyebrow">Get started</span>
     <h2>Create your account</h2>
-    <p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial · Card required · £0 charged until day 15</p>
+<p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial · Card required · £0 charged until day 15</p>
 
+<div style="text-align:right; margin-bottom:20px;">
+  <a href="#" id="agencyToggleLink" onclick="toggleAgencyMode(event)" style="font-size:0.75rem; color:var(--accent); text-decoration:none;">
+    Signing up as an agency? Click here
+  </a>
+</div>
     <!-- Account Type Toggle - HIDDEN by default, only shown for agency signups -->
     <div class="account-type-toggle" id="accountTypeToggle">
       <div class="type-option business" onclick="setAccountType('business')">🏢 I'm a Business</div>
@@ -595,16 +600,20 @@
         <div class="plan-trial-note">🔒 £0 today. £9.99/mo after trial. Cancel before day 14.</div>
         <button onclick="subscribe('starter')">Start free trial</button>
       </div>
-      <div class="plan featured">
-        <div class="plan-name">Pro</div>
-        <div class="plan-price"><sup>£</sup>24.99<span>/mo</span></div>
-        <div class="plan-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</div>
-        <ul class="plan-features">
-          <li>Everything in Starter</li><li>AI review reply generator</li><li>SMS & email campaigns</li><li>Advanced analytics</li>
-        </ul>
-        <div class="plan-trial-note">🔒 £0 today. £24.99/mo after trial. Cancel before day 14.</div>
-        <button onclick="subscribe('pro')">Start free trial</button>
-      </div>
+      <div class="plan featured" style="padding: 36px 22px; background: linear-gradient(135deg, var(--surface-2) 0%, rgba(200,169,110,0.1) 100%); box-shadow: 0 0 40px rgba(200,169,110,0.12);">
+  <div style="text-align:center; margin-bottom:12px;">
+    <span style="background:var(--accent); color:#1A1A18; font-size:0.65rem; font-weight:700; padding:4px 16px; border-radius:20px; letter-spacing:0.5px;">MOST POPULAR</span>
+  </div>
+  <div class="plan-name">Pro</div>
+  <div class="plan-price"><sup>£</sup>24.99<span>/mo</span></div>
+  <div class="plan-desc">Automation, AI, and advanced tools for businesses serious about their reputation.</div>
+  <ul class="plan-features">
+    <li>Everything in Starter</li><li>AI review reply generator</li><li>SMS & email campaigns</li><li>Advanced analytics</li>
+  </ul>
+  <div class="plan-trial-note">🔒 £0 today. £24.99/mo after trial. Cancel before day 14.</div>
+  <button onclick="subscribe('pro')" style="padding:15px;">Start free trial</button>
+  <p style="text-align:center; font-size:0.7rem; color:rgba(234,231,220,0.35); margin-top:8px;">Most businesses start here</p>
+</div>
       <div class="plan">
         <div class="plan-name">Agency</div>
         <div class="plan-price"><sup>£</sup>79<span>/mo</span></div>
@@ -821,6 +830,22 @@ async function createBusiness(){
     else result.innerText = "Something went wrong. Please check your details and try again.";
     result.style.color = "#D4897C";
     btn.disabled=false; btn.textContent='Continue to plan selection →';
+  }
+}
+
+function toggleAgencyMode(e) {
+  e.preventDefault();
+  const accountTypeInput = document.getElementById('accountType');
+  const isAgency = accountTypeInput && accountTypeInput.value === 'agency';
+  
+  if (isAgency) {
+    setAccountType('business');
+    document.getElementById('agencyToggleLink').textContent = 'Signing up as an agency? Click here';
+    document.querySelector('#signupCard h2').textContent = 'Create your account';
+  } else {
+    setAccountType('agency');
+    document.getElementById('agencyToggleLink').textContent = 'Signing up as a business? Click here';
+    document.querySelector('#signupCard h2').textContent = 'Create your agency account';
   }
 }
 

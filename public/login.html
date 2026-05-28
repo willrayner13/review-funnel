@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Sign In — ReviewLift</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -302,22 +305,44 @@
   <div class="logo"><span class="logo-dot"></span>ReviewLift</div>
   <div class="container">
     <span class="page-eyebrow">Welcome back</span>
-    <h2>Sign in to your dashboard</h2>
-    <p style="margin-bottom:32px; color: var(--cream-dim);">Manage your reviews, feedback, and analytics.</p>
-    <div class="form-group">
-      <label for="email">Business email</label>
-      <input id="email" type="email" placeholder="you@yourbusiness.com">
+    
+    <!-- Login Form -->
+    <div id="loginForm">
+      <h2>Sign in to your dashboard</h2>
+      <p style="margin-bottom:32px; color: var(--cream-dim);">Manage your reviews, feedback, and analytics.</p>
+      <div class="form-group">
+        <label for="email">Business email</label>
+        <input id="email" type="email" placeholder="you@yourbusiness.com">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input id="password" type="password" placeholder="Your dashboard password">
+          <button class="pw-eye" type="button" onclick="togglePw('password','eyeBtn')" tabindex="-1" id="eyeBtn">👁</button>
+        </div>
+        <div style="text-align:right; margin-top:6px;">
+          <a href="#" onclick="showForgotPassword(event)" style="font-size:0.75rem; color:var(--accent); text-decoration:none;">Forgot password?</a>
+        </div>
+      </div>
+      <button class="btn-full" onclick="login()">Sign In →</button>
+      <p id="result"></p>
+      <div class="signup-link">Don't have an account? <a href="/admin">Create one free</a></div>
     </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <div class="pw-wrap">
-        <input id="password" type="password" placeholder="Your dashboard password">
-        <button class="pw-eye" type="button" onclick="togglePw('password','eyeBtn')" tabindex="-1" id="eyeBtn">👁</button>
+    
+    <!-- Forgot Password Form -->
+    <div id="forgotForm" style="display:none;">
+      <h2>Reset your password</h2>
+      <p style="margin-bottom:32px; color: var(--cream-dim);">Enter your email and we'll send you instructions.</p>
+      <div class="form-group">
+        <label for="resetEmail">Email address</label>
+        <input id="resetEmail" type="email" placeholder="you@yourbusiness.com">
+      </div>
+      <button class="btn-full" id="resetBtn" onclick="sendReset()">Send reset instructions →</button>
+      <p id="resetMsg" style="text-align:center; min-height:20px; font-size:0.875rem; color:#8EC9A8; margin-top:10px;"></p>
+      <div class="signup-link" style="margin-top:16px;">
+        <a href="#" onclick="showLogin(event)" style="color:var(--accent);">← Back to sign in</a>
       </div>
     </div>
-    <button class="btn-full" onclick="login()">Sign In →</button>
-    <p id="result"></p>
-    <div class="signup-link">Don't have an account? <a href="/admin">Create one free</a></div>
   </div>
 
 <script>
@@ -331,6 +356,34 @@ function togglePw(inputId, btnId){
     input.type = "password"; 
     btn.textContent = "👁"; 
   }
+}
+
+function showForgotPassword(e) {
+  e.preventDefault();
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('forgotForm').style.display = 'block';
+}
+
+function showLogin(e) {
+  if (e) e.preventDefault();
+  document.getElementById('forgotForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('resetMsg').textContent = '';
+}
+
+async function sendReset() {
+  const email = document.getElementById('resetEmail').value.trim();
+  if (!email) return;
+  const btn = document.getElementById('resetBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  await fetch('/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  document.getElementById('resetMsg').textContent = 'If that email is registered, instructions are on their way.';
+  btn.textContent = 'Sent';
 }
 
 async function login(){
@@ -380,4 +433,3 @@ document.addEventListener("keydown", e => {
 });
 </script>
 </body>
-</html>
