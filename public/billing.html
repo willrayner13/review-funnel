@@ -361,9 +361,17 @@ function setMsg(text,type){
 }
 
 function openModal(id){ document.getElementById(id).classList.add("open"); document.body.style.overflow="hidden"; }
-function closeModal(id){ document.getElementById(id).classList.remove("open"); document.body.style.overflow=""; }
-function handleModalOverlay(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".modal-overlay.open").forEach(m=>m.classList.remove("open")); });
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+}function handleModalOverlay(e, id) {
+    if (e.target === document.getElementById(id)) {
+        closeModal(id);
+    }
+}document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".modal-overlay.open").forEach(m=>m.classList.remove("open")); });
 
 async function doCancel(){
   const btn=document.getElementById("confirmCancelBtn");

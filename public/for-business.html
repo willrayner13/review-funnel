@@ -1577,6 +1577,20 @@
       transition: all 0.2s;
     }
 
+    /* Client Select Wrapper */
+#clientSelectWrapper {
+    margin-top: 8px;
+}
+#clientSelect {
+    width: 100%;
+    padding: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 0.9rem;
+}
+
     .funnel-link-box button:hover {
       background: #D4B87A;
     }
@@ -4384,9 +4398,17 @@
     function confirmLogout() { if (confirm('Are you sure you want to sign out?')) { window.location = "/logout"; } }
     function confirmCancel() { openModal("cancelModal"); }
     function openModal(id) { document.getElementById(id).classList.add("open"); document.body.style.overflow = "hidden"; }
-    function closeModal(id) { document.getElementById(id).classList.remove("open"); document.body.style.overflow = ""; }
-    function handleModalOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
-
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+}function handleModalOverlay(e, id) {
+    if (e.target === document.getElementById(id)) {
+        closeModal(id);
+    }
+}
     // ========== SMS ALERT SETTINGS with Toggle ==========
     const alertToggleBg = document.getElementById('alertToggleBg');
     const alertToggleDot = document.getElementById('alertToggleDot');
@@ -4966,6 +4988,14 @@ async function loadDashboardData() {
         console.error("Create client error:", e);
       }
     }
+
+    function closeBankModalOnOverlay(e) {
+    if (e.target === document.getElementById('bankDetailsModal')) {
+        closeBankModal();
+    }
+}
+
+    
     async function switchToClient(clientSlug) {
       if (!confirm(`Switch to this client's dashboard? You can switch back from your Settings.`)) return;
 
@@ -5329,45 +5359,49 @@ function loadAgencyDashboard(stats) {
 }
 
 function openAddClientModal() {
-  const link = window.location.origin + '?ref=' + slug;
-  document.getElementById('agencyReferralLink').value = link;
-  openModal('addClientModal');
+    const link = window.location.origin + '/admin?ref=' + slug;
+    const input = document.getElementById('agencyReferralLink');
+    if (input) input.value = link;
+    openModal('addClientModal');
 }
 
+
 function copyAgencyLink() {
-  const input = document.getElementById('agencyReferralLink');
-  navigator.clipboard.writeText(input.value);
-  showToast('Client signup link copied!', 'success');
+    const input = document.getElementById('agencyReferralLink');
+    if (input) {
+        navigator.clipboard.writeText(input.value);
+        showToast('Client signup link copied!', 'success');
+    }
 }
 
 function loadClientSelect() {
-  fetch('/affiliate-stats/' + slug)
-    .then(res => res.json())
-    .then(data => {
-      const select = document.getElementById('clientSelect');
-      if (select && data.referrals && data.referrals.length > 0) {
-        select.innerHTML = '<option value="">Select a client...</option>' + 
-          data.referrals.map(client => `<option value="${client.slug}">${escapeHtml(client.business_name)}</option>`).join('');
-      } else if (select) {
-        select.innerHTML = '<option value="">No clients yet</option>';
-      }
-    })
-    .catch(() => {});
+    fetch('/affiliate-stats/' + slug)
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('clientSelect');
+            if (select && data.referrals && data.referrals.length > 0) {
+                select.innerHTML = '<option value="">Select a client...</option>' + 
+                    data.referrals.map(client => `<option value="${client.slug}">${escapeHtml(client.business_name)}</option>`).join('');
+            } else if (select) {
+                select.innerHTML = '<option value="">No clients yet</option>';
+            }
+        })
+        .catch(() => {});
 }
 
 function downloadReport() {
-  const reportType = document.getElementById('reportType').value;
-  const clientSelect = document.getElementById('clientSelect');
-  const clientSlug = clientSelect ? clientSelect.value : null;
-  
-  let url;
-  if (reportType === 'client' && clientSlug) {
-    url = '/report/' + clientSlug;
-  } else {
-    url = '/report/' + slug;
-  }
-  
-  window.open(url, '_blank');
+    const reportType = document.getElementById('reportType').value;
+    const clientSelect = document.getElementById('clientSelect');
+    const clientSlug = clientSelect ? clientSelect.value : null;
+    
+    let url;
+    if (reportType === 'client' && clientSlug) {
+        url = '/report/' + clientSlug;
+    } else {
+        url = '/report/' + slug;
+    }
+    
+    window.open(url, '_blank');
 }
 
 // Update loadDashboardData to call agency dashboard when appropriate
@@ -5562,6 +5596,16 @@ function loadBusinessDashboard(stats) {
     async function checkSession() {
       const res = await fetch("/session");
       const data = await res.json();
+      // Add event listener for report type
+const reportTypeSelect = document.getElementById('reportType');
+if (reportTypeSelect) {
+    reportTypeSelect.addEventListener('change', function() {
+        const wrapper = document.getElementById('clientSelectWrapper');
+        if (wrapper) {
+            wrapper.style.display = this.value === 'client' ? 'block' : 'none';
+        }
+    });
+}
       if (!data.loggedIn) {
         window.location = "/login";
         return;
