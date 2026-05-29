@@ -4149,6 +4149,29 @@
 
   <div class="toast" id="toast"></div>
 
+   <!-- Bank Details Modal -->
+  <div class="modal-overlay" id="bankDetailsModal" onclick="closeBankModalOnOverlay(event)">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeBankModal()">✕</button>
+      <h3>💳 Bank Details for Payouts</h3>
+      <p>We'll use these details to send your monthly commissions.</p>
+      <div class="form-group"><label>Full name</label><input id="bankFullName" type="text"></div>
+      <div class="form-group"><label>Sort code</label><input id="bankSortCode" type="text" placeholder="12-34-56"></div>
+      <div class="form-group"><label>Account number</label><input id="bankAccountNumber" type="text"></div>
+      <button onclick="submitBankDetails()" class="btn-full">Submit →</button>
+      <div id="bankMsg" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <!-- Client Report Select Wrapper (hidden by default) -->
+  <div id="clientSelectWrapper" style="display:none; margin-bottom:20px;">
+    <label style="display:block; margin-bottom:8px; font-size:0.8rem;">Select client</label>
+    <select id="clientSelect" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; color:var(--cream);">
+      <option value="">Loading clients...</option>
+    </select>
+  </div>
+
+
   <!-- FAB -->
   <div id="fab" style="position:fixed; bottom:32px; right:32px; z-index:1000;"><button id="fabMain"
       style="width:56px; height:56px; border-radius:28px; background:var(--accent); border:none; cursor:pointer; box-shadow:0 8px 24px rgba(200,169,110,0.3);"><i
@@ -5016,6 +5039,225 @@ async function loadDashboardData() {
     }
 
     // ========== AGENCY DASHBOARD FUNCTIONS ==========
+// ========== AGENCY EARNINGS FUNCTIONS ==========
+async function loadAgencyEarnings() {
+  try {
+    const res = await fetch("/agency/earnings");
+    const data = await res.json();
+    if (data.error) return;
+    
+    // Update earnings displays
+    const managedEarnings = document.getElementById("agencyManagedEarnings");
+    const referralEarnings = document.getElementById("agencyReferralEarnings");
+    const totalEarnings = document.getElementById("agencyTotalEarnings");
+    const monthlyRevenue = document.getElementById("agencyMonthlyRevenue");
+    const earningsManaged = document.getElementById("earningsManaged");
+    const earningsReferral = document.getElementById("earningsReferral");
+    const earningsTotal = document.getElementById("earningsTotal");
+    
+    if (managedEarnings) managedEarnings.innerHTML = `£${data.monthly_managed_earnings.toFixed(2)}`;
+    if (referralEarnings) referralEarnings.innerHTML = `£${data.monthly_referral_earnings.toFixed(2)}`;
+    if (totalEarnings) totalEarnings.innerHTML = `£${data.total_monthly_earnings.toFixed(2)}`;
+    if (monthlyRevenue) monthlyRevenue.innerHTML = `£${data.total_monthly_earnings.toFixed(2)}`;
+    if (earningsManaged) earningsManaged.innerHTML = `£${data.monthly_managed_earnings.toFixed(2)}`;
+    if (earningsReferral) earningsReferral.innerHTML = `£${data.monthly_referral_earnings.toFixed(2)}`;
+    if (earningsTotal) earningsTotal.innerHTML = `£${data.total_monthly_earnings.toFixed(2)}`;
+    
+    // Update client select for reports
+    const clientSelect = document.getElementById("reportClientSelect");
+    if (clientSelect && data.clients) {
+      clientSelect.innerHTML = '<option value="">Select a client...</option>' + 
+        data.clients.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
+    }
+    
+    // Update referral link
+    const refLink = document.getElementById("agencyReferralLink");
+    if (refLink) refLink.value = `${window.location.origin}/admin?ref=${slug}`;
+    
+  } catch(e) { 
+    console.error("Load earnings error:", e); 
+  }
+}
+
+// ========== AGENCY SETTINGS FUNCTIONS ==========
+async function saveAgencySettings() {
+  const agency_name = document.getElementById("agencyNameInput")?.value.trim();
+  const agency_logo_url = document.getElementById("agencyLogoInput")?.value.trim();
+  const msg = document.getElementById("agencySettingsMsg");
+  
+  if (!msg) return;
+  
+  try {
+    const res = await fetch("/update-agency-settings", {
+      method: "POST", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ agency_name, agency_logo_url })
+    });
+    const data = await res.json();
+    if (data.success) { 
+      msg.innerHTML = "✓ Branding saved!"; 
+      msg.style.color = "#8EC9A8"; 
+      setTimeout(() => msg.innerHTML = "", 3000);
+      showToast("Branding settings saved!", "success");
+    } else { 
+      msg.innerHTML = data.error || "Error saving"; 
+      msg.style.color = "#D4897C";
+    }
+  } catch(e) { 
+    msg.innerHTML = "Something went wrong"; 
+    msg.style.color = "#D4897C";
+  }
+}
+
+function showBankForm() {
+  openModal("bankDetailsModal");
+}
+
+function closeBankModal() { 
+  closeModal("bankDetailsModal"); 
+}
+
+function closeBankModalOnOverlay(e) { 
+  if (e.target === document.getElementById("bankDetailsModal")) closeBankModal(); 
+}
+
+async function submitBankDetails() {
+  const name = document.getElementById("bankFullName")?.value.trim();
+  const sortCode = document.getElementById("bankSortCode")?.value.trim();
+  const accountNumber = document.getElementById("bankAccountNumber")?.value.trim();
+  const msg = document.getElementById("bankMsg");
+  
+  if (!name || !sortCode || !accountNumber) { 
+    if (msg) {
+      msg.textContent = "All fields required"; 
+      msg.style.color = "#D4897C";
+    }
+    return; 
+  }
+  
+  try {
+    const res = await fetch("/contact", {
+      method: "POST", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        name, 
+        email: `agency-${slug}@reviewlift.app`, 
+        message: `AGENCY BANK DETAILS\nAgency: ${slug}\nName: ${name}\nSort code: ${sortCode}\nAccount: ${accountNumber}` 
+      })
+    });
+    const data = await res.json();
+    if (data.success) { 
+      if (msg) {
+        msg.innerHTML = "✓ Bank details submitted!"; 
+        msg.style.color = "#8EC9A8";
+      }
+      setTimeout(() => closeBankModal(), 2000);
+    } else { 
+      if (msg) {
+        msg.textContent = "Error. Please email billy@reviewlift.app"; 
+        msg.style.color = "#D4897C";
+      }
+    }
+  } catch(e) { 
+    if (msg) {
+      msg.textContent = "Something went wrong"; 
+      msg.style.color = "#D4897C";
+    }
+  }
+}
+
+async function downloadClientReport() {
+  const clientSlug = document.getElementById("reportClientSelect")?.value;
+  const msg = document.getElementById("reportMsg");
+  if (!clientSlug) { 
+    if (msg) msg.innerHTML = "Select a client first";
+    return; 
+  }
+  window.open(`/report/${clientSlug}`, '_blank');
+  if (msg) msg.innerHTML = "Report generating...";
+}
+
+async function saveAgencyBizDetails() {
+  const name = document.getElementById("agencyBizNameInput")?.value.trim();
+  if (!name) return;
+  try {
+    const res = await fetch("/update-business", {
+      method: "POST", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, review_link: "" })
+    });
+    const data = await res.json();
+    if (data.success) { 
+      showToast("Saved!", "success"); 
+      document.getElementById("sidebarBizName").innerText = name; 
+    } else {
+      showToast("Could not save", "error");
+    }
+  } catch(e) { 
+    showToast("Error", "error"); 
+  }
+}
+
+async function changeAgencyPassword() {
+  const current = document.getElementById("agencyCurrentPw")?.value;
+  const newPw = document.getElementById("agencyNewPw")?.value;
+  const confirm = document.getElementById("agencyConfirmPw")?.value;
+  
+  if (!current || !newPw || !confirm) { 
+    showToast("Fill all fields", "error"); 
+    return; 
+  }
+  if (newPw.length < 6) { 
+    showToast("Password must be 6+ characters", "error"); 
+    return; 
+  }
+  if (newPw !== confirm) { 
+    showToast("Passwords don't match", "error"); 
+    return; 
+  }
+  
+  try {
+    const res = await fetch("/change-password", {
+      method: "POST", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ current_password: current, new_password: newPw })
+    });
+    const data = await res.json();
+    if (data.success) { 
+      showToast("Password updated", "success"); 
+      document.getElementById("agencyCurrentPw").value = ""; 
+      document.getElementById("agencyNewPw").value = ""; 
+      document.getElementById("agencyConfirmPw").value = ""; 
+    } else {
+      showToast(data.error || "Could not update", "error");
+    }
+  } catch(e) { 
+    showToast("Error", "error"); 
+  }
+}
+
+async function doCancelAgency() {
+  try {
+    const res = await fetch("/cancel-subscription", { method: "POST" });
+    const data = await res.json();
+    closeCancelModal();
+    if (data.success) { 
+      showToast("Subscription cancelled", "success"); 
+      setTimeout(() => window.location.reload(), 1500); 
+    } else {
+      showToast("Could not cancel", "error");
+    }
+  } catch(e) {
+    showToast("Error", "error");
+  }
+}
+
+// Add this to ensure bank modal opens
+function showBankForm() {
+  const modal = document.getElementById("bankDetailsModal");
+  if (modal) modal.classList.add("open");
+}
+
 
 function loadAgencyDashboard(stats) {
   document.getElementById('agencyOverview').style.display = 'block';
