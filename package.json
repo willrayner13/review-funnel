@@ -11,6 +11,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+  "node": "20.x"
+},
   "type": "commonjs",
   "dependencies": {
     "@supabase/supabase-js": "^2.101.0",

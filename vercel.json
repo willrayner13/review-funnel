@@ -1,22 +1,6 @@
 {
-  "functions": {
-    "server/index.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server/index.js"
-    },
-    {
-      "src": "/(.*)\\.(css|js|png|jpg|jpeg|gif|svg|ico|webmanifest|txt|xml)",
-      "dest": "/public/$1.$2"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/server/index.js"
-    }
+    { "src": "/(.*)", "dest": "/server/index.js" }
   ],
   "crons": [
     { "path": "/cron/reputation-scores", "schedule": "0 8 1 * *" },

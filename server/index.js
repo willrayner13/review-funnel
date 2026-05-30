@@ -61,15 +61,7 @@ app.use(
   })
 );
 
-app.get("/test", (req, res) => {
-  const fs = require("fs");
-  const landingPath = path.join(__dirname, "../public", "landing.html");
-  res.json({ 
-    message: "Server is working", 
-    landingExists: fs.existsSync(landingPath),
-    landingPath: landingPath
-  });
-});
+
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
