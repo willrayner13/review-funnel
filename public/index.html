@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>How was your experience?</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/funnel.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+</head>
+<body id="funnelBody">
+
+<div class="funnel-wrap">
+  <span id="businessTitle"></span>
+
+  <div class="funnel-card">
+    <button class="funnel-back" id="backBtn" onclick="goBack()">← Back</button>
+    
+    <img id="funnelLogo" class="funnel-logo" style="display:none;" alt="Logo">
+    
+    <div id="mainQuestion">
+      <h2 id="mainHeadline">How was your experience?</h2>
+      <p>Tap a star to get started</p>
+      <div id="starRating">
+        <span data-star="1">⭐</span>
+        <span data-star="2">⭐</span>
+        <span data-star="3">⭐</span>
+        <span data-star="4">⭐</span>
+        <span data-star="5">⭐</span>
+      </div>
+    </div>
+
+    <div id="reviewSection" style="display:none">
+      <div style="font-size:2.4rem;margin-bottom:8px;">🌟</div>
+      <h2>Thanks! Here's how to share it on Google</h2>
+
+      <div id="suggestionLoading" style="text-align:center;padding:24px;">
+        <p style="opacity:0.7;">Writing your review...</p>
+      </div>
+
+      <div id="copyGoSection" style="display:none; animation:fadeIn 0.4s ease;">
+        <div style="margin-bottom:16px;">
+          <p style="font-size:0.78rem; opacity:0.6; margin-bottom:8px;">
+            Here's a review you could leave — edit it if you like:
+          </p>
+          <textarea id="suggestionText" rows="4"
+            style="width:100%; padding:14px; border-radius:12px; font-size:0.9rem; line-height:1.6; resize:none; font-family:inherit;"></textarea>
+        </div>
+
+        <button id="copyGoBtn" onclick="copyAndOpenGoogle()"
+          style="width:100%; padding:16px; font-size:1rem; font-weight:700; border-radius:40px; cursor:pointer; margin-bottom:10px;">
+          Copy &amp; open Google ↗
+        </button>
+
+        <p style="font-size:0.75rem; opacity:0.5; margin-bottom:16px;">
+          Paste it into Google and hit post — takes 10 seconds
+        </p>
+
+        <button onclick="openGoogleDirectly()"
+          style="background:transparent; border:none; font-size:0.8rem; opacity:0.5; cursor:pointer; text-decoration:underline; display:block; margin:0 auto 16px;">
+          Write my own instead →
+        </button>
+
+        <div id="voiceSection" style="border-top:1px solid; padding-top:16px; opacity:0.6;">
+          <p style="font-size:0.78rem; margin-bottom:8px;">
+            🎤 Or speak your review (30 seconds)
+          </p>
+          <button onclick="startRecording()" id="voiceRecordBtn"
+            style="padding:10px 20px; border-radius:20px; font-size:0.8rem; cursor:pointer;">
+            Start recording
+          </button>
+          <span id="recordingTimer" style="display:none; font-size:0.8rem; margin-left:10px;">0:00</span>
+          <div id="voiceResult" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <div id="reviewFallback" style="display:none;">
+        <div class="review-prompt">
+          <p>We'd love it if you shared your experience online — it only takes a moment.</p>
+          <button id="leaveReviewBtn" onclick="leaveReview()">Leave a Review →</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviewSectionLapsed" style="display:none">
+      <div style="font-size:2.4rem;margin-bottom:12px;">🌟</div>
+      <h2>Thank you!</h2>
+      <p style="opacity:0.7;margin-bottom:20px;">We're redirecting you to leave a review...</p>
+      <div class="countdown-wrap">
+        <div class="countdown-ring-wrap">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <circle class="countdown-circle-bg" cx="32" cy="32" r="28"/>
+            <circle class="countdown-circle" id="countdownRing" cx="32" cy="32" r="28" stroke-dasharray="175.9" stroke-dashoffset="0"/>
+          </svg>
+          <div class="countdown-number" id="countdownNum">8</div>
+        </div>
+        <p class="countdown-label">Redirecting in <span id="countdownSec">8</span> seconds<br><span style="font-size:0.72rem;">Powered by <a href="/" style="text-decoration:none;">ReviewLift</a></span></p>
+      </div>
+    </div>
+
+    <div id="feedbackBox" style="display:none">
+      <div style="font-size:2.4rem;margin-bottom:12px;">💬</div>
+      <h2>We're sorry to hear that</h2>
+      <p style="opacity:0.7;">Your feedback is private — only the business sees it.</p>
+      <textarea id="message" placeholder="What could we have done better?"></textarea>
+      <button id="sendFeedbackBtn" onclick="sendFeedback()">Send Feedback</button>
+    </div>
+
+    <div id="feedbackBoxLapsed" style="display:none">
+      <div style="font-size:2.4rem;margin-bottom:12px;">💬</div>
+      <h2>We're sorry to hear that</h2>
+      <div class="feedback-unavailable"><p>Private feedback is temporarily unavailable. Please contact the business directly.</p></div>
+    </div>
+
+  </div>
+  <p class="powered-by"><a href="/admin?ref=${slug}">Powered by ReviewLift</a></p>
+</div>
+
+<script src="/js/funnel.js"></script>
+</body>
+</html>
