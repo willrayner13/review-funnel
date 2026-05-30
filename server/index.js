@@ -61,12 +61,7 @@ app.use(
   })
 );
 
-// ─── DIRECT ROUTE HANDLERS (must come BEFORE route mounting) ───────────────────
-// These ensure the root path works even if htmlRoutes has issues
-app.get("/", (req, res) => {
-  const landingPath = path.join(__dirname, "../public", "landing.html");
-  res.sendFile(landingPath);
-});
+
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

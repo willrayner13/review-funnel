@@ -4,21 +4,24 @@ const { HTML_PAGES } = require("../utils/constants");
 
 const router = express.Router();
 
-// Root route - MUST be explicitly defined
+// Root route - FIXED: use __dirname for absolute path
 router.get("/", (req, res) => {
-  res.sendFile(path.resolve("public", "landing.html"));
+  const landingPath = path.join(__dirname, "../../public", "landing.html");
+  res.sendFile(landingPath);
 });
 
 // Static HTML pages
 HTML_PAGES.forEach((page) => {
   router.get(`/${page}`, (req, res) => {
-    res.sendFile(path.resolve("public", `${page}.html`));
+    const filePath = path.join(__dirname, "../../public", `${page}.html`);
+    res.sendFile(filePath);
   });
 });
 
 // Demo route
 router.get("/demo/:slug", (req, res) => {
-  res.sendFile(path.resolve("public", "demo.html"));
+  const demoPath = path.join(__dirname, "../../public", "demo.html");
+  res.sendFile(demoPath);
 });
 
 // Dynamic blog posts
