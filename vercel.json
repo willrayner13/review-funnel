@@ -1,6 +1,13 @@
 {
+  "builds": [
+    { "src": "server/index.js", "use": "@vercel/node" }
+  ],
   "routes": [
-    { "src": "/(.*)", "dest": "/server/index.js" }
+    { "src": "/css/(.*)", "dest": "/public/css/$1" },
+    { "src": "/js/(.*)", "dest": "/public/js/$1" },
+    { "src": "/images/(.*)", "dest": "/public/images/$1" },
+    { "src": "/(.*)\\.(png|jpg|jpeg|gif|svg|ico|webmanifest|txt|xml)", "dest": "/public/$1.$2" },
+    { "src": "/(.*)", "dest": "server/index.js" }
   ],
   "crons": [
     { "path": "/cron/reputation-scores", "schedule": "0 8 1 * *" },

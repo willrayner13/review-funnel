@@ -42,8 +42,7 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "../public"), { index: false }));
-
+app.use(express.static(path.join(__dirname, "../public")));
 // Session store
 app.use(
   session({
