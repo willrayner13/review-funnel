@@ -42,7 +42,19 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(cors());
 app.use(bodyParser.json());
-// Serve static files from public directory
+
+app.get("/debug-check", (req, res) => {
+  const fs = require('fs');
+  const cssPath = path.join(__dirname, "../public/css/about.css");
+  const jsPath = path.join(__dirname, "../public/js/about.js");
+  res.json({
+    cssExists: fs.existsSync(cssPath),
+    jsExists: fs.existsSync(jsPath),
+    cssPath: cssPath,
+    jsPath: jsPath
+  });
+});
+
 app.use("/css", express.static(path.join(__dirname, "../public/css")));
 app.use("/js", express.static(path.join(__dirname, "../public/js")));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
