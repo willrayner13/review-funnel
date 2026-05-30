@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/global.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -18,7 +19,6 @@
 </head>
 <body>
   <div class="app">
-
     <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-header">
@@ -75,7 +75,7 @@
 
       <div id="navProgressBar"></div>
 
-      <!-- HIDDEN ELEMENTS -->
+      <!-- Hidden elements -->
       <input type="hidden" id="reviewLink">
       <input type="hidden" id="embedCode">
 
@@ -119,91 +119,15 @@
           </div>
           <canvas id="ratingChart" style="display: none;"></canvas>
         </div>
-
-        <div id="agencyOverview" style="display:none;">
-          <div style="background:linear-gradient(135deg,var(--surface) 0%,rgba(139,92,246,0.05) 100%); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px 32px; margin-bottom:24px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px;">
-            <div>
-              <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:rgba(139,92,246,0.7); margin-bottom:6px; font-weight:600;">Monthly commission</div>
-              <div style="font-family:'Syne',sans-serif; font-size:2.8rem; font-weight:800; color:var(--accent); line-height:1;" id="agencyCommission">£0.00</div>
-              <div style="font-size:0.75rem; color:var(--cream-dim); margin-top:6px;" id="agencyPayoutDate">Next payout: 1st of next month</div>
-            </div>
-            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
-              <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
-                <div style="font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--cream);" id="agencyTotalClients">0</div>
-                <div style="font-size:0.65rem; color:var(--cream-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">Total clients</div>
-              </div>
-              <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
-                <div style="font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--success);" id="agencyPayingClients">0</div>
-                <div style="font-size:0.65rem; color:var(--cream-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">Paying</div>
-              </div>
-              <div style="background:var(--surface-2); border-radius:10px; padding:14px; text-align:center;">
-                <div style="font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--accent);" id="agencyTrialClients">0</div>
-                <div style="font-size:0.65rem; color:var(--cream-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">On trial</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:24px;">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
-              <span style="font-weight:600; font-family:'Syne',sans-serif;">Client accounts</span>
-              <button onclick="openAddClientModal()" style="background:rgba(139,92,246,0.15); color:#A78BFA; border:1px solid rgba(139,92,246,0.3); border-radius:8px; padding:7px 16px; font-size:0.8rem; cursor:pointer; font-weight:600;">+ Add client</button>
-            </div>
-            <div id="agencyClientsList"></div>
-          </div>
-
-          <div style="background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.2); border-radius:var(--radius); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
-            <div>
-              <div style="font-size:0.85rem; font-weight:600; margin-bottom:4px;">White-label settings</div>
-              <div style="font-size:0.75rem; color:var(--cream-dim);" id="whitelabelStatus">Not configured — clients see ReviewLift branding</div>
-            </div>
-            <button onclick="navigateTo('settings')" style="background:rgba(139,92,246,0.15); color:#A78BFA; border:1px solid rgba(139,92,246,0.3); border-radius:8px; padding:8px 16px; font-size:0.8rem; cursor:pointer;">Configure →</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- REPORTS SECTION (Agency only) -->
-      <div id="reportsSection" class="content-section">
-        <h2 style="margin-bottom: 20px;">Monthly Reports</h2>
-        <p style="color:var(--cream-dim);margin-bottom:28px;">Download client-ready PDF reports with your branding.</p>
-        <div class="panel">
-          <h3>📄 Generate Report</h3>
-          <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Generate a full reputation report for your agency or for individual clients.</p>
-          <div style="margin-bottom:20px;">
-            <label style="display:block; margin-bottom:8px; font-size:0.8rem;">Report type</label>
-            <select id="reportType" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; color:var(--cream);">
-              <option value="agency">My Agency Report (overview of all clients)</option>
-              <option value="client">Individual Client Report</option>
-            </select>
-          </div>
-          <div id="clientSelectWrapper" style="display:none; margin-bottom:20px;">
-            <label style="display:block; margin-bottom:8px; font-size:0.8rem;">Select client</label>
-            <select id="clientSelect" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; color:var(--cream);">
-              <option value="">Loading clients...</option>
-            </select>
-          </div>
-          <button onclick="downloadReport()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Download PDF Report →</button>
-        </div>
-        <div class="panel">
-          <h3>📁 Previous Reports</h3>
-          <div id="previousReportsList">
-            <p style="color:var(--cream-dim);font-size:0.85rem;">Generate your first report to see history here.</p>
-          </div>
-        </div>
       </div>
 
       <!-- FUNNEL STUDIO SECTION -->
       <div id="funnelStudioSection" class="content-section">
         <div class="fs-container">
           <div class="fs-header">
-            <div>
-              <h2>🎨 Funnel Studio</h2>
-              <p>Design every step of your customer's review journey</p>
-            </div>
-            <div class="fs-status-badge">
-              <span class="fs-status-dot"></span> Live & collecting reviews
-            </div>
+            <div><h2>🎨 Funnel Studio</h2><p>Design every step of your customer's review journey</p></div>
+            <div class="fs-status-badge"><span class="fs-status-dot"></span> Live & collecting reviews</div>
           </div>
-
           <div class="fs-workspace">
             <div class="fs-flow-builder">
               <div class="fs-flow-title"><i class="ti ti-route"></i> Customer Flow</div>
@@ -447,7 +371,7 @@
         <div id="competitorLocked" class="pro-lock-panel" style="display:none"><i class="ti ti-lock" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i><h4>Competitor Analysis</h4><p>Upgrade to Agency to analyse competitors.</p><a href="/billing" style="color:var(--accent);">Upgrade →</a></div>
       </div>
 
-      <!-- AUTOMATIONS & INTEGRATIONS SECTION -->
+      <!-- AUTOMATIONS SECTION -->
       <div id="automationsSection" class="content-section">
         <div style="text-align:center; margin-bottom:40px;">
           <div style="display:inline-flex; align-items:center; gap:8px; background:var(--accent-dim); border-radius:100px; padding:6px 16px; margin-bottom:20px;"><i class="ti ti-zap" style="color:var(--accent); font-size:0.9rem;"></i><span style="font-size:0.7rem; font-weight:600; color:var(--accent);">AUTOMATION</span></div>
@@ -529,7 +453,6 @@
         <p style="color:var(--cream-dim);margin-bottom:28px;">Track your reputation growth over time.</p>
         <div class="panel"><h3>⭐ Rating Distribution</h3><canvas id="ratingChartAnalytics" style="width:100%;max-height:300px;"></canvas></div>
         <div class="panel" id="proAnalyticsPreview" style="display:none;"><h3>📈 Review Growth</h3><canvas id="growthChart" style="width:100%;max-height:200px;"></canvas></div>
-        <div id="reputationHeatmap" style="display:none;" class="panel"><h3>🔥 Reputation Heatmap</h3><p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:16px;">Review sentiment by day and time</p><div id="heatmapContainer" style="display:grid; grid-template-columns:repeat(7,1fr); gap:8px;"></div></div>
         <div id="analyticsUpgradePrompt" style="display:block;" class="pro-lock-panel"><i class="ti ti-chart-line" style="font-size:2rem;color:var(--accent);margin-bottom:10px;display:block;"></i><h4>Advanced Analytics</h4><p>Upgrade to Pro for detailed growth charts, conversion tracking, and exportable reports.</p><a href="/billing" style="color:var(--accent);">Upgrade →</a></div>
       </div>
 
@@ -549,7 +472,6 @@
           <input id="confirmPw" type="password" placeholder="Confirm new password" style="width:100%; margin-bottom:12px; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; color:var(--cream);">
           <button onclick="changePassword()" class="btn-full" style="background:var(--accent); color:#1A1A18;">Update password</button>
         </div>
-
         <div class="panel" id="alertSettingsPanel" style="overflow:hidden;">
           <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
             <div>
@@ -587,7 +509,7 @@
       <div id="agencyClientsSection" class="panel" style="display:none;">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
           <div><h3 style="margin:0;">👥 Client Management</h3><p style="font-size:0.85rem; color:var(--cream-dim); margin:4px 0 0;">Manage your client accounts and resell ReviewLift under your brand</p></div>
-          <button onclick="openCreateClientModal()" class="btn-full" style="width:auto; padding:10px 20px; background:var(--accent); color:#1A1A18;">+ Add New Client</button>
+          <button onclick="openAddClientModal()" class="btn-full" style="width:auto; padding:10px 20px; background:var(--accent); color:#1A1A18;">+ Add New Client</button>
         </div>
         <div id="agencyUsageStats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px;">
           <div style="background:var(--surface-2); border-radius:12px; padding:16px; text-align:center;"><div style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="clientCount">0</div><div style="font-size:0.7rem; color:var(--cream-dim);">Total Clients</div></div>
@@ -597,7 +519,7 @@
         <div style="overflow-x:auto;">
           <table style="width:100%; border-collapse:collapse;">
             <thead><tr style="border-bottom:1px solid var(--border);"><th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Business</th><th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Plan</th><th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Reviews (30d)</th><th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Conv. Rate</th><th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Status</th><th style="text-align:left; padding:12px 8px; font-size:0.7rem; color:var(--cream-dim);">Actions</th></tr></thead>
-            <tbody id="clientsTableBody"><tr><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">Loading clients...</td></tr></tbody>
+            <tbody id="clientsTableBody"><table><td colspan="6" style="text-align:center; padding:40px; color:var(--cream-dim);">Loading clients...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -647,26 +569,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <div class="modal-overlay" id="bankDetailsModal" onclick="closeBankModalOnOverlay(event)">
-    <div class="modal-box">
-      <button class="modal-close" onclick="closeBankModal()">✕</button>
-      <h3>💳 Bank Details for Payouts</h3>
-      <p>We'll use these details to send your monthly commissions.</p>
-      <div class="form-group"><label>Full name</label><input id="bankFullName" type="text"></div>
-      <div class="form-group"><label>Sort code</label><input id="bankSortCode" type="text" placeholder="12-34-56"></div>
-      <div class="form-group"><label>Account number</label><input id="bankAccountNumber" type="text"></div>
-      <button onclick="submitBankDetails()" class="btn-full">Submit →</button>
-      <div id="bankMsg" style="margin-top:12px;"></div>
-    </div>
-  </div>
-
-  <div id="clientSelectWrapper" style="display:none; margin-bottom:20px;">
-    <label style="display:block; margin-bottom:8px; font-size:0.8rem;">Select client</label>
-    <select id="clientSelect" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; color:var(--cream);">
-      <option value="">Loading clients...</option>
-    </select>
-  </div>
-
   <!-- FAB -->
   <div id="fab" style="position:fixed; bottom:32px; right:32px; z-index:1000;">
     <button id="fabMain" style="width:56px; height:56px; border-radius:28px; background:var(--accent); border:none; cursor:pointer; box-shadow:0 8px 24px rgba(200,169,110,0.3);"><i class="ti ti-plus" style="font-size:1.8rem; color:#1A1A18;"></i></button>
@@ -696,6 +598,24 @@
     }
   </style>
 
-  <script src="/js/dashboard.js"></script>
+  <!-- Scripts - Load in order -->
+  <script type="module" src="/js/shared/utils.js"></script>
+  <script type="module" src="/js/shared/modal.js"></script>
+  <script type="module" src="/js/shared/api.js"></script>
+  <script type="module" src="/js/dashboard/navigation.js"></script>
+  <script type="module" src="/js/dashboard/stats.js"></script>
+  <script type="module" src="/js/dashboard/features.js"></script>
+  <script type="module" src="/js/dashboard/reputation.js"></script>
+  <script type="module" src="/js/dashboard/alerts.js"></script>
+  <script type="module" src="/js/dashboard/campaigns.js"></script>
+  <script type="module" src="/js/dashboard/ai-lab.js"></script>
+  <script type="module" src="/js/dashboard/assets.js"></script>
+  <script type="module" src="/js/dashboard/agency.js"></script>
+  <script type="module" src="/js/dashboard/funnel-settings.js"></script>
+  <script type="module" src="/js/dashboard/main.js"></script>
+  
+  <!-- Non-module scripts -->
+  <script src="/js/funnel-studio.js"></script>
+  <script src="/js/automations.js"></script>
 </body>
 </html>

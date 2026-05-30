@@ -1,0 +1,39 @@
+/* cancel.html styles */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.container {
+  max-width: 440px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-bottom: 8px;
+}
+
+p {
+  color: var(--cream-dim);
+  margin-bottom: 28px;
+}
+
+.btn-row {
+  justify-content: center;
+}
+
+/* Laptop adjustments */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  html, body { font-size: 14px; }
+  .container, .dashboard-container { max-width: 100%; overflow-x: hidden; }
+  * { max-width: 100%; }
+}

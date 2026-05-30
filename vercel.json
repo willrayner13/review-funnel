@@ -1,15 +1,7 @@
 {
-  "routes": [
-    { "src": "/(.*)", "dest": "/api/index.js" }
-  ],
+  "routes": [{ "src": "/(.*)", "dest": "/server/index.js" }],
   "crons": [
-    {
-      "path": "/cron/reputation-scores",
-      "schedule": "0 8 1 * *"
-    },
-    {
-      "path": "/cron/mark-conversions",
-      "schedule": "0 8 * * *"
-    }
+    { "path": "/cron/reputation-scores", "schedule": "0 8 1 * *" },
+    { "path": "/cron/mark-conversions", "schedule": "0 8 * * *" }
   ]
 }

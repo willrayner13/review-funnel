@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Subscription Expired — ReviewLift</title>
+  <meta name="description" content="Your ReviewLift subscription has expired. Reactivate to continue collecting reviews and capturing private feedback.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/css/lapsed.css">
+</head>
+<body>
+
+<nav>
+  <a href="/"><div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div></a>
+  <button class="back-btn" onclick="history.back()">← Back</button>
+</nav>
+
+<div class="page-wrap">
+  <div class="lapsed-header">
+    <span class="lapsed-icon warning">⚠️</span>
+    <h1>Your subscription has expired</h1>
+    <p class="lapsed-sub">Your review funnel is paused, but your data is safe.</p>
+  </div>
+
+  <!-- Stats Grid - FOMO Wall -->
+  <div id="statsGrid" class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">—</div>
+      <div class="stat-label">Loading stats...</div>
+    </div>
+  </div>
+
+  <div class="message-box">
+    <p><strong>What happens now?</strong></p>
+    <p>Your review funnel is no longer active. Customers who try to use your QR code or review link will see a message that the service is unavailable.</p>
+    <p><strong>But your data is preserved.</strong> If you reactivate within 30 days, all your stats, feedback, and settings will be restored exactly as they were.</p>
+  </div>
+
+  <div class="cta-buttons">
+    <button class="btn-primary" onclick="goToBilling()">Reactivate subscription →</button>
+    <button class="btn-secondary" onclick="goToLogin()">Sign in to another account</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="contact-link">
+    <p>Questions? Email us at <a href="mailto:billy@reviewlift.app">billy@reviewlift.app</a> and we'll help you out.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/about">About</a>
+    <a href="/login">Sign in</a>
+    <a href="/admin">Sign up</a>
+  </div>
+  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
+</footer>
+
+<script src="/js/lapsed.js"></script>
+</body>
+</html>

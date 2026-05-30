@@ -8,163 +8,14 @@
   <link rel="canonical" href="https://www.reviewlift.app/demo">
   <title>ReviewLift Demo</title>
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/demo.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <style>
-    body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
-
-    .demo-banner {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: var(--accent);
-      color: #1A1A18;
-      text-align: center;
-      padding: 10px 20px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.8rem; font-weight: 600;
-      display: flex; align-items: center; justify-content: center; gap: 16px;
-    }
-    .demo-banner a {
-      background: #1A1A18; color: var(--accent);
-      padding: 5px 14px; border-radius: 6px; font-size: 0.75rem;
-      font-weight: 700; transition: opacity 0.2s; white-space: nowrap;
-    }
-    .demo-banner a:hover { opacity: 0.85; }
-
-    .funnel-wrap { width: 100%; max-width: 480px; margin-top: 52px; }
-
-    #businessTitle {
-      font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 600;
-      color: var(--accent); margin-bottom: 6px;
-      display: block; text-align: center;
-    }
-
-    .funnel-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 44px 40px;
-      box-shadow: var(--shadow-lg);
-      position: relative; overflow: hidden;
-      text-align: center;
-    }
-    .funnel-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(234,231,220,0.18), transparent);
-    }
-
-    #starRating { display: flex; gap: 12px; justify-content: center; margin: 24px 0; cursor: pointer; }
-    #starRating span { font-size: 44px; filter: grayscale(1) brightness(0.5); transition: all 0.15s; display: inline-block; }
-
-    /* Positive outcome */
-    #reviewSection .review-prompt {
-      background: rgba(106,158,127,0.08); border: 1px solid rgba(106,158,127,0.25);
-      border-radius: var(--radius); padding: 24px; margin: 20px 0;
-    }
-    #reviewSection .review-prompt p { color: #8EC9A8; font-size: 0.95rem; margin-bottom: 16px; }
-
-    /* Negative outcome */
-    #feedbackBox textarea { margin: 18px 0 14px; min-height: 110px; }
-
-    /* Demo upsell shown after interaction */
-    .demo-cta-card {
-      margin-top: 24px;
-      background: linear-gradient(135deg, var(--surface-2), rgba(200,169,110,0.06));
-      border: 1px solid rgba(200,169,110,0.3);
-      border-radius: var(--radius);
-      padding: 24px;
-      text-align: center;
-    }
-    .demo-cta-card p { font-size: 0.85rem; color: var(--cream-dim); margin-bottom: 16px; }
-    .demo-cta-card .cta-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--cream); margin-bottom: 6px; }
-    .demo-cta-card a {
-      display: inline-block;
-      background: var(--accent); color: #1A1A18;
-      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.9rem;
-      padding: 12px 28px; border-radius: 8px; transition: all 0.2s;
-    }
-    .demo-cta-card a:hover { background: #D4B87A; transform: translateY(-1px); }
-
-    .powered-by { text-align: center; margin-top: 24px; font-size: 0.72rem; color: rgba(234,231,220,0.22); }
-    .powered-by a:hover { color: var(--accent); }
-
-    /* Base laptop adjustments */
-@media (min-width: 1024px) and (max-width: 1366px) {
-  html, body {
-    font-size: 14px;
-  }
-  
-  .container, .dashboard-container {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  
-  * {
-    max-width: 100%;
-  }
-}
-
-    /* Mobile‑friendly demo banner */
-    @media (max-width: 600px) {
-      body {
-        padding-top: 70px !important;
-      }
-
-      .demo-banner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background: var(--accent);
-        color: #1A1A18;
-        padding: 10px 16px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        text-align: center;
-        line-height: 1.4;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      }
-
-      .demo-banner span {
-        flex: 1 1 100%;
-        max-width: 280px;
-      }
-
-      .demo-banner a {
-        background: #1A1A18;
-        color: var(--accent);
-        padding: 8px 16px;
-        border-radius: 40px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        white-space: nowrap;
-        text-decoration: none;
-        display: inline-block;
-      }
-
-      .funnel-wrap {
-        margin-top: 20px;
-      }
-
-      .funnel-card {
-        padding: 32px 20px;
-      }
-
-      #starRating { gap: 8px; }
-      #starRating span { font-size: 36px; }
-    }
-  </style>
 </head>
 <body>
 
-<!-- Demo banner at top -->
 <div class="demo-banner">
   <span>👆 This is a live demo — this is what your customers would see</span>
   <a href="/admin">Get this for my business →</a>
@@ -174,8 +25,6 @@
   <span id="businessTitle"></span>
 
   <div class="funnel-card">
-
-    <!-- Step 1: Star Rating -->
     <div id="mainQuestion">
       <h2>How was your experience?</h2>
       <p style="color:var(--cream-dim);font-size:0.85rem;margin-top:-8px;">Tap a star to get started</p>
@@ -188,62 +37,35 @@
       </div>
     </div>
 
-   <div id="reviewSection" style="display:none">
-  <div style="font-size:2.4rem;margin-bottom:8px;">🌟</div>
-  <h2>Thanks! Here's how to share it on Google</h2>
-
-  <!-- Loading state -->
-  <div id="suggestionLoading" style="text-align:center;padding:24px;">
-    <p style="opacity:0.7;">Writing your review...</p>
-  </div>
-
-  <!-- Suggestion ready -->
-  <div id="copyGoSection" style="display:none; animation:fadeIn 0.4s ease;">
-    <div style="margin-bottom:16px;">
-      <p style="font-size:0.78rem; opacity:0.6; margin-bottom:8px;">
-        Here's a review you could leave — edit it if you like:
-      </p>
-      <textarea id="suggestionText" rows="4"
-        style="width:100%; padding:14px; border-radius:12px; font-size:0.9rem; line-height:1.6; resize:none; font-family:inherit;"></textarea>
+    <div id="reviewSection" style="display:none">
+      <div style="font-size:2.4rem;margin-bottom:8px;">🌟</div>
+      <h2>Thanks! Here's how to share it on Google</h2>
+      <div id="suggestionLoading" style="text-align:center;padding:24px;">
+        <p style="opacity:0.7;">Writing your review...</p>
+      </div>
+      <div id="copyGoSection" style="display:none; animation:fadeIn 0.4s ease;">
+        <div style="margin-bottom:16px;">
+          <p style="font-size:0.78rem; opacity:0.6; margin-bottom:8px;">Here's a review you could leave — edit it if you like:</p>
+          <textarea id="suggestionText" rows="4" style="width:100%; padding:14px; border-radius:12px; font-size:0.9rem; line-height:1.6; resize:none; font-family:inherit;"></textarea>
+        </div>
+        <button id="copyGoBtn" onclick="copyAndOpenGoogle()" style="width:100%; padding:16px; font-size:1rem; font-weight:700; border-radius:40px; cursor:pointer; margin-bottom:10px;">Copy &amp; open Google ↗</button>
+        <p style="font-size:0.75rem; opacity:0.5; margin-bottom:16px;">Paste it into Google and hit post — takes 10 seconds</p>
+        <button onclick="openGoogleDirectly()" style="background:transparent; border:none; font-size:0.8rem; opacity:0.5; cursor:pointer; text-decoration:underline; display:block; margin:0 auto 16px;">Write my own instead →</button>
+        <div id="voiceSection" style="border-top:1px solid; padding-top:16px; opacity:0.6;">
+          <p style="font-size:0.78rem; margin-bottom:8px;">🎤 Or speak your review (30 seconds)</p>
+          <button onclick="startRecording()" id="voiceRecordBtn" style="padding:10px 20px; border-radius:20px; font-size:0.8rem; cursor:pointer;">Start recording</button>
+          <span id="recordingTimer" style="display:none; font-size:0.8rem; margin-left:10px;">0:00</span>
+          <div id="voiceResult" style="margin-top:12px;"></div>
+        </div>
+      </div>
+      <div id="reviewFallback" style="display:none;">
+        <div class="review-prompt">
+          <p>We'd love it if you shared your experience online — it only takes a moment.</p>
+          <button id="leaveReviewBtn" onclick="leaveReview()">Leave a Review →</button>
+        </div>
+      </div>
     </div>
 
-    <button id="copyGoBtn" onclick="copyAndOpenGoogle()"
-      style="width:100%; padding:16px; font-size:1rem; font-weight:700; border-radius:40px; cursor:pointer; margin-bottom:10px;">
-      Copy &amp; open Google ↗
-    </button>
-
-    <p style="font-size:0.75rem; opacity:0.5; margin-bottom:16px;">
-      Paste it into Google and hit post — takes 10 seconds
-    </p>
-
-    <button onclick="openGoogleDirectly()"
-      style="background:transparent; border:none; font-size:0.8rem; opacity:0.5; cursor:pointer; text-decoration:underline; display:block; margin:0 auto 16px;">
-      Write my own instead →
-    </button>
-
-    <div id="voiceSection" style="border-top:1px solid; padding-top:16px; opacity:0.6;">
-      <p style="font-size:0.78rem; margin-bottom:8px;">
-        🎤 Or speak your review (30 seconds)
-      </p>
-      <button onclick="startRecording()" id="voiceRecordBtn"
-        style="padding:10px 20px; border-radius:20px; font-size:0.8rem; cursor:pointer;">
-        Start recording
-      </button>
-      <span id="recordingTimer" style="display:none; font-size:0.8rem; margin-left:10px;">0:00</span>
-      <div id="voiceResult" style="margin-top:12px;"></div>
-    </div>
-  </div>
-
-  <!-- Fallback: shown if suggestion fails / times out -->
-  <div id="reviewFallback" style="display:none;">
-    <div class="review-prompt">
-      <p>We'd love it if you shared your experience online — it only takes a moment.</p>
-      <button id="leaveReviewBtn" onclick="leaveReview()">Leave a Review →</button>
-    </div>
-  </div>
-</div>
-
-    <!-- Step 3: Negative feedback -->
     <div id="feedbackBox" style="display:none">
       <div style="font-size:2.5rem;margin-bottom:12px;">💬</div>
       <h2>We're sorry to hear that</h2>
@@ -251,10 +73,8 @@
       <textarea id="message" placeholder="What could we have done better?"></textarea>
       <button class="btn-full" onclick="sendFeedbackDemo()">Send Feedback</button>
     </div>
-
   </div>
 
-  <!-- Demo CTA — shown after any interaction -->
   <div class="demo-cta-card" id="demoCta" style="display:none">
     <div class="cta-title">Want this for your business?</div>
     <p>Set up your own review funnel in under 2 minutes. Collect more 5-star reviews and keep complaints private.</p>
@@ -264,123 +84,6 @@
   <p class="powered-by"><a href="/admin?ref=${slug}">Powered by ReviewLift</a></p>
 </div>
 
-<script>
-  // Read business name from URL
-  const params = new URLSearchParams(window.location.search);
-  const bizName = params.get('name') || 'Your Business';
-  document.getElementById('businessTitle').innerText = bizName;
-  document.title = bizName + ' — Review';
-
-  // ========== STAR RATING ==========
-  (function initStars() {
-    const stars = document.querySelectorAll('#starRating span');
-    stars.forEach(star => {
-      star.addEventListener('mouseover', () => {
-        const val = parseInt(star.dataset.star);
-        stars.forEach(s => {
-          const sVal = parseInt(s.dataset.star);
-          s.style.filter = sVal <= val ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
-          s.style.transform = sVal <= val ? 'scale(1.15)' : 'scale(1)';
-        });
-      });
-      star.addEventListener('mouseout', () => {
-        stars.forEach(s => {
-          s.style.filter = 'grayscale(1) brightness(0.5)';
-          s.style.transform = 'scale(1)';
-        });
-      });
-      star.addEventListener('click', () => {
-        const rating = parseInt(star.dataset.star);
-        // Freeze stars at selected rating
-        stars.forEach(s => {
-          const sVal = parseInt(s.dataset.star);
-          s.style.filter = sVal <= rating ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
-          s.style.transform = sVal <= rating ? 'scale(1.15)' : 'scale(1)';
-          s.style.pointerEvents = 'none';
-        });
-        
-        document.getElementById("mainQuestion").style.display = "none";
-        
-        if (rating >= 4) {
-          document.getElementById("reviewSection").style.display = "block";
-        } else {
-          document.getElementById("feedbackBox").style.display = "block";
-        }
-      });
-    });
-  })();
-
-  function showDemoCta(){
-    document.getElementById("reviewSection").innerHTML = `
-      <div style="font-size:2.5rem;margin-bottom:12px;">✅</div>
-      <h2>In your live funnel...</h2>
-      <p style="color:var(--cream-dim);margin-top:8px;">Your customer would now be redirected to your review page — Google, Trustpilot, Checkatrade, or wherever you choose.</p>
-    `;
-    document.getElementById("demoCta").style.display = "block";
-  }
-
-  function sendFeedbackDemo(){
-    document.getElementById("feedbackBox").innerHTML = `
-      <div style="font-size:2.5rem;margin-bottom:12px;">🔒</div>
-      <h2>Feedback captured privately</h2>
-      <p style="color:var(--cream-dim);margin-top:8px;">In your live funnel, this message would appear only in your dashboard — never on Google.</p>
-    `;
-    document.getElementById("demoCta").style.display = "block";
-  }
-
-  // ========== DEMO VOICE NOTE (simulated) ==========
-  let demoMediaRecorder;
-  let demoAudioChunks = [];
-  let demoRecordingTimer;
-  let demoSeconds = 0;
-
-  async function startDemoRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      demoMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-      demoAudioChunks = [];
-      
-      demoMediaRecorder.ondataavailable = e => {
-        if (e.data.size > 0) demoAudioChunks.push(e.data);
-      };
-      
-      demoMediaRecorder.onstop = () => {
-        stream.getTracks().forEach(t => t.stop());
-        document.getElementById("voiceResult").innerHTML = `
-          <div style="background:rgba(106,158,127,0.08);border:1px solid rgba(106,158,127,0.2);border-radius:8px;padding:14px;margin-bottom:12px;">
-            <p style="color:#8EC9A8;font-size:0.85rem;margin-bottom:8px;">✅ In the live version, your voice note would be transcribed and analysed by AI — positive feedback goes to Google, negative stays private.</p>
-          </div>`;
-        document.getElementById("recordBtn").style.display = "none";
-      };
-      
-      demoMediaRecorder.start();
-      document.getElementById("recordBtn").textContent = "⏹ Stop recording";
-      document.getElementById("recordBtn").onclick = stopDemoRecording;
-      document.getElementById("recordingTimer").style.display = "inline";
-      
-      demoSeconds = 0;
-      demoRecordingTimer = setInterval(() => {
-        demoSeconds++;
-        const mins = Math.floor(demoSeconds / 60);
-        const secs = demoSeconds % 60;
-        document.getElementById("recordingTimer").textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
-        if (demoSeconds >= 30) stopDemoRecording();
-      }, 1000);
-      
-    } catch(e) {
-      document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed. Please allow it and try again.</p>';
-    }
-  }
-
-  function stopDemoRecording() {
-    if (demoMediaRecorder && demoMediaRecorder.state === "recording") {
-      demoMediaRecorder.stop();
-      clearInterval(demoRecordingTimer);
-      document.getElementById("recordBtn").textContent = "Processing...";
-      document.getElementById("recordBtn").disabled = true;
-      document.getElementById("recordingTimer").style.display = "none";
-    }
-  }
-</script>
+<script src="/js/demo.js"></script>
 </body>
 </html>

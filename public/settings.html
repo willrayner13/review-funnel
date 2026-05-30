@@ -6,72 +6,11 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Settings — ReviewLift</title>
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/settings.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-  <style>
-    body { min-height: 100vh; padding: 0; background-color: var(--bg); }
-    .topnav { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid var(--border); background: rgba(30,30,28,0.9); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 100; }
-    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 8px; }
-    .nav-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
-    .back-btn { font-size: 0.8rem; color: rgba(234,231,220,0.28); background: transparent; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: color 0.2s; min-height: 0; padding: 0; font-family: 'DM Sans', sans-serif; letter-spacing: 0.2px; }
-    .back-btn:hover { color: rgba(234,231,220,0.55); transform: none; box-shadow: none; }
-
-    .page-body { max-width: 640px; margin: 0 auto; padding: 48px 24px 80px; }
-    .page-eyebrow { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); display: block; margin-bottom: 10px; }
-    .page-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
-    .page-sub { font-size: 0.95rem; color: var(--cream-dim); margin-bottom: 48px; }
-
-    .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 16px; position: relative; overflow: hidden; }
-    .settings-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(234,231,220,0.15), transparent); }
-    .settings-card-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 18px; display: block; }
-    .settings-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
-    .settings-card p { font-size: 0.875rem; color: var(--cream-dim); line-height: 1.65; margin-bottom: 20px; }
-
-    .form-group { margin-bottom: 16px; }
-    .form-group label { font-size: 0.8rem; font-weight: 500; color: var(--cream-dim); display: block; margin-bottom: 6px; }
-    .form-group input { margin-bottom: 0; }
-
-    /* Password toggle wrapper */
-    .pw-wrap { position: relative; }
-    .pw-wrap input { padding-right: 48px; }
-    .pw-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--cream-dim); font-size: 1.1rem; padding: 4px; min-height: 0; transition: color 0.2s; }
-    .pw-toggle:hover { color: var(--cream); transform: translateY(-50%); box-shadow: none; }
-
-    .save-btn { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.9rem; background: var(--accent); color: #1A1A18; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; }
-    .save-btn:hover { background: #D4B87A; transform: translateY(-1px); }
-    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    .msg { font-size: 0.82rem; margin-top: 12px; min-height: 18px; }
-    .msg.success { color: #8EC9A8; }
-    .msg.error { color: #D4897C; }
-
-    .danger-zone { border-color: rgba(192,103,90,0.3); }
-    .danger-zone .settings-card-label { color: #D4897C; }
-    .btn-danger-outline { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.875rem; background: transparent; color: #D4897C; padding: 12px 20px; border-radius: 8px; border: 1px solid rgba(192,103,90,0.3); cursor: pointer; transition: all 0.2s; }
-    .btn-danger-outline:hover { background: rgba(192,103,90,0.08); border-color: var(--danger); transform: none; box-shadow: none; }
-/* Base laptop adjustments */
-@media (min-width: 1024px) and (max-width: 1366px) {
-  html, body {
-    font-size: 14px;
-  }
-  
-  .container, .dashboard-container {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  
-  * {
-    max-width: 100%;
-  }
-}
-    @media (max-width: 600px) {
-      .topnav { padding: 14px 16px; }
-      .page-body { padding: 32px 16px 60px; }
-      .settings-card { padding: 24px 20px; }
-    }
-  </style>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
 </head>
 <body>
 
@@ -100,22 +39,22 @@
     <p class="msg" id="bizMsg"></p>
   </div>
 
-    <!-- White-label settings (Agency only) -->
+  <!-- White-label settings (Agency only) -->
   <div class="settings-card" id="whiteLabelCard" style="display:none;">
     <span class="settings-card-label">White-label branding</span>
     <h3>Customise your client experience</h3>
     <p>Replace ReviewLift branding with your agency name and logo on funnel pages and dashboards.</p>
-   <div class="form-group">
-    <label>Agency display name</label>
-    <input id="agencyNameInput" type="text" placeholder="e.g. Acme Marketing">
-</div>
-<div class="form-group">
-    <label>Agency logo URL</label>
-    <input id="agencyLogoInput" type="url" placeholder="https://your-agency.com/logo.png">
-    <p class="helper-text" style="font-size:0.7rem; margin-top:4px;">Logo will appear on client dashboards and review funnels</p>
-</div>
-<button onclick="saveAgencySettings()" class="btn-full">Save branding</button>
-<div id="agencySettingsMsg" style="margin-top:12px;"></div>
+    <div class="form-group">
+      <label>Agency display name</label>
+      <input id="agencyNameInput" type="text" placeholder="e.g. Acme Marketing">
+    </div>
+    <div class="form-group">
+      <label>Agency logo URL</label>
+      <input id="agencyLogoInput" type="url" placeholder="https://your-agency.com/logo.png">
+      <p class="helper-text" style="font-size:0.7rem; margin-top:4px;">Logo will appear on client dashboards and review funnels</p>
+    </div>
+    <button onclick="saveAgencySettings()" id="saveAgencyBtn" class="btn-full" style="background:var(--accent); color:#1A1A18;">Save branding</button>
+    <div id="agencySettingsMsg" style="margin-top:12px;"></div>
   </div>
 
   <!-- Change password -->
@@ -157,113 +96,6 @@
   </div>
 </div>
 
-<script>
-let slug;
-
-async function init(){
-  const res = await fetch("/session");
-  const data = await res.json();
-  if(!data.loggedIn){ window.location="/login"; return; }
-  slug = data.slug;
-  loadDetails();
-   loadAgencySettings();
-}
-init();
-
-async function loadDetails(){
-  const res = await fetch("/stats/"+slug);
-  if(!res.ok){
-    if(res.status === 401){ window.location="/login"; return; }
-    return;
-  }
-  const stats = await res.json();
-  document.getElementById("bizNameInput").value = stats.business_name || "";
-  document.getElementById("reviewLinkInput").value = stats.review_link || "";
-}
-function togglePw(inputId, btn){
-  const input = document.getElementById(inputId);
-  if(input.type === "password"){
-    input.type = "text";
-    btn.textContent = "🙈";
-  } else {
-    input.type = "password";
-    btn.textContent = "👁";
-  }
-}
-
-async function saveBizDetails(){
-  const btn = document.getElementById("saveBizBtn");
-  const msg = document.getElementById("bizMsg");
-  btn.disabled = true; btn.textContent = "Saving...";
-  const name = document.getElementById("bizNameInput").value.trim();
-  const reviewLink = document.getElementById("reviewLinkInput").value.trim();
-  if(!name){ showMsg("bizMsg", "Business name cannot be empty.", "error"); btn.disabled=false; btn.textContent="Save changes"; return; }
-  try {
-    const res = await fetch("/update-business", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ name, review_link: reviewLink }) });
-    const data = await res.json();
-    if(data.success){ showMsg("bizMsg", "✓ Details saved.", "success"); }
-    else { showMsg("bizMsg", data.error || "Could not save.", "error"); }
-  } catch(e) { showMsg("bizMsg", "Something went wrong.", "error"); }
-  btn.disabled=false; btn.textContent="Save changes";
-}
-
-async function changePassword(){
-  const btn = document.getElementById("savePwBtn");
-  btn.disabled=true; btn.textContent="Updating...";
-  const current = document.getElementById("currentPw").value;
-  const newPw = document.getElementById("newPw").value;
-  const confirm = document.getElementById("confirmPw").value;
-  if(!current || !newPw || !confirm){ showMsg("pwMsg", "Please fill in all fields.", "error"); btn.disabled=false; btn.textContent="Update password"; return; }
-  if(newPw.length < 6){ showMsg("pwMsg", "New password must be at least 6 characters.", "error"); btn.disabled=false; btn.textContent="Update password"; return; }
-  if(newPw !== confirm){ showMsg("pwMsg", "Passwords don't match.", "error"); btn.disabled=false; btn.textContent="Update password"; return; }
-  try {
-    const res = await fetch("/change-password", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ current_password: current, new_password: newPw }) });
-    const data = await res.json();
-    if(data.success){
-      showMsg("pwMsg", "✓ Password updated.", "success");
-      document.getElementById("currentPw").value = "";
-      document.getElementById("newPw").value = "";
-      document.getElementById("confirmPw").value = "";
-    } else { showMsg("pwMsg", data.error || "Could not update password.", "error"); }
-  } catch(e) { showMsg("pwMsg", "Something went wrong.", "error"); }
-  btn.disabled=false; btn.textContent="Update password";
-}
-
-async function loadAgencySettings(){
-  const res = await fetch("/stats/"+slug);
-  const stats = await res.json();
-  if(stats.plan_type === "agency" && stats.subscription_active){
-    document.getElementById("whiteLabelCard").style.display = "block";
-    document.getElementById("agencyNameInput").value = stats.agency_name || "";
-    document.getElementById("agencyLogoInput").value = stats.agency_logo_url || "";
-  }
-}
-
-async function saveAgencySettings(){
-  const btn = document.getElementById("saveAgencyBtn");
-  const msg = document.getElementById("agencyMsg");
-  btn.disabled = true; btn.textContent = "Saving...";
-  const agency_name = document.getElementById("agencyNameInput").value.trim();
-  const agency_logo_url = document.getElementById("agencyLogoInput").value.trim();
-  try {
-    const res = await fetch("/update-agency-settings", { 
-      method: "POST", 
-      headers: {"Content-Type":"application/json"}, 
-      body: JSON.stringify({ agency_name, agency_logo_url }) 
-    });
-    const data = await res.json();
-    if(data.success){ msg.textContent = "✓ Branding saved."; msg.className = "msg success"; }
-    else { msg.textContent = data.error || "Could not save."; msg.className = "msg error"; }
-  } catch(e) { msg.textContent = "Something went wrong."; msg.className = "msg error"; }
-  btn.disabled = false; btn.textContent = "Save branding";
-}
-
-function showMsg(id, text, type){
-  const el = document.getElementById(id);
-  el.textContent = text;
-  el.className = "msg " + type;
-  setTimeout(() => { el.textContent = ""; el.className = "msg"; }, 5000);
-}
-</script>
+<script src="/js/settings.js"></script>
 </body>
 </html>
