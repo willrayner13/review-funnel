@@ -23,11 +23,11 @@
     <h2>Create your account</h2>
     <p style="margin-bottom:28px;color:var(--cream-dim);font-size:0.95rem;">14-day free trial · Card required · £0 charged until day 15</p>
 
-    <div style="text-align:right; margin-bottom:20px;">
-      <a href="#" id="agencyToggleLink" onclick="toggleAgencyMode(event)" style="font-size:0.75rem; color:var(--accent); text-decoration:none;">
-        Signing up as an agency? Click here
-      </a>
-    </div>
+    <!-- Account Type Toggle -->
+<div class="account-type-toggle" id="accountTypeToggle">
+  <div class="type-option business" onclick="setAccountType('business')">🏢 I'm a Business</div>
+  <div class="type-option agency" onclick="setAccountType('agency')">🏢 I'm an Agency</div>
+</div>
 
     <!-- Account Type Toggle -->
     <div class="account-type-toggle" id="accountTypeToggle">
