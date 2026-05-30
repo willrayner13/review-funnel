@@ -183,7 +183,7 @@ input::placeholder {
 
 /* Account type toggle */
 .account-type-toggle {
-  display: none;
+  display: flex;  
   gap: 12px;
   margin-bottom: 24px;
   background: var(--surface-2);

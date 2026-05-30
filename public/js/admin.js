@@ -9,14 +9,9 @@ let selectedAccountType = "business";
   const type = urlParams.get('type');
   
   if (type === 'agency') {
-    const toggle = document.getElementById('accountTypeToggle');
-    if (toggle) toggle.classList.add('visible');
     setAccountType('agency');
   } else {
-    const toggle = document.getElementById('accountTypeToggle');
-    if (toggle) toggle.classList.remove('visible');
     setAccountType('business');
-    if (toggle) toggle.style.display = 'none';
   }
 })();
 
