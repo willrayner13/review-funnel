@@ -55,6 +55,20 @@ app.get("/debug-check", (req, res) => {
   });
 });
 
+app.get("/debug-blog/:slug", (req, res) => {
+  const fs = require("fs");
+  const slug = req.params.slug;
+  const paths = [
+    path.join(__dirname, "../public/blog", `${slug}.html`),
+    path.join(__dirname, "../public", `${slug}.html`)
+  ];
+  res.json({
+    slug: slug,
+    paths: paths,
+    exists: paths.map(p => ({ path: p, exists: fs.existsSync(p) }))
+  });
+});
+
 app.use("/css", express.static(path.join(__dirname, "../public/css")));
 app.use("/js", express.static(path.join(__dirname, "../public/js")));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));

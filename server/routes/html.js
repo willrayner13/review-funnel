@@ -27,9 +27,21 @@ router.get("/blog/:slug", (req, res) => {
   if (slug.includes("..") || slug.includes("/")) {
     return res.status(400).send("Invalid slug");
   }
-  res.sendFile(path.join(__dirname, "../../public", `${slug}.html`), (err) => {
-    if (err) res.status(404).send("Post not found");
-  });
+  // Try multiple possible paths
+  const possiblePaths = [
+    path.join(__dirname, "../../public/blog", `${slug}.html`),
+    path.join(__dirname, "../../public", `${slug}.html`),
+    path.join(__dirname, "../../public/blog", slug, "index.html")
+  ];
+  
+  for (const filePath of possiblePaths) {
+    const fs = require("fs");
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    }
+  }
+  
+  res.status(404).send("Post not found");
 });
 
 module.exports = router;
