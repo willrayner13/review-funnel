@@ -86,7 +86,7 @@ app.use("/js", express.static(path.join(__dirname, "../public/js")));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
 app.use("/components", express.static(path.join(__dirname, "../public/components")));
 app.use("/blog", express.static(path.join(__dirname, "../public/blog")));
-app.use(express.static(path.join(__dirname, "../public")));
+
 // Session store
 app.use(
   session({
