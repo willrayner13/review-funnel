@@ -42,10 +42,12 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(cors());
 app.use(bodyParser.json());
+// Serve static files from public directory
 app.use("/css", express.static(path.join(__dirname, "../public/css")));
 app.use("/js", express.static(path.join(__dirname, "../public/js")));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
-app.use(express.static(path.join(__dirname, "../public")));
+app.use("/components", express.static(path.join(__dirname, "../public/components")));
+app.use("/blog", express.static(path.join(__dirname, "../public/blog")));
 app.use(express.static(path.join(__dirname, "../public")));
 // Session store
 app.use(
