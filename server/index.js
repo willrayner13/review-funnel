@@ -69,6 +69,18 @@ app.get("/debug-blog/:slug", (req, res) => {
   });
 });
 
+app.get("/debug-demo", (req, res) => {
+  const fs = require("fs");
+  const cssPath = path.join(__dirname, "../public/css/demo.css");
+  const htmlPath = path.join(__dirname, "../public/demo.html");
+  res.json({
+    cssExists: fs.existsSync(cssPath),
+    htmlExists: fs.existsSync(htmlPath),
+    cssPath: cssPath,
+    htmlPath: htmlPath
+  });
+});
+
 app.use("/css", express.static(path.join(__dirname, "../public/css")));
 app.use("/js", express.static(path.join(__dirname, "../public/js")));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
