@@ -18,7 +18,8 @@ HTML_PAGES.forEach((page) => {
 
 // Demo route
 router.get("/demo/:slug", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../public", "demo.html"));
+  const demoPath = path.join(__dirname, "../../public", "demo.html");
+  res.sendFile(demoPath);
 });
 
 // Dynamic blog posts
