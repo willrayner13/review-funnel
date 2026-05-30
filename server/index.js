@@ -42,6 +42,10 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/css", express.static(path.join(__dirname, "../public/css")));
+app.use("/js", express.static(path.join(__dirname, "../public/js")));
+app.use("/images", express.static(path.join(__dirname, "../public/images")));
+app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.static(path.join(__dirname, "../public")));
 // Session store
 app.use(
