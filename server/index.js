@@ -4,7 +4,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const session = require("express-session");
 const path = require("path");
-const PDFDocument = require("pdfkit");
+
+// ─── SERVICES ───────────────────────────────────────────────────────────────────
+const emailService = require("./services/emailService");
+const smsService = require("./services/smsService");
+const aiService = require("./services/aiService");
+const pdfService = require("./services/pdfService");
 
 // Config
 const supabase = require("./config/database");
@@ -56,6 +61,17 @@ app.use(
   })
 );
 
+// ─── DIRECT ROUTE HANDLERS (must come BEFORE route mounting) ───────────────────
+// These ensure the root path works even if htmlRoutes has issues
+app.get("/", (req, res) => {
+  const landingPath = path.join(__dirname, "../public", "landing.html");
+  res.sendFile(landingPath);
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 // ─── ROUTES ────────────────────────────────────────────────────────────────────
 app.use(webhookRoutes); // Must come before bodyParser.json() for raw body
 app.use(htmlRoutes);
@@ -88,28 +104,28 @@ app.get("/cron/mark-conversions", async (req, res) => {
   res.json(result);
 });
 
-// ─── API WEBHOOKS (these need to be separate routes) ───────────────────────────
+// ─── API WEBHOOKS ──────────────────────────────────────────────────────────────
 app.post("/api/hook/:slug", async (req, res) => {
+  // Import and handle dynamically to avoid circular dependencies
   const campaignsRouter = require("./routes/campaigns");
-  const routerInstance = campaignsRouter.stack.find(layer => layer.route && layer.route.path === "/api/hook/:slug");
-  if (routerInstance) {
-    routerInstance.route.stack[0].handle(req, res);
+  const routerLayer = campaignsRouter.stack.find(layer => 
+    layer.route && layer.route.path === "/send-sms"
+  );
+  
+  if (routerLayer) {
+    // Forward to the campaigns router
+    campaignsRouter(req, res);
   } else {
-    res.status(404).json({ error: "Not found" });
+    res.status(404).json({ error: "Webhook endpoint not found" });
   }
 });
 
 app.post("/api/invoice-hook/:slug", async (req, res) => {
   const campaignsRouter = require("./routes/campaigns");
-  const routerInstance = campaignsRouter.stack.find(layer => layer.route && layer.route.path === "/api/invoice-hook/:slug");
-  if (routerInstance) {
-    routerInstance.route.stack[0].handle(req, res);
-  } else {
-    res.status(404).json({ error: "Not found" });
-  }
+  campaignsRouter(req, res);
 });
 
-// ─── PDF REPORT (Agency only) ──────────────────────────────────────────────────
+// ─── PDF REPORT (Agency only) - Using pdfService ───────────────────────────────
 app.get("/report/:slug", async (req, res) => {
   if (req.session.slug !== req.params.slug) return res.status(401).json({ error: "Not authorised" });
 
@@ -124,7 +140,6 @@ app.get("/report/:slug", async (req, res) => {
   }
 
   const now = new Date();
-  const monthLabel = now.toLocaleString("en-GB", { month: "long", year: "numeric" });
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
   const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
 
@@ -145,113 +160,32 @@ app.get("/report/:slug", async (req, res) => {
 
   const ratings = thisMonthEvents.filter((e) => e.rating).map((e) => e.rating);
   const avgRating = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "N/A";
-
   const recentFeedback = thisMonthEvents.filter((e) => e.event_type === "negative" && e.message).slice(0, 4);
 
-  const doc = new PDFDocument({ margin: 50, size: "A4" });
+  // Prepare metrics for pdfService
+  const metrics = {
+    reviewsCollected: thisPos,
+    feedbackCaptured: thisNeg,
+    reviewClicks: thisClicks,
+    totalVisits: totalVisits,
+    avgRating: avgRating,
+    lastMonthReviews: lastPos,
+    trend: thisPos - lastPos >= 0 ? `+${thisPos - lastPos}` : `${thisPos - lastPos}`,
+    isPositiveTrend: thisPos >= lastPos,
+  };
+
+  // Generate PDF using service
+  const doc = pdfService.generateMonthlyReport(business, metrics, recentFeedback);
+  
+  // Set response headers
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${(business.agency_name || business.name).replace(/\s/g, "-")}-Report-${now.toISOString().slice(0, 7)}.pdf`
   );
+  
+  // Pipe the PDF to the response
   doc.pipe(res);
-
-  const brandName = business.agency_name || business.name;
-  const industry = business.industry || "local business";
-
-  // Header
-  doc.rect(0, 0, doc.page.width, 120).fill("#121210");
-  doc.rect(0, 0, doc.page.width, 4).fill("#C8A96E");
-  doc.fill("#C8A96E").fontSize(26).font("Helvetica-Bold").text(brandName, 50, 25);
-  doc.fill("#EAE7DC").fontSize(13).font("Helvetica").text("Monthly Reputation Report", 50, 56);
-  doc
-    .fill("rgba(234,231,220,0.45)")
-    .fontSize(9)
-    .font("Helvetica")
-    .text(`${monthLabel}  ·  ${industry.charAt(0).toUpperCase() + industry.slice(1)}  ·  Confidential`, 50, 76);
-
-  // Metrics grid
-  const cardW = 145,
-    cardH = 78,
-    startX = 50,
-    startY = 145,
-    gap = 12;
-
-  const metrics = [
-    { value: String(thisPos), label: "Reviews collected", sub: "this month", color: "#C8A96E" },
-    { value: String(thisNeg), label: "Feedback captured", sub: "kept private", color: "#D4897C" },
-    { value: avgRating, label: "Average rating", sub: "this month", color: "#EAE7DC" },
-    { value: String(thisClicks), label: "Review clicks", sub: "sent to Google", color: "#6A9E7F" },
-    { value: String(totalVisits), label: "Total visits", sub: "all time", color: "#EAE7DC" },
-    {
-      value: (() => {
-        const c = thisPos - lastPos;
-        return c >= 0 ? "+" + c : String(c);
-      })(),
-      label: "vs last month",
-      sub: `was ${lastPos} reviews`,
-      color: thisPos >= lastPos ? "#6A9E7F" : "#D4897C",
-    },
-  ];
-
-  metrics.forEach((m, i) => {
-    const col = i % 3;
-    const row = Math.floor(i / 3);
-    const x = startX + col * (cardW + gap);
-    const y = startY + row * (cardH + gap);
-
-    doc.rect(x, y, cardW, cardH).fill("#1E1E1C");
-    doc.rect(x, y, cardW, cardH).stroke("rgba(200,169,110,0.15)");
-
-    doc.fill(m.color).fontSize(26).font("Helvetica-Bold").text(m.value, x + 14, y + 10);
-    doc.fill("#CCCCCC").fontSize(8.5).font("Helvetica").text(m.label, x + 14, y + 42);
-    doc.fill("#888888").fontSize(7).font("Helvetica").text(m.sub, x + 14, y + 56);
-  });
-
-  // Recent feedback
-  const feedbackY = startY + 2 * (cardH + gap) + 30;
-  doc.fill("#C8A96E").fontSize(11).font("Helvetica-Bold").text("RECENT FEEDBACK", 50, feedbackY);
-  doc.moveTo(50, feedbackY + 18).lineTo(545, feedbackY + 18).stroke("rgba(200,169,110,0.2)");
-
-  if (recentFeedback.length > 0) {
-    let yPos = feedbackY + 35;
-    recentFeedback.forEach((f) => {
-      doc.rect(50, yPos - 4, 495, 38).fill("#1E1E1C").stroke("rgba(234,231,220,0.06)");
-      doc.fill("#BBBBBB").fontSize(8.5).font("Helvetica").text(
-        `"${f.message.substring(0, 150)}${f.message.length > 150 ? "..." : ""}"`,
-        62,
-        yPos + 3,
-        { width: 470 }
-      );
-      yPos += 46;
-    });
-  } else {
-    doc.fill("#888888").fontSize(9).font("Helvetica").text("No private feedback captured this month.", 50, feedbackY + 35);
-  }
-
-  // Summary
-  const insightY = feedbackY + (recentFeedback.length > 0 ? recentFeedback.length * 46 + 40 : 80);
-  doc.fill("#C8A96E").fontSize(11).font("Helvetica-Bold").text("SUMMARY", 50, insightY);
-  doc.moveTo(50, insightY + 18).lineTo(545, insightY + 18).stroke("rgba(200,169,110,0.2)");
-
-  let summaryText = `This month, ${brandName} collected ${thisPos} review${thisPos !== 1 ? "s" : ""}`;
-  if (thisNeg > 0)
-    summaryText += ` and captured ${thisNeg} private feedback message${thisNeg !== 1 ? "s" : ""} before ${thisNeg === 1 ? "it went" : "they went"} public`;
-  summaryText += `. Total funnel visits: ${totalVisits}.`;
-  if (thisPos > 0 && thisClicks > 0)
-    summaryText += ` ${thisClicks} customer${thisClicks !== 1 ? "s" : ""} clicked through to leave a review.`;
-
-  doc.fill("#AAAAAA").fontSize(9).font("Helvetica").text(summaryText, 50, insightY + 30, { width: 495 });
-
-  // Footer
-  doc
-    .fill("#666666")
-    .fontSize(7)
-    .font("Helvetica")
-    .text(`Generated by ReviewLift  ·  ${now.toLocaleDateString("en-GB")}  ·  For internal use`, 50, doc.page.height - 40, {
-      align: "center",
-    });
-
   doc.end();
 });
 
@@ -259,6 +193,18 @@ app.get("/report/:slug", async (req, res) => {
 app.get("/lapsed-redirect/:slug", async (req, res) => {
   const { slug } = req.params;
   res.redirect(`/lapsed?slug=${slug}`);
+});
+
+// ─── 404 HANDLER (catch-all for unmatched routes) ─────────────────────────────
+app.use((req, res) => {
+  // Check if the request is for an API endpoint
+  if (req.path.startsWith("/api/") || req.path.startsWith("/cron/")) {
+    return res.status(404).json({ error: "API endpoint not found" });
+  }
+  // For HTML pages, try to serve the 404 page or redirect to home
+  res.status(404).sendFile(path.join(__dirname, "../public", "404.html"), (err) => {
+    if (err) res.status(404).send("Page not found");
+  });
 });
 
 // ─── SERVERLESS EXPORT ────────────────────────────────────────────────────────

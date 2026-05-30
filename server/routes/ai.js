@@ -1,6 +1,6 @@
 const express = require("express");
 const supabase = require("../config/database");
-const openai = require("../config/openai");
+const aiService = require("../services/aiService");
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.post("/generate-reply", async (req, res) => {
   try {
     const { data: business, error } = await supabase
       .from("businesses")
-      .select("plan_type, trial_ends_at, subscription_active")
+      .select("plan_type, trial_ends_at, subscription_active, name")
       .eq("slug", slug)
       .single();
 
@@ -23,35 +23,12 @@ router.post("/generate-reply", async (req, res) => {
     const isProOrAgency = business.subscription_active && (business.plan_type === "pro" || business.plan_type === "agency");
     if (!isProOrAgency) return res.status(403).json({ error: "Pro or Agency plan required" });
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `Generate three different replies to this customer review. Return JSON only: { "professional": "...", "warm": "...", "punchy": "..." }`,
-        },
-        { role: "user", content: `Write replies to this customer review:\n\n${review}` },
-      ],
-      temperature: 0.8,
-      max_tokens: 400,
-    });
-
-    let parsed;
-    try {
-      const cleaned = completion.choices[0].message.content.replace(/```json|```/g, "").trim();
-      parsed = JSON.parse(cleaned);
-    } catch (e) {
-      return res.json({
-        professional: "Could not generate reply. Please try again.",
-        warm: "Could not generate reply. Please try again.",
-        punchy: "Could not generate reply. Please try again.",
-      });
-    }
+    const replies = await aiService.generateReviewReplies(review, business.name);
 
     res.json({
-      professional: parsed.professional || "",
-      warm: parsed.warm || "",
-      punchy: parsed.punchy || "",
+      professional: replies.professional || "",
+      warm: replies.warm || "",
+      punchy: replies.punchy || "",
     });
   } catch (err) {
     console.log("OpenAI error:", err.status, err.message);
@@ -101,17 +78,11 @@ router.post("/feedback-summary", async (req, res) => {
   const slug = req.session.slug;
   const { data } = await supabase.from("events").select("message").eq("business_slug", slug).eq("event_type", "negative");
 
-  const feedback = (data || []).map((f) => f.message).join("\n");
+  const feedbackMessages = (data || []).map((f) => f.message).filter(Boolean);
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: "Summarize the most common complaints from this customer feedback in 2-3 concise bullet points." },
-        { role: "user", content: feedback },
-      ],
-    });
-    res.json({ summary: completion.choices[0].message.content });
+    const summary = await aiService.summariseComplaints(feedbackMessages);
+    res.json({ summary });
   } catch (err) {
     res.status(503).json({ error: "AI temporarily unavailable. Please try again." });
   }
@@ -143,17 +114,37 @@ router.post("/predict-channel/:slug", async (req, res) => {
 
   const sendCount = sends?.length || 0;
 
+  // Industry benchmark defaults
+  const industryDefaults = {
+    dentist: { bestChannel: "sms", bestWindow: "10am-12pm, next day", smsRate: 22, emailRate: 8 },
+    plumber: { bestChannel: "email", bestWindow: "8am-10am, next morning", smsRate: 18, emailRate: 14 },
+    electrician: { bestChannel: "sms", bestWindow: "8am-10am, next day", smsRate: 20, emailRate: 10 },
+    salon: { bestChannel: "sms", bestWindow: "2pm-4pm, same day", smsRate: 24, emailRate: 7 },
+    builder: { bestChannel: "email", bestWindow: "2-3 days after completion", smsRate: 12, emailRate: 16 },
+    restaurant: { bestChannel: "sms", bestWindow: "6pm-8pm, same evening", smsRate: 19, emailRate: 5 },
+    gym: { bestChannel: "sms", bestWindow: "6pm-8pm, same day", smsRate: 21, emailRate: 9 },
+    cleaner: { bestChannel: "sms", bestWindow: "10am-12pm, next day", smsRate: 20, emailRate: 8 },
+    accountant: { bestChannel: "email", bestWindow: "2pm-4pm, next day", smsRate: 10, emailRate: 15 },
+    solicitor: { bestChannel: "email", bestWindow: "10am-12pm, next day", smsRate: 8, emailRate: 14 },
+    "estate-agent": { bestChannel: "email", bestWindow: "2pm-4pm, next day", smsRate: 11, emailRate: 13 },
+    vet: { bestChannel: "sms", bestWindow: "10am-12pm, next day", smsRate: 22, emailRate: 9 },
+    physio: { bestChannel: "sms", bestWindow: "2pm-4pm, same day", smsRate: 21, emailRate: 10 },
+    other: { bestChannel: "sms", bestWindow: "10am-2pm, next day", smsRate: 18, emailRate: 10 },
+  };
+
+  const defaults = industryDefaults[business?.industry] || industryDefaults["other"];
+
   if (sendCount < 20) {
     return res.json({
       recommendation: {
-        recommended_channel: "sms",
+        recommended_channel: defaults.bestChannel,
         confidence: "industry data",
-        best_window: "10am-2pm, next day",
-        predicted_conversion_rate: 18,
+        best_window: defaults.bestWindow,
+        predicted_conversion_rate: defaults.bestChannel === "sms" ? defaults.smsRate : defaults.emailRate,
       },
       data_source: "industry_benchmark",
       sends_analysed: sendCount,
-      message: "AI analytics based on industry data. Predictions personalise after 20 requests.",
+      message: `AI analytics based on ${business?.industry || "industry"} data. Predictions personalise after 20 requests.`,
     });
   }
 
@@ -161,8 +152,8 @@ router.post("/predict-channel/:slug", async (req, res) => {
   const emailSends = sends.filter((s) => s.channel === "email");
   const smsConv = smsSends.filter((s) => s.converted).length;
   const emailConv = emailSends.filter((s) => s.converted).length;
-  const smsRate = smsSends.length > 0 ? Math.round((smsConv / smsSends.length) * 100) : 0;
-  const emailRate = emailSends.length > 0 ? Math.round((emailConv / emailSends.length) * 100) : 0;
+  const smsRate = smsSends.length > 0 ? Math.round((smsConv / smsSends.length) * 100) : defaults.smsRate;
+  const emailRate = emailSends.length > 0 ? Math.round((emailConv / emailSends.length) * 100) : defaults.emailRate;
 
   const bestChannel = smsRate >= emailRate ? "sms" : "email";
   const bestRate = Math.max(smsRate, emailRate);
@@ -195,24 +186,7 @@ router.post("/suggest-review/:slug", async (req, res) => {
   if (!business) return res.status(404).json({ error: "Business not found" });
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You write short, authentic-sounding Google reviews on behalf of customers. Write in first person. 2-3 sentences max. Use British English.",
-        },
-        {
-          role: "user",
-          content: `Write a ${rating}-star Google review for a customer who visited ${business.name}, a ${business.industry || "local"} business.${service ? " The service they had was: " + service + "." : ""}`,
-        },
-      ],
-      temperature: 0.8,
-      max_tokens: 150,
-    });
-
-    const suggestion = completion.choices[0].message.content.trim();
+    const suggestion = await aiService.generateSuggestedReview(rating, business.name, business.industry, service);
     res.json({ suggestion });
   } catch (err) {
     console.error("Review suggestion error:", err.message);
@@ -240,29 +214,8 @@ router.post("/analyse-competitor", async (req, res) => {
   }
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `Analyse these customer reviews for a competitor${competitor_name ? " called " + competitor_name : ""}. Return JSON only: { "strengths": ["...","..."], "weaknesses": ["...","..."], "opportunity": "..." }`,
-        },
-        { role: "user", content: reviews_text.substring(0, 3000) },
-      ],
-      temperature: 0.7,
-      max_tokens: 400,
-    });
-
-    const content = completion.choices[0].message.content.trim();
-    let parsed;
-    try {
-      const cleaned = content.replace(/```json|```/g, "").trim();
-      parsed = JSON.parse(cleaned);
-    } catch (e) {
-      parsed = { strengths: ["Could not parse"], weaknesses: ["Could not parse"], opportunity: "Try again with more review text." };
-    }
-
-    res.json(parsed);
+    const analysis = await aiService.analyseCompetitor(reviews_text, competitor_name);
+    res.json(analysis);
   } catch (err) {
     console.error("Competitor analysis error:", err.message);
     res.status(500).json({ error: "Analysis failed. Please try again." });

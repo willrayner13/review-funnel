@@ -1,9 +1,9 @@
 const express = require("express");
 const supabase = require("../config/database");
-const twilioClient = require("../config/twilio");
-const resend = require("../config/resend");
+const emailService = require("../services/emailService");
+const smsService = require("../services/smsService");
 const { smsLimiter } = require("../middleware/rateLimit");
-const { hasProAccess, normalisePhone } = require("../utils/helpers");
+const { hasProAccess } = require("../utils/helpers");
 const { SMS_TRIAL_LIMIT, SMS_MONTHLY_LIMIT } = require("../utils/constants");
 
 const router = express.Router();
@@ -57,19 +57,8 @@ router.post("/send-sms", smsLimiter, async (req, res) => {
       }
     }
 
-    const normalisedPhone = normalisePhone(phone);
-    if (!normalisedPhone.startsWith("+44")) {
-      return res.status(400).json({
-        error: "SMS is currently available for UK numbers only. We're working on international support.",
-      });
-    }
-
-    const message = `Hi! Thanks for visiting ${data.name} today. We'd love to know how it went - takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
-    await twilioClient.messages.create({
-      from: process.env.TWILIO_PHONE,
-      to: normalisedPhone,
-      body: message,
-    });
+    const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
+    await smsService.sendReviewRequestSMS(phone, data.name, funnelUrl);
 
     await supabase.from("events").insert({
       business_slug: slug,
@@ -82,7 +71,7 @@ router.post("/send-sms", smsLimiter, async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    console.log("Twilio error:", err.code, err.message);
+    console.log("SMS error:", err.code, err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -101,36 +90,7 @@ router.post("/send-email", async (req, res) => {
 
     const reviewUrl = `${process.env.BASE_URL}/r/${slug}`;
 
-    await resend.emails.send({
-      from: `${business.name} <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-      to: email,
-      subject: `How was your visit to ${business.name}?`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head><meta charset="UTF-8"></head>
-        <body style="margin:0;padding:0;background:#1A1A18;font-family:Arial,Helvetica,sans-serif;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#1A1A18;padding:32px 16px;">
-            <tr><td align="center">
-              <table width="540" cellpadding="0" cellspacing="0" style="background:#242422;border-radius:12px;">
-                <tr><td style="background:#1A1A18;padding:20px 32px;">
-                  <table cellpadding="0" cellspacing="0"><tr><td style="width:8px;height:8px;background:#C8A96E;border-radius:50%;vertical-align:middle;"></td><td style="padding-left:8px;font-family:Arial,sans-serif;font-size:16px;font-weight:800;color:#EAE7DC;vertical-align:middle;">${business.name}</td></tr></table>
-                </td>
-                </tr>
-                <tr><td style="padding:32px 32px 24px;">
-                  <h2 style="margin:0 0 14px;font-size:20px;color:#EAE7DC;">How was your recent visit?</h2>
-                  <p style="margin:0 0 24px;font-size:14px;color:rgba(234,231,220,0.55);line-height:1.65;">Thanks for coming in — we hope you had a great experience. It only takes 30 seconds.</p>
-                  <a href="${reviewUrl}" style="display:inline-block;background:#C8A96E;color:#1A1A18;text-decoration:none;font-weight:bold;font-size:14px;padding:14px 32px;border-radius:8px;">Share how it went →</a>
-                </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </body>
-      </html>
-      `,
-    });
+    await emailService.sendReviewRequestEmail(business.name, business.email, email, reviewUrl);
 
     const now = new Date();
     await supabase.from("events").insert({
@@ -155,13 +115,140 @@ router.post("/auto-review", async (req, res) => {
   const { data } = await supabase.from("businesses").select("*").eq("slug", slug).single();
   if (!data) return res.status(404).json({ error: "Business not found" });
 
-  const message = `Thanks for visiting ${data.name}! We'd love to hear how it went — takes 30 seconds: ${process.env.BASE_URL}/r/${slug}`;
-  await twilioClient.messages.create({
-    from: process.env.TWILIO_PHONE,
-    to: normalisePhone(phone),
-    body: message,
-  });
+  const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
+  await smsService.sendReviewRequestSMS(phone, data.name, funnelUrl);
   res.json({ success: true });
+});
+
+// Webhook for automated review request
+router.post("/api/hook/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const { customer_name, customer_phone, service, staff_name, appointment_time } = req.body;
+
+  if (!customer_name || !customer_phone) {
+    return res.status(400).json({ error: "customer_name and customer_phone are required" });
+  }
+
+  try {
+    const { data: business, error } = await supabase
+      .from("businesses")
+      .select("name, industry, plan_type, review_link")
+      .eq("slug", slug)
+      .single();
+
+    if (error || !business) {
+      return res.status(404).json({ error: "Business not found" });
+    }
+
+    if (business.plan_type !== "pro" && business.plan_type !== "agency") {
+      return res.status(403).json({
+        error: "Webhook access requires Pro or Agency plan. Upgrade at /billing",
+      });
+    }
+
+    const funnelUrl = `${process.env.BASE_URL}/r/${slug}`;
+
+    // Generate personalised message using AI service
+    let message = await aiService.generatePersonalisedRequest(
+      business.name,
+      business.industry || "local service",
+      customer_name,
+      service || "their appointment",
+      staff_name || null
+    );
+
+    message = message.replace("[LINK]", funnelUrl);
+
+    if (message.length > 160) {
+      message = message.substring(0, 157) + "...";
+    }
+
+    await smsService.sendSMS(customer_phone, message);
+
+    const hookNow = new Date();
+    const apptDate = appointment_time ? new Date(appointment_time) : hookNow;
+    await supabase.from("events").insert({
+      business_slug: slug,
+      event_type: "sms_sent",
+      channel: "sms",
+      sent_at: hookNow.toISOString(),
+      appointment_hour: apptDate.getHours(),
+      appointment_day: apptDate.getDay(),
+      service_type: service || null,
+      message: `Webhook: ${service || "appointment"} for ${customer_name}`,
+      created_at: hookNow.toISOString(),
+    });
+
+    res.json({ success: true, message });
+  } catch (err) {
+    console.error("Webhook error:", err.message);
+    res.status(500).json({ error: "Could not send review request. Please check your webhook configuration." });
+  }
+});
+
+// Invoice webhook
+router.post("/api/invoice-hook/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const { customer_name, customer_email, invoice_number, total_amount, status } = req.body;
+
+  if (!customer_email || !customer_name) {
+    return res.status(400).json({ error: "customer_name and customer_email are required" });
+  }
+
+  if (!status || status.toLowerCase() !== "paid") {
+    return res.status(200).json({ skipped: true, reason: "Not a paid invoice" });
+  }
+
+  try {
+    const { data: business, error } = await supabase
+      .from("businesses")
+      .select("name, review_link, plan_type, subscription_active")
+      .eq("slug", slug)
+      .single();
+
+    if (error || !business) return res.status(404).json({ error: "Business not found" });
+
+    const isProOrAgency = business.subscription_active && (business.plan_type === "pro" || business.plan_type === "agency");
+    if (!isProOrAgency) {
+      return res.status(403).json({ error: "Pro or Agency plan required" });
+    }
+
+    const QRCode = require("qrcode");
+    const qrBuffer = await QRCode.toBuffer(business.review_link);
+    const qrBase64 = qrBuffer.toString("base64");
+
+    // Send invoice email with QR code using email service (would need to extend emailService)
+    // For now, using inline email with QR code
+    const resend = require("../config/resend");
+    await resend.emails.send({
+      from: `Reviews <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
+      to: customer_email,
+      subject: `Thank you for your payment, ${customer_name}`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:500px;margin:0 auto;">
+          <h2>Thank you, ${customer_name}.</h2>
+          <p>We've received your payment${invoice_number ? ' for invoice ' + invoice_number : ''}${total_amount ? ' (' + total_amount + ')' : ''}.</p>
+          <p>If we did a great job, we'd love a quick review — it only takes 30 seconds.</p>
+          <div style="text-align:center;margin:20px 0;">
+            <img src="data:image/png;base64,${qrBase64}" alt="QR Code" style="width:120px;height:120px;">
+          </div>
+          <a href="${business.review_link}" style="display:block;background:#C8A96E;color:#1A1A18;text-align:center;padding:12px;border-radius:8px;text-decoration:none;">Leave a review →</a>
+        </div>
+      `,
+    });
+
+    await supabase.from("events").insert({
+      business_slug: slug,
+      event_type: "invoice_email_sent",
+      message: `Invoice ${invoice_number || "N/A"} for ${customer_name}`,
+      created_at: new Date().toISOString(),
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Invoice hook error:", err.message);
+    res.status(500).json({ error: "Could not send invoice email." });
+  }
 });
 
 module.exports = router;

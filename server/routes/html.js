@@ -4,6 +4,11 @@ const { HTML_PAGES } = require("../utils/constants");
 
 const router = express.Router();
 
+// Root route - MUST be explicitly defined
+router.get("/", (req, res) => {
+  res.sendFile(path.resolve("public", "landing.html"));
+});
+
 // Static HTML pages
 HTML_PAGES.forEach((page) => {
   router.get(`/${page}`, (req, res) => {
@@ -11,8 +16,10 @@ HTML_PAGES.forEach((page) => {
   });
 });
 
-router.get("/", (req, res) => res.sendFile(path.resolve("public", "landing.html")));
-router.get("/demo/:slug", (req, res) => res.sendFile(path.resolve("public", "demo.html")));
+// Demo route
+router.get("/demo/:slug", (req, res) => {
+  res.sendFile(path.resolve("public", "demo.html"));
+});
 
 // Dynamic blog posts
 router.get("/blog/:slug", (req, res) => {

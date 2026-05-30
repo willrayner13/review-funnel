@@ -1,5 +1,6 @@
 const express = require("express");
 const supabase = require("../config/database");
+const emailService = require("../services/emailService");
 
 const router = express.Router();
 
@@ -92,19 +93,7 @@ router.post("/contact", async (req, res) => {
   if (!name || !email || !message) return res.status(400).json({ error: "All fields required" });
 
   try {
-    await resend.emails.send({
-      from: `ReviewLift Contact <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-      to: "billy@reviewlift.app",
-      reply_to: email,
-      subject: `New enquiry from ${name} — ReviewLift`,
-      html: `
-        <h3>New contact form message</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-        <p><strong>Message:</strong></p>
-        <div>${message.replace(/\n/g, "<br>")}</div>
-      `,
-    });
+    await emailService.sendContactNotification(name, email, message);
     res.json({ success: true });
   } catch (err) {
     console.log("Contact error:", err.message);

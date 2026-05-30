@@ -1,7 +1,7 @@
 const express = require("express");
 const stripe = require("../config/stripe");
 const supabase = require("../config/database");
-const resend = require("../config/resend");
+const emailService = require("../services/emailService");
 
 const router = express.Router();
 
@@ -55,6 +55,7 @@ router.get("/nfc-success", async (req, res) => {
     .update({
       nfc_card_ordered: true,
       nfc_card_order_date: new Date().toISOString(),
+      shipping_address: req.body?.shipping_address || null,
     })
     .eq("slug", slug);
 
@@ -65,6 +66,7 @@ router.get("/nfc-success", async (req, res) => {
       .eq("slug", slug)
       .single();
 
+    const resend = require("../config/resend");
     await resend.emails.send({
       from: `ReviewLift Orders <orders@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
       to: "billy@reviewlift.app",
@@ -135,17 +137,7 @@ router.post("/admin/mark-card-shipped", async (req, res) => {
     const { data: business } = await supabase.from("businesses").select("name, email").eq("slug", slug).single();
 
     if (business && business.email) {
-      await resend.emails.send({
-        from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-        to: business.email,
-        subject: `📮 Your ReviewLift NFC card is on its way!`,
-        html: `
-          <h2>Your tap-to-review card has shipped!</h2>
-          <p>Your ReviewLift NFC card is on its way to you.</p>
-          ${tracking_number ? `<p><strong>Tracking number:</strong> ${tracking_number}</p>` : ""}
-          <a href="${process.env.BASE_URL}/for-business">Go to Dashboard</a>
-        `,
-      });
+      await emailService.sendNFCShippingConfirmation(business.email, business.name, tracking_number);
     }
   } catch (emailErr) {
     console.error("Shipping notification email failed:", emailErr.message);

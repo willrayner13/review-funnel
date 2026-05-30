@@ -1,10 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const supabase = require("../config/database");
-const resend = require("../config/resend");
 const { authLimiter } = require("../middleware/rateLimit");
-const { hasProAccess, escapeHtml, getRelativeDate } = require("../utils/helpers");
-const { INDUSTRY_DEFAULTS } = require("../utils/constants");
+const emailService = require("../services/emailService");
 
 const router = express.Router();
 
@@ -88,19 +86,9 @@ router.post("/create-business", authLimiter, async (req, res) => {
         const dashboardUrl = `${process.env.BASE_URL}/for-business`;
 
         if (account_type === "agency") {
-          await resend.emails.send({
-            from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-            to: email,
-            subject: `Welcome to ReviewLift Agency Program, ${name}`,
-            html: `...`, // Email template (truncated for brevity)
-          });
+          await emailService.sendAgencyWelcomeEmail(email, name, dashboardUrl);
         } else {
-          await resend.emails.send({
-            from: `ReviewLift <reviews@${process.env.EMAIL_DOMAIN || "reviewlift.app"}>`,
-            to: email,
-            subject: `Welcome to ReviewLift, ${name}`,
-            html: `...`, // Email template (truncated for brevity)
-          });
+          await emailService.sendWelcomeEmail(email, name, funnelUrl, dashboardUrl);
         }
       } catch (emailErr) {
         console.error("Welcome email failed (non-fatal):", emailErr.message);

@@ -5,6 +5,13 @@ const SMS_MONTHLY_LIMIT = 300;
 // Milestones
 const MILESTONES = [10, 25, 50, 100, 250, 500];
 
+// HTML pages served directly
+const HTML_PAGES = [
+  "admin", "login", "for-business", "lapsed", "success", "cancel",
+  "thanks", "bad", "demo", "billing", "settings",
+  "about", "contact", "blog", "partner"
+];
+
 // Industry defaults for send intelligence
 const INDUSTRY_DEFAULTS = {
   dentist: { bestChannel: "sms", bestWindow: "10am-12pm, next day", smsRate: 22, emailRate: 8 },
@@ -23,17 +30,10 @@ const INDUSTRY_DEFAULTS = {
   other: { bestChannel: "sms", bestWindow: "10am-2pm, next day", smsRate: 18, emailRate: 10 },
 };
 
-// HTML pages
-const HTML_PAGES = [
-  "admin", "login", "for-business", "lapsed", "success", "cancel",
-  "thanks", "bad", "landing", "demo", "billing", "settings",
-  "about", "contact", "blog", "partner"
-];
-
 module.exports = {
   SMS_TRIAL_LIMIT,
   SMS_MONTHLY_LIMIT,
   MILESTONES,
-  INDUSTRY_DEFAULTS,
   HTML_PAGES,
+  INDUSTRY_DEFAULTS,
 };
