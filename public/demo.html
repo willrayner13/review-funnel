@@ -10,199 +10,439 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/css/funnel.css">
   <link rel="stylesheet" href="/css/demo.css">
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  body {
-    background: #1A1A18;
-    padding-top: 70px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+    body {
+      background: #1A1A18;
+      padding-top: 70px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  .demo-banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: var(--accent, #C8A96E);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    z-index: 100;
-  }
+    .demo-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--accent, #C8A96E);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      z-index: 100;
+    }
 
-  .demo-banner span { color: #1A1A18; font-size: 0.85rem; font-weight: 500; }
-  .demo-banner .demo-cta {
-    background: #1A1A18;
-    color: var(--accent, #C8A96E);
-    padding: 8px 20px;
-    border-radius: 40px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
+    .demo-banner span { color: #1A1A18; font-size: 0.85rem; font-weight: 500; }
+    .demo-banner .demo-cta {
+      background: #1A1A18;
+      color: var(--accent, #C8A96E);
+      padding: 8px 20px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
 
-  /* --- iPhone Mockup Frame --- */
-  .iphone-mockup {
-    position: relative;
-    background: #000;
-    border-radius: 54px;
-    padding: 12px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-    width: 320px; 
-    height: 640px;
-    margin: 0 auto;
-    flex-shrink: 0;
-    border: 2px solid #333;
-  }
+    .demo-input-section {
+      text-align: center;
+      margin-bottom: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 16px;
+    }
 
-  .iphone-screen {
-    background: #1A1A18;
-    border-radius: 42px;
-    overflow: hidden !important; /* STRICT NO SCROLL */
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+    .demo-input-section label {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      display: block;
+      margin-bottom: 8px;
+    }
 
-  .funnel-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 10px 15px;
-  }
+    .demo-input-section input {
+      width: 100%;
+      padding: 12px 20px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--cream);
+      font-size: 0.95rem;
+      text-align: center;
+    }
 
-  /* --- THE LOCKED HEIGHT CARD --- */
-  #funnelContainer {
-    width: 100%;
-  }
+    /* --- iPhone Mockup Frame - FIXED SIZE NEVER CHANGES --- */
+    .iphone-mockup {
+      position: relative;
+      background: #000;
+      border-radius: 44px;
+      padding: 10px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+      width: 340px;
+      height: 640px;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
 
-  #funnelContainer .funnel-card {
-    margin: 0 auto !important;
-    width: 94% !important;
-    
-    /* HEIGHT IS NOW 520px FOR MORE SPACE */
-    height: 520px !important; 
-    
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important; 
-    
-    padding: 28px 20px !important;
-    transform: none !important;
-    transition: none !important;
-    background: var(--surface) !important;
-    border-radius: 20px !important;
-    position: relative;
-    border: 1px solid rgba(234, 231, 220, 0.05) !important;
-  }
+    .iphone-screen {
+      background: #1A1A18;
+      border-radius: 34px;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* --- REFINED CONTENT SPACING --- */
+    .dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 32px;
+      background: #0A0A0A;
+      border-radius: 24px;
+      z-index: 50;
+    }
 
-  #funnelContainer h1, 
-  #funnelContainer h2,
-  #funnelContainer [style*="font-size: 2.5rem"],
-  #funnelContainer [style*="font-size: 2rem"] {
-    font-size: 1.25rem !important; 
-    line-height: 1.2 !important;
-    margin-bottom: 12px !important;
-    font-weight: 700 !important;
-  }
+    .demo-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(200,169,110,0.2);
+      color: var(--accent);
+      font-size: 0.5rem;
+      padding: 4px 8px;
+      border-radius: 20px;
+      z-index: 50;
+      font-weight: 600;
+    }
 
-  #funnelContainer textarea {
-    min-height: 80px !important; 
-    max-height: 100px !important;
-    font-size: 0.85rem !important;
-    margin-bottom: 15px !important;
-    background: var(--surface-2) !important;
-    border: 1px solid var(--border) !important;
-    padding: 12px !important;
-  }
+    .funnel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 50px 12px 20px;
+      overflow: auto;
+    }
 
-  /* Voice Section refinement */
-  #funnelContainer .voice-section {
-    margin-top: 10px !important;
-    padding-top: 15px !important;
-    border-top: 1px solid rgba(234,231,220,0.08) !important;
-  }
+    #funnelContainer {
+      width: 100%;
+      height: 100%;
+    }
 
-  #funnelContainer .btn-voice {
-    width: 52px !important; 
-    height: 52px !important;
-    background: var(--surface-2) !important;
-    transition: transform 0.2s ease;
-  }
+    /* CARD - FIXED HEIGHT, SCROLLS IF NEEDED */
+    #funnelContainer .funnel-card {
+      margin: 0 auto !important;
+      width: 100% !important;
+      height: auto !important;
+      max-height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 24px 20px !important;
+      background: var(--surface) !important;
+      border-radius: 24px !important;
+      position: relative;
+      border: 1px solid rgba(234, 231, 220, 0.08) !important;
+      overflow-y: auto !important;
+    }
 
-  #funnelContainer .waveform {
-    height: 20px !important;
-    margin-bottom: 8px !important;
-  }
+    /* Custom scrollbar */
+    #funnelContainer .funnel-card::-webkit-scrollbar {
+      width: 4px;
+    }
+    #funnelContainer .funnel-card::-webkit-scrollbar-track {
+      background: var(--surface-2);
+      border-radius: 4px;
+    }
+    #funnelContainer .funnel-card::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
 
-  /* Star Rating */
-  #funnelContainer .star-rating {
-    margin: 15px 0 !important;
-    gap: 6px !important;
-  }
+    /* Typography */
+    #funnelContainer #businessTitle {
+      font-size: 0.75rem !important;
+      letter-spacing: 0.1em !important;
+      text-transform: uppercase !important;
+      color: var(--accent) !important;
+      margin-bottom: 8px !important;
+      text-align: center !important;
+    }
 
-  #funnelContainer .star-rating svg {
-    width: 32px !important;
-    height: 32px !important;
-  }
+    #funnelContainer #mainHeadline {
+      font-size: 1.1rem !important;
+      font-weight: 700 !important;
+      text-align: center !important;
+      margin-bottom: 16px !important;
+      line-height: 1.3 !important;
+    }
 
-  /* Buttons */
-  #funnelContainer button.btn-primary,
-  #funnelContainer .btn-copy {
-    padding: 14px !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    margin-top: 12px !important;
-    border-radius: 12px !important;
-  }
+    #funnelContainer .subtitle {
+      font-size: 0.65rem !important;
+      text-align: center !important;
+      color: var(--cream-dim) !important;
+      margin-bottom: 20px !important;
+      letter-spacing: 0.05em !important;
+    }
 
-  #funnelContainer p, 
-  #funnelContainer .subtitle,
-  #funnelContainer #businessTitle {
-    font-size: 0.8rem !important;
-    line-height: 1.4 !important;
-    margin-bottom: 6px !important;
-    color: var(--cream-dim) !important;
-  }
+    /* Star Rating */
+    #funnelContainer .star-rating {
+      display: flex !important;
+      justify-content: center !important;
+      gap: 10px !important;
+      margin: 16px 0 !important;
+    }
 
-  #funnelContainer .powered-by {
-    position: absolute;
-    bottom: 15px;
-    left: 0;
-    right: 0;
-    font-size: 0.6rem !important;
-    opacity: 0.4;
-  }
+    #funnelContainer .star-rating svg {
+      width: 40px !important;
+      height: 40px !important;
+      cursor: pointer !important;
+      transition: transform 0.15s ease !important;
+    }
 
-  /* Hardware Elements (Dynamic Island) */
-  .dynamic-island {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 28px;
-    background: #000;
-    border-radius: 20px;
-    z-index: 50;
-  }
-</style>
+    #funnelContainer .star-rating svg:hover {
+      transform: scale(1.1) !important;
+    }
+
+    /* Happy Path Elements */
+    #funnelContainer .happy-emoji {
+      font-size: 2rem !important;
+      text-align: center !important;
+      margin-bottom: 8px !important;
+    }
+
+    #funnelContainer h2 {
+      font-size: 1rem !important;
+      font-weight: 600 !important;
+      margin-bottom: 12px !important;
+      text-align: center !important;
+    }
+
+    #funnelContainer .premium-textarea {
+      width: 100% !important;
+      min-height: 80px !important;
+      padding: 12px !important;
+      background: var(--surface-2) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 12px !important;
+      color: var(--cream) !important;
+      font-size: 0.8rem !important;
+      line-height: 1.4 !important;
+      resize: vertical !important;
+      margin-bottom: 12px !important;
+    }
+
+    #funnelContainer .btn-copy {
+      width: 100% !important;
+      padding: 12px !important;
+      background: var(--accent) !important;
+      color: #1A1A18 !important;
+      border: none !important;
+      border-radius: 40px !important;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+      cursor: pointer !important;
+      margin-bottom: 8px !important;
+      transition: all 0.2s ease !important;
+    }
+
+    #funnelContainer .btn-copy:hover {
+      background: #D4B87A !important;
+      transform: translateY(-1px) !important;
+    }
+
+    /* Voice Section - TIGHT SPACING */
+    #funnelContainer .voice-section {
+      margin-top: 8px !important;
+      padding-top: 8px !important;
+      border-top: 1px solid rgba(234, 231, 220, 0.08) !important;
+    }
+
+    #funnelContainer .voice-button-container {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 8px !important;
+    }
+
+    #funnelContainer .btn-voice {
+      width: 48px !important;
+      height: 48px !important;
+      border-radius: 50% !important;
+      background: var(--surface-2) !important;
+      border: 1.5px solid var(--accent) !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.2s ease !important;
+    }
+
+    #funnelContainer .btn-voice svg {
+      width: 22px !important;
+      height: 22px !important;
+      stroke: var(--accent) !important;
+    }
+
+    #funnelContainer .recording-timer {
+      font-size: 0.7rem !important;
+      color: var(--danger) !important;
+    }
+
+    #funnelContainer .waveform {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 3px !important;
+      height: 30px !important;
+      margin: 6px 0 !important;
+    }
+
+    .waveform-bar {
+      width: 3px !important;
+      background: var(--accent) !important;
+      border-radius: 2px !important;
+      transition: height 0.05s ease !important;
+    }
+
+    /* Unhappy Path */
+    #funnelContainer .feedback-label {
+      font-size: 0.8rem !important;
+      color: var(--cream-dim) !important;
+      margin-bottom: 8px !important;
+      text-align: left !important;
+    }
+
+    #funnelContainer .btn-send {
+      width: 100% !important;
+      padding: 12px !important;
+      background: var(--surface-2) !important;
+      color: var(--cream) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 40px !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      margin: 12px 0 8px !important;
+    }
+
+    #funnelContainer .privacy-note {
+      font-size: 0.6rem !important;
+      text-align: center !important;
+      color: var(--cream-dim) !important;
+      margin-top: 8px !important;
+    }
+
+    #funnelContainer .powered-by {
+      text-align: center !important;
+      margin-top: 12px !important;
+      padding-top: 8px !important;
+      font-size: 0.6rem !important;
+      color: rgba(234, 231, 220, 0.25) !important;
+      border-top: 1px solid rgba(234, 231, 220, 0.05) !important;
+    }
+
+    #funnelContainer .powered-by a {
+      color: inherit !important;
+      text-decoration: none !important;
+    }
+
+    .demo-note {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 0.7rem;
+      color: rgba(234,231,220,0.3);
+    }
+
+    /* Modal Styles */
+    .demo-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .demo-modal.open {
+      display: flex;
+    }
+    .demo-modal-content {
+      background: var(--surface);
+      border-radius: 24px;
+      max-width: 320px;
+      width: 85%;
+      padding: 28px 20px;
+      text-align: center;
+      border: 1px solid var(--accent);
+    }
+    .demo-modal-btn {
+      background: var(--accent);
+      color: #1A1A18;
+      padding: 12px 24px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .iphone-mockup {
+        width: 300px;
+        height: 600px;
+      }
+      .funnel-wrapper {
+        padding: 45px 10px 15px;
+      }
+      #funnelContainer .funnel-card {
+        padding: 20px 16px !important;
+      }
+      #funnelContainer .star-rating svg {
+        width: 34px !important;
+        height: 34px !important;
+      }
+      #funnelContainer .btn-copy {
+        padding: 10px !important;
+        font-size: 0.8rem !important;
+      }
+      #funnelContainer .premium-textarea {
+        min-height: 70px !important;
+        font-size: 0.75rem !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .iphone-mockup {
+        width: 280px;
+        height: 560px;
+      }
+      #funnelContainer .star-rating svg {
+        width: 30px !important;
+        height: 30px !important;
+      }
+      #funnelContainer .btn-voice {
+        width: 42px !important;
+        height: 42px !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -236,112 +476,72 @@
     <h3 style="color:white; margin-bottom:10px;">Ready to collect reviews?</h3>
     <p style="color:var(--cream-dim); font-size:0.8rem;">In the live version, this would send your customer straight to Google or capture feedback privately.</p>
     <a href="/admin" class="demo-modal-btn">Start free trial →</a>
-    <button onclick="document.getElementById('demoCtaModal').classList.remove('open')" style="background:none; border:none; color:var(--cream-dim); margin-top:15px; cursor:pointer;">Not now</button>
+    <button onclick="closeDemoModal()" style="background:none; border:none; color:var(--cream-dim); margin-top:15px; cursor:pointer;">Not now</button>
   </div>
 </div>
 
 <script src="/js/funnel-loader.js"></script>
 <script>
-  // 1. Static Sizing Engine (Dynamic overrides removed per your instructions)
-  function scaleContentToFit() {
-    const card = document.querySelector('#funnelContainer .funnel-card');
-    if (!card) return;
-    card.style.transform = 'none'; // Forces card layout to remain strictly static
+  function showDemoModal() {
+    const modal = document.getElementById('demoCtaModal');
+    if (modal) modal.classList.add('open');
   }
-
-  // 2. Star Rating Logic
-  function initStars() {
-    const stars = document.querySelectorAll('#starRating span');
-    if (!stars.length) return;
-    
-    stars.forEach(star => {
-      // Hover effects
-      star.addEventListener('mouseover', () => {
-        const val = parseInt(star.dataset.star);
-        stars.forEach(s => {
-          const sVal = parseInt(s.dataset.star);
-          s.style.filter = sVal <= val ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
-          s.style.transform = sVal <= val ? 'scale(1.15)' : 'scale(1)';
-        });
-      });
-
-      star.addEventListener('mouseout', () => {
-        stars.forEach(s => {
-          s.style.filter = 'grayscale(1) brightness(0.5)';
-          s.style.transform = 'scale(1)';
-        });
-      });
-
-      // Click Handler Integration
-      star.addEventListener('click', () => {
-        const rating = parseInt(star.dataset.star);
-        
-        // Visual feedback for selected stars
-        stars.forEach(s => {
-          const sVal = parseInt(s.dataset.star);
-          s.style.filter = sVal <= rating ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
-          s.style.transform = sVal <= rating ? 'scale(1.15)' : 'scale(1)';
-          s.style.pointerEvents = 'none';
-        });
-
-        // Toggle UI Sections safely without scaling transitions
-        const mainQuestion = document.getElementById("mainQuestion");
-        const reviewSection = document.getElementById("reviewSection");
-        const feedbackBox = document.getElementById("feedbackBox");
-
-        if (mainQuestion) mainQuestion.style.display = "none";
-        
-        if (rating >= 4) {
-          if (reviewSection) reviewSection.style.display = "block";
-        } else {
-          if (feedbackBox) feedbackBox.style.display = "block";
-        }
-        
-        // Run clean sizing enforcement hook safely
-        setTimeout(scaleContentToFit, 50);
-      });
-    });
+  
+  function closeDemoModal() {
+    const modal = document.getElementById('demoCtaModal');
+    if (modal) modal.classList.remove('open');
   }
-
-  // 3. Handle template loading
+  
+  // Override the demo actions to show modal
+  window.copyAndOpenGoogle = showDemoModal;
+  window.startRecording = showDemoModal;
+  window.sendFeedback = showDemoModal;
+  window.leaveReview = showDemoModal;
+  
+  // Load the funnel template
   fetch('/funnel/funnel-template.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('funnelContainer').innerHTML = html;
       
       const nameInput = document.getElementById('businessNameInput');
-      const updateName = (name) => {
+      let currentBusinessName = nameInput.value;
+      
+      function updateBusinessNameInFunnel(name) {
         const bizTitle = document.querySelector('#funnelContainer #businessTitle');
         const headline = document.querySelector('#funnelContainer #mainHeadline');
-        if (bizTitle) bizTitle.textContent = name || "Your Business";
-        if (headline) headline.textContent = `How was your experience at ${name || "Your Business"}?`;
-      };
-
-      nameInput.addEventListener('input', (e) => {
-        updateName(e.target.value);
-        scaleContentToFit();
+        if (bizTitle) bizTitle.textContent = name;
+        if (headline) headline.textContent = `How was your experience at ${name}?`;
+      }
+      
+      nameInput.addEventListener('input', function() {
+        currentBusinessName = this.value.trim() || "Your Business";
+        updateBusinessNameInFunnel(currentBusinessName);
       });
       
       initFunnel('demo', {
-        businessName: nameInput.value,
+        businessName: currentBusinessName,
+        slug: 'demo-business',
         template: 'classic',
         accentColor: '#C8A96E'
       });
-
+      
       setTimeout(() => {
-        updateName(nameInput.value);
-        initStars();
-        scaleContentToFit();
+        updateBusinessNameInFunnel(currentBusinessName);
+        
+        // Find and override all action buttons
+        setTimeout(() => {
+          const copyBtn = document.querySelector('#funnelContainer .btn-copy');
+          if (copyBtn) copyBtn.onclick = showDemoModal;
+          
+          const voiceBtn = document.querySelector('#funnelContainer .btn-voice');
+          if (voiceBtn) voiceBtn.onclick = showDemoModal;
+          
+          const sendBtn = document.querySelector('#funnelContainer .btn-send');
+          if (sendBtn) sendBtn.onclick = showDemoModal;
+        }, 100);
       }, 150);
     });
-
-  // Structural Mutation Handlers
-  const observer = new MutationObserver(() => {
-    setTimeout(scaleContentToFit, 10);
-  });
-  observer.observe(document.getElementById('funnelContainer'), { childList: true, subtree: true });
-
-  window.addEventListener('resize', scaleContentToFit);
 </script>
 
 </body>
