@@ -10,10 +10,6 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/css/funnel.css">
   <link rel="stylesheet" href="/css/demo.css">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
   <style>
     * {
       margin: 0;
@@ -85,28 +81,71 @@
     }
 
     /* FIXED iPhone styles - NEVER change size */
-.iphone-mockup {
-  transition: none !important; /* Prevent phone itself from animating */
-  flex-shrink: 0;
-  height: fit-content;
-}
+    .iphone-mockup {
+      position: relative;
+      background: #000;
+      border-radius: 54px;
+      padding: 12px;
+      box-shadow: 
+        0 30px 60px rgba(0,0,0,0.6),
+        inset 0 0 2px 2px rgba(255,255,255,0.1);
+      /* RIGID DIMENSIONS */
+      width: 320px; 
+      height: 640px;
+      margin: 0 auto;
+      flex-shrink: 0;
+      border: 2px solid #333;
+    }
 
-.iphone-screen {
-  overflow: hidden; /* Prevent scrollbars inside the phone */
-  display: flex;
-  flex-direction: column;
-}
+    /* Hardware Buttons - Increased visibility and fixed z-index */
+    .iphone-mockup::before, 
+    .iphone-mockup::after {
+      content: '';
+      position: absolute;
+      background: #333; /* Lighter than phone body to be visible */
+      border-radius: 2px;
+      z-index: -1; /* Behind the frame rim */
+    }
+
+    /* Power Button (Right Side) */
+    .iphone-mockup::after {
+      width: 4px;
+      height: 50px;
+      right: -4px;
+      top: 160px;
+    }
+    
+    /* Volume Buttons (Left Side) */
+    .iphone-mockup::before {
+      width: 4px;
+      height: 40px;
+      left: -4px;
+      top: 120px;
+      box-shadow: 0 55px 0 #333; 
+    }
+
+    .iphone-screen {
+      background: #1A1A18;
+      border-radius: 42px;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #111;
+    }
 
     .dynamic-island {
       position: absolute;
-      top: 8px;
+      top: 12px;
       left: 50%;
       transform: translateX(-50%);
       width: 100px;
       height: 28px;
-      background: #0A0A0A;
-      border-radius: 24px;
-      z-index: 10;
+      background: #000;
+      border-radius: 20px;
+      z-index: 50;
     }
 
     .demo-badge {
@@ -122,132 +161,24 @@
       font-weight: 600;
     }
 
-    /* Fixed wrapper - content ALWAYS centered with fixed reference */
-.funnel-wrapper {
-  display: flex;
-  align-items: center; /* Vertical center */
-  justify-content: center; /* Horizontal center */
-  position: relative;
-  overflow: hidden;
-  padding: 40px 15px 20px; /* Space for dynamic island and bottom */
-}
-
-    /* Funnel card container */
-#funnelContainer {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-    
-    /* Funnel card - ALWAYS centered */
-#funnelContainer .funnel-card {
-  margin: 0 !important;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 100%;
-  max-width: 340px; /* Base width before scaling */
-}
-
-    /* Hide scrollbars */
-    #funnelContainer .funnel-card::-webkit-scrollbar {
-      display: none;
+    .funnel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 40px 15px 20px;
     }
 
-    /* Content inside the card - compact for happy path */
-    #funnelContainer #businessTitle {
-      font-size: 0.8rem;
-      margin-bottom: 6px;
-    }
-    #funnelContainer #mainHeadline {
-      font-size: 1.2rem;
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    #funnelContainer .subtitle {
-      font-size: 0.55rem;
-      margin-bottom: 10px;
-      letter-spacing: 0.1em;
-    }
-    #funnelContainer .star-rating svg {
-      width: 38px;
-      height: 38px;
-    }
-    #funnelContainer .star-rating {
-      gap: 6px;
-      margin: 8px 0;
-    }
+    #funnelContainer { width: 100%; }
     
-    /* Happy path specific - smaller emoji and headline */
-       /* Happy path specific - compact spacing */
-    #funnelContainer > div > div:first-child > div[style*="font-size:2.5rem"] {
-      font-size: 1.8rem !important;
-      margin-bottom: 4px !important;
+    #funnelContainer .funnel-card {
+      margin: 0 auto !important;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 100%;
     }
-    
-    #funnelContainer h2 {
-      font-size: 1rem !important;
-      margin-bottom: 4px !important;
-    }
-    
-    #funnelContainer .premium-textarea {
-      padding: 8px 12px;
-      font-size: 0.7rem;
-      min-height: 60px;
-      margin-bottom: 8px;
-    }
-    
-        #funnelContainer .btn-copy {
-      padding: 10px 16px;
-      font-size: 0.75rem;
-      margin-bottom: 2px;
-      margin-top: 0;
-    }
-    
-    /* Voice section - tight spacing */
-    #funnelContainer .voice-section {
-      margin-top: 0;
-      padding-top: 0;
-    }
-    
-    #funnelContainer .voice-button-container {
-      margin-top: 2px;
-      gap: 6px;
-    }
-    
-    #funnelContainer .btn-voice {
-      width: 36px;
-      height: 36px;
-    }
-    
-    #funnelContainer .btn-voice svg {
-      width: 18px;
-      height: 18px;
-    }
-    
-    #funnelContainer .waveform {
-      height: 24px;
-      margin: 4px 0;
-    }
-    
-    #funnelContainer .recording-timer {
-      font-size: 0.7rem;
-    }
-    
-    #funnelContainer .btn-send {
-      padding: 10px 16px;
-      font-size: 0.75rem;
-    }
-    
-    #funnelContainer .privacy-note {
-      font-size: 0.55rem;
-      margin-top: 4px;
-      margin-bottom: 2px;
-    }
-    
-      #funnelContainer .powered-by {
-      margin-top: 2px;
-      font-size: 0.55rem;
-    }
+
     .demo-note {
       text-align: center;
       margin-top: 20px;
@@ -256,90 +187,7 @@
       color: rgba(234,231,220,0.3);
     }
 
-    /* Responsive scaling for smaller screens - phone size changes ONCE on load */
-    @media (max-width: 480px) {
-      .iphone-mockup {
-        width: 340px;
-      }
-      .iphone-screen {
-        height: 620px;
-      }
-      .funnel-wrapper {
-        padding: 45px 12px 20px;
-      }
-
-      #funnelContainer #mainHeadline {
-        font-size: 1.1rem;
-      }
-      #funnelContainer .star-rating svg {
-        width: 34px;
-        height: 34px;
-      }
-      #funnelContainer h2 {
-        font-size: 0.9rem !important;
-      }
-      #funnelContainer > div > div:first-child > div[style*="font-size:2.5rem"] {
-        font-size: 1.5rem !important;
-      }
-
-     #funnelContainer .btn-copy {
-        padding: 8px 12px;
-        margin-bottom: 3px;
-      }
-      
-      #funnelContainer .btn-voice {
-        width: 32px;
-        height: 32px;
-      }
-      
-      #funnelContainer .btn-voice svg {
-        width: 16px;
-        height: 16px;
-      }
-      
-      #funnelContainer .premium-textarea {
-        min-height: 50px;
-        margin-bottom: 6px;
-      }
-
-      #funnelContainer .privacy-note {
-        margin-top: 3px;
-        margin-bottom: 1px;
-      }
-
-       
-      #funnelContainer .powered-by {
-        margin-top: 1px;
-      }
-    }
-
-    @media (max-width: 380px) {
-      .iphone-mockup {
-        width: 310px;
-      }
-      .iphone-screen {
-        height: 580px;
-      }
-      .funnel-wrapper {
-        padding: 40px 10px 16px;
-      }
-
-      #funnelContainer #mainHeadline {
-        font-size: 1rem;
-      }
-      #funnelContainer .star-rating svg {
-        width: 30px;
-        height: 30px;
-      }
-      #funnelContainer h2 {
-        font-size: 0.85rem !important;
-      }
-      #funnelContainer > div > div:first-child > div[style*="font-size:2.5rem"] {
-        font-size: 1.3rem !important;
-      }
-    }
-
-    /* Demo CTA Modal */
+    /* Modal Styles */
     .demo-modal {
       position: fixed;
       inset: 0;
@@ -350,9 +198,7 @@
       align-items: center;
       justify-content: center;
     }
-    .demo-modal.open {
-      display: flex;
-    }
+    .demo-modal.open { display: flex; }
     .demo-modal-content {
       background: var(--surface);
       border-radius: 24px;
@@ -361,41 +207,6 @@
       padding: 28px 20px;
       text-align: center;
       border: 1px solid var(--accent);
-      animation: modalFadeIn 0.3s ease;
-    }
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .demo-modal-icon {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-    .demo-modal-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.2rem;
-      margin-bottom: 6px;
-    }
-    .demo-modal-text {
-      color: var(--cream-dim);
-      font-size: 0.8rem;
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-    .demo-modal-features {
-      text-align: left;
-      background: var(--surface-2);
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 16px;
-    }
-    .demo-modal-features p {
-      font-size: 0.75rem;
-      margin: 6px 0;
-      color: var(--cream-dim);
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
     .demo-modal-btn {
       background: var(--accent);
@@ -405,21 +216,7 @@
       text-decoration: none;
       font-weight: 700;
       display: block;
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 0.85rem;
-    }
-    .demo-modal-btn:hover {
-      background: #D4B87A;
-    }
-    .demo-modal-close {
-      background: transparent;
-      border: none;
-      color: var(--cream-dim);
-      cursor: pointer;
-      font-size: 0.8rem;
-      width: 100%;
-      text-align: center;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -449,71 +246,101 @@
   <p class="demo-note">Try tapping the stars — this is exactly how it works in the live version</p>
 </div>
 
-<!-- Demo CTA Modal -->
 <div id="demoCtaModal" class="demo-modal">
   <div class="demo-modal-content">
-    <div class="demo-modal-icon">🚀</div>
-    <h3 class="demo-modal-title">Ready to collect real reviews?</h3>
-    <p class="demo-modal-text">In the live version, this action would complete:</p>
-    <div class="demo-modal-features">
-      <p>✨ Your customer's review goes straight to Google</p>
-      <p>🔒 Complaints are captured privately, never public</p>
-      <p>📊 You see everything in your dashboard</p>
-    </div>
+    <div style="font-size: 2.5rem; margin-bottom: 10px;">🚀</div>
+    <h3 style="color:white; margin-bottom:10px;">Ready to collect reviews?</h3>
+    <p style="color:var(--cream-dim); font-size:0.8rem;">In the live version, this would send your customer straight to Google or capture feedback privately.</p>
     <a href="/admin" class="demo-modal-btn">Start free trial →</a>
-    <button class="demo-modal-close" onclick="closeDemoModal()">Not now</button>
+    <button onclick="document.getElementById('demoCtaModal').classList.remove('open')" style="background:none; border:none; color:var(--cream-dim); margin-top:15px; cursor:pointer;">Not now</button>
   </div>
 </div>
 
 <script src="/js/funnel-loader.js"></script>
-<script src="/js/demo.js"></script>
 <script>
-  // Unified Scaling Engine
+  // 1. Unified Scaling Engine
   function scaleContentToFit() {
     const card = document.querySelector('#funnelContainer .funnel-card');
     const wrapper = document.querySelector('.funnel-wrapper');
-    
     if (!card || !wrapper) return;
     
-    // 1. Reset for clean measurement
-    card.style.transform = 'scale(1)';
-    card.style.marginTop = '0';
+    card.style.transform = 'none';
+    card.style.transformOrigin = 'center center';
     
-    // 2. Measure available space vs content
     const availableHeight = wrapper.offsetHeight;
     const availableWidth = wrapper.offsetWidth;
-    const contentHeight = card.offsetHeight;
-    const contentWidth = card.offsetWidth;
+    const contentHeight = card.scrollHeight;
+    const contentWidth = card.scrollWidth;
     
-    // 3. Calculate scale (with a 0.96 safety buffer)
-    const scaleHeight = (availableHeight * 0.96) / contentHeight;
-    const scaleWidth = (availableWidth * 0.96) / contentWidth;
-    
-    // Only scale down, never up
+    const scaleHeight = (availableHeight * 0.92) / contentHeight;
+    const scaleWidth = (availableWidth * 0.92) / contentWidth;
     const finalScale = Math.min(1, scaleHeight, scaleWidth);
     
-    // 4. Apply transformation
-    card.style.transformOrigin = 'center center';
     card.style.transform = `scale(${finalScale})`;
-    
-    // 5. Vertical Centering
-    // If scaled content is still shorter than wrapper, flex handles centering.
-    // If it's taller, we ensure it doesn't bleed off the top.
-    const scaledHeight = contentHeight * finalScale;
-    if (scaledHeight > availableHeight) {
-        card.style.marginTop = '0px';
-    }
   }
 
-  // Handle template loading and name updates
+  // 2. Star Rating Logic (Integrated here)
+  function initStars() {
+    const stars = document.querySelectorAll('#starRating span');
+    if (!stars.length) return;
+    
+    stars.forEach(star => {
+      // Hover effects
+      star.addEventListener('mouseover', () => {
+        const val = parseInt(star.dataset.star);
+        stars.forEach(s => {
+          const sVal = parseInt(s.dataset.star);
+          s.style.filter = sVal <= val ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
+          s.style.transform = sVal <= val ? 'scale(1.15)' : 'scale(1)';
+        });
+      });
+
+      star.addEventListener('mouseout', () => {
+        stars.forEach(s => {
+          s.style.filter = 'grayscale(1) brightness(0.5)';
+          s.style.transform = 'scale(1)';
+        });
+      });
+
+      // THE CLICK HANDLER
+      star.addEventListener('click', () => {
+        const rating = parseInt(star.dataset.star);
+        
+        // Visual feedback for selected stars
+        stars.forEach(s => {
+          const sVal = parseInt(s.dataset.star);
+          s.style.filter = sVal <= rating ? 'grayscale(0) brightness(1.1)' : 'grayscale(1) brightness(0.5)';
+          s.style.transform = sVal <= rating ? 'scale(1.15)' : 'scale(1)';
+          s.style.pointerEvents = 'none';
+        });
+
+        // Toggle UI Sections
+        const mainQuestion = document.getElementById("mainQuestion");
+        const reviewSection = document.getElementById("reviewSection");
+        const feedbackBox = document.getElementById("feedbackBox");
+
+        if (mainQuestion) mainQuestion.style.display = "none";
+        
+        if (rating >= 4) {
+          if (reviewSection) reviewSection.style.display = "block";
+        } else {
+          if (feedbackBox) feedbackBox.style.display = "block";
+        }
+        
+        // Trigger scaling for the new screen content
+        setTimeout(scaleContentToFit, 50);
+      });
+    });
+  }
+
+  // 3. Handle template loading
   fetch('/funnel/funnel-template.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('funnelContainer').innerHTML = html;
       
       const nameInput = document.getElementById('businessNameInput');
-      
-      const updateBusinessNameInFunnel = (name) => {
+      const updateName = (name) => {
         const bizTitle = document.querySelector('#funnelContainer #businessTitle');
         const headline = document.querySelector('#funnelContainer #mainHeadline');
         if (bizTitle) bizTitle.textContent = name || "Your Business";
@@ -521,32 +348,30 @@
       };
 
       nameInput.addEventListener('input', (e) => {
-        updateBusinessNameInFunnel(e.target.value);
-        scaleContentToFit(); // Re-scale if text wraps
+        updateName(e.target.value);
+        scaleContentToFit();
       });
       
+      // Initialize the funnel and the star listeners
       initFunnel('demo', {
         businessName: nameInput.value,
-        slug: 'demo-business',
         template: 'classic',
         accentColor: '#C8A96E'
       });
-      
-      // Delay slightly to allow styles to inject
+
+      // Initialize stars after a short delay to ensure DOM elements exist
       setTimeout(() => {
-        updateBusinessNameInFunnel(nameInput.value);
+        updateName(nameInput.value);
+        initStars();
         scaleContentToFit();
       }, 150);
     });
 
-  // Observe every change inside the funnel (Rating clicks, UI switches)
+  // Watch for dynamic UI changes (like the feedback box appearing)
   const observer = new MutationObserver(() => {
-    // Small timeout ensures the DOM has rendered the new state (feedback vs review)
     setTimeout(scaleContentToFit, 10);
   });
-
-  const funnelContainer = document.getElementById('funnelContainer');
-  observer.observe(funnelContainer, { childList: true, subtree: true, attributes: true });
+  observer.observe(document.getElementById('funnelContainer'), { childList: true, subtree: true });
 
   window.addEventListener('resize', scaleContentToFit);
 </script>
