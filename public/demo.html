@@ -84,31 +84,27 @@
       text-align: center;
     }
 
-.iphone-mockup {
-  background: #000;
-  border-radius: 44px;
-  padding: 10px;
-  box-shadow: 0 30px 60px rgba(0,0,0,.4);
+    /* FIXED iPhone styles - NEVER change size */
+    .iphone-mockup {
+      background: #000;
+      border-radius: 44px;
+      padding: 10px;
+      box-shadow: 0 30px 60px rgba(0,0,0,.4);
+      width: clamp(290px, 32vw, 360px);
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
 
-  width: clamp(290px, 32vw, 360px);
-
-  margin: 0 auto;
-  flex-shrink: 0;
-}
-
-.iphone-screen {
-  background: #1A1A18;
-  border-radius: 32px;
-  overflow: hidden;
-  position: relative;
-
-  width: 100%;
-
-  height: clamp(520px, 70vh, 620px);
-
-  display: flex;
-  flex-direction: column;
-}
+    .iphone-screen {
+      background: #1A1A18;
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      height: clamp(520px, 70vh, 620px);
+      display: flex;
+      flex-direction: column;
+    }
 
     .dynamic-island {
       position: absolute;
@@ -135,37 +131,28 @@
       font-weight: 600;
     }
 
-    /* Fixed wrapper */
-.funnel-wrapper {
-  flex: 1;
+    /* Fixed wrapper - scales content automatically */
+    .funnel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 56px 16px 24px;
+      position: relative;
+    }
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    /* Funnel card - scales dynamically */
+    #funnelContainer .funnel-card {
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: transform .25s ease, margin-top .25s ease;
+      transform-origin: top center;
+    }
 
-  overflow: hidden;
-
-  padding:
-    56px
-    16px
-    24px;
-
-  position: relative;
-}
-
-    /* Taller funnel-card - never changes size */
-#funnelContainer .funnel-card {
-  width: 100%;
-  max-width: 100%;
-
-  display: flex;
-  flex-direction: column;
-
-  transition:
-    transform .25s ease,
-    opacity .25s ease;
-}
-
+    /* Hide scrollbars */
     #funnelContainer .funnel-card::-webkit-scrollbar {
       display: none;
     }
@@ -250,7 +237,7 @@
       color: rgba(234,231,220,0.3);
     }
 
-    /* Responsive scaling for smaller phones */
+    /* Responsive scaling for smaller screens - phone size changes ONCE on load */
     @media (max-width: 480px) {
       .iphone-mockup {
         width: 340px;
@@ -432,6 +419,44 @@
 <script src="/js/funnel-loader.js"></script>
 <script src="/js/demo.js"></script>
 <script>
+  // Auto-scale function - keeps content fitting without changing phone size
+  function scaleContentToFit() {
+    const card = document.querySelector('#funnelContainer .funnel-card');
+    const wrapper = document.querySelector('.funnel-wrapper');
+    
+    if (!card || !wrapper) return;
+    
+    // Reset transforms first
+    card.style.transform = 'none';
+    card.style.marginTop = '0';
+    
+    // Use requestAnimationFrame for smooth recalculation
+    requestAnimationFrame(() => {
+      const availableHeight = wrapper.clientHeight;
+      const availableWidth = wrapper.clientWidth;
+      const contentHeight = card.scrollHeight;
+      const contentWidth = card.scrollWidth;
+      
+      // Calculate scale to fit within both dimensions
+      const scaleHeight = availableHeight / contentHeight;
+      const scaleWidth = availableWidth / contentWidth;
+      const scale = Math.min(1, scaleHeight, scaleWidth);
+      
+      // Apply transform
+      card.style.transformOrigin = 'top center';
+      card.style.transform = `scale(${scale})`;
+      
+      // Center vertically if needed
+      const scaledHeight = contentHeight * scale;
+      if (scaledHeight < availableHeight) {
+        const topOffset = (availableHeight - scaledHeight) / 2;
+        card.style.marginTop = `${topOffset}px`;
+      } else {
+        card.style.marginTop = '0';
+      }
+    });
+  }
+  
   // Load the funnel HTML template
   fetch('/funnel/funnel-template.html')
     .then(res => res.text())
@@ -463,65 +488,34 @@
       });
       
       setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
+      
+      // Initial scale after content loads
+      setTimeout(scaleContentToFit, 150);
     });
-
-function scaleContentToFit() {
-  const card = document.querySelector('#funnelContainer .funnel-card');
-  const wrapper = document.querySelector('.funnel-wrapper');
-
-  if (!card || !wrapper) return;
-
-  card.style.transform = 'none';
-  card.style.margin = '0';
-
-  requestAnimationFrame(() => {
-    const availableHeight = wrapper.clientHeight;
-    const availableWidth = wrapper.clientWidth;
-
-    const contentHeight = card.scrollHeight;
-    const contentWidth = card.scrollWidth;
-
-    const scaleHeight = availableHeight / contentHeight;
-    const scaleWidth = availableWidth / contentWidth;
-
-    const scale = Math.min(1, scaleHeight, scaleWidth);
-
-    card.style.transformOrigin = 'top center';
-    card.style.transform = `scale(${scale})`;
-
-    const scaledHeight = contentHeight * scale;
-    const topOffset = Math.max(
-      0,
-      (availableHeight - scaledHeight) / 2
-    );
-
-    card.style.marginTop = `${topOffset}px`;
-  });
-}
   
-  // Run after content loads and when content changes
-  const observer = new MutationObserver(function() {
-    setTimeout(scaleContentToFit, 50);
+  // Watch for content changes (when rating changes page)
+  const observer = new MutationObserver(function(mutations) {
+    // Debounce to avoid too many calls
+    clearTimeout(window.scaleTimeout);
+    window.scaleTimeout = setTimeout(scaleContentToFit, 50);
   });
   
   // Start observing when funnel container is populated
   const funnelContainer = document.getElementById('funnelContainer');
   if (funnelContainer) {
     observer.observe(funnelContainer, {
-  childList: true,
-  subtree: true,
-  attributes: true,
-  characterData: true
-});
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true
+    });
   }
   
   // Also run on window resize
   window.addEventListener('resize', function() {
-    setTimeout(scaleContentToFit, 100);
+    clearTimeout(window.resizeTimeout);
+    window.resizeTimeout = setTimeout(scaleContentToFit, 100);
   });
-  
-  // Initial scale
-  setTimeout(scaleContentToFit, 200);
 </script>
 
 </body>

@@ -1,4 +1,4 @@
-// demo.html - review funnel demo with modal CTA
+// demo.js - review funnel demo with modal CTA and content scaling
 
 // Modal functions
 function showDemoModal() {
@@ -14,6 +14,39 @@ function closeDemoModal() {
     modal.classList.remove('open');
   }
 }
+
+// Global scale function that can be called from funnel.js
+window.scaleDemoContent = function() {
+  const card = document.querySelector('#funnelContainer .funnel-card');
+  const wrapper = document.querySelector('.funnel-wrapper');
+  
+  if (!card || !wrapper) return;
+  
+  card.style.transform = 'none';
+  card.style.marginTop = '0';
+  
+  requestAnimationFrame(() => {
+    const availableHeight = wrapper.clientHeight;
+    const availableWidth = wrapper.clientWidth;
+    const contentHeight = card.scrollHeight;
+    const contentWidth = card.scrollWidth;
+    
+    const scaleHeight = availableHeight / contentHeight;
+    const scaleWidth = availableWidth / contentWidth;
+    const scale = Math.min(1, scaleHeight, scaleWidth);
+    
+    card.style.transformOrigin = 'top center';
+    card.style.transform = `scale(${scale})`;
+    
+    const scaledHeight = contentHeight * scale;
+    if (scaledHeight < availableHeight) {
+      const topOffset = (availableHeight - scaledHeight) / 2;
+      card.style.marginTop = `${topOffset}px`;
+    } else {
+      card.style.marginTop = '0';
+    }
+  });
+};
 
 // Updated button functions - show modal instead of direct action
 function copyAndOpenGoogle() {
@@ -66,6 +99,11 @@ function leaveReview() {
       } else {
         document.getElementById("feedbackBox").style.display = "block";
       }
+      
+      // Trigger content scaling after UI changes
+      setTimeout(() => {
+        if (window.scaleDemoContent) window.scaleDemoContent();
+      }, 100);
     });
   });
 })();
@@ -86,40 +124,7 @@ let demoSeconds = 0;
 
 async function startDemoRecording() {
   showDemoModal();
-  // Original recording code would go here, but showing modal instead
   return;
-  
-  // Keep original code commented for reference
-  /*
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    demoMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-    demoAudioChunks = [];
-    demoMediaRecorder.ondataavailable = e => { if (e.data.size > 0) demoAudioChunks.push(e.data); };
-    demoMediaRecorder.onstop = () => {
-      stream.getTracks().forEach(t => t.stop());
-      document.getElementById("voiceResult").innerHTML = `
-        <div style="background:rgba(106,158,127,0.08);border:1px solid rgba(106,158,127,0.2);border-radius:8px;padding:14px;margin-bottom:12px;">
-          <p style="color:#8EC9A8;font-size:0.85rem;margin-bottom:8px;">✅ In the live version, your voice note would be transcribed and analysed by AI — positive feedback goes to Google, negative stays private.</p>
-        </div>`;
-      document.getElementById("recordBtn").style.display = "none";
-    };
-    demoMediaRecorder.start();
-    document.getElementById("recordBtn").textContent = "⏹ Stop recording";
-    document.getElementById("recordBtn").onclick = stopDemoRecording;
-    document.getElementById("recordingTimer").style.display = "inline";
-    demoSeconds = 0;
-    demoRecordingTimer = setInterval(() => {
-      demoSeconds++;
-      const mins = Math.floor(demoSeconds / 60);
-      const secs = demoSeconds % 60;
-      document.getElementById("recordingTimer").textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-      if (demoSeconds >= 30) stopDemoRecording();
-    }, 1000);
-  } catch(e) {
-    document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed. Please allow it and try again.</p>';
-  }
-  */
 }
 
 function stopDemoRecording() {
