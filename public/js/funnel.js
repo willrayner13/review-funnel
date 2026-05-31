@@ -17,16 +17,25 @@ function applyFunnelCustomisation() {
   document.documentElement.style.setProperty('--accent', accentColor);
   
   const headlineEl = document.getElementById('mainHeadline');
-  if (window.funnelHeadline && window.funnelHeadline.trim() !== '') {
-    headlineEl.textContent = window.funnelHeadline;
-  } else if (window.businessName) {
-    headlineEl.textContent = `How was your experience at ${window.businessName}?`;
+  if (headlineEl) {
+    if (window.funnelHeadline && window.funnelHeadline.trim() !== '') {
+      headlineEl.textContent = window.funnelHeadline;
+    } else if (window.businessName) {
+      headlineEl.textContent = `How was your experience at ${window.businessName}?`;
+    }
+  }
+  
+  const businessTitleEl = document.getElementById('businessTitle');
+  if (businessTitleEl && window.businessName) {
+    businessTitleEl.textContent = window.businessName;
   }
   
   if (window.funnelLogoUrl && window.funnelLogoUrl.length > 0) {
     const logo = document.getElementById('funnelLogo');
-    logo.src = window.funnelLogoUrl;
-    logo.style.display = 'block';
+    if (logo) {
+      logo.src = window.funnelLogoUrl;
+      logo.style.display = 'block';
+    }
   }
 }
 
