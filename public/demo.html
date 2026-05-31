@@ -144,12 +144,28 @@
       height: 100%;
     }
 
-    /* CARD - NO SCROLLBAR */
+    /* FORCE ALL SCREENS TO HAVE SAME CARD HEIGHT (520px) */
+    #funnelContainer .funnel-card,
+    #funnelContainer #mainQuestion,
+    #funnelContainer #reviewSection,
+    #funnelContainer #feedbackBox {
+      height: 520px !important;
+      min-height: 520px !important;
+      max-height: 520px !important;
+    }
+
+    /* Make inner sections fill the height and center content */
+    #funnelContainer .section {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* CARD STYLES - ALL SCREENS SAME SIZE */
     #funnelContainer .funnel-card {
       margin: 0 auto !important;
       width: 100% !important;
-      height: auto !important;
-      max-height: 100% !important;
       display: flex !important;
       flex-direction: column !important;
       padding: 20px 16px !important;
@@ -157,25 +173,24 @@
       border-radius: 24px !important;
       position: relative;
       border: 1px solid rgba(234, 231, 220, 0.08) !important;
-      overflow: visible !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
     }
 
-    /* Hide any scrollbars completely */
+    /* Hide scrollbars completely */
     #funnelContainer .funnel-card::-webkit-scrollbar {
       display: none !important;
       width: 0 !important;
       height: 0 !important;
     }
 
-    /* Hide business title completely - it's duplicated */
-/* Completely hide business title */
-/* Hide duplicate business name elements */
-#funnelContainer #businessTitle,
-#funnelContainer #businessNameDisplay,
-#businessTitle,
-#businessNameDisplay {
-  display: none !important;
-}
+    /* Hide duplicate business name elements */
+    #funnelContainer #businessTitle,
+    #funnelContainer #businessNameDisplay,
+    #businessTitle,
+    #businessNameDisplay {
+      display: none !important;
+    }
 
     /* Typography */
     #funnelContainer #mainHeadline {
