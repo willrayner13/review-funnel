@@ -73,41 +73,37 @@
       border-radius: 44px;
       padding: 12px;
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-      max-width: 380px;
+      max-width: 360px;
       margin: 0 auto;
     }
     .iphone-screen {
       background: #1A1A18;
       border-radius: 32px;
-      overflow-y: auto;
+      overflow: hidden;
       position: relative;
-      min-height: 480px;
-      max-height: 650px;
-      transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .dynamic-island {
       position: absolute;
-      top: 10px;
+      top: 8px;
       left: 50%;
       transform: translateX(-50%);
-      width: 110px;
-      height: 32px;
+      width: 100px;
+      height: 28px;
       background: #0A0A0A;
       border-radius: 24px;
       z-index: 10;
     }
     .iphone-content {
-      padding: 60px 16px 32px;
-      min-height: 480px;
+      padding: 50px 16px 30px;
     }
     .demo-badge {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 8px;
+      right: 8px;
       background: rgba(200,169,110,0.2);
       color: var(--accent);
-      font-size: 0.6rem;
-      padding: 2px 8px;
+      font-size: 0.5rem;
+      padding: 2px 6px;
       border-radius: 20px;
       z-index: 20;
       font-weight: 600;
@@ -119,13 +115,83 @@
       color: rgba(234,231,220,0.3);
     }
 
-    /* Responsive heights */
-    @media (max-width: 380px) {
-      .iphone-screen { min-height: 460px; max-height: 580px; }
-      .iphone-content { padding: 50px 12px 24px; }
+    /* Smaller typography for the funnel - everything fits without scrolling */
+    .iphone-content #businessTitle {
+      font-size: 0.7rem !important;
+      margin-bottom: 6px !important;
     }
-    @media (min-width: 381px) and (max-width: 480px) {
-      .iphone-screen { min-height: 480px; max-height: 600px; }
+    .iphone-content #mainHeadline {
+      font-size: 1.15rem !important;
+      margin-bottom: 4px !important;
+      line-height: 1.3 !important;
+    }
+    .iphone-content .subtitle {
+      font-size: 0.55rem !important;
+      margin-bottom: 14px !important;
+      letter-spacing: 0.1em !important;
+    }
+    .iphone-content .star-rating svg {
+      width: 38px !important;
+      height: 38px !important;
+    }
+    .iphone-content .star-rating {
+      gap: 6px !important;
+      margin: 10px 0 !important;
+    }
+    .iphone-content h2 {
+      font-size: 1.15rem !important;
+      margin-bottom: 6px !important;
+    }
+    .iphone-content .premium-textarea {
+      padding: 8px 12px !important;
+      font-size: 0.75rem !important;
+      min-height: 70px !important;
+      margin-bottom: 10px !important;
+    }
+    .iphone-content .btn-copy {
+      padding: 10px 16px !important;
+      font-size: 0.8rem !important;
+      margin-bottom: 10px !important;
+    }
+    .iphone-content .btn-voice {
+      width: 44px !important;
+      height: 44px !important;
+    }
+    .iphone-content .voice-section {
+      margin-top: 10px !important;
+      padding-top: 10px !important;
+    }
+    .iphone-content .btn-send {
+      padding: 10px 16px !important;
+      font-size: 0.8rem !important;
+    }
+    .iphone-content .privacy-note {
+      font-size: 0.55rem !important;
+    }
+    .iphone-content .powered-by {
+      margin-top: 12px !important;
+      font-size: 0.55rem !important;
+    }
+
+    /* Very small phones (iPhone SE, etc.) */
+    @media (max-width: 380px) {
+      .iphone-content {
+        padding: 45px 12px 20px;
+      }
+      .iphone-content #mainHeadline {
+        font-size: 1rem !important;
+      }
+      .iphone-content .star-rating svg {
+        width: 32px !important;
+        height: 32px !important;
+      }
+      .iphone-content h2 {
+        font-size: 1rem !important;
+      }
+      .iphone-content .premium-textarea {
+        font-size: 0.7rem !important;
+        min-height: 65px !important;
+      }
     }
 
     /* Demo CTA Modal */
@@ -291,37 +357,6 @@
       
       setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
     });
-</script>
-
-<!-- Auto-adjust phone height based on content -->
-<script>
-  function adjustPhoneHeight() {
-    const iphoneScreen = document.querySelector('.iphone-screen');
-    const iphoneContent = document.querySelector('.iphone-content');
-    
-    if (iphoneContent && iphoneScreen) {
-      const contentHeight = iphoneContent.scrollHeight;
-      const newHeight = Math.min(Math.max(contentHeight + 30, 480), 650);
-      iphoneScreen.style.height = newHeight + 'px';
-    }
-  }
-  
-  // Watch for content changes in the funnel container
-  const funnelContainer = document.getElementById('funnelContainer');
-  if (funnelContainer) {
-    const observer = new MutationObserver(function() {
-      setTimeout(adjustPhoneHeight, 50);
-    });
-    observer.observe(funnelContainer, { childList: true, subtree: true, attributes: true });
-  }
-  
-  // Also adjust when stars are clicked (through event delegation)
-  document.addEventListener('click', function() {
-    setTimeout(adjustPhoneHeight, 100);
-  });
-  
-  // Initial adjustment
-  setTimeout(adjustPhoneHeight, 500);
 </script>
 
 </body>
