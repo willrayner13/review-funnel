@@ -95,82 +95,83 @@
     margin: 0 auto !important;
     width: 94% !important;
     
-    /* 1. LOCK THE HEIGHT HERE */
-    height: 460px !important; 
+    /* UPDATED: Increased height to 500px */
+    height: 500px !important; 
     
-    /* 2. CENTER CONTENT VERTICALLY INSIDE THE LOCK */
+    /* CENTER CONTENT VERTICALLY INSIDE THE LOCK */
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important; 
     
-    padding: 20px 15px !important;
+    padding: 24px 18px !important; /* Slightly more internal padding now */
     transform: none !important;
     transition: none !important;
     background: var(--surface) !important;
     border-radius: 16px !important;
+    position: relative;
   }
 
-  /* --- COMPACT CONTENT RULES (To fit the 460px box) --- */
+  /* --- COMPACT CONTENT RULES --- */
 
   #funnelContainer h1, 
   #funnelContainer h2,
   #funnelContainer [style*="font-size: 2.5rem"],
   #funnelContainer [style*="font-size: 2rem"] {
-    font-size: 1.15rem !important; 
-    line-height: 1.1 !important;
-    margin-bottom: 8px !important;
+    font-size: 1.2rem !important; 
+    line-height: 1.15 !important;
+    margin-bottom: 10px !important;
   }
 
   #funnelContainer textarea {
-    min-height: 60px !important;
-    max-height: 70px !important;
+    min-height: 70px !important; /* Slightly taller textarea */
+    max-height: 85px !important;
     font-size: 0.8rem !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 10px !important;
   }
 
   #funnelContainer .voice-section {
-    margin-top: 5px !important;
-    padding-top: 5px !important;
+    margin-top: 8px !important;
+    padding-top: 8px !important;
     border-top: 1px solid rgba(234,231,220,0.1) !important;
   }
 
   #funnelContainer .btn-voice {
-    width: 44px !important;
-    height: 44px !important;
+    width: 48px !important; /* Slightly larger mic button */
+    height: 48px !important;
   }
 
   #funnelContainer .waveform {
-    height: 15px !important;
-    margin-bottom: 5px !important;
+    height: 18px !important;
+    margin-bottom: 6px !important;
   }
 
   #funnelContainer .star-rating {
-    margin: 10px 0 !important;
-    gap: 4px !important;
+    margin: 12px 0 !important;
+    gap: 5px !important;
   }
 
   #funnelContainer .star-rating svg {
-    width: 28px !important;
-    height: 28px !important;
+    width: 30px !important;
+    height: 30px !important;
   }
 
   #funnelContainer button.btn-primary,
   #funnelContainer .btn-copy {
-    padding: 10px !important;
-    font-size: 0.85rem !important;
-    margin-top: 8px !important;
+    padding: 12px !important;
+    font-size: 0.9rem !important;
+    margin-top: 10px !important;
   }
 
   #funnelContainer p, 
   #funnelContainer .subtitle,
   #funnelContainer #businessTitle {
     font-size: 0.75rem !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 5px !important;
   }
 
   #funnelContainer .powered-by {
     position: absolute;
-    bottom: 10px;
+    bottom: 12px;
     left: 0;
     right: 0;
     font-size: 0.55rem !important;
