@@ -131,25 +131,28 @@
       font-weight: 600;
     }
 
-    /* Fixed wrapper - scales content automatically */
+    /* Fixed wrapper - content ALWAYS centered */
     .funnel-wrapper {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow: visible;
       padding: 56px 16px 24px;
       position: relative;
+      min-height: 0;
     }
 
-    /* Funnel card - scales dynamically */
+    /* Funnel card - ALWAYS centered, scales but stays put */
     #funnelContainer .funnel-card {
       width: 100%;
       max-width: 100%;
       display: flex;
       flex-direction: column;
-      transition: transform .25s ease, margin-top .25s ease;
-      transform-origin: top center;
+      transition: transform .2s ease;
+      transform-origin: center center !important;
+      margin: 0 auto !important;
+      position: relative;
     }
 
     /* Hide scrollbars */
@@ -419,42 +422,39 @@
 <script src="/js/funnel-loader.js"></script>
 <script src="/js/demo.js"></script>
 <script>
-  // Auto-scale function - keeps content fitting without changing phone size
+  // Auto-scale function - keeps content centered WITHOUT moving position
   function scaleContentToFit() {
     const card = document.querySelector('#funnelContainer .funnel-card');
     const wrapper = document.querySelector('.funnel-wrapper');
     
     if (!card || !wrapper) return;
     
-    // Reset transforms first
-    card.style.transform = 'none';
-    card.style.marginTop = '0';
+    const availableHeight = wrapper.clientHeight;
+    const availableWidth = wrapper.clientWidth;
+    const contentHeight = card.scrollHeight;
+    const contentWidth = card.scrollWidth;
     
-    // Use requestAnimationFrame for smooth recalculation
-    requestAnimationFrame(() => {
-      const availableHeight = wrapper.clientHeight;
-      const availableWidth = wrapper.clientWidth;
-      const contentHeight = card.scrollHeight;
-      const contentWidth = card.scrollWidth;
-      
-      // Calculate scale to fit within both dimensions
-      const scaleHeight = availableHeight / contentHeight;
-      const scaleWidth = availableWidth / contentWidth;
-      const scale = Math.min(1, scaleHeight, scaleWidth);
-      
-      // Apply transform
-      card.style.transformOrigin = 'top center';
-      card.style.transform = `scale(${scale})`;
-      
-      // Center vertically if needed
-      const scaledHeight = contentHeight * scale;
-      if (scaledHeight < availableHeight) {
-        const topOffset = (availableHeight - scaledHeight) / 2;
-        card.style.marginTop = `${topOffset}px`;
-      } else {
-        card.style.marginTop = '0';
-      }
-    });
+    // Calculate scale - NEVER scale up, only down if needed
+    const scaleHeight = availableHeight / contentHeight;
+    const scaleWidth = availableWidth / contentWidth;
+    let scale = Math.min(1, scaleHeight, scaleWidth);
+    
+    // Apply scale from CENTER (not top)
+    card.style.transformOrigin = 'center center';
+    card.style.transform = `scale(${scale})`;
+    
+    // Force card to stay centered
+    card.style.position = 'relative';
+    card.style.top = 'auto';
+    card.style.left = 'auto';
+    card.style.margin = '0 auto';
+  }
+  
+  // Force recalibration after any content change
+  function forceCenterAndScale() {
+    setTimeout(scaleContentToFit, 10);
+    setTimeout(scaleContentToFit, 50);
+    setTimeout(scaleContentToFit, 100);
   }
   
   // Load the funnel HTML template
@@ -490,14 +490,12 @@
       setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
       
       // Initial scale after content loads
-      setTimeout(scaleContentToFit, 150);
+      forceCenterAndScale();
     });
   
   // Watch for content changes (when rating changes page)
   const observer = new MutationObserver(function(mutations) {
-    // Debounce to avoid too many calls
-    clearTimeout(window.scaleTimeout);
-    window.scaleTimeout = setTimeout(scaleContentToFit, 50);
+    forceCenterAndScale();
   });
   
   // Start observing when funnel container is populated
@@ -513,8 +511,7 @@
   
   // Also run on window resize
   window.addEventListener('resize', function() {
-    clearTimeout(window.resizeTimeout);
-    window.resizeTimeout = setTimeout(scaleContentToFit, 100);
+    forceCenterAndScale();
   });
 </script>
 
