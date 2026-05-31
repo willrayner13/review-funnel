@@ -184,6 +184,50 @@
     font-size: 0.55rem !important;
   }
 
+  /* --- VOICE SECTION COMPRESSION --- */
+
+/* 1. Reduce the massive gap at the top of the voice section */
+#funnelContainer .voice-section {
+  margin-top: 8px !important;
+  padding-top: 8px !important;
+  border-top: 1px solid rgba(234, 231, 220, 0.1) !important;
+}
+
+/* 2. Shrink the waveform height and bottom gap */
+#funnelContainer .waveform {
+  height: 20px !important; 
+  margin-bottom: 6px !important;
+  gap: 2px !important;
+}
+
+#funnelContainer .waveform-bar {
+  width: 2px !important;
+}
+
+/* 3. Shrink the Microphone Button (from 64px down to 44px) */
+#funnelContainer .btn-voice {
+  width: 44px !important;
+  height: 44px !important;
+  border-width: 1px !important;
+}
+
+#funnelContainer .btn-voice svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* 4. Tighten the container that holds the button and timer */
+#funnelContainer .voice-button-container {
+  gap: 4px !important;
+}
+
+/* 5. Shrink the "Or record a voice note" label if it exists */
+#funnelContainer .voice-section p,
+#funnelContainer .voice-section span {
+  font-size: 0.65rem !important;
+  margin-bottom: 2px !important;
+}
+
   /* Hardware / UI elements */
   .dynamic-island {
     position: absolute;
