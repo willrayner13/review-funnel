@@ -10,7 +10,8 @@
     { "src": "/blog/(.*)", "dest": "server/index.js" },
     { "src": "/(.*)\\.(css|js|png|jpg|jpeg|gif|svg|ico|webmanifest|txt|xml)", "dest": "server/index.js" },
     { "src": "/(.*)", "dest": "server/index.js" },
-    { "src": "/style.css", "dest": "/public/style.css" }
+    { "src": "/style.css", "dest": "/public/style.css" },
+    { "src": "/site.webmanifest", "dest": "/public/site.webmanifest" }
   ],
   "crons": [
     { "path": "/cron/reputation-scores", "schedule": "0 8 1 * *" },
