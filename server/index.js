@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const session = require("express-session");
 const path = require("path");
+const fs = require("fs");
 
 // ─── SERVICES ───────────────────────────────────────────────────────────────────
 const emailService = require("./services/emailService");
@@ -38,13 +39,24 @@ const markConversions = require("./cron/mark-conversions");
 
 const app = express();
 
+// ─── HELPER FUNCTION FOR ESCAPING ──────────────────────────────────────────────
+function escapeJS(str) {
+  if (!str) return '';
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
+}
+
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.set("trust proxy", 1);
 app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/debug-check", (req, res) => {
-  const fs = require('fs');
   const cssPath = path.join(__dirname, "../public/css/about.css");
   const jsPath = path.join(__dirname, "../public/js/about.js");
   res.json({
@@ -56,7 +68,6 @@ app.get("/debug-check", (req, res) => {
 });
 
 app.get("/debug-blog/:slug", (req, res) => {
-  const fs = require("fs");
   const slug = req.params.slug;
   const paths = [
     path.join(__dirname, "../public/blog", `${slug}.html`),
@@ -70,7 +81,6 @@ app.get("/debug-blog/:slug", (req, res) => {
 });
 
 app.get("/debug-demo", (req, res) => {
-  const fs = require("fs");
   const cssPath = path.join(__dirname, "../public/css/demo.css");
   const htmlPath = path.join(__dirname, "../public/demo.html");
   res.json({
@@ -86,6 +96,7 @@ app.use("/js", express.static(path.join(__dirname, "../public/js")));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
 app.use("/components", express.static(path.join(__dirname, "../public/components")));
 app.use("/blog", express.static(path.join(__dirname, "../public/blog")));
+app.use("/funnel", express.static(path.join(__dirname, "../public/funnel")));
 
 // Session store
 app.use(
@@ -104,10 +115,68 @@ app.use(
   })
 );
 
-
-
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// ─── REVIEW FUNNEL ROUTE (must come before other routes) ───────────────────────
+app.get("/r/:business", async (req, res) => {
+  let slug = req.params.business;
+  
+  // Check if this is a custom domain request
+  const host = req.get('host');
+  if (host && host !== process.env.BASE_URL?.replace('https://', '')) {
+    const { data: domainMatch } = await supabase
+      .from("businesses")
+      .select("slug")
+      .eq("funnel_custom_domain", host)
+      .single();
+    if (domainMatch) {
+      slug = domainMatch.slug;
+    }
+  }
+  
+  const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
+  if (error || !data) return res.status(404).send("Business not found");
+
+  // Record visit event
+  await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
+
+  // Get translated content if language is set
+  let headline = data.funnel_headline || `How was your experience at ${data.name}?`;
+  let happyLabel = data.funnel_happy_label || 'Great experience!';
+  let unhappyLabel = data.funnel_unhappy_label || 'Could be better';
+  let thankyouMessage = data.funnel_thankyou_message || 'Thank you for your feedback — it means a lot to us.';
+  
+  if (data.funnel_language && data.funnel_language !== 'en') {
+    headline = data.funnel_translated_headline || headline;
+    happyLabel = data.funnel_translated_happy_label || happyLabel;
+    unhappyLabel = data.funnel_translated_unhappy_label || unhappyLabel;
+    thankyouMessage = data.funnel_translated_thankyou_message || thankyouMessage;
+  }
+
+  // Read the funnel loader HTML template
+  const loaderPath = path.join(__dirname, "../public", "funnel-loader-template.html");
+  let loaderHtml = fs.readFileSync(loaderPath, "utf8");
+  
+  // Inject business data into the page
+  const injectedHtml = loaderHtml.replace('</body>', `
+    <script>
+      window.serverSlug = "${escapeJS(slug)}";
+      window.serverBusinessName = "${escapeJS(data.name)}";
+      window.serverReviewLink = "${escapeJS(data.review_link || '')}";
+      window.serverFunnelTemplate = "${escapeJS(data.funnel_template || 'classic')}";
+      window.serverFunnelAccentColor = "${escapeJS(data.funnel_accent_color || '#C8A96E')}";
+      window.serverFunnelLogoUrl = "${escapeJS(data.funnel_logo_url || '')}";
+      window.serverFunnelHeadline = "${escapeJS(headline)}";
+      window.serverFunnelHappyLabel = "${escapeJS(happyLabel)}";
+      window.serverFunnelUnhappyLabel = "${escapeJS(unhappyLabel)}";
+      window.serverFunnelThankyouMessage = "${escapeJS(thankyouMessage)}";
+      window.isLapsed = ${!data.subscription_active};
+    </script>
+  </body>`);
+  
+  res.send(injectedHtml);
 });
 
 // ─── ROUTES ────────────────────────────────────────────────────────────────────
@@ -144,14 +213,12 @@ app.get("/cron/mark-conversions", async (req, res) => {
 
 // ─── API WEBHOOKS ──────────────────────────────────────────────────────────────
 app.post("/api/hook/:slug", async (req, res) => {
-  // Import and handle dynamically to avoid circular dependencies
   const campaignsRouter = require("./routes/campaigns");
   const routerLayer = campaignsRouter.stack.find(layer => 
     layer.route && layer.route.path === "/send-sms"
   );
   
   if (routerLayer) {
-    // Forward to the campaigns router
     campaignsRouter(req, res);
   } else {
     res.status(404).json({ error: "Webhook endpoint not found" });
@@ -200,7 +267,6 @@ app.get("/report/:slug", async (req, res) => {
   const avgRating = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "N/A";
   const recentFeedback = thisMonthEvents.filter((e) => e.event_type === "negative" && e.message).slice(0, 4);
 
-  // Prepare metrics for pdfService
   const metrics = {
     reviewsCollected: thisPos,
     feedbackCaptured: thisNeg,
@@ -212,17 +278,14 @@ app.get("/report/:slug", async (req, res) => {
     isPositiveTrend: thisPos >= lastPos,
   };
 
-  // Generate PDF using service
   const doc = pdfService.generateMonthlyReport(business, metrics, recentFeedback);
   
-  // Set response headers
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader(
     "Content-Disposition",
     `attachment; filename=${(business.agency_name || business.name).replace(/\s/g, "-")}-Report-${now.toISOString().slice(0, 7)}.pdf`
   );
   
-  // Pipe the PDF to the response
   doc.pipe(res);
   doc.end();
 });
@@ -235,11 +298,9 @@ app.get("/lapsed-redirect/:slug", async (req, res) => {
 
 // ─── 404 HANDLER (catch-all for unmatched routes) ─────────────────────────────
 app.use((req, res) => {
-  // Check if the request is for an API endpoint
   if (req.path.startsWith("/api/") || req.path.startsWith("/cron/")) {
     return res.status(404).json({ error: "API endpoint not found" });
   }
-  // For HTML pages, try to serve the 404 page or redirect to home
   res.status(404).sendFile(path.join(__dirname, "../public", "404.html"), (err) => {
     if (err) res.status(404).send("Page not found");
   });

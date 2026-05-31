@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Try the ReviewLift review funnel demo. See how happy customers go to Google and unhappy feedback stays private.">
-  <meta name="keywords" content="reviewlift demo, review funnel example, google review funnel test, free review tool demo">
-  <link rel="canonical" href="https://www.reviewlift.app/demo">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ReviewLift Demo — See it in action</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,133 +13,173 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
+  <style>
+    body {
+      background: #1A1A18;
+      padding-top: 70px;
+    }
+    .demo-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--accent, #C8A96E);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      z-index: 100;
+    }
+    .demo-banner span { color: #1A1A18; font-size: 0.85rem; font-weight: 500; }
+    .demo-banner .demo-cta {
+      background: #1A1A18;
+      color: var(--accent, #C8A96E);
+      padding: 8px 20px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .demo-input-section {
+      text-align: center;
+      margin-bottom: 32px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .demo-input-section label {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      display: block;
+      margin-bottom: 12px;
+    }
+    .demo-input-section input {
+      width: 100%;
+      padding: 14px 20px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--cream);
+      font-size: 1rem;
+      text-align: center;
+    }
+    .iphone-mockup {
+      background: #000;
+      border-radius: 44px;
+      padding: 12px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      max-width: 380px;
+      margin: 0 auto;
+    }
+    .iphone-screen {
+      background: #1A1A18;
+      border-radius: 32px;
+      overflow: hidden;
+      min-height: 580px;
+      position: relative;
+    }
+    .dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 32px;
+      background: #0A0A0A;
+      border-radius: 24px;
+      z-index: 10;
+    }
+    .iphone-content {
+      padding: 60px 16px 32px;
+      min-height: 580px;
+    }
+    .demo-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(200,169,110,0.2);
+      color: var(--accent);
+      font-size: 0.6rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      z-index: 20;
+      font-weight: 600;
+    }
+    .demo-note {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.75rem;
+      color: rgba(234,231,220,0.3);
+    }
+  </style>
 </head>
-<body id="demoBody">
+<body>
 
 <div class="demo-banner">
   <span>👆 This is a live demo — this is what your customers would see</span>
   <a href="/admin" class="demo-cta">Get this for my business →</a>
 </div>
 
-<div style="margin-top: 80px; padding: 0 20px;">
+<div style="margin-top: 20px; padding: 0 20px;">
   <div class="demo-input-section">
     <label>See how it looks for your business</label>
-    <input type="text" id="demoInput" placeholder="Type your business name..." oninput="updateDemoBusinessName()">
+    <input type="text" id="businessNameInput" placeholder="Type your business name..." value="The Coffee House">
   </div>
 
   <div class="iphone-mockup">
-    <div class="iphone-screen iphone-glass">
+    <div class="iphone-screen">
       <div class="dynamic-island"></div>
-      <div class="iphone-content" id="demoFunnelContent">
-        <!-- Funnel content will be duplicated here via JS -->
-      </div>
+      <div class="demo-badge">DEMO</div>
+      <div class="iphone-content" id="funnelContainer"></div>
     </div>
   </div>
+  
+  <p class="demo-note">Try tapping the stars — this is exactly how it works in the live version</p>
 </div>
 
+<script src="/js/funnel-loader.js"></script>
 <script>
-// Demo page - replicates funnel functionality for preview
-let demoSlug = 'demo-business';
-
-// Apply funnel customisation for demo
-function applyDemoCustomisation() {
-  const template = 'classic';
-  const accentColor = '#C8A96E';
-  document.body.classList.add(`template-${template}`);
-  document.documentElement.style.setProperty('--accent', accentColor);
-}
-
-// Update business name in demo
-function updateDemoBusinessName() {
-  const input = document.getElementById('demoInput');
-  const name = input.value.trim();
-  const businessTitle = document.getElementById('demoBusinessTitle');
-  if (businessTitle) {
-    businessTitle.textContent = name || 'Your Business';
-  }
-}
-
-// Load funnel content into demo
-async function loadDemoFunnel() {
-  const container = document.getElementById('demoFunnelContent');
-  // Fetch the funnel HTML structure
-  const response = await fetch('/index.html');
-  const html = await response.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const funnelContent = doc.querySelector('.funnel-card').cloneNode(true);
-  
-  // Remove back button from demo
-  const backBtn = funnelContent.querySelector('#backBtn');
-  if (backBtn) backBtn.style.display = 'none';
-  
-  // Modify IDs to avoid conflicts
-  funnelContent.querySelectorAll('[id]').forEach(el => {
-    if (el.id && !el.id.includes('demo')) {
-      el.id = 'demo_' + el.id;
-    }
-  });
-  
-  container.innerHTML = '';
-  container.appendChild(funnelContent);
-  
-  // Override JavaScript functions for demo (simulate, don't actually call APIs)
-  window.demoMode = true;
-  window.slug = demoSlug;
-  window.businessName = 'Your Business';
-  window.reviewLink = '#';
-  window.funnelTemplate = 'classic';
-  window.funnelAccentColor = '#C8A96E';
-  
-  // Load the funnel script logic for demo
-  const script = document.createElement('script');
-  script.src = '/js/funnel.js';
-  document.body.appendChild(script);
-  
-  // Override API calls to simulate demo
-  setTimeout(() => {
-    if (typeof window.fetch === 'function') {
-      const originalFetch = window.fetch;
-      window.fetch = function(url, options) {
-        if (url.includes('/suggest-review/')) {
-          return Promise.resolve({
-            json: () => Promise.resolve({ suggestion: 'Great service! Will definitely come back. The team was friendly and professional.' })
-          });
+  // Load the funnel HTML template
+  fetch('/funnel/funnel-template.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('funnelContainer').innerHTML = html;
+      
+      // Get business name from input
+      const nameInput = document.getElementById('businessNameInput');
+      let currentBusinessName = nameInput.value;
+      
+      // Update business name display when input changes
+      nameInput.addEventListener('input', function() {
+        currentBusinessName = this.value.trim() || "Your Business";
+        updateBusinessNameInFunnel(currentBusinessName);
+      });
+      
+      function updateBusinessNameInFunnel(name) {
+        const bizTitle = document.querySelector('#funnelContainer #businessTitle');
+        if (bizTitle) bizTitle.textContent = name;
+        
+        const headline = document.querySelector('#funnelContainer #mainHeadline');
+        if (headline) {
+          headline.textContent = `How was your experience at ${name}?`;
         }
-        if (url.includes('/rating') || url.includes('/positive') || url.includes('/feedback')) {
-          return Promise.resolve({ json: () => Promise.resolve({ success: true }) });
-        }
-        if (url.includes('/transcribe-voice/')) {
-          return Promise.resolve({
-            json: () => Promise.resolve({ sentiment: 'positive', transcription: 'This is a demo voice recording. The service was excellent!' })
-          });
-        }
-        return originalFetch(url, options);
-      };
-    }
-  }, 500);
-  
-  // Set business name from input
-  const input = document.getElementById('demoInput');
-  if (input.value.trim()) {
-    const bizTitle = document.getElementById('demoBusinessTitle');
-    if (bizTitle) bizTitle.textContent = input.value.trim();
-  }
-  
-  // Add a small indicator that this is a demo
-  const demoIndicator = document.createElement('div');
-  demoIndicator.style.cssText = 'position:absolute; top:8px; right:12px; background:rgba(200,169,110,0.2); color:var(--accent); font-size:0.6rem; padding:2px 8px; border-radius:20px; z-index:20;';
-  demoIndicator.textContent = 'DEMO';
-  funnelContent.appendChild(demoIndicator);
-}
-
-applyDemoCustomisation();
-loadDemoFunnel();
-
-window.updateDemoBusinessName = updateDemoBusinessName;
+      }
+      
+      // Initialize demo mode
+      initFunnel('demo', {
+        businessName: currentBusinessName,
+        slug: 'demo-business',
+        template: 'classic',
+        accentColor: '#C8A96E'
+      });
+      
+      // Set initial business name
+      setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
+    });
 </script>
-
-<!-- Also include the main funnel CSS for consistent styling -->
-<link rel="stylesheet" href="/css/funnel.css">
 </body>
 </html>

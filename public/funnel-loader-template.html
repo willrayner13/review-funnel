@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
   <title>How was your experience?</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,10 +22,14 @@
   <script>
     // Load the funnel HTML template
     fetch('/funnel/funnel-template.html')
-      .then(res => res.text())
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load funnel template');
+        return res.text();
+      })
       .then(html => {
         document.getElementById('funnelContainer').innerHTML = html;
-        // Inject business data from server (these are set by server.js)
+        
+        // Inject business data from server
         window.slug = window.serverSlug;
         window.businessName = window.serverBusinessName;
         window.reviewLink = window.serverReviewLink;
@@ -35,8 +40,18 @@
         window.funnelHappyLabel = window.serverFunnelHappyLabel;
         window.funnelUnhappyLabel = window.serverFunnelUnhappyLabel;
         window.funnelThankyouMessage = window.serverFunnelThankyouMessage;
+        window.accountLapsed = window.isLapsed;
         
-        initFunnel('live');
+        // Initialize the funnel in live mode
+        if (typeof initFunnel === 'function') {
+          initFunnel('live');
+        } else {
+          console.error('funnel-loader.js not loaded');
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load funnel:', err);
+        document.getElementById('funnelContainer').innerHTML = '<div style="text-align:center;padding:40px;"><h2>Something went wrong</h2><p>Please try again later.</p></div>';
       });
   </script>
 </body>
