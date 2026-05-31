@@ -507,15 +507,24 @@
       const nameInput = document.getElementById('businessNameInput');
       let currentBusinessName = nameInput.value;
       
-      function updateBusinessNameInFunnel(name) {
-        // Only update the main headline, not the duplicate business title
-        const headline = document.querySelector('#funnelContainer #mainHeadline');
-        if (headline) headline.textContent = `How was your experience at ${name}?`;
-        
-        // Hide the duplicate business title element if it exists
-        const bizTitle = document.querySelector('#funnelContainer #businessTitle');
-        if (bizTitle) bizTitle.style.display = 'none';
-      }
+function updateBusinessNameInFunnel(name) {
+  // Update the main headline
+  const headline = document.querySelector('#funnelContainer #mainHeadline');
+  if (headline) headline.textContent = `How was your experience at ${name}?`;
+  
+  // ALSO update the business title element
+  const bizTitle = document.querySelector('#funnelContainer #businessTitle');
+  if (bizTitle) {
+    bizTitle.textContent = name;
+    bizTitle.style.display = 'block'; // Show it but with updated name
+  }
+  
+  // Also update any other elements that might show business name
+  const anyBusinessName = document.querySelectorAll('#funnelContainer [data-business-name], #funnelContainer .business-name');
+  anyBusinessName.forEach(el => {
+    el.textContent = name;
+  });
+}
       
       nameInput.addEventListener('input', function() {
         currentBusinessName = this.value.trim() || "Your Business";
