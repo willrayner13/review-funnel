@@ -174,8 +174,8 @@ app.get("/r/:business", async (req, res) => {
 });
 
 // ─── ROUTES ────────────────────────────────────────────────────────────────────
-app.use(webhookRoutes); // Must come before bodyParser.json() for raw body
-app.use(htmlRoutes);
+// Webhook must come before bodyParser.json()
+app.use("/stripe-webhook", webhookRoutes);app.use(htmlRoutes);
 app.use(authRoutes);
 app.use(businessRoutes);
 app.use(funnelRoutes);

@@ -5,7 +5,7 @@ const supabase = require("../config/database");
 const router = express.Router();
 
 // Stripe webhook
-router.post("/stripe-webhook", express.raw({ type: "application/json" }), async (req, res) => {
+router.post("/", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
 
