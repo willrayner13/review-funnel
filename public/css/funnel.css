@@ -585,6 +585,13 @@ body.template-luxury .star-rating svg .star-fill {
   .waveform-bar {
     width: 2px;
   }
+   .iphone-screen {
+    min-height: 460px;
+    max-height: 580px;
+  }
+  .iphone-content {
+    padding: 55px 12px 24px;
+  }
 }
 
 /* ========== DEMO PAGE SPECIFICS ========== */
@@ -663,16 +670,19 @@ body.template-luxury .star-rating svg .star-fill {
   border-radius: 44px;
   padding: 12px;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-  max-width: 320px;
+  max-width: 380px;
   margin: 0 auto;
 }
 
+
 .iphone-screen {
-  background: #fff;
+  background: #1A1A18;
   border-radius: 32px;
-  overflow: hidden;
-  min-height: 500px;
+  overflow-y: auto;
   position: relative;
+  min-height: 480px;
+  max-height: 650px;
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dynamic-island {
@@ -688,11 +698,8 @@ body.template-luxury .star-rating svg .star-fill {
 }
 
 .iphone-content {
-  padding: 60px 20px 32px;
-  min-height: 500px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  padding: 60px 16px 32px;
+  min-height: 480px;
 }
 
 .iphone-glass {

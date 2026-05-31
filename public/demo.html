@@ -79,9 +79,11 @@
     .iphone-screen {
       background: #1A1A18;
       border-radius: 32px;
-      overflow: hidden;
-      height: 580px;
+      overflow-y: auto;
       position: relative;
+      min-height: 480px;
+      max-height: 650px;
+      transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .dynamic-island {
       position: absolute;
@@ -96,8 +98,7 @@
     }
     .iphone-content {
       padding: 60px 16px 32px;
-      height: 580px;
-      overflow-y: auto;
+      min-height: 480px;
     }
     .demo-badge {
       position: absolute;
@@ -120,16 +121,11 @@
 
     /* Responsive heights */
     @media (max-width: 380px) {
-      .iphone-screen { height: 520px; }
-      .iphone-content { height: 520px; padding: 50px 12px 24px; }
+      .iphone-screen { min-height: 460px; max-height: 580px; }
+      .iphone-content { padding: 50px 12px 24px; }
     }
     @media (min-width: 381px) and (max-width: 480px) {
-      .iphone-screen { height: 560px; }
-      .iphone-content { height: 560px; }
-    }
-    @media (min-width: 769px) {
-      .iphone-screen { height: 580px; }
-      .iphone-content { height: 580px; }
+      .iphone-screen { min-height: 480px; max-height: 600px; }
     }
 
     /* Demo CTA Modal */
@@ -296,5 +292,37 @@
       setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
     });
 </script>
+
+<!-- Auto-adjust phone height based on content -->
+<script>
+  function adjustPhoneHeight() {
+    const iphoneScreen = document.querySelector('.iphone-screen');
+    const iphoneContent = document.querySelector('.iphone-content');
+    
+    if (iphoneContent && iphoneScreen) {
+      const contentHeight = iphoneContent.scrollHeight;
+      const newHeight = Math.min(Math.max(contentHeight + 30, 480), 650);
+      iphoneScreen.style.height = newHeight + 'px';
+    }
+  }
+  
+  // Watch for content changes in the funnel container
+  const funnelContainer = document.getElementById('funnelContainer');
+  if (funnelContainer) {
+    const observer = new MutationObserver(function() {
+      setTimeout(adjustPhoneHeight, 50);
+    });
+    observer.observe(funnelContainer, { childList: true, subtree: true, attributes: true });
+  }
+  
+  // Also adjust when stars are clicked (through event delegation)
+  document.addEventListener('click', function() {
+    setTimeout(adjustPhoneHeight, 100);
+  });
+  
+  // Initial adjustment
+  setTimeout(adjustPhoneHeight, 500);
+</script>
+
 </body>
 </html>
