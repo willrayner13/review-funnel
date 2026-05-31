@@ -88,8 +88,10 @@
   background: #000;
   border-radius: 44px;
   padding: 10px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-  width: 340px;
+  box-shadow: 0 30px 60px rgba(0,0,0,.4);
+
+  width: clamp(290px, 32vw, 360px);
+
   margin: 0 auto;
   flex-shrink: 0;
 }
@@ -99,8 +101,11 @@
   border-radius: 32px;
   overflow: hidden;
   position: relative;
+
   width: 100%;
-  height: 600px;
+
+  height: clamp(520px, 70vh, 620px);
+
   display: flex;
   flex-direction: column;
 }
@@ -133,20 +138,33 @@
     /* Fixed wrapper */
 .funnel-wrapper {
   flex: 1;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   overflow: hidden;
-  padding: 16px;
+
+  padding:
+    56px
+    16px
+    24px;
+
+  position: relative;
 }
 
     /* Taller funnel-card - never changes size */
-    #funnelContainer .funnel-card {
+#funnelContainer .funnel-card {
   width: 100%;
+  max-width: 100%;
+
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease;
-    }
+
+  transition:
+    transform .25s ease,
+    opacity .25s ease;
+}
 
     #funnelContainer .funnel-card::-webkit-scrollbar {
       display: none;
@@ -243,10 +261,7 @@
       .funnel-wrapper {
         padding: 45px 12px 20px;
       }
-      #funnelContainer .funnel-card {
-        height: 480px;
-        padding: 24px 18px;
-      }
+
       #funnelContainer #mainHeadline {
         font-size: 1.1rem;
       }
@@ -272,10 +287,7 @@
       .funnel-wrapper {
         padding: 40px 10px 16px;
       }
-      #funnelContainer .funnel-card {
-        height: 440px;
-        padding: 20px 14px;
-      }
+
       #funnelContainer #mainHeadline {
         font-size: 1rem;
       }
@@ -453,29 +465,39 @@
       setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
     });
 
-     function scaleContentToFit() {
-    const funnelCard = document.querySelector('#funnelContainer .funnel-card');
-    const phoneScreen = document.querySelector('.iphone-screen');
-    
-    if (!funnelCard || !phoneScreen) return;
-    
-    // Get the available height inside the phone (minus padding)
-    const availableHeight = phoneScreen.clientHeight - 100; // Account for padding
-    
-    // Get the actual content height
-    const contentHeight = funnelCard.scrollHeight;
-    
-    // If content is taller than available space, scale it down
-    if (contentHeight > availableHeight) {
-      const scale = availableHeight / contentHeight;
-      funnelCard.style.transform = `scale(${scale})`;
-      funnelCard.style.transformOrigin = 'top center';
-      funnelCard.style.marginTop = `${(availableHeight - (contentHeight * scale)) / 2}px`;
-    } else {
-      funnelCard.style.transform = 'none';
-      funnelCard.style.marginTop = '0';
-    }
-  }
+function scaleContentToFit() {
+  const card = document.querySelector('#funnelContainer .funnel-card');
+  const wrapper = document.querySelector('.funnel-wrapper');
+
+  if (!card || !wrapper) return;
+
+  card.style.transform = 'none';
+  card.style.margin = '0';
+
+  requestAnimationFrame(() => {
+    const availableHeight = wrapper.clientHeight;
+    const availableWidth = wrapper.clientWidth;
+
+    const contentHeight = card.scrollHeight;
+    const contentWidth = card.scrollWidth;
+
+    const scaleHeight = availableHeight / contentHeight;
+    const scaleWidth = availableWidth / contentWidth;
+
+    const scale = Math.min(1, scaleHeight, scaleWidth);
+
+    card.style.transformOrigin = 'top center';
+    card.style.transform = `scale(${scale})`;
+
+    const scaledHeight = contentHeight * scale;
+    const topOffset = Math.max(
+      0,
+      (availableHeight - scaledHeight) / 2
+    );
+
+    card.style.marginTop = `${topOffset}px`;
+  });
+}
   
   // Run after content loads and when content changes
   const observer = new MutationObserver(function() {
@@ -485,11 +507,12 @@
   // Start observing when funnel container is populated
   const funnelContainer = document.getElementById('funnelContainer');
   if (funnelContainer) {
-    observer.observe(funnelContainer, { 
-      childList: true, 
-      subtree: true, 
-      attributes: true 
-    });
+    observer.observe(funnelContainer, {
+  childList: true,
+  subtree: true,
+  attributes: true,
+  characterData: true
+});
   }
   
   // Also run on window resize
