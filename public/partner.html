@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Affiliate Portal — ReviewLift</title>
+  <title>Agency Portal — ReviewLift White-label</title>
+  <meta name="description" content="White-label review management for agencies. Resell ReviewLift under your own brand with 30% recurring commission.">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/css/partner.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -13,6 +14,105 @@
   <style>
     body {
       padding-top: 64px;
+      background: var(--bg, #1A1A18);
+    }
+    
+    /* Agency Portal Styles */
+    .agency-portal-hero {
+      text-align: center;
+      padding: 40px 24px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .agency-portal-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    
+    .agency-portal-hero p {
+      color: var(--cream-dim, rgba(234,231,220,0.52));
+      margin-bottom: 32px;
+    }
+    
+    .code-input-group {
+      display: flex;
+      gap: 12px;
+      max-width: 450px;
+      margin: 0 auto;
+    }
+    
+    .code-input-group input {
+      flex: 1;
+      padding: 14px 18px;
+      background: var(--surface-2, #2E2E2B);
+      border: 1px solid var(--border, rgba(234,231,220,0.09));
+      border-radius: 12px;
+      color: var(--cream, #EAE7DC);
+      font-size: 1rem;
+      font-family: monospace;
+    }
+    
+    .code-input-group input:focus {
+      outline: none;
+      border-color: var(--accent, #C8A96E);
+    }
+    
+    .code-input-group button {
+      padding: 14px 28px;
+      background: var(--accent, #C8A96E);
+      color: #1A1A18;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .code-input-group button:hover {
+      background: #D4B87A;
+      transform: translateY(-1px);
+    }
+    
+    .agency-benefits {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 48px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border, rgba(234,231,220,0.09));
+    }
+    
+    .benefit {
+      text-align: center;
+    }
+    
+    .benefit-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    
+    .benefit-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .benefit-desc {
+      font-size: 0.75rem;
+      color: var(--cream-dim, rgba(234,231,220,0.52));
+    }
+    
+    .faq-mini {
+      max-width: 600px;
+      margin: 60px auto 0;
+      text-align: center;
+    }
+    
+    .faq-mini a {
+      color: var(--accent, #C8A96E);
     }
   </style>
 </head>
@@ -30,7 +130,7 @@
     .catch(err => console.error('Navbar failed to load:', err));
 </script>
 
-<div class="page-body" id="mainContent"></div>
+<div id="mainContent"></div>
 
 <script src="/js/partner.js"></script>
 </body>
