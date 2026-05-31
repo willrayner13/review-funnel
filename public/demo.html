@@ -483,9 +483,9 @@
 
 <div id="demoCtaModal" class="demo-modal">
   <div class="demo-modal-content">
-    <div style="font-size: 2.5rem; margin-bottom: 10px;">🚀</div>
-    <h3 style="color:white; margin-bottom:10px;">Ready to collect reviews?</h3>
-    <p style="color:var(--cream-dim); font-size:0.8rem;">In the live version, this would send your customer straight to Google or capture feedback privately.</p>
+    <div id="modalIcon" style="font-size: 2.5rem; margin-bottom: 10px;">🚀</div>
+    <h3 id="modalTitle" style="color:white; margin-bottom:10px;">Ready to collect reviews?</h3>
+    <p id="modalText" style="color:var(--cream-dim); font-size:0.8rem;">In the live version, this would send your customer straight to Google or capture feedback privately.</p>
     <a href="/admin" class="demo-modal-btn">Start free trial →</a>
     <button onclick="closeDemoModal()" style="background:none; border:none; color:var(--cream-dim); margin-top:15px; cursor:pointer;">Not now</button>
   </div>
@@ -493,21 +493,37 @@
 
 <script src="/js/funnel-loader.js"></script>
 <script>
-  function showDemoModal() {
-    const modal = document.getElementById('demoCtaModal');
-    if (modal) modal.classList.add('open');
+  // Get modal elements
+  const modal = document.getElementById('demoCtaModal');
+  const modalIcon = document.getElementById('modalIcon');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalText = document.getElementById('modalText');
+  
+  function showDemoModal(type = 'default') {
+    if (type === 'voice') {
+      // Voice-specific modal content
+      modalIcon.textContent = '🎙️';
+      modalIcon.style.fontSize = '2.5rem';
+      modalTitle.textContent = 'Voice Reviews';
+      modalText.innerHTML = 'In the live version, customers can record audio reviews that get:<br><br>✅ Transcribed by AI<br>✅ Posted to Google<br>✅ Analyzed for sentiment';
+    } else {
+      // Default modal content
+      modalIcon.textContent = '🚀';
+      modalTitle.textContent = 'Ready to collect reviews?';
+      modalText.innerHTML = 'In the live version, this would send your customer straight to Google or capture feedback privately.';
+    }
+    modal.classList.add('open');
   }
   
   function closeDemoModal() {
-    const modal = document.getElementById('demoCtaModal');
-    if (modal) modal.classList.remove('open');
+    modal.classList.remove('open');
   }
   
-  // Override the demo actions to show modal
-  window.copyAndOpenGoogle = showDemoModal;
-  window.startRecording = showDemoModal;
-  window.sendFeedback = showDemoModal;
-  window.leaveReview = showDemoModal;
+  // Override the demo actions with different modal types
+  window.copyAndOpenGoogle = () => showDemoModal('default');
+  window.startRecording = () => showDemoModal('voice');
+  window.sendFeedback = () => showDemoModal('default');
+  window.leaveReview = () => showDemoModal('default');
   
   // Load the funnel template
   fetch('/funnel/funnel-template.html')
@@ -519,13 +535,10 @@
       let currentBusinessName = nameInput.value;
       
       function updateBusinessNameInFunnel(name) {
-        // Update the main headline directly
         const headline = document.querySelector('#funnelContainer #mainHeadline');
         if (headline) {
           headline.textContent = `How was your experience at ${name}?`;
         }
-        
-        // Also update the global business name for API calls
         if (window.updateDemoBusinessName) {
           window.updateDemoBusinessName(name);
         }
@@ -546,22 +559,20 @@
       setTimeout(() => {
         updateBusinessNameInFunnel(currentBusinessName);
         
-        // Hide any remaining business title elements
         const bizTitles = document.querySelectorAll('#funnelContainer #businessTitle, #funnelContainer #businessNameDisplay');
         bizTitles.forEach(el => {
           if (el) el.style.display = 'none';
         });
         
-        // Find and override all action buttons
         setTimeout(() => {
           const copyBtn = document.querySelector('#funnelContainer .btn-copy');
-          if (copyBtn) copyBtn.onclick = showDemoModal;
+          if (copyBtn) copyBtn.onclick = () => showDemoModal('default');
           
           const voiceBtn = document.querySelector('#funnelContainer .btn-voice');
-          if (voiceBtn) voiceBtn.onclick = showDemoModal;
+          if (voiceBtn) voiceBtn.onclick = () => showDemoModal('voice');
           
           const sendBtn = document.querySelector('#funnelContainer .btn-send');
-          if (sendBtn) sendBtn.onclick = showDemoModal;
+          if (sendBtn) sendBtn.onclick = () => showDemoModal('default');
         }, 100);
       }, 150);
     });
