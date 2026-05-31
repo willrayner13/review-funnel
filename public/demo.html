@@ -6,84 +6,143 @@
   <meta name="description" content="Try the ReviewLift review funnel demo. See how happy customers go to Google and unhappy feedback stays private.">
   <meta name="keywords" content="reviewlift demo, review funnel example, google review funnel test, free review tool demo">
   <link rel="canonical" href="https://www.reviewlift.app/demo">
-  <title>ReviewLift Demo</title>
+  <title>ReviewLift Demo — See it in action</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/css/demo.css">
+  <link rel="stylesheet" href="/css/funnel.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 </head>
-<body>
+<body id="demoBody">
 
 <div class="demo-banner">
   <span>👆 This is a live demo — this is what your customers would see</span>
-  <a href="/admin">Get this for my business →</a>
+  <a href="/admin" class="demo-cta">Get this for my business →</a>
 </div>
 
-<div class="funnel-wrap">
-  <span id="businessTitle"></span>
-
-  <div class="funnel-card">
-    <div id="mainQuestion">
-      <h2>How was your experience?</h2>
-      <p style="color:var(--cream-dim);font-size:0.85rem;margin-top:-8px;">Tap a star to get started</p>
-      <div id="starRating">
-        <span data-star="1">⭐</span>
-        <span data-star="2">⭐</span>
-        <span data-star="3">⭐</span>
-        <span data-star="4">⭐</span>
-        <span data-star="5">⭐</span>
-      </div>
-    </div>
-
-    <div id="reviewSection" style="display:none">
-      <div style="font-size:2.4rem;margin-bottom:8px;">🌟</div>
-      <h2>Thanks! Here's how to share it on Google</h2>
-      <div id="suggestionLoading" style="text-align:center;padding:24px;">
-        <p style="opacity:0.7;">Writing your review...</p>
-      </div>
-      <div id="copyGoSection" style="display:none; animation:fadeIn 0.4s ease;">
-        <div style="margin-bottom:16px;">
-          <p style="font-size:0.78rem; opacity:0.6; margin-bottom:8px;">Here's a review you could leave — edit it if you like:</p>
-          <textarea id="suggestionText" rows="4" style="width:100%; padding:14px; border-radius:12px; font-size:0.9rem; line-height:1.6; resize:none; font-family:inherit;"></textarea>
-        </div>
-        <button id="copyGoBtn" onclick="copyAndOpenGoogle()" style="width:100%; padding:16px; font-size:1rem; font-weight:700; border-radius:40px; cursor:pointer; margin-bottom:10px;">Copy &amp; open Google ↗</button>
-        <p style="font-size:0.75rem; opacity:0.5; margin-bottom:16px;">Paste it into Google and hit post — takes 10 seconds</p>
-        <button onclick="openGoogleDirectly()" style="background:transparent; border:none; font-size:0.8rem; opacity:0.5; cursor:pointer; text-decoration:underline; display:block; margin:0 auto 16px;">Write my own instead →</button>
-        <div id="voiceSection" style="border-top:1px solid; padding-top:16px; opacity:0.6;">
-          <p style="font-size:0.78rem; margin-bottom:8px;">🎤 Or speak your review (30 seconds)</p>
-          <button onclick="startRecording()" id="voiceRecordBtn" style="padding:10px 20px; border-radius:20px; font-size:0.8rem; cursor:pointer;">Start recording</button>
-          <span id="recordingTimer" style="display:none; font-size:0.8rem; margin-left:10px;">0:00</span>
-          <div id="voiceResult" style="margin-top:12px;"></div>
-        </div>
-      </div>
-      <div id="reviewFallback" style="display:none;">
-        <div class="review-prompt">
-          <p>We'd love it if you shared your experience online — it only takes a moment.</p>
-          <button id="leaveReviewBtn" onclick="leaveReview()">Leave a Review →</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="feedbackBox" style="display:none">
-      <div style="font-size:2.5rem;margin-bottom:12px;">💬</div>
-      <h2>We're sorry to hear that</h2>
-      <p style="color:var(--cream-dim);">Tell us what happened — your feedback is private and only visible to the business.</p>
-      <textarea id="message" placeholder="What could we have done better?"></textarea>
-      <button class="btn-full" onclick="sendFeedbackDemo()">Send Feedback</button>
-    </div>
+<div style="margin-top: 80px; padding: 0 20px;">
+  <div class="demo-input-section">
+    <label>See how it looks for your business</label>
+    <input type="text" id="demoInput" placeholder="Type your business name..." oninput="updateDemoBusinessName()">
   </div>
 
-  <div class="demo-cta-card" id="demoCta" style="display:none">
-    <div class="cta-title">Want this for your business?</div>
-    <p>Set up your own review funnel in under 2 minutes. Collect more 5-star reviews and keep complaints private.</p>
-    <a href="/admin">Get ReviewLift free →</a>
+  <div class="iphone-mockup">
+    <div class="iphone-screen iphone-glass">
+      <div class="dynamic-island"></div>
+      <div class="iphone-content" id="demoFunnelContent">
+        <!-- Funnel content will be duplicated here via JS -->
+      </div>
+    </div>
   </div>
-
-  <p class="powered-by"><a href="/admin?ref=${slug}">Powered by ReviewLift</a></p>
 </div>
 
-<script src="/js/demo.js"></script>
+<script>
+// Demo page - replicates funnel functionality for preview
+let demoSlug = 'demo-business';
+
+// Apply funnel customisation for demo
+function applyDemoCustomisation() {
+  const template = 'classic';
+  const accentColor = '#C8A96E';
+  document.body.classList.add(`template-${template}`);
+  document.documentElement.style.setProperty('--accent', accentColor);
+}
+
+// Update business name in demo
+function updateDemoBusinessName() {
+  const input = document.getElementById('demoInput');
+  const name = input.value.trim();
+  const businessTitle = document.getElementById('demoBusinessTitle');
+  if (businessTitle) {
+    businessTitle.textContent = name || 'Your Business';
+  }
+}
+
+// Load funnel content into demo
+async function loadDemoFunnel() {
+  const container = document.getElementById('demoFunnelContent');
+  // Fetch the funnel HTML structure
+  const response = await fetch('/index.html');
+  const html = await response.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const funnelContent = doc.querySelector('.funnel-card').cloneNode(true);
+  
+  // Remove back button from demo
+  const backBtn = funnelContent.querySelector('#backBtn');
+  if (backBtn) backBtn.style.display = 'none';
+  
+  // Modify IDs to avoid conflicts
+  funnelContent.querySelectorAll('[id]').forEach(el => {
+    if (el.id && !el.id.includes('demo')) {
+      el.id = 'demo_' + el.id;
+    }
+  });
+  
+  container.innerHTML = '';
+  container.appendChild(funnelContent);
+  
+  // Override JavaScript functions for demo (simulate, don't actually call APIs)
+  window.demoMode = true;
+  window.slug = demoSlug;
+  window.businessName = 'Your Business';
+  window.reviewLink = '#';
+  window.funnelTemplate = 'classic';
+  window.funnelAccentColor = '#C8A96E';
+  
+  // Load the funnel script logic for demo
+  const script = document.createElement('script');
+  script.src = '/js/funnel.js';
+  document.body.appendChild(script);
+  
+  // Override API calls to simulate demo
+  setTimeout(() => {
+    if (typeof window.fetch === 'function') {
+      const originalFetch = window.fetch;
+      window.fetch = function(url, options) {
+        if (url.includes('/suggest-review/')) {
+          return Promise.resolve({
+            json: () => Promise.resolve({ suggestion: 'Great service! Will definitely come back. The team was friendly and professional.' })
+          });
+        }
+        if (url.includes('/rating') || url.includes('/positive') || url.includes('/feedback')) {
+          return Promise.resolve({ json: () => Promise.resolve({ success: true }) });
+        }
+        if (url.includes('/transcribe-voice/')) {
+          return Promise.resolve({
+            json: () => Promise.resolve({ sentiment: 'positive', transcription: 'This is a demo voice recording. The service was excellent!' })
+          });
+        }
+        return originalFetch(url, options);
+      };
+    }
+  }, 500);
+  
+  // Set business name from input
+  const input = document.getElementById('demoInput');
+  if (input.value.trim()) {
+    const bizTitle = document.getElementById('demoBusinessTitle');
+    if (bizTitle) bizTitle.textContent = input.value.trim();
+  }
+  
+  // Add a small indicator that this is a demo
+  const demoIndicator = document.createElement('div');
+  demoIndicator.style.cssText = 'position:absolute; top:8px; right:12px; background:rgba(200,169,110,0.2); color:var(--accent); font-size:0.6rem; padding:2px 8px; border-radius:20px; z-index:20;';
+  demoIndicator.textContent = 'DEMO';
+  funnelContent.appendChild(demoIndicator);
+}
+
+applyDemoCustomisation();
+loadDemoFunnel();
+
+window.updateDemoBusinessName = updateDemoBusinessName;
+</script>
+
+<!-- Also include the main funnel CSS for consistent styling -->
+<link rel="stylesheet" href="/css/funnel.css">
 </body>
 </html>
