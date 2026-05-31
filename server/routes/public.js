@@ -110,6 +110,47 @@ router.get("/wall/:slug", async (req, res) => {
   `);
 });
 
+// Add to your existing public.js route file
+router.post("/contact", async (req, res) => {
+  const { name, email, business, message, newsletter } = req.body;
+  
+  // Validate required fields
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: "Name, email, and message are required" });
+  }
+  
+  try {
+    // Send email via Resend
+    const { resend } = require("../config/resend");
+    
+    await resend.emails.send({
+      from: "contact@reviewlift.app",
+      to: "hello@reviewlift.app",
+      replyTo: email,
+      subject: `New contact from ${name}`,
+      html: `
+        <h2>New contact form submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Business:</strong> ${business || "Not provided"}</p>
+        <p><strong>Newsletter opt-in:</strong> ${newsletter ? "Yes" : "No"}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, "<br>")}</p>
+      `,
+    });
+    
+    // Optional: Store in database
+    await supabase.from("contact_submissions").insert([
+      { name, email, business, message, newsletter, created_at: new Date() }
+    ]);
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Contact form error:", error);
+    res.status(500).json({ error: "Failed to send message" });
+  }
+});
+
 // Wall preview image
 router.get("/wall-preview/:slug", async (req, res) => {
   const { slug } = req.params;

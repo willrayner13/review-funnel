@@ -20,20 +20,23 @@
     
     <button id="copyGoBtn" class="btn-copy" style="width:100%; padding:12px; background:var(--accent); color:#1A1A18; border:none; border-radius:100px; font-weight:700; cursor:pointer; margin-bottom:12px;">Copy &amp; post to Google →</button>
     
-    <div id="voiceSection" class="voice-section" style="margin-top:4px; padding-top:8px; border-top:1px solid var(--border);">
-      <div class="voice-button-container" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-        <button id="voiceRecordBtn" class="btn-voice" style="width:44px; height:44px; border-radius:50%; background:var(--surface-2); border:1.5px solid var(--accent); cursor:pointer; display:flex; align-items:center; justify-content:center;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px; height:20px;">
-            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
-            <line x1="12" y1="19" x2="12" y2="22"/>
-          </svg>
-        </button>
-        <span id="recordingTimer" class="recording-timer" style="display:none; font-size:0.7rem; font-weight:600; color:var(--danger);">0:00</span>
-      </div>
-      <div id="voiceResult"></div>
-      <p class="privacy-note" style="font-size:0.55rem; text-align:center; margin-top:8px; color:var(--cream-dim);">🎙️ Or record a voice note — we'll transcribe it for you</p>
+<div id="voiceSection" class="voice-section" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+  <div class="voice-button-container" style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+    <div style="display:flex; align-items:center; gap:12px; background:var(--surface-2); padding:8px 20px; border-radius:60px; border:1px solid var(--border);">
+      <button id="voiceRecordBtn" class="btn-voice" style="width:48px; height:48px; border-radius:50%; background:var(--surface-2); border:2px solid var(--accent); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px; height:24px; stroke:var(--accent);">
+          <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+        </svg>
+      </button>
+      <span style="font-size:0.8rem; font-weight:500; color:var(--cream);">Record voice review</span>
     </div>
+    <span id="recordingTimer" class="recording-timer" style="display:none; font-size:0.7rem; font-weight:600; color:var(--danger);">0:00</span>
+  </div>
+  <div id="voiceResult"></div>
+  <p class="privacy-note" style="font-size:0.65rem; text-align:center; margin-top:10px; color:var(--cream-dim);">🎙️ No typing needed — just speak. We'll transcribe it for Google.</p>
+</div>
   </div>
   <div id="reviewFallback" style="display:none;">
     <button id="leaveReviewBtn" class="btn-copy">Leave a Review →</button>
