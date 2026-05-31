@@ -1,12 +1,42 @@
-// demo.html - review funnel demo
-const params = new URLSearchParams(window.location.search);
-const bizName = params.get('name') || 'Your Business';
-document.getElementById('businessTitle').innerText = bizName;
-document.title = bizName + ' — Review';
+// demo.html - review funnel demo with modal CTA
 
-// Star rating
+// Modal functions
+function showDemoModal() {
+  const modal = document.getElementById('demoCtaModal');
+  if (modal) {
+    modal.classList.add('open');
+  }
+}
+
+function closeDemoModal() {
+  const modal = document.getElementById('demoCtaModal');
+  if (modal) {
+    modal.classList.remove('open');
+  }
+}
+
+// Updated button functions - show modal instead of direct action
+function copyAndOpenGoogle() {
+  showDemoModal();
+}
+
+function startRecording() {
+  showDemoModal();
+}
+
+function sendFeedback() {
+  showDemoModal();
+}
+
+function leaveReview() {
+  showDemoModal();
+}
+
+// Star rating initialization
 (function initStars() {
   const stars = document.querySelectorAll('#starRating span');
+  if (!stars.length) return;
+  
   stars.forEach(star => {
     star.addEventListener('mouseover', () => {
       const val = parseInt(star.dataset.star);
@@ -41,30 +71,26 @@ document.title = bizName + ' — Review';
 })();
 
 function showDemoCta() {
-  document.getElementById("reviewSection").innerHTML = `
-    <div style="font-size:2.5rem;margin-bottom:12px;">✅</div>
-    <h2>In your live funnel...</h2>
-    <p style="color:var(--cream-dim);margin-top:8px;">Your customer would now be redirected to your review page — Google, Trustpilot, Checkatrade, or wherever you choose.</p>
-  `;
-  document.getElementById("demoCta").style.display = "block";
+  showDemoModal();
 }
 
 function sendFeedbackDemo() {
-  document.getElementById("feedbackBox").innerHTML = `
-    <div style="font-size:2.5rem;margin-bottom:12px;">🔒</div>
-    <h2>Feedback captured privately</h2>
-    <p style="color:var(--cream-dim);margin-top:8px;">In your live funnel, this message would appear only in your dashboard — never on Google.</p>
-  `;
-  document.getElementById("demoCta").style.display = "block";
+  showDemoModal();
 }
 
-// Voice recording demo
+// Voice recording demo (simulated)
 let demoMediaRecorder;
 let demoAudioChunks = [];
 let demoRecordingTimer;
 let demoSeconds = 0;
 
 async function startDemoRecording() {
+  showDemoModal();
+  // Original recording code would go here, but showing modal instead
+  return;
+  
+  // Keep original code commented for reference
+  /*
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     demoMediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
@@ -93,6 +119,7 @@ async function startDemoRecording() {
   } catch(e) {
     document.getElementById("voiceResult").innerHTML = '<p style="color:#D4897C;font-size:0.85rem;">Microphone access needed. Please allow it and try again.</p>';
   }
+  */
 }
 
 function stopDemoRecording() {
@@ -104,3 +131,13 @@ function stopDemoRecording() {
     document.getElementById("recordingTimer").style.display = "none";
   }
 }
+
+// Expose functions globally for onclick handlers
+window.copyAndOpenGoogle = copyAndOpenGoogle;
+window.startRecording = startRecording;
+window.sendFeedback = sendFeedback;
+window.leaveReview = leaveReview;
+window.showDemoModal = showDemoModal;
+window.closeDemoModal = closeDemoModal;
+window.showDemoCta = showDemoCta;
+window.sendFeedbackDemo = sendFeedbackDemo;
