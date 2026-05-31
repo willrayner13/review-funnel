@@ -51,7 +51,7 @@
     font-size: 0.85rem;
   }
 
-  /* FIXED iPhone Mockup */
+  /* --- iPhone Mockup Frame --- */
   .iphone-mockup {
     position: relative;
     background: #000;
@@ -86,7 +86,6 @@
   }
 
   /* --- THE LOCKED HEIGHT CARD --- */
-
   #funnelContainer {
     width: 100%;
   }
@@ -95,90 +94,103 @@
     margin: 0 auto !important;
     width: 94% !important;
     
-    /* UPDATED: Increased height to 500px */
-    height: 500px !important; 
+    /* HEIGHT IS NOW 520px FOR MORE SPACE */
+    height: 520px !important; 
     
-    /* CENTER CONTENT VERTICALLY INSIDE THE LOCK */
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important; 
     
-    padding: 24px 18px !important; /* Slightly more internal padding now */
+    padding: 28px 20px !important;
     transform: none !important;
     transition: none !important;
     background: var(--surface) !important;
-    border-radius: 16px !important;
+    border-radius: 20px !important;
     position: relative;
+    border: 1px solid rgba(234, 231, 220, 0.05) !important;
   }
 
-  /* --- COMPACT CONTENT RULES --- */
+  /* --- REFINED CONTENT SPACING --- */
 
   #funnelContainer h1, 
   #funnelContainer h2,
   #funnelContainer [style*="font-size: 2.5rem"],
   #funnelContainer [style*="font-size: 2rem"] {
-    font-size: 1.2rem !important; 
-    line-height: 1.15 !important;
-    margin-bottom: 10px !important;
+    font-size: 1.25rem !important; 
+    line-height: 1.2 !important;
+    margin-bottom: 12px !important;
+    font-weight: 700 !important;
   }
 
   #funnelContainer textarea {
-    min-height: 70px !important; /* Slightly taller textarea */
-    max-height: 85px !important;
-    font-size: 0.8rem !important;
-    margin-bottom: 10px !important;
+    min-height: 80px !important; 
+    max-height: 100px !important;
+    font-size: 0.85rem !important;
+    margin-bottom: 15px !important;
+    background: var(--surface-2) !important;
+    border: 1px solid var(--border) !important;
+    padding: 12px !important;
   }
 
+  /* Voice Section refinement */
   #funnelContainer .voice-section {
-    margin-top: 8px !important;
-    padding-top: 8px !important;
-    border-top: 1px solid rgba(234,231,220,0.1) !important;
+    margin-top: 10px !important;
+    padding-top: 15px !important;
+    border-top: 1px solid rgba(234,231,220,0.08) !important;
   }
 
   #funnelContainer .btn-voice {
-    width: 48px !important; /* Slightly larger mic button */
-    height: 48px !important;
+    width: 52px !important; 
+    height: 52px !important;
+    background: var(--surface-2) !important;
+    transition: transform 0.2s ease;
   }
 
   #funnelContainer .waveform {
-    height: 18px !important;
-    margin-bottom: 6px !important;
+    height: 20px !important;
+    margin-bottom: 8px !important;
   }
 
+  /* Star Rating */
   #funnelContainer .star-rating {
-    margin: 12px 0 !important;
-    gap: 5px !important;
+    margin: 15px 0 !important;
+    gap: 6px !important;
   }
 
   #funnelContainer .star-rating svg {
-    width: 30px !important;
-    height: 30px !important;
+    width: 32px !important;
+    height: 32px !important;
   }
 
+  /* Buttons */
   #funnelContainer button.btn-primary,
   #funnelContainer .btn-copy {
-    padding: 12px !important;
+    padding: 14px !important;
     font-size: 0.9rem !important;
-    margin-top: 10px !important;
+    font-weight: 600 !important;
+    margin-top: 12px !important;
+    border-radius: 12px !important;
   }
 
   #funnelContainer p, 
   #funnelContainer .subtitle,
   #funnelContainer #businessTitle {
-    font-size: 0.75rem !important;
-    margin-bottom: 5px !important;
+    font-size: 0.8rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 6px !important;
+    color: var(--cream-dim) !important;
   }
 
   #funnelContainer .powered-by {
     position: absolute;
-    bottom: 12px;
+    bottom: 15px;
     left: 0;
     right: 0;
-    font-size: 0.55rem !important;
-    margin-top: 0 !important;
+    font-size: 0.6rem !important;
+    opacity: 0.4;
   }
 
-  /* Hardware Elements */
+  /* Hardware Elements (Dynamic Island) */
   .dynamic-island {
     position: absolute;
     top: 12px;
