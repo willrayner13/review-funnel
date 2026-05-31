@@ -130,7 +130,7 @@
       font-weight: 600;
     }
 
-    /* Fixed position container for the funnel card */
+    /* Fixed wrapper */
     .funnel-wrapper {
       flex: 1;
       display: flex;
@@ -140,16 +140,77 @@
       padding: 50px 16px 24px;
     }
 
-    /* The funnel card - fixed size, never moves */
-    #funnelContainer {
-      width: 100%;
-      transition: all 0.3s ease;
+    /* CRITICAL: Fixed height for funnel-card - never changes size */
+    #funnelContainer .funnel-card {
+      height: 380px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+      scrollbar-width: none;
+      padding: 24px 20px;
     }
 
-    /* Ensure the funnel-card inside has consistent styling */
-    #funnelContainer .funnel-card {
-      margin: 0;
-      transition: all 0.3s ease;
+    #funnelContainer .funnel-card::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Content inside the card - all tightly packed */
+    #funnelContainer #businessTitle {
+      font-size: 0.7rem;
+      margin-bottom: 4px;
+    }
+    #funnelContainer #mainHeadline {
+      font-size: 1rem;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    #funnelContainer .subtitle {
+      font-size: 0.5rem;
+      margin-bottom: 8px;
+      letter-spacing: 0.1em;
+    }
+    #funnelContainer .star-rating svg {
+      width: 32px;
+      height: 32px;
+    }
+    #funnelContainer .star-rating {
+      gap: 5px;
+      margin: 5px 0;
+    }
+    #funnelContainer h2 {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    #funnelContainer .premium-textarea {
+      padding: 6px 10px;
+      font-size: 0.65rem;
+      min-height: 55px;
+      margin-bottom: 8px;
+    }
+    #funnelContainer .btn-copy {
+      padding: 8px 14px;
+      font-size: 0.7rem;
+      margin-bottom: 8px;
+    }
+    #funnelContainer .btn-voice {
+      width: 38px;
+      height: 38px;
+    }
+    #funnelContainer .voice-section {
+      margin-top: 6px;
+      padding-top: 6px;
+    }
+    #funnelContainer .btn-send {
+      padding: 8px 14px;
+      font-size: 0.7rem;
+    }
+    #funnelContainer .privacy-note {
+      font-size: 0.45rem;
+    }
+    #funnelContainer .powered-by {
+      margin-top: 8px;
+      font-size: 0.45rem;
     }
 
     .demo-note {
@@ -158,64 +219,6 @@
       margin-bottom: 20px;
       font-size: 0.7rem;
       color: rgba(234,231,220,0.3);
-    }
-
-    /* Fixed typography - all sizes are fixed, no expansion */
-    #funnelContainer #businessTitle {
-      font-size: 0.75rem;
-      margin-bottom: 4px;
-    }
-    #funnelContainer #mainHeadline {
-      font-size: 1.15rem;
-      margin-bottom: 4px;
-      line-height: 1.3;
-    }
-    #funnelContainer .subtitle {
-      font-size: 0.5rem;
-      margin-bottom: 10px;
-      letter-spacing: 0.1em;
-    }
-    #funnelContainer .star-rating svg {
-      width: 34px;
-      height: 34px;
-    }
-    #funnelContainer .star-rating {
-      gap: 5px;
-      margin: 6px 0;
-    }
-    #funnelContainer h2 {
-      font-size: 1rem;
-      margin-bottom: 4px;
-    }
-    #funnelContainer .premium-textarea {
-      padding: 8px 10px;
-      font-size: 0.7rem;
-      min-height: 60px;
-      margin-bottom: 8px;
-    }
-    #funnelContainer .btn-copy {
-      padding: 8px 14px;
-      font-size: 0.75rem;
-      margin-bottom: 8px;
-    }
-    #funnelContainer .btn-voice {
-      width: 40px;
-      height: 40px;
-    }
-    #funnelContainer .voice-section {
-      margin-top: 8px;
-      padding-top: 8px;
-    }
-    #funnelContainer .btn-send {
-      padding: 8px 14px;
-      font-size: 0.75rem;
-    }
-    #funnelContainer .privacy-note {
-      font-size: 0.5rem;
-    }
-    #funnelContainer .powered-by {
-      margin-top: 10px;
-      font-size: 0.5rem;
     }
 
     /* Responsive scaling for smaller phones */
@@ -229,12 +232,19 @@
       .funnel-wrapper {
         padding: 45px 12px 20px;
       }
+      #funnelContainer .funnel-card {
+        height: 360px;
+        padding: 20px 16px;
+      }
       #funnelContainer #mainHeadline {
-        font-size: 1rem;
+        font-size: 0.9rem;
       }
       #funnelContainer .star-rating svg {
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
+      }
+      #funnelContainer h2 {
+        font-size: 0.85rem;
       }
     }
 
@@ -248,15 +258,19 @@
       .funnel-wrapper {
         padding: 40px 10px 16px;
       }
+      #funnelContainer .funnel-card {
+        height: 330px;
+        padding: 16px 12px;
+      }
       #funnelContainer #mainHeadline {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
       }
       #funnelContainer .star-rating svg {
-        width: 26px;
-        height: 26px;
+        width: 24px;
+        height: 24px;
       }
       #funnelContainer h2 {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
       }
     }
 
