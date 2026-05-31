@@ -1,4 +1,4 @@
-// partner.html - Affiliate portal functionality
+// partner.js - Agency Portal functionality
 
 (function() {
   var params = new URLSearchParams(window.location.search);
@@ -7,12 +7,17 @@
   if (!code) {
     // Show code entry form
     document.getElementById('mainContent').innerHTML =
-      '<span class="page-eyebrow">Affiliate Portal</span>' +
-      '<h1 class="page-title">Enter your code</h1>' +
-      '<p class="page-sub">Enter the affiliate code you were given to see your dashboard.</p>' +
-      '<div style="display:flex;gap:10px;max-width:400px;">' +
+      '<span class="page-eyebrow">Agency Portal</span>' +
+      '<h1 class="page-title">Enter your agency code</h1>' +
+      '<p class="page-sub">Enter the agency code you were given to access your dashboard.</p>' +
+      '<div style="display:flex;gap:10px;max-width:400px;margin:0 auto;">' +
       '<input id="codeInput" type="text" placeholder="e.g. toddnorwich" style="flex:1;margin-bottom:0;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;color:var(--cream);font-family:\'DM Sans\',sans-serif;font-size:0.95rem;outline:none;">' +
       '<button class="copy-btn" onclick="window.location=\'?code=\'+encodeURIComponent(document.getElementById(\'codeInput\').value.trim())" style="padding:14px 20px;font-size:0.95rem;">View Dashboard →</button>' +
+      '</div>' +
+      '<div class="agency-benefits">' +
+      '<div class="benefit"><div class="benefit-icon">🎨</div><div class="benefit-title">White-label</div><div class="benefit-desc">Your brand, your dashboard</div></div>' +
+      '<div class="benefit"><div class="benefit-icon">💰</div><div class="benefit-title">30% Commission</div><div class="benefit-desc">Recurring every month</div></div>' +
+      '<div class="benefit"><div class="benefit-icon">👥</div><div class="benefit-title">Client Management</div><div class="benefit-desc">All in one place</div></div>' +
       '</div>';
     return;
   }
@@ -62,8 +67,8 @@ async function submitBankDetails() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: name,
-        email: 'affiliate@reviewlift.app',
-        message: 'AFFILIATE BANK DETAILS\nAffiliate code: ' + code + '\nName: ' + name + '\nSort code: ' + sortCode + '\nAccount number: ' + accountNumber
+        email: 'agency@reviewlift.app',
+        message: 'AGENCY BANK DETAILS\nAgency code: ' + code + '\nName: ' + name + '\nSort code: ' + sortCode + '\nAccount number: ' + accountNumber
       })
     });
     var data = await res.json();
@@ -72,13 +77,13 @@ async function submitBankDetails() {
       msg.style.color = '#8EC9A8';
       document.getElementById('bankForm').innerHTML = '<p style="color:#8EC9A8;font-size:0.85rem;">✓ Bank details submitted. We\'ll be in touch.</p>';
     } else {
-      msg.textContent = 'Error. Email billy@reviewlift.app';
+      msg.textContent = 'Error. Email hello@reviewlift.app';
       msg.style.color = '#D4897C';
       btn.disabled = false;
       btn.textContent = 'Send details →';
     }
   } catch(e) {
-    msg.textContent = 'Error. Email billy@reviewlift.app';
+    msg.textContent = 'Error. Email hello@reviewlift.app';
     msg.style.color = '#D4897C';
     btn.disabled = false;
     btn.textContent = 'Send details →';
@@ -90,10 +95,10 @@ async function loadDashboard(code) {
 
   if (!res.ok) {
     document.getElementById('mainContent').innerHTML =
-      '<span class="page-eyebrow">Affiliate Portal</span>' +
+      '<span class="page-eyebrow">Agency Portal</span>' +
       '<h1 class="page-title">Not found</h1>' +
-      '<p class="page-sub">That code doesn\'t exist yet. It activates when your first referral signs up.</p>' +
-      '<p style="font-size:0.85rem;color:var(--cream-dim);">Your link: <code style="color:var(--accent);">' + window.location.origin + '?ref=' + code + '</code></p>';
+      '<p class="page-sub">That agency code doesn\'t exist yet. It activates when your first client signs up.</p>' +
+      '<p style="font-size:0.85rem;color:var(--cream-dim);">Your referral link: <code style="color:var(--accent);">' + window.location.origin + '?ref=' + code + '</code></p>';
     return;
   }
 
@@ -101,14 +106,14 @@ async function loadDashboard(code) {
   var payoutDate = getNextPayoutDate();
 
   var html =
-    '<span class="page-eyebrow">Affiliate Portal</span>' +
+    '<span class="page-eyebrow">Agency Portal</span>' +
     '<h1 class="page-title">' + (data.partner_name || code) + '</h1>' +
-    '<p class="page-sub">Track your referrals, conversions, and earnings.</p>' +
+    '<p class="page-sub">Track your clients, conversions, and earnings.</p>' +
 
     '<div class="metrics-grid">' +
-    '<div class="metric-card"><div class="metric-value">' + (data.total_signups || 0) + '</div><div class="metric-label">Total Signups</div></div>' +
-    '<div class="metric-card"><div class="metric-value" style="color:#8EC9A8">' + (data.active_customers || 0) + '</div><div class="metric-label">Active Customers</div><div class="earnings-note">Paying customers only</div></div>' +
-    '<div class="metric-card"><div class="metric-value" style="color:var(--accent)">£' + (data.monthly_earnings || 0).toFixed(2) + '</div><div class="metric-label">Monthly Earnings</div><div class="earnings-note">From active customers</div></div>' +
+    '<div class="metric-card"><div class="metric-value">' + (data.total_signups || 0) + '</div><div class="metric-label">Total Clients</div></div>' +
+    '<div class="metric-card"><div class="metric-value" style="color:#8EC9A8">' + (data.active_customers || 0) + '</div><div class="metric-label">Active Clients</div><div class="earnings-note">Paying customers only</div></div>' +
+    '<div class="metric-card"><div class="metric-value" style="color:var(--accent)">£' + (data.monthly_earnings || 0).toFixed(2) + '</div><div class="metric-label">Monthly Commission</div><div class="earnings-note">From active clients</div></div>' +
     '<div class="metric-card"><div class="metric-value" style="color:#8EC9A8">£' + (data.monthly_earnings || 0).toFixed(2) + '</div><div class="metric-label">Pending This Month</div><div class="earnings-note">Paid on ' + payoutDate + '</div></div>' +
     '</div>' +
 
@@ -116,11 +121,11 @@ async function loadDashboard(code) {
     '<h3>💳 How payouts work</h3>' +
     '<div class="payout-grid">' +
     '<div><div class="payout-value">Monthly</div><div class="payout-desc">Paid by bank transfer on the 1st of each month</div></div>' +
-    '<div><div class="payout-value">30%</div><div class="payout-desc">Commission on every paying customer, every month</div></div>' +
-    '<div><div class="payout-value">Recurring</div><div class="payout-desc">You earn as long as the customer stays</div></div>' +
+    '<div><div class="payout-value">30%</div><div class="payout-desc">Commission on every paying client, every month</div></div>' +
+    '<div><div class="payout-value">Recurring</div><div class="payout-desc">You earn as long as the client stays</div></div>' +
     '</div>' +
     '<div class="payout-footer">' +
-    '<span class="next-payout">Next payout: <strong>' + payoutDate + '</strong><span style="font-size:0.7rem;color:rgba(234,231,220,0.3);display:block;margin-top:2px;">Only includes paying customers</span></span>' +
+    '<span class="next-payout">Next payout: <strong>' + payoutDate + '</strong><span style="font-size:0.7rem;color:rgba(234,231,220,0.3);display:block;margin-top:2px;">Only includes paying clients</span></span>' +
     '<button class="bank-details-btn" id="bankDetailsBtn" onclick="showBankForm()">Submit bank details for payouts →</button>' +
     '</div>' +
     '<div id="bankForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">' +
@@ -137,12 +142,12 @@ async function loadDashboard(code) {
 
     '<div class="panel">' +
     '<h3>Your referral link</h3>' +
-    '<p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:0;">Share this link anywhere. Anyone who signs up is tracked to you.</p>' +
+    '<p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:0;">Share this link with potential clients. Anyone who signs up is tracked to you.</p>' +
     '<div class="ref-link-box"><span id="refLink">' + data.referral_link + '</span><button class="copy-btn" onclick="copyRefLink()">📋 Copy</button></div>' +
     '</div>';
 
   if (data.referrals && data.referrals.length > 0) {
-    html += '<div class="panel"><h3>Your referrals</h3><table><thead><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr></thead><tbody>';
+    html += '<div class="panel"><h3>Your clients</h3><tr><thead><tr><th>Business</th><th>Plan</th><th>Signed up</th><th>Status</th><th>Monthly</th></tr></thead><tbody>';
     data.referrals.forEach(function(r) {
       var badge = r.status === 'active' ? '<span class="status-badge status-active">✅ Paying</span>' :
                   r.status === 'trial' ? '<span class="status-badge status-trial">🕐 Trial</span>' :
