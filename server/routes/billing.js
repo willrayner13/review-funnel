@@ -4,6 +4,23 @@ const supabase = require("../config/database");
 
 const router = express.Router();
 
+// Debug endpoint - check environment variables
+router.get("/debug-env", (req, res) => {
+  res.json({
+    stripe_secret_exists: !!process.env.STRIPE_SECRET,
+    stripe_secret_prefix: process.env.STRIPE_SECRET ? process.env.STRIPE_SECRET.substring(0, 7) : 'missing',
+    base_url: process.env.BASE_URL,
+    starter_price_exists: !!process.env.Starter_subscription,
+    starter_price: process.env.Starter_subscription,
+    pro_price_exists: !!process.env.Pro_subscription,
+    pro_price: process.env.Pro_subscription,
+    agency_price_exists: !!process.env.Agency_subscription,
+    agency_price: process.env.Agency_subscription,
+    node_env: process.env.NODE_ENV
+  });
+});
+
+
 // Subscription status
 router.get("/subscription-status/:slug", async (req, res) => {
   const { data, error } = await supabase
