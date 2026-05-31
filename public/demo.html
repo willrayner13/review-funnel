@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/css/funnel.css">
   <link rel="stylesheet" href="/css/demo.css">
-  <style>
+<style>
   * {
     margin: 0;
     padding: 0;
@@ -80,16 +80,13 @@
     text-align: center;
   }
 
-  /* FIXED iPhone styles - NEVER change size */
+  /* FIXED iPhone styles */
   .iphone-mockup {
     position: relative;
     background: #000;
     border-radius: 54px;
     padding: 12px;
-    box-shadow: 
-      0 30px 60px rgba(0,0,0,0.6),
-      inset 0 0 2px 2px rgba(255,255,255,0.1);
-    /* RIGID DIMENSIONS */
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     width: 320px; 
     height: 640px;
     margin: 0 auto;
@@ -97,45 +94,97 @@
     border: 2px solid #333;
   }
 
-  /* Hardware Buttons */
-  .iphone-mockup::before, 
-  .iphone-mockup::after {
-    content: '';
-    position: absolute;
-    background: #333; 
-    border-radius: 2px;
-    z-index: -1;
-  }
-
-  /* Power Button (Right Side) */
-  .iphone-mockup::after {
-    width: 4px;
-    height: 50px;
-    right: -4px;
-    top: 160px;
-  }
-  
-  /* Volume Buttons (Left Side) */
-  .iphone-mockup::before {
-    width: 4px;
-    height: 40px;
-    left: -4px;
-    top: 120px;
-    box-shadow: 0 55px 0 #333; 
-  }
-
   .iphone-screen {
     background: #1A1A18;
     border-radius: 42px;
-    overflow: hidden !important; /* NO SCROLLING */
+    overflow: hidden !important; /* STRICT NO SCROLL */
     position: relative;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    border: 1px solid #111;
   }
 
+  .funnel-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px 15px; /* Reduced vertical padding */
+  }
+
+  /* --- COMPACT FUNNEL OVERRIDES --- */
+
+  #funnelContainer {
+    width: 100%;
+    display: block; /* Removed opacity:0 so it's visible now */
+  }
+
+  #funnelContainer .funnel-card {
+    margin: 0 auto !important;
+    width: 92% !important;
+    padding: 15px 12px !important; /* Ultra tight */
+    transform: none !important;
+  }
+
+  /* Force headers to be small enough for one screen */
+  #funnelContainer h1, 
+  #funnelContainer h2,
+  #funnelContainer [style*="font-size: 2.5rem"],
+  #funnelContainer [style*="font-size: 2rem"] {
+    font-size: 1.1rem !important; 
+    line-height: 1.1 !important;
+    margin-bottom: 5px !important;
+    margin-top: 0 !important;
+  }
+
+  /* Shrink the AI feedback box height */
+  #funnelContainer textarea,
+  #funnelContainer .premium-textarea {
+    min-height: 55px !important; 
+    max-height: 70px !important;
+    font-size: 0.75rem !important;
+    padding: 6px !important;
+    margin-bottom: 5px !important;
+  }
+
+  /* Shrink buttons */
+  #funnelContainer button,
+  #funnelContainer .btn-copy,
+  #funnelContainer .btn-primary {
+    padding: 8px 14px !important;
+    font-size: 0.8rem !important;
+    margin-top: 5px !important;
+  }
+
+  /* Shrink star size */
+  #funnelContainer .star-rating {
+    gap: 4px !important;
+    margin: 5px 0 !important;
+  }
+  #funnelContainer .star-rating span,
+  #funnelContainer .star-rating svg {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 26px !important;
+  }
+
+  /* Shrink all text */
+  #funnelContainer p, 
+  #funnelContainer .subtitle,
+  #funnelContainer #businessTitle {
+    font-size: 0.7rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 3px !important;
+  }
+
+  #funnelContainer .powered-by {
+    margin-top: 10px !important;
+    font-size: 0.55rem !important;
+  }
+
+  /* Hardware / UI elements */
   .dynamic-island {
     position: absolute;
     top: 12px;
@@ -158,101 +207,9 @@
     padding: 2px 6px;
     border-radius: 20px;
     z-index: 20;
-    font-weight: 600;
   }
 
-  .funnel-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    padding: 30px 15px 10px; /* Reduced top/bottom padding */
-  }
-
-  #funnelContainer { 
-    width: 100%; 
-    opacity: 0; 
-    transition: opacity 0.3s ease; 
-  }
-  
-  /* --- ULTRA-COMPACT CARD OVERRIDES (NO SCROLLING) --- */
-
-  #funnelContainer .funnel-card {
-    margin: 0 auto !important;
-    width: 90% !important;
-    padding: 16px 12px !important; /* Tight padding */
-    transform: none !important;
-    transition: none !important;
-  }
-
-  /* Shrink Headlines */
-  #funnelContainer h1, 
-  #funnelContainer h2,
-  #funnelContainer [style*="font-size: 2.5rem"],
-  #funnelContainer [style*="font-size: 2rem"] {
-    font-size: 1.15rem !important; 
-    line-height: 1.1 !important;
-    margin-bottom: 6px !important;
-  }
-
-  /* Shrink Textarea (Crucial for the Happy Path screen) */
-  #funnelContainer textarea,
-  #funnelContainer .premium-textarea {
-    min-height: 60px !important;
-    max-height: 80px !important;
-    font-size: 0.75rem !important;
-    padding: 8px !important;
-    margin-bottom: 8px !important;
-  }
-
-  /* Shrink Buttons */
-  #funnelContainer button,
-  #funnelContainer .btn-copy {
-    padding: 10px 16px !important;
-    font-size: 0.8rem !important;
-    margin-top: 4px !important;
-    margin-bottom: 4px !important;
-  }
-
-  /* Shrink Stars */
-  #funnelContainer .star-rating {
-    gap: 4px !important;
-    margin: 8px 0 !important;
-  }
-  #funnelContainer .star-rating svg,
-  #funnelContainer .star-rating span {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 28px !important;
-  }
-
-  /* Shrink all secondary text */
-  #funnelContainer p, 
-  #funnelContainer .subtitle,
-  #funnelContainer #businessTitle {
-    font-size: 0.7rem !important;
-    line-height: 1.2 !important;
-    margin-bottom: 4px !important;
-  }
-
-  #funnelContainer .powered-by {
-    margin-top: 6px !important;
-    font-size: 0.55rem !important;
-  }
-
-  /* --- END COMPACT OVERRIDES --- */
-
-  .demo-note {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 0.7rem;
-    color: rgba(234,231,220,0.3);
-  }
-
-  /* Modal Styles */
+  /* Modal */
   .demo-modal {
     position: fixed;
     inset: 0;
@@ -265,23 +222,13 @@
   }
   .demo-modal.open { display: flex; }
   .demo-modal-content {
-    background: var(--surface);
+    background: #242422;
     border-radius: 24px;
     max-width: 320px;
     width: 85%;
     padding: 28px 20px;
     text-align: center;
-    border: 1px solid var(--accent);
-  }
-  .demo-modal-btn {
-    background: var(--accent);
-    color: #1A1A18;
-    padding: 10px;
-    border-radius: 100px;
-    text-decoration: none;
-    font-weight: 700;
-    display: block;
-    margin-top: 15px;
+    border: 1px solid #C8A96E;
   }
 </style>
 </head>
