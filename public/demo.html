@@ -131,7 +131,7 @@
       font-weight: 600;
     }
 
-    /* Fixed wrapper - content ALWAYS centered */
+    /* Fixed wrapper - content ALWAYS centered with fixed reference */
     .funnel-wrapper {
       flex: 1;
       display: flex;
@@ -141,9 +141,19 @@
       padding: 56px 16px 24px;
       position: relative;
       min-height: 0;
+      height: 100%;
     }
 
-    /* Funnel card - ALWAYS centered, scales but stays put */
+    /* Funnel card container */
+    #funnelContainer {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Funnel card - ALWAYS centered */
     #funnelContainer .funnel-card {
       width: 100%;
       max-width: 100%;
@@ -153,6 +163,7 @@
       transform-origin: center center !important;
       margin: 0 auto !important;
       position: relative;
+      will-change: transform;
     }
 
     /* Hide scrollbars */
@@ -422,39 +433,62 @@
 <script src="/js/funnel-loader.js"></script>
 <script src="/js/demo.js"></script>
 <script>
-  // Auto-scale function - keeps content centered WITHOUT moving position
+  // Auto-scale function - properly measures and scales content to fit
   function scaleContentToFit() {
     const card = document.querySelector('#funnelContainer .funnel-card');
     const wrapper = document.querySelector('.funnel-wrapper');
     
     if (!card || !wrapper) return;
     
+    // Reset transform before measuring to get true dimensions
+    card.style.transform = 'none';
+    card.style.transformOrigin = 'center center';
+    
+    // Force a reflow to get accurate measurements
+    void card.offsetHeight;
+    
     const availableHeight = wrapper.clientHeight;
     const availableWidth = wrapper.clientWidth;
+    
+    // Get actual content dimensions including padding/margins
     const contentHeight = card.scrollHeight;
     const contentWidth = card.scrollWidth;
     
-    // Calculate scale - NEVER scale up, only down if needed
-    const scaleHeight = availableHeight / contentHeight;
-    const scaleWidth = availableWidth / contentWidth;
-    let scale = Math.min(1, scaleHeight, scaleWidth);
+    // Calculate scale - only scale down if content is larger than available space
+    let scale = 1;
     
-    // Apply scale from CENTER (not top)
+    if (contentHeight > availableHeight) {
+      scale = Math.min(scale, availableHeight / contentHeight);
+    }
+    if (contentWidth > availableWidth) {
+      scale = Math.min(scale, availableWidth / contentWidth);
+    }
+    
+    // Apply scale with a small buffer (0.95) to ensure it never overflows
+    scale = Math.min(scale, 0.98);
+    
+    // Apply transform from center
     card.style.transformOrigin = 'center center';
     card.style.transform = `scale(${scale})`;
     
-    // Force card to stay centered
+    // Ensure card is centered
     card.style.position = 'relative';
-    card.style.top = 'auto';
-    card.style.left = 'auto';
     card.style.margin = '0 auto';
+    card.style.top = '0';
+    card.style.left = '0';
   }
   
-  // Force recalibration after any content change
+  // Force recalibration with debounce to handle DOM changes
+  let scaleTimeout = null;
   function forceCenterAndScale() {
-    setTimeout(scaleContentToFit, 10);
-    setTimeout(scaleContentToFit, 50);
-    setTimeout(scaleContentToFit, 100);
+    if (scaleTimeout) clearTimeout(scaleTimeout);
+    scaleTimeout = setTimeout(() => {
+      scaleContentToFit();
+      // Double-check after another frame to catch any layout shifts
+      requestAnimationFrame(() => {
+        scaleContentToFit();
+      });
+    }, 50);
   }
   
   // Load the funnel HTML template
@@ -491,6 +525,17 @@
       
       // Initial scale after content loads
       forceCenterAndScale();
+      
+      // Set up resize observer for the card
+      setTimeout(() => {
+        const card = document.querySelector('#funnelContainer .funnel-card');
+        if (card) {
+          const resizeObserver = new ResizeObserver(() => {
+            forceCenterAndScale();
+          });
+          resizeObserver.observe(card);
+        }
+      }, 200);
     });
   
   // Watch for content changes (when rating changes page)
