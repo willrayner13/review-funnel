@@ -22,6 +22,14 @@ function initFunnel(mode = FunnelMode.LIVE, options = {}) {
     overrideAPIsForDemo();
   }
   
+  // Set the business name in the display element (for both live and demo)
+  setTimeout(function() {
+    const businessNameDisplay = document.getElementById('businessNameDisplay');
+    if (businessNameDisplay && window.businessName) {
+      businessNameDisplay.textContent = window.businessName;
+    }
+  }, 100);
+  
   // Load the funnel script
   const script = document.createElement('script');
   script.src = '/js/funnel.js';
