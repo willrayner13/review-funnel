@@ -53,7 +53,7 @@ function overrideAPIsForDemo() {
    if (url.includes('/suggest-review/')) {
   return Promise.resolve({
     json: () => Promise.resolve({ 
-      suggestion: `"I highly recommend ${window.businessName}! Great service, friendly team, and an overall excellent experience. 5 stars!"` 
+      suggestion: `I highly recommend ${window.businessName}! Great service, friendly team, and an overall excellent experience. 5 stars!` 
     })
   });
 }
