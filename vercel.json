@@ -1,20 +1,115 @@
 {
-  "builds": [
-    { "src": "server/index.js", "use": "@vercel/node" }
-  ],
+  "functions": {
+    "server/index.js": {
+      "includeFiles": "public/**"
+    }
+  },
   "routes": [
-    { "src": "/css/(.*)", "dest": "server/index.js" },
-    { "src": "/js/(.*)", "dest": "server/index.js" },
-    { "src": "/images/(.*)", "dest": "server/index.js" },
-    { "src": "/components/(.*)", "dest": "server/index.js" },
-    { "src": "/blog/(.*)", "dest": "server/index.js" },
-    { "src": "/(.*)\\.(css|js|png|jpg|jpeg|gif|svg|ico|webmanifest|txt|xml)", "dest": "server/index.js" },
-    { "src": "/(.*)", "dest": "server/index.js" },
-    { "src": "/style.css", "dest": "/public/style.css" },
-    { "src": "/site.webmanifest", "dest": "/public/site.webmanifest" }
+    {
+      "src": "/css/(.*)",
+      "dest": "/public/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/public/js/$1"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/public/images/$1"
+    },
+    {
+      "src": "/components/(.*)",
+      "dest": "/public/components/$1"
+    },
+    {
+      "src": "/funnel/(.*)",
+      "dest": "/public/funnel/$1"
+    },
+    {
+      "src": "/blog/(.*)",
+      "dest": "/public/blog/$1"
+    },
+    {
+      "src": "/style.css",
+      "dest": "/public/style.css"
+    },
+    {
+      "src": "/site.webmanifest",
+      "dest": "/public/site.webmanifest"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "dest": "/public/apple-touch-icon.png"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/public/favicon.ico"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "dest": "/public/favicon-16x16.png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "dest": "/public/favicon-32x32.png"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "dest": "/public/android-chrome-192x192.png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "dest": "/public/android-chrome-512x512.png"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "/public/robots.txt"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "/public/sitemap.xml"
+    },
+    {
+      "src": "/llms.txt",
+      "dest": "/public/llms.txt"
+    },
+    {
+      "src": "/(.*)\\.html",
+      "dest": "/public/$1.html"
+    },
+    {
+      "src": "/stripe-webhook",
+      "dest": "/server/index.js"
+    },
+    {
+      "src": "/create-checkout",
+      "dest": "/server/index.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/index.js"
+    },
+    {
+      "src": "/cron/(.*)",
+      "dest": "/server/index.js"
+    },
+    {
+      "src": "/r/(.*)",
+      "dest": "/server/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/server/index.js"
+    }
   ],
   "crons": [
-    { "path": "/cron/reputation-scores", "schedule": "0 8 1 * *" },
-    { "path": "/cron/mark-conversions", "schedule": "0 8 * * *" }
+    {
+      "path": "/cron/reputation-scores",
+      "schedule": "0 8 1 * *"
+    },
+    {
+      "path": "/cron/mark-conversions",
+      "schedule": "0 8 * * *"
+    }
   ]
 }
