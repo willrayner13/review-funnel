@@ -50,13 +50,13 @@ window.updateDemoBusinessName = function(name) {
 function overrideAPIsForDemo() {
   const originalFetch = window.fetch;
   window.fetch = function(url, options) {
-    if (url.includes('/suggest-review/')) {
-      return Promise.resolve({
-        json: () => Promise.resolve({ 
-          suggestion: `Great experience at ${window.businessName}! The team was friendly and professional. Highly recommend!` 
-        })
-      });
-    }
+   if (url.includes('/suggest-review/')) {
+  return Promise.resolve({
+    json: () => Promise.resolve({ 
+      suggestion: `"I highly recommend ${window.businessName}! Great service, friendly team, and an overall excellent experience. 5 stars!"` 
+    })
+  });
+}
     if (url.includes('/rating') || url.includes('/positive') || url.includes('/feedback')) {
       return Promise.resolve({ json: () => Promise.resolve({ success: true }) });
     }
