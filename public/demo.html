@@ -102,8 +102,7 @@
       width: 100%;
       height: 580px;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
     }
 
     .dynamic-island {
@@ -131,16 +130,26 @@
       font-weight: 600;
     }
 
-    /* The key fix - content container with auto-scaling */
-    .iphone-content {
+    /* Fixed position container for the funnel card */
+    .funnel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
       padding: 50px 16px 24px;
-      width: 100%;
-      transition: transform 0.2s ease;
     }
 
-    /* Scale the content based on its own height */
-    .iphone-content.scaled {
-      transform: scale(0.85);
+    /* The funnel card - fixed size, never moves */
+    #funnelContainer {
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    /* Ensure the funnel-card inside has consistent styling */
+    #funnelContainer .funnel-card {
+      margin: 0;
+      transition: all 0.3s ease;
     }
 
     .demo-note {
@@ -151,65 +160,65 @@
       color: rgba(234,231,220,0.3);
     }
 
-    /* Fixed typography - not scaling with vw */
-    .iphone-content #businessTitle {
-      font-size: 0.8rem;
-      margin-bottom: 6px;
+    /* Fixed typography - all sizes are fixed, no expansion */
+    #funnelContainer #businessTitle {
+      font-size: 0.75rem;
+      margin-bottom: 4px;
     }
-    .iphone-content #mainHeadline {
-      font-size: 1.2rem;
+    #funnelContainer #mainHeadline {
+      font-size: 1.15rem;
       margin-bottom: 4px;
       line-height: 1.3;
     }
-    .iphone-content .subtitle {
-      font-size: 0.55rem;
-      margin-bottom: 12px;
+    #funnelContainer .subtitle {
+      font-size: 0.5rem;
+      margin-bottom: 10px;
       letter-spacing: 0.1em;
     }
-    .iphone-content .star-rating svg {
-      width: 38px;
-      height: 38px;
+    #funnelContainer .star-rating svg {
+      width: 34px;
+      height: 34px;
     }
-    .iphone-content .star-rating {
-      gap: 6px;
-      margin: 8px 0;
+    #funnelContainer .star-rating {
+      gap: 5px;
+      margin: 6px 0;
     }
-    .iphone-content h2 {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
+    #funnelContainer h2 {
+      font-size: 1rem;
+      margin-bottom: 4px;
     }
-    .iphone-content .premium-textarea {
-      padding: 8px 12px;
+    #funnelContainer .premium-textarea {
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      min-height: 60px;
+      margin-bottom: 8px;
+    }
+    #funnelContainer .btn-copy {
+      padding: 8px 14px;
       font-size: 0.75rem;
-      min-height: 70px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
-    .iphone-content .btn-copy {
-      padding: 10px 16px;
-      font-size: 0.8rem;
-      margin-bottom: 10px;
+    #funnelContainer .btn-voice {
+      width: 40px;
+      height: 40px;
     }
-    .iphone-content .btn-voice {
-      width: 44px;
-      height: 44px;
+    #funnelContainer .voice-section {
+      margin-top: 8px;
+      padding-top: 8px;
     }
-    .iphone-content .voice-section {
+    #funnelContainer .btn-send {
+      padding: 8px 14px;
+      font-size: 0.75rem;
+    }
+    #funnelContainer .privacy-note {
+      font-size: 0.5rem;
+    }
+    #funnelContainer .powered-by {
       margin-top: 10px;
-      padding-top: 10px;
-    }
-    .iphone-content .btn-send {
-      padding: 10px 16px;
-      font-size: 0.8rem;
-    }
-    .iphone-content .privacy-note {
-      font-size: 0.55rem;
-    }
-    .iphone-content .powered-by {
-      margin-top: 12px;
-      font-size: 0.55rem;
+      font-size: 0.5rem;
     }
 
-    /* Responsive scaling for different screen sizes - phone frame scales, content fits */
+    /* Responsive scaling for smaller phones */
     @media (max-width: 480px) {
       .iphone-mockup {
         width: 320px;
@@ -217,15 +226,15 @@
       .iphone-screen {
         height: 540px;
       }
-      .iphone-content {
-        padding: 45px 14px 20px;
+      .funnel-wrapper {
+        padding: 45px 12px 20px;
       }
-      .iphone-content #mainHeadline {
-        font-size: 1.1rem;
+      #funnelContainer #mainHeadline {
+        font-size: 1rem;
       }
-      .iphone-content .star-rating svg {
-        width: 34px;
-        height: 34px;
+      #funnelContainer .star-rating svg {
+        width: 30px;
+        height: 30px;
       }
     }
 
@@ -236,30 +245,18 @@
       .iphone-screen {
         height: 500px;
       }
-      .iphone-content {
-        padding: 40px 12px 16px;
+      .funnel-wrapper {
+        padding: 40px 10px 16px;
       }
-      .iphone-content #mainHeadline {
-        font-size: 1rem;
+      #funnelContainer #mainHeadline {
+        font-size: 0.9rem;
       }
-      .iphone-content .star-rating svg {
-        width: 30px;
-        height: 30px;
+      #funnelContainer .star-rating svg {
+        width: 26px;
+        height: 26px;
       }
-      .iphone-content h2 {
-        font-size: 0.95rem;
-      }
-      .iphone-content .premium-textarea {
-        font-size: 0.7rem;
-        min-height: 60px;
-      }
-      .iphone-content .btn-copy {
-        font-size: 0.75rem;
-        padding: 8px 12px;
-      }
-      .iphone-content .btn-voice {
-        width: 38px;
-        height: 38px;
+      #funnelContainer h2 {
+        font-size: 0.85rem;
       }
     }
 
@@ -364,7 +361,9 @@
     <div class="iphone-screen">
       <div class="dynamic-island"></div>
       <div class="demo-badge">DEMO</div>
-      <div id="funnelContainer" class="iphone-content"></div>
+      <div class="funnel-wrapper">
+        <div id="funnelContainer"></div>
+      </div>
     </div>
   </div>
   
@@ -421,37 +420,6 @@
       });
       
       setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
-      
-      // Auto-scale content to prevent scrolling
-      function scaleContentToFit() {
-        const screen = document.querySelector('.iphone-screen');
-        const content = document.getElementById('funnelContainer');
-        if (!screen || !content) return;
-        
-        const screenHeight = screen.clientHeight;
-        const contentHeight = content.scrollHeight;
-        
-        if (contentHeight > screenHeight) {
-          const scale = screenHeight / contentHeight;
-          content.style.transform = `scale(${scale})`;
-          content.style.transformOrigin = 'top center';
-        } else {
-          content.style.transform = 'none';
-        }
-      }
-      
-      // Run after content loads and after any content changes
-      setTimeout(scaleContentToFit, 150);
-      
-      // Watch for content changes
-      const observer = new MutationObserver(function() {
-        setTimeout(scaleContentToFit, 50);
-      });
-      observer.observe(document.getElementById('funnelContainer'), { 
-        childList: true, 
-        subtree: true, 
-        attributes: true 
-      });
     });
 </script>
 
