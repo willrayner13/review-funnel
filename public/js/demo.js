@@ -79,12 +79,14 @@ function leaveReview() {
         s.style.transform = sVal <= val ? 'scale(1.15)' : 'scale(1)';
       });
     });
+
     star.addEventListener('mouseout', () => {
       stars.forEach(s => {
         s.style.filter = 'grayscale(1) brightness(0.5)';
         s.style.transform = 'scale(1)';
       });
     });
+
     star.addEventListener('click', () => {
       const rating = parseInt(star.dataset.star);
       stars.forEach(s => {
@@ -93,17 +95,22 @@ function leaveReview() {
         s.style.transform = sVal <= rating ? 'scale(1.15)' : 'scale(1)';
         s.style.pointerEvents = 'none';
       });
+
       document.getElementById("mainQuestion").style.display = "none";
+      
       if (rating >= 4) {
         document.getElementById("reviewSection").style.display = "block";
       } else {
         document.getElementById("feedbackBox").style.display = "block";
       }
       
-      // Trigger content scaling after UI changes
-      setTimeout(() => {
-        if (window.scaleDemoContent) window.scaleDemoContent();
-      }, 100);
+      // Improved content scaling after UI changes
+      if (typeof scaleContentToFit === 'function') {
+        setTimeout(scaleContentToFit, 50); 
+      } else if (window.scaleDemoContent) {
+        // Fallback to old name if scaleContentToFit isn't defined yet
+        setTimeout(window.scaleDemoContent, 50);
+      }
     });
   });
 })();

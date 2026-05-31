@@ -85,26 +85,17 @@
     }
 
     /* FIXED iPhone styles - NEVER change size */
-    .iphone-mockup {
-      background: #000;
-      border-radius: 44px;
-      padding: 10px;
-      box-shadow: 0 30px 60px rgba(0,0,0,.4);
-      width: clamp(290px, 32vw, 360px);
-      margin: 0 auto;
-      flex-shrink: 0;
-    }
+.iphone-mockup {
+  transition: none !important; /* Prevent phone itself from animating */
+  flex-shrink: 0;
+  height: fit-content;
+}
 
-    .iphone-screen {
-      background: #1A1A18;
-      border-radius: 32px;
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-      height: clamp(520px, 70vh, 620px);
-      display: flex;
-      flex-direction: column;
-    }
+.iphone-screen {
+  overflow: hidden; /* Prevent scrollbars inside the phone */
+  display: flex;
+  flex-direction: column;
+}
 
     .dynamic-island {
       position: absolute;
@@ -132,39 +123,30 @@
     }
 
     /* Fixed wrapper - content ALWAYS centered with fixed reference */
-    .funnel-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: visible;
-      padding: 56px 16px 24px;
-      position: relative;
-      min-height: 0;
-      height: 100%;
-    }
+.funnel-wrapper {
+  display: flex;
+  align-items: center; /* Vertical center */
+  justify-content: center; /* Horizontal center */
+  position: relative;
+  overflow: hidden;
+  padding: 40px 15px 20px; /* Space for dynamic island and bottom */
+}
 
     /* Funnel card container */
-    #funnelContainer {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+#funnelContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
     
     /* Funnel card - ALWAYS centered */
-    #funnelContainer .funnel-card {
-      width: 100%;
-      max-width: 100%;
-      display: flex;
-      flex-direction: column;
-      transition: transform .2s ease;
-      transform-origin: center center !important;
-      margin: 0 auto !important;
-      position: relative;
-      will-change: transform;
-    }
+#funnelContainer .funnel-card {
+  margin: 0 !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  max-width: 340px; /* Base width before scaling */
+}
 
     /* Hide scrollbars */
     #funnelContainer .funnel-card::-webkit-scrollbar {
@@ -486,131 +468,87 @@
 <script src="/js/funnel-loader.js"></script>
 <script src="/js/demo.js"></script>
 <script>
-  // Auto-scale function - properly measures and scales content to fit
+  // Unified Scaling Engine
   function scaleContentToFit() {
     const card = document.querySelector('#funnelContainer .funnel-card');
     const wrapper = document.querySelector('.funnel-wrapper');
     
     if (!card || !wrapper) return;
     
-    // Reset transform before measuring to get true dimensions
-    card.style.transform = 'none';
+    // 1. Reset for clean measurement
+    card.style.transform = 'scale(1)';
+    card.style.marginTop = '0';
+    
+    // 2. Measure available space vs content
+    const availableHeight = wrapper.offsetHeight;
+    const availableWidth = wrapper.offsetWidth;
+    const contentHeight = card.offsetHeight;
+    const contentWidth = card.offsetWidth;
+    
+    // 3. Calculate scale (with a 0.96 safety buffer)
+    const scaleHeight = (availableHeight * 0.96) / contentHeight;
+    const scaleWidth = (availableWidth * 0.96) / contentWidth;
+    
+    // Only scale down, never up
+    const finalScale = Math.min(1, scaleHeight, scaleWidth);
+    
+    // 4. Apply transformation
     card.style.transformOrigin = 'center center';
+    card.style.transform = `scale(${finalScale})`;
     
-    // Force a reflow to get accurate measurements
-    void card.offsetHeight;
-    
-    const availableHeight = wrapper.clientHeight;
-    const availableWidth = wrapper.clientWidth;
-    
-    // Get actual content dimensions including padding/margins
-    const contentHeight = card.scrollHeight;
-    const contentWidth = card.scrollWidth;
-    
-    // Calculate scale - only scale down if content is larger than available space
-    let scale = 1;
-    
-    if (contentHeight > availableHeight) {
-      scale = Math.min(scale, availableHeight / contentHeight);
+    // 5. Vertical Centering
+    // If scaled content is still shorter than wrapper, flex handles centering.
+    // If it's taller, we ensure it doesn't bleed off the top.
+    const scaledHeight = contentHeight * finalScale;
+    if (scaledHeight > availableHeight) {
+        card.style.marginTop = '0px';
     }
-    if (contentWidth > availableWidth) {
-      scale = Math.min(scale, availableWidth / contentWidth);
-    }
-    
-    // Apply scale with a small buffer (0.95) to ensure it never overflows
-    scale = Math.min(scale, 0.98);
-    
-    // Apply transform from center
-    card.style.transformOrigin = 'center center';
-    card.style.transform = `scale(${scale})`;
-    
-    // Ensure card is centered
-    card.style.position = 'relative';
-    card.style.margin = '0 auto';
-    card.style.top = '0';
-    card.style.left = '0';
   }
-  
-  // Force recalibration with debounce to handle DOM changes
-  let scaleTimeout = null;
-  function forceCenterAndScale() {
-    if (scaleTimeout) clearTimeout(scaleTimeout);
-    scaleTimeout = setTimeout(() => {
-      scaleContentToFit();
-      // Double-check after another frame to catch any layout shifts
-      requestAnimationFrame(() => {
-        scaleContentToFit();
-      });
-    }, 50);
-  }
-  
-  // Load the funnel HTML template
+
+  // Handle template loading and name updates
   fetch('/funnel/funnel-template.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('funnelContainer').innerHTML = html;
       
       const nameInput = document.getElementById('businessNameInput');
-      let currentBusinessName = nameInput.value;
       
-      nameInput.addEventListener('input', function() {
-        currentBusinessName = this.value.trim() || "Your Business";
-        updateBusinessNameInFunnel(currentBusinessName);
+      const updateBusinessNameInFunnel = (name) => {
+        const bizTitle = document.querySelector('#funnelContainer #businessTitle');
+        const headline = document.querySelector('#funnelContainer #mainHeadline');
+        if (bizTitle) bizTitle.textContent = name || "Your Business";
+        if (headline) headline.textContent = `How was your experience at ${name || "Your Business"}?`;
+      };
+
+      nameInput.addEventListener('input', (e) => {
+        updateBusinessNameInFunnel(e.target.value);
+        scaleContentToFit(); // Re-scale if text wraps
       });
       
-      function updateBusinessNameInFunnel(name) {
-        const bizTitle = document.querySelector('#funnelContainer #businessTitle');
-        if (bizTitle) bizTitle.textContent = name;
-        const headline = document.querySelector('#funnelContainer #mainHeadline');
-        if (headline) {
-          headline.textContent = `How was your experience at ${name}?`;
-        }
-      }
-      
       initFunnel('demo', {
-        businessName: currentBusinessName,
+        businessName: nameInput.value,
         slug: 'demo-business',
         template: 'classic',
         accentColor: '#C8A96E'
       });
       
-      setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
-      
-      // Initial scale after content loads
-      forceCenterAndScale();
-      
-      // Set up resize observer for the card
+      // Delay slightly to allow styles to inject
       setTimeout(() => {
-        const card = document.querySelector('#funnelContainer .funnel-card');
-        if (card) {
-          const resizeObserver = new ResizeObserver(() => {
-            forceCenterAndScale();
-          });
-          resizeObserver.observe(card);
-        }
-      }, 200);
+        updateBusinessNameInFunnel(nameInput.value);
+        scaleContentToFit();
+      }, 150);
     });
-  
-  // Watch for content changes (when rating changes page)
-  const observer = new MutationObserver(function(mutations) {
-    forceCenterAndScale();
+
+  // Observe every change inside the funnel (Rating clicks, UI switches)
+  const observer = new MutationObserver(() => {
+    // Small timeout ensures the DOM has rendered the new state (feedback vs review)
+    setTimeout(scaleContentToFit, 10);
   });
-  
-  // Start observing when funnel container is populated
+
   const funnelContainer = document.getElementById('funnelContainer');
-  if (funnelContainer) {
-    observer.observe(funnelContainer, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true
-    });
-  }
-  
-  // Also run on window resize
-  window.addEventListener('resize', function() {
-    forceCenterAndScale();
-  });
+  observer.observe(funnelContainer, { childList: true, subtree: true, attributes: true });
+
+  window.addEventListener('resize', scaleContentToFit);
 </script>
 
 </body>
