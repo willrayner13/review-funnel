@@ -15,10 +15,16 @@
   <link rel="stylesheet" href="/style.css">
   <style>
     /* Additional agency page specific styles */
+    .agency-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+    
     .agency-hero {
       text-align: center;
       max-width: 800px;
-      margin: 0 auto 80px;
+      margin: 0 auto 60px;
     }
     
     .agency-hero h1 {
@@ -62,34 +68,34 @@
       justify-content: center;
       gap: 60px;
       flex-wrap: wrap;
-      margin: 60px 0;
+      margin: 50px 0;
       text-align: center;
     }
     
     .stat-number {
       font-family: 'Syne', sans-serif;
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 800;
       color: var(--accent);
     }
     
     .stat-label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--cream-dim);
     }
     
     .features-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      margin: 60px 0;
+      gap: 24px;
+      margin: 50px 0;
     }
     
     .feature-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 32px 24px;
+      padding: 28px 20px;
       text-align: center;
       transition: all 0.2s;
     }
@@ -100,20 +106,20 @@
     }
     
     .feature-icon {
-      font-size: 2.5rem;
-      margin-bottom: 16px;
+      font-size: 2rem;
+      margin-bottom: 12px;
     }
     
     .feature-card h3 {
       font-family: 'Syne', sans-serif;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       color: var(--cream);
     }
     
     .feature-card p {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--cream-dim);
       line-height: 1.5;
     }
@@ -122,45 +128,45 @@
       background: linear-gradient(135deg, var(--surface) 0%, var(--accent-dim) 100%);
       border: 1px solid var(--accent-dim);
       border-radius: 24px;
-      padding: 48px 40px;
+      padding: 40px 32px;
       text-align: center;
       max-width: 500px;
-      margin: 60px auto;
+      margin: 50px auto;
     }
     
     .pricing-card h2 {
       font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       color: var(--cream);
     }
     
     .pricing-card .price {
       font-family: 'Syne', sans-serif;
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: 800;
       color: var(--accent);
-      margin: 20px 0;
+      margin: 15px 0;
     }
     
     .pricing-card .price span {
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 400;
       color: var(--cream-dim);
     }
     
     .pricing-card ul {
       list-style: none;
-      margin: 24px 0;
+      margin: 20px 0;
       text-align: left;
       display: inline-block;
     }
     
     .pricing-card li {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--cream-dim);
-      padding: 8px 0;
+      padding: 6px 0;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -173,29 +179,29 @@
     }
     
     .faq-section {
-      max-width: 800px;
-      margin: 60px auto 0;
+      max-width: 700px;
+      margin: 50px auto 0;
     }
     
     .faq-section h2 {
       text-align: center;
       font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       color: var(--cream);
     }
     
     .faq-item {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 20px;
+      padding-bottom: 16px;
     }
     
     .faq-question {
       font-weight: 600;
-      font-size: 1rem;
-      margin-bottom: 8px;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
@@ -206,7 +212,7 @@
     .faq-question::after {
       content: '+';
       color: var(--accent);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
     
     .faq-item.open .faq-question::after {
@@ -224,15 +230,53 @@
       display: block;
     }
     
+    /* Fix body padding for fixed navbar */
+    body {
+      padding-top: 64px;
+      background: var(--bg);
+    }
+    
     @media (max-width: 900px) {
       .features-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
       .stats-row {
         gap: 30px;
+        margin: 30px 0;
       }
       .pricing-card {
-        padding: 32px 24px;
+        padding: 28px 20px;
+        margin: 30px auto;
+      }
+      .agency-page {
+        padding: 40px 20px 50px;
+      }
+      .agency-hero {
+        margin-bottom: 40px;
+      }
+      .stat-number {
+        font-size: 1.8rem;
+      }
+      .feature-card {
+        padding: 20px 16px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .stats-row {
+        flex-direction: column;
+        gap: 20px;
+      }
+      .agency-hero h1 {
+        font-size: 1.8rem;
+      }
+      .agency-hero p {
+        font-size: 0.95rem;
+      }
+      .btn-cta {
+        padding: 12px 28px;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -251,7 +295,7 @@
     .catch(err => console.error('Navbar failed to load:', err));
 </script>
 
-<div class="agency-page" style="max-width:1200px; margin:0 auto; padding:60px 24px;">
+<div class="agency-page">
   
   <!-- Hero Section -->
   <div class="agency-hero">
@@ -323,7 +367,7 @@
       <li>Competitor analysis</li>
     </ul>
     <a href="/admin" class="btn-cta">Start 14-day free trial →</a>
-    <p style="font-size:0.7rem; color:var(--cream-faint); margin-top:20px;">No card required until day 15 · Cancel anytime</p>
+    <p style="font-size:0.7rem; color:var(--cream-faint); margin-top:16px;">No card required until day 15 · Cancel anytime</p>
   </div>
   
   <!-- FAQ -->

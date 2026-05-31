@@ -51,6 +51,11 @@
 
 <style>
 /* ========== UNIFIED NAVBAR STYLES ========== */
+
+.rl-nav,
+.rl-nav * {
+  box-sizing: border-box;
+}
 .rl-nav {
   position: fixed;
   top: 0;
@@ -60,6 +65,8 @@
   background: rgba(26, 26, 24, 0.92);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(234, 231, 220, 0.09);
+  height: 64px;
+  width: 100%;
 }
 
 .rl-nav-container {
@@ -70,6 +77,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+}
+
+.rl-nav-logo,
+.rl-nav-links,
+.rl-nav-link,
+.rl-nav-cta,
+.rl-nav-login,
+.rl-nav-start,
+.rl-nav-hamburger {
+  all: unset;
+  display: block;
 }
 
 .rl-nav-logo {
@@ -81,7 +100,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: opacity 0.2s;
+  cursor: pointer;
 }
 
 .rl-nav-logo:hover {
