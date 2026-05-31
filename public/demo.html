@@ -97,14 +97,14 @@
       border: 2px solid #333;
     }
 
-    /* Hardware Buttons - Increased visibility and fixed z-index */
+    /* Hardware Buttons */
     .iphone-mockup::before, 
     .iphone-mockup::after {
       content: '';
       position: absolute;
-      background: #333; /* Lighter than phone body to be visible */
+      background: #333; 
       border-radius: 2px;
-      z-index: -1; /* Behind the frame rim */
+      z-index: -1;
     }
 
     /* Power Button (Right Side) */
@@ -173,10 +173,12 @@
 
     #funnelContainer { width: 100%; }
     
+    /* FIXED FUNNEL CARD - Size changes completely disabled */
     #funnelContainer .funnel-card {
       margin: 0 auto !important;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       width: 100%;
+      transform: none !important; /* Locks out any dynamic JS scaling overrides */
+      transition: none !important;
     }
 
     .demo-note {
@@ -258,28 +260,14 @@
 
 <script src="/js/funnel-loader.js"></script>
 <script>
-  // 1. Unified Scaling Engine
+  // 1. Static Sizing Engine (Dynamic overrides removed per your instructions)
   function scaleContentToFit() {
     const card = document.querySelector('#funnelContainer .funnel-card');
-    const wrapper = document.querySelector('.funnel-wrapper');
-    if (!card || !wrapper) return;
-    
-    card.style.transform = 'none';
-    card.style.transformOrigin = 'center center';
-    
-    const availableHeight = wrapper.offsetHeight;
-    const availableWidth = wrapper.offsetWidth;
-    const contentHeight = card.scrollHeight;
-    const contentWidth = card.scrollWidth;
-    
-    const scaleHeight = (availableHeight * 0.92) / contentHeight;
-    const scaleWidth = (availableWidth * 0.92) / contentWidth;
-    const finalScale = Math.min(1, scaleHeight, scaleWidth);
-    
-    card.style.transform = `scale(${finalScale})`;
+    if (!card) return;
+    card.style.transform = 'none'; // Forces card layout to remain strictly static
   }
 
-  // 2. Star Rating Logic (Integrated here)
+  // 2. Star Rating Logic
   function initStars() {
     const stars = document.querySelectorAll('#starRating span');
     if (!stars.length) return;
@@ -302,7 +290,7 @@
         });
       });
 
-      // THE CLICK HANDLER
+      // Click Handler Integration
       star.addEventListener('click', () => {
         const rating = parseInt(star.dataset.star);
         
@@ -314,7 +302,7 @@
           s.style.pointerEvents = 'none';
         });
 
-        // Toggle UI Sections
+        // Toggle UI Sections safely without scaling transitions
         const mainQuestion = document.getElementById("mainQuestion");
         const reviewSection = document.getElementById("reviewSection");
         const feedbackBox = document.getElementById("feedbackBox");
@@ -327,7 +315,7 @@
           if (feedbackBox) feedbackBox.style.display = "block";
         }
         
-        // Trigger scaling for the new screen content
+        // Run clean sizing enforcement hook safely
         setTimeout(scaleContentToFit, 50);
       });
     });
@@ -352,14 +340,12 @@
         scaleContentToFit();
       });
       
-      // Initialize the funnel and the star listeners
       initFunnel('demo', {
         businessName: nameInput.value,
         template: 'classic',
         accentColor: '#C8A96E'
       });
 
-      // Initialize stars after a short delay to ensure DOM elements exist
       setTimeout(() => {
         updateName(nameInput.value);
         initStars();
@@ -367,7 +353,7 @@
       }, 150);
     });
 
-  // Watch for dynamic UI changes (like the feedback box appearing)
+  // Structural Mutation Handlers
   const observer = new MutationObserver(() => {
     setTimeout(scaleContentToFit, 10);
   });
