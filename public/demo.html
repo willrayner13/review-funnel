@@ -196,37 +196,59 @@
     }
     
     /* Happy path specific - smaller emoji and headline */
+       /* Happy path specific - compact spacing */
     #funnelContainer > div > div:first-child > div[style*="font-size:2.5rem"] {
       font-size: 1.8rem !important;
-      margin-bottom: 6px !important;
+      margin-bottom: 4px !important;
     }
     
     #funnelContainer h2 {
       font-size: 1rem !important;
-      margin-bottom: 6px !important;
+      margin-bottom: 4px !important;
     }
     
     #funnelContainer .premium-textarea {
       padding: 8px 12px;
       font-size: 0.7rem;
       min-height: 60px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     
     #funnelContainer .btn-copy {
       padding: 10px 16px;
       font-size: 0.75rem;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
+      margin-top: 0;
+    }
+    
+    /* Voice section - tight spacing */
+    #funnelContainer .voice-section {
+      margin-top: 0;
+      padding-top: 0;
+    }
+    
+    #funnelContainer .voice-button-container {
+      margin-top: 2px;
+      gap: 6px;
     }
     
     #funnelContainer .btn-voice {
-      width: 42px;
-      height: 42px;
+      width: 36px;
+      height: 36px;
     }
     
-    #funnelContainer .voice-section {
-      margin-top: 8px;
-      padding-top: 8px;
+    #funnelContainer .btn-voice svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    #funnelContainer .waveform {
+      height: 24px;
+      margin: 4px 0;
+    }
+    
+    #funnelContainer .recording-timer {
+      font-size: 0.7rem;
     }
     
     #funnelContainer .btn-send {
@@ -236,13 +258,13 @@
     
     #funnelContainer .privacy-note {
       font-size: 0.55rem;
+      margin-top: 8px;
     }
     
     #funnelContainer .powered-by {
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 0.55rem;
     }
-
     .demo-note {
       text-align: center;
       margin-top: 20px;
@@ -275,6 +297,26 @@
       }
       #funnelContainer > div > div:first-child > div[style*="font-size:2.5rem"] {
         font-size: 1.5rem !important;
+      }
+
+      #funnelContainer .btn-copy {
+        padding: 8px 12px;
+        margin-bottom: 4px;
+      }
+      
+      #funnelContainer .btn-voice {
+        width: 32px;
+        height: 32px;
+      }
+      
+      #funnelContainer .btn-voice svg {
+        width: 16px;
+        height: 16px;
+      }
+      
+      #funnelContainer .premium-textarea {
+        min-height: 50px;
+        margin-bottom: 6px;
       }
     }
 
