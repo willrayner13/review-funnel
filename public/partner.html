@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Agency Portal — ReviewLift White-label</title>
-  <meta name="description" content="White-label review management for agencies. Resell ReviewLift under your own brand with 30% recurring commission.">
+  <title>White-label Agency Program — ReviewLift</title>
+  <meta name="description" content="Resell ReviewLift under your own brand. White-label dashboard, 30% recurring commission, and everything you need to manage client reviews.">
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/css/partner.css">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -14,105 +13,242 @@
   <style>
     body {
       padding-top: 64px;
-      background: var(--bg, #1A1A18);
+      background: #1A1A18;
+      font-family: 'DM Sans', sans-serif;
     }
     
-    /* Agency Portal Styles */
-    .agency-portal-hero {
-      text-align: center;
-      padding: 40px 24px;
-      max-width: 700px;
+    .agency-page {
+      max-width: 1200px;
       margin: 0 auto;
+      padding: 60px 24px;
     }
     
-    .agency-portal-hero h1 {
+    .agency-hero {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 80px;
+    }
+    
+    .agency-hero h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 800;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      color: #EAE7DC;
     }
     
-    .agency-portal-hero p {
-      color: var(--cream-dim, rgba(234,231,220,0.52));
+    .agency-hero h1 span {
+      color: #C8A96E;
+    }
+    
+    .agency-hero p {
+      font-size: 1.1rem;
+      color: rgba(234,231,220,0.52);
+      line-height: 1.6;
       margin-bottom: 32px;
     }
     
-    .code-input-group {
-      display: flex;
-      gap: 12px;
-      max-width: 450px;
-      margin: 0 auto;
-    }
-    
-    .code-input-group input {
-      flex: 1;
-      padding: 14px 18px;
-      background: var(--surface-2, #2E2E2B);
-      border: 1px solid var(--border, rgba(234,231,220,0.09));
-      border-radius: 12px;
-      color: var(--cream, #EAE7DC);
-      font-size: 1rem;
-      font-family: monospace;
-    }
-    
-    .code-input-group input:focus {
-      outline: none;
-      border-color: var(--accent, #C8A96E);
-    }
-    
-    .code-input-group button {
-      padding: 14px 28px;
-      background: var(--accent, #C8A96E);
+    .btn-cta {
+      display: inline-block;
+      background: #C8A96E;
       color: #1A1A18;
-      border: none;
-      border-radius: 12px;
+      padding: 14px 36px;
+      border-radius: 40px;
       font-weight: 700;
-      cursor: pointer;
+      font-size: 1rem;
+      text-decoration: none;
       transition: all 0.2s;
     }
     
-    .code-input-group button:hover {
+    .btn-cta:hover {
       background: #D4B87A;
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
     
-    .agency-benefits {
+    .stats-row {
       display: flex;
       justify-content: center;
-      gap: 40px;
+      gap: 60px;
       flex-wrap: wrap;
-      margin-top: 48px;
-      padding-top: 48px;
-      border-top: 1px solid var(--border, rgba(234,231,220,0.09));
-    }
-    
-    .benefit {
+      margin: 60px 0;
       text-align: center;
     }
     
-    .benefit-icon {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
+    .stat {
+      text-align: center;
     }
     
-    .benefit-title {
+    .stat-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #C8A96E;
+    }
+    
+    .stat-label {
+      font-size: 0.8rem;
+      color: rgba(234,231,220,0.52);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin: 60px 0;
+    }
+    
+    .feature-card {
+      background: #242422;
+      border: 1px solid rgba(234,231,220,0.09);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    
+    .feature-card:hover {
+      border-color: #C8A96E;
+      transform: translateY(-4px);
+    }
+    
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+    
+    .feature-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 12px;
+      color: #EAE7DC;
     }
     
-    .benefit-desc {
-      font-size: 0.75rem;
-      color: var(--cream-dim, rgba(234,231,220,0.52));
+    .feature-card p {
+      font-size: 0.85rem;
+      color: rgba(234,231,220,0.52);
+      line-height: 1.5;
     }
     
-    .faq-mini {
-      max-width: 600px;
-      margin: 60px auto 0;
+    .pricing-card {
+      background: linear-gradient(135deg, #242422 0%, rgba(200,169,110,0.06) 100%);
+      border: 1px solid rgba(200,169,110,0.2);
+      border-radius: 24px;
+      padding: 48px 40px;
       text-align: center;
+      max-width: 500px;
+      margin: 60px auto;
     }
     
-    .faq-mini a {
-      color: var(--accent, #C8A96E);
+    .pricing-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #EAE7DC;
+    }
+    
+    .pricing-card .price {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: #C8A96E;
+      margin: 20px 0;
+    }
+    
+    .pricing-card .price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: rgba(234,231,220,0.52);
+    }
+    
+    .pricing-card ul {
+      list-style: none;
+      margin: 24px 0;
+      text-align: left;
+      display: inline-block;
+    }
+    
+    .pricing-card li {
+      font-size: 0.9rem;
+      color: rgba(234,231,220,0.7);
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .pricing-card li::before {
+      content: '✓';
+      color: #C8A96E;
+      font-weight: 700;
+    }
+    
+    .faq-section {
+      max-width: 800px;
+      margin: 60px auto 0;
+    }
+    
+    .faq-section h2 {
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 40px;
+      color: #EAE7DC;
+    }
+    
+    .faq-item {
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(234,231,220,0.09);
+      padding-bottom: 20px;
+    }
+    
+    .faq-question {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #EAE7DC;
+    }
+    
+    .faq-question::after {
+      content: '+';
+      color: #C8A96E;
+      font-size: 1.2rem;
+    }
+    
+    .faq-item.open .faq-question::after {
+      content: '-';
+    }
+    
+    .faq-answer {
+      font-size: 0.85rem;
+      color: rgba(234,231,220,0.52);
+      line-height: 1.6;
+      display: none;
+    }
+    
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+    
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats-row {
+        gap: 30px;
+      }
+      .agency-page {
+        padding: 40px 20px;
+      }
+      .pricing-card {
+        padding: 32px 24px;
+      }
     }
   </style>
 </head>
@@ -130,8 +266,113 @@
     .catch(err => console.error('Navbar failed to load:', err));
 </script>
 
-<div id="mainContent"></div>
+<div class="agency-page">
+  
+  <!-- Hero Section -->
+  <div class="agency-hero">
+    <h1>White-label reviews for <span>your clients</span></h1>
+    <p>Resell ReviewLift under your own brand. Your logo, your colours, your dashboard. Clients never see us — they think you built it.</p>
+    <a href="/admin" class="btn-cta">Become an agency partner →</a>
+  </div>
+  
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-number">30%</div>
+      <div class="stat-label">Recurring commission</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">10</div>
+      <div class="stat-label">Client accounts included</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">£79</div>
+      <div class="stat-label">Monthly (cancel anytime)</div>
+    </div>
+  </div>
+  
+  <!-- Features -->
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3>White-label dashboard</h3>
+      <p>Your logo, your colours, your domain. Clients never see ReviewLift branding.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Monthly PDF reports</h3>
+      <p>Auto-generated on the 1st of every month. Forward to clients with your logo.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>30% recurring commission</h3>
+      <p>Earn every month your clients stay paying. One introduction, paid forever.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">👥</div>
+      <h3>Client management</h3>
+      <p>Manage all your clients from one dashboard. Add, remove, and monitor performance.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>Competitor analysis</h3>
+      <p>See what competitors are doing and show clients where they can improve.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI review replies</h3>
+      <p>Generate professional responses to client reviews in seconds with AI.</p>
+    </div>
+  </div>
+  
+  <!-- Pricing Card -->
+  <div class="pricing-card">
+    <h2>Agency Plan</h2>
+    <div class="price">£79<span>/month</span></div>
+    <ul>
+      <li>Everything in Pro</li>
+      <li>Up to 10 client accounts</li>
+      <li>White-label branding</li>
+      <li>Monthly PDF reports</li>
+      <li>30% affiliate commission</li>
+      <li>Competitor analysis</li>
+    </ul>
+    <a href="/admin" class="btn-cta">Start 14-day free trial →</a>
+    <p style="font-size:0.7rem; color:rgba(234,231,220,0.3); margin-top:20px;">No card required until day 15 · Cancel anytime</p>
+  </div>
+  
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item">
+      <div class="faq-question">How does white-label work?</div>
+      <div class="faq-answer">You get a branded dashboard URL (e.g., dashboard.youragency.com). Your logo and colours appear everywhere — clients never see ReviewLift branding.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">How do I get paid commission?</div>
+      <div class="faq-answer">When a client signs up through your unique referral link, you earn 30% of their subscription every month. Payments are sent via bank transfer.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Can I add more than 10 clients?</div>
+      <div class="faq-answer">Yes, contact us for custom enterprise pricing. We can scale with you.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Do my clients need their own accounts?</div>
+      <div class="faq-answer">Yes, each client gets their own login under your agency dashboard. You control access and can manage everything on their behalf.</div>
+    </div>
+  </div>
+  
+</div>
 
-<script src="/js/partner.js"></script>
+<script>
+  // FAQ toggle
+  document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', () => {
+      const item = question.parentElement;
+      item.classList.toggle('open');
+    });
+  });
+</script>
+
 </body>
 </html>
