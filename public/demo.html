@@ -11,216 +11,279 @@
   <link rel="stylesheet" href="/css/funnel.css">
   <link rel="stylesheet" href="/css/demo.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    body {
-      background: #1A1A18;
-      padding-top: 70px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  body {
+    background: #1A1A18;
+    padding-top: 70px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .demo-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: var(--accent, #C8A96E);
-      padding: 12px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      z-index: 100;
-    }
+  .demo-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--accent, #C8A96E);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    z-index: 100;
+  }
 
-    .demo-banner span { color: #1A1A18; font-size: 0.85rem; font-weight: 500; }
-    .demo-banner .demo-cta {
-      background: #1A1A18;
-      color: var(--accent, #C8A96E);
-      padding: 8px 20px;
-      border-radius: 40px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
+  .demo-banner span { color: #1A1A18; font-size: 0.85rem; font-weight: 500; }
+  .demo-banner .demo-cta {
+    background: #1A1A18;
+    color: var(--accent, #C8A96E);
+    padding: 8px 20px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
 
-    .demo-input-section {
-      text-align: center;
-      margin-bottom: 20px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0 16px;
-    }
+  .demo-input-section {
+    text-align: center;
+    margin-bottom: 20px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 16px;
+  }
 
-    .demo-input-section label {
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--cream-dim);
-      display: block;
-      margin-bottom: 8px;
-    }
+  .demo-input-section label {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    display: block;
+    margin-bottom: 8px;
+  }
 
-    .demo-input-section input {
-      width: 100%;
-      padding: 12px 20px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      color: var(--cream);
-      font-size: 0.95rem;
-      text-align: center;
-    }
+  .demo-input-section input {
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--cream);
+    font-size: 0.95rem;
+    text-align: center;
+  }
 
-    /* FIXED iPhone styles - NEVER change size */
-    .iphone-mockup {
-      position: relative;
-      background: #000;
-      border-radius: 54px;
-      padding: 12px;
-      box-shadow: 
-        0 30px 60px rgba(0,0,0,0.6),
-        inset 0 0 2px 2px rgba(255,255,255,0.1);
-      /* RIGID DIMENSIONS */
-      width: 320px; 
-      height: 640px;
-      margin: 0 auto;
-      flex-shrink: 0;
-      border: 2px solid #333;
-    }
+  /* FIXED iPhone styles - NEVER change size */
+  .iphone-mockup {
+    position: relative;
+    background: #000;
+    border-radius: 54px;
+    padding: 12px;
+    box-shadow: 
+      0 30px 60px rgba(0,0,0,0.6),
+      inset 0 0 2px 2px rgba(255,255,255,0.1);
+    /* RIGID DIMENSIONS */
+    width: 320px; 
+    height: 640px;
+    margin: 0 auto;
+    flex-shrink: 0;
+    border: 2px solid #333;
+  }
 
-    /* Hardware Buttons */
-    .iphone-mockup::before, 
-    .iphone-mockup::after {
-      content: '';
-      position: absolute;
-      background: #333; 
-      border-radius: 2px;
-      z-index: -1;
-    }
+  /* Hardware Buttons */
+  .iphone-mockup::before, 
+  .iphone-mockup::after {
+    content: '';
+    position: absolute;
+    background: #333; 
+    border-radius: 2px;
+    z-index: -1;
+  }
 
-    /* Power Button (Right Side) */
-    .iphone-mockup::after {
-      width: 4px;
-      height: 50px;
-      right: -4px;
-      top: 160px;
-    }
-    
-    /* Volume Buttons (Left Side) */
-    .iphone-mockup::before {
-      width: 4px;
-      height: 40px;
-      left: -4px;
-      top: 120px;
-      box-shadow: 0 55px 0 #333; 
-    }
+  /* Power Button (Right Side) */
+  .iphone-mockup::after {
+    width: 4px;
+    height: 50px;
+    right: -4px;
+    top: 160px;
+  }
+  
+  /* Volume Buttons (Left Side) */
+  .iphone-mockup::before {
+    width: 4px;
+    height: 40px;
+    left: -4px;
+    top: 120px;
+    box-shadow: 0 55px 0 #333; 
+  }
 
-    .iphone-screen {
-      background: #1A1A18;
-      border-radius: 42px;
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid #111;
-    }
+  .iphone-screen {
+    background: #1A1A18;
+    border-radius: 42px;
+    overflow: hidden !important; /* NO SCROLLING */
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #111;
+  }
 
-    .dynamic-island {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 28px;
-      background: #000;
-      border-radius: 20px;
-      z-index: 50;
-    }
+  .dynamic-island {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 28px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 50;
+  }
 
-    .demo-badge {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(200,169,110,0.2);
-      color: var(--accent);
-      font-size: 0.5rem;
-      padding: 2px 6px;
-      border-radius: 20px;
-      z-index: 20;
-      font-weight: 600;
-    }
+  .demo-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(200,169,110,0.2);
+    color: var(--accent);
+    font-size: 0.5rem;
+    padding: 2px 6px;
+    border-radius: 20px;
+    z-index: 20;
+    font-weight: 600;
+  }
 
-    .funnel-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      padding: 40px 15px 20px;
-    }
+  .funnel-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 30px 15px 10px; /* Reduced top/bottom padding */
+  }
 
-    #funnelContainer { width: 100%; }
-    
-    /* FIXED FUNNEL CARD - Size changes completely disabled */
-    #funnelContainer .funnel-card {
-      margin: 0 auto !important;
-      width: 100%;
-      transform: none !important; /* Locks out any dynamic JS scaling overrides */
-      transition: none !important;
-    }
+  #funnelContainer { 
+    width: 100%; 
+    opacity: 0; 
+    transition: opacity 0.3s ease; 
+  }
+  
+  /* --- ULTRA-COMPACT CARD OVERRIDES (NO SCROLLING) --- */
 
-    .demo-note {
-      text-align: center;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      font-size: 0.7rem;
-      color: rgba(234,231,220,0.3);
-    }
+  #funnelContainer .funnel-card {
+    margin: 0 auto !important;
+    width: 90% !important;
+    padding: 16px 12px !important; /* Tight padding */
+    transform: none !important;
+    transition: none !important;
+  }
 
-    /* Modal Styles */
-    .demo-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .demo-modal.open { display: flex; }
-    .demo-modal-content {
-      background: var(--surface);
-      border-radius: 24px;
-      max-width: 320px;
-      width: 85%;
-      padding: 28px 20px;
-      text-align: center;
-      border: 1px solid var(--accent);
-    }
-    .demo-modal-btn {
-      background: var(--accent);
-      color: #1A1A18;
-      padding: 10px;
-      border-radius: 100px;
-      text-decoration: none;
-      font-weight: 700;
-      display: block;
-      margin-top: 15px;
-    }
-  </style>
+  /* Shrink Headlines */
+  #funnelContainer h1, 
+  #funnelContainer h2,
+  #funnelContainer [style*="font-size: 2.5rem"],
+  #funnelContainer [style*="font-size: 2rem"] {
+    font-size: 1.15rem !important; 
+    line-height: 1.1 !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Shrink Textarea (Crucial for the Happy Path screen) */
+  #funnelContainer textarea,
+  #funnelContainer .premium-textarea {
+    min-height: 60px !important;
+    max-height: 80px !important;
+    font-size: 0.75rem !important;
+    padding: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Shrink Buttons */
+  #funnelContainer button,
+  #funnelContainer .btn-copy {
+    padding: 10px 16px !important;
+    font-size: 0.8rem !important;
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Shrink Stars */
+  #funnelContainer .star-rating {
+    gap: 4px !important;
+    margin: 8px 0 !important;
+  }
+  #funnelContainer .star-rating svg,
+  #funnelContainer .star-rating span {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 28px !important;
+  }
+
+  /* Shrink all secondary text */
+  #funnelContainer p, 
+  #funnelContainer .subtitle,
+  #funnelContainer #businessTitle {
+    font-size: 0.7rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 4px !important;
+  }
+
+  #funnelContainer .powered-by {
+    margin-top: 6px !important;
+    font-size: 0.55rem !important;
+  }
+
+  /* --- END COMPACT OVERRIDES --- */
+
+  .demo-note {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 0.7rem;
+    color: rgba(234,231,220,0.3);
+  }
+
+  /* Modal Styles */
+  .demo-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .demo-modal.open { display: flex; }
+  .demo-modal-content {
+    background: var(--surface);
+    border-radius: 24px;
+    max-width: 320px;
+    width: 85%;
+    padding: 28px 20px;
+    text-align: center;
+    border: 1px solid var(--accent);
+  }
+  .demo-modal-btn {
+    background: var(--accent);
+    color: #1A1A18;
+    padding: 10px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 700;
+    display: block;
+    margin-top: 15px;
+  }
+</style>
 </head>
 <body>
 
