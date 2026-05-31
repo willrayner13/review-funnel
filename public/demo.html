@@ -51,36 +51,7 @@
     font-size: 0.85rem;
   }
 
-  .demo-input-section {
-    text-align: center;
-    margin-bottom: 20px;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 16px;
-  }
-
-  .demo-input-section label {
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--cream-dim);
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  .demo-input-section input {
-    width: 100%;
-    padding: 12px 20px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    color: var(--cream);
-    font-size: 0.95rem;
-    text-align: center;
-  }
-
-  /* FIXED iPhone styles */
+  /* FIXED iPhone Mockup */
   .iphone-mockup {
     position: relative;
     background: #000;
@@ -111,124 +82,102 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 20px 15px; /* Reduced vertical padding */
+    padding: 10px 15px;
   }
 
-  /* --- COMPACT FUNNEL OVERRIDES --- */
+  /* --- THE LOCKED HEIGHT CARD --- */
 
   #funnelContainer {
     width: 100%;
-    display: block; /* Removed opacity:0 so it's visible now */
   }
 
   #funnelContainer .funnel-card {
     margin: 0 auto !important;
-    width: 92% !important;
-    padding: 15px 12px !important; /* Ultra tight */
+    width: 94% !important;
+    
+    /* 1. LOCK THE HEIGHT HERE */
+    height: 460px !important; 
+    
+    /* 2. CENTER CONTENT VERTICALLY INSIDE THE LOCK */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important; 
+    
+    padding: 20px 15px !important;
     transform: none !important;
+    transition: none !important;
+    background: var(--surface) !important;
+    border-radius: 16px !important;
   }
 
-  /* Force headers to be small enough for one screen */
+  /* --- COMPACT CONTENT RULES (To fit the 460px box) --- */
+
   #funnelContainer h1, 
   #funnelContainer h2,
   #funnelContainer [style*="font-size: 2.5rem"],
   #funnelContainer [style*="font-size: 2rem"] {
-    font-size: 1.1rem !important; 
+    font-size: 1.15rem !important; 
     line-height: 1.1 !important;
-    margin-bottom: 5px !important;
-    margin-top: 0 !important;
+    margin-bottom: 8px !important;
   }
 
-  /* Shrink the AI feedback box height */
-  #funnelContainer textarea,
-  #funnelContainer .premium-textarea {
-    min-height: 55px !important; 
+  #funnelContainer textarea {
+    min-height: 60px !important;
     max-height: 70px !important;
-    font-size: 0.75rem !important;
-    padding: 6px !important;
+    font-size: 0.8rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  #funnelContainer .voice-section {
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+    border-top: 1px solid rgba(234,231,220,0.1) !important;
+  }
+
+  #funnelContainer .btn-voice {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  #funnelContainer .waveform {
+    height: 15px !important;
     margin-bottom: 5px !important;
   }
 
-  /* Shrink buttons */
-  #funnelContainer button,
-  #funnelContainer .btn-copy,
-  #funnelContainer .btn-primary {
-    padding: 8px 14px !important;
-    font-size: 0.8rem !important;
-    margin-top: 5px !important;
-  }
-
-  /* Shrink star size */
   #funnelContainer .star-rating {
+    margin: 10px 0 !important;
     gap: 4px !important;
-    margin: 5px 0 !important;
-  }
-  #funnelContainer .star-rating span,
-  #funnelContainer .star-rating svg {
-    width: 26px !important;
-    height: 26px !important;
-    font-size: 26px !important;
   }
 
-  /* Shrink all text */
+  #funnelContainer .star-rating svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  #funnelContainer button.btn-primary,
+  #funnelContainer .btn-copy {
+    padding: 10px !important;
+    font-size: 0.85rem !important;
+    margin-top: 8px !important;
+  }
+
   #funnelContainer p, 
   #funnelContainer .subtitle,
   #funnelContainer #businessTitle {
-    font-size: 0.7rem !important;
-    line-height: 1.2 !important;
-    margin-bottom: 3px !important;
+    font-size: 0.75rem !important;
+    margin-bottom: 4px !important;
   }
 
   #funnelContainer .powered-by {
-    margin-top: 10px !important;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
     font-size: 0.55rem !important;
+    margin-top: 0 !important;
   }
 
-  /* --- VOICE SECTION COMPRESSION --- */
-
-/* 1. Reduce the massive gap at the top of the voice section */
-#funnelContainer .voice-section {
-  margin-top: 8px !important;
-  padding-top: 8px !important;
-  border-top: 1px solid rgba(234, 231, 220, 0.1) !important;
-}
-
-/* 2. Shrink the waveform height and bottom gap */
-#funnelContainer .waveform {
-  height: 20px !important; 
-  margin-bottom: 6px !important;
-  gap: 2px !important;
-}
-
-#funnelContainer .waveform-bar {
-  width: 2px !important;
-}
-
-/* 3. Shrink the Microphone Button (from 64px down to 44px) */
-#funnelContainer .btn-voice {
-  width: 44px !important;
-  height: 44px !important;
-  border-width: 1px !important;
-}
-
-#funnelContainer .btn-voice svg {
-  width: 18px !important;
-  height: 18px !important;
-}
-
-/* 4. Tighten the container that holds the button and timer */
-#funnelContainer .voice-button-container {
-  gap: 4px !important;
-}
-
-/* 5. Shrink the "Or record a voice note" label if it exists */
-#funnelContainer .voice-section p,
-#funnelContainer .voice-section span {
-  font-size: 0.65rem !important;
-  margin-bottom: 2px !important;
-}
-
-  /* Hardware / UI elements */
+  /* Hardware Elements */
   .dynamic-island {
     position: absolute;
     top: 12px;
@@ -239,40 +188,6 @@
     background: #000;
     border-radius: 20px;
     z-index: 50;
-  }
-
-  .demo-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(200,169,110,0.2);
-    color: var(--accent);
-    font-size: 0.5rem;
-    padding: 2px 6px;
-    border-radius: 20px;
-    z-index: 20;
-  }
-
-  /* Modal */
-  .demo-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-  .demo-modal.open { display: flex; }
-  .demo-modal-content {
-    background: #242422;
-    border-radius: 24px;
-    max-width: 320px;
-    width: 85%;
-    padding: 28px 20px;
-    text-align: center;
-    border: 1px solid #C8A96E;
   }
 </style>
 </head>
