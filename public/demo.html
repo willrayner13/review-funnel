@@ -84,26 +84,26 @@
       text-align: center;
     }
 
-    .iphone-mockup {
-      background: #000;
-      border-radius: 44px;
-      padding: 10px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-      width: 360px;
-      margin: 0 auto;
-      flex-shrink: 0;
-    }
+.iphone-mockup {
+  background: #000;
+  border-radius: 44px;
+  padding: 10px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  width: 340px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
 
-    .iphone-screen {
-      background: #1A1A18;
-      border-radius: 32px;
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-      height: 660px;
-      display: flex;
-      flex-direction: column;
-    }
+.iphone-screen {
+  background: #1A1A18;
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+}
 
     .dynamic-island {
       position: absolute;
@@ -131,25 +131,21 @@
     }
 
     /* Fixed wrapper */
-    .funnel-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 50px 16px 24px;
-    }
+.funnel-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 16px;
+}
 
     /* Taller funnel-card - never changes size */
     #funnelContainer .funnel-card {
-      height: 520px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow-y: auto;
-      scrollbar-width: none;
-      padding: 32px 24px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
     }
 
     #funnelContainer .funnel-card::-webkit-scrollbar {
@@ -456,6 +452,53 @@
       
       setTimeout(() => updateBusinessNameInFunnel(currentBusinessName), 100);
     });
+
+     function scaleContentToFit() {
+    const funnelCard = document.querySelector('#funnelContainer .funnel-card');
+    const phoneScreen = document.querySelector('.iphone-screen');
+    
+    if (!funnelCard || !phoneScreen) return;
+    
+    // Get the available height inside the phone (minus padding)
+    const availableHeight = phoneScreen.clientHeight - 100; // Account for padding
+    
+    // Get the actual content height
+    const contentHeight = funnelCard.scrollHeight;
+    
+    // If content is taller than available space, scale it down
+    if (contentHeight > availableHeight) {
+      const scale = availableHeight / contentHeight;
+      funnelCard.style.transform = `scale(${scale})`;
+      funnelCard.style.transformOrigin = 'top center';
+      funnelCard.style.marginTop = `${(availableHeight - (contentHeight * scale)) / 2}px`;
+    } else {
+      funnelCard.style.transform = 'none';
+      funnelCard.style.marginTop = '0';
+    }
+  }
+  
+  // Run after content loads and when content changes
+  const observer = new MutationObserver(function() {
+    setTimeout(scaleContentToFit, 50);
+  });
+  
+  // Start observing when funnel container is populated
+  const funnelContainer = document.getElementById('funnelContainer');
+  if (funnelContainer) {
+    observer.observe(funnelContainer, { 
+      childList: true, 
+      subtree: true, 
+      attributes: true 
+    });
+  }
+  
+  // Also run on window resize
+  window.addEventListener('resize', function() {
+    setTimeout(scaleContentToFit, 100);
+  });
+  
+  // Initial scale
+  setTimeout(scaleContentToFit, 200);
 </script>
 
 </body>
