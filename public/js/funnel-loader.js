@@ -22,11 +22,11 @@ function initFunnel(mode = FunnelMode.LIVE, options = {}) {
     overrideAPIsForDemo();
   }
   
-  // Set the business name in the display element (for both live and demo)
+  // Update the main headline with business name
   setTimeout(function() {
-    const businessNameDisplay = document.getElementById('businessNameDisplay');
-    if (businessNameDisplay && window.businessName) {
-      businessNameDisplay.textContent = window.businessName;
+    const mainHeadline = document.getElementById('mainHeadline');
+    if (mainHeadline && window.businessName) {
+      mainHeadline.textContent = `How was your experience at ${window.businessName}?`;
     }
   }, 100);
   
@@ -35,6 +35,17 @@ function initFunnel(mode = FunnelMode.LIVE, options = {}) {
   script.src = '/js/funnel.js';
   document.body.appendChild(script);
 }
+
+// Function to update business name dynamically (for demo input)
+window.updateDemoBusinessName = function(name) {
+  if (currentMode === FunnelMode.DEMO) {
+    window.businessName = name;
+    const mainHeadline = document.getElementById('mainHeadline');
+    if (mainHeadline) {
+      mainHeadline.textContent = `How was your experience at ${name}?`;
+    }
+  }
+};
 
 function overrideAPIsForDemo() {
   const originalFetch = window.fetch;

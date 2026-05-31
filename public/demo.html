@@ -168,9 +168,14 @@
     }
 
     /* Hide business title completely - it's duplicated */
-    #funnelContainer #businessTitle {
-      display: none !important;
-    }
+/* Completely hide business title */
+/* Hide duplicate business name elements */
+#funnelContainer #businessTitle,
+#funnelContainer #businessNameDisplay,
+#businessTitle,
+#businessNameDisplay {
+  display: none !important;
+}
 
     /* Typography */
     #funnelContainer #mainHeadline {
@@ -489,15 +494,6 @@
   window.sendFeedback = showDemoModal;
   window.leaveReview = showDemoModal;
   
-  // Hide duplicate business name elements after funnel loads
-  function hideDuplicateBusinessNames() {
-    // Hide any element with business title class/id
-    const bizElements = document.querySelectorAll('#funnelContainer #businessTitle, #funnelContainer .business-title, #funnelContainer [data-business]');
-    bizElements.forEach(el => {
-      if (el) el.style.display = 'none';
-    });
-  }
-  
   // Load the funnel template
   fetch('/funnel/funnel-template.html')
     .then(res => res.text())
@@ -507,24 +503,18 @@
       const nameInput = document.getElementById('businessNameInput');
       let currentBusinessName = nameInput.value;
       
-function updateBusinessNameInFunnel(name) {
-  // Update the main headline
-  const headline = document.querySelector('#funnelContainer #mainHeadline');
-  if (headline) headline.textContent = `How was your experience at ${name}?`;
-  
-  // ALSO update the business title element
-  const bizTitle = document.querySelector('#funnelContainer #businessTitle');
-  if (bizTitle) {
-    bizTitle.textContent = name;
-    bizTitle.style.display = 'block'; // Show it but with updated name
-  }
-  
-  // Also update any other elements that might show business name
-  const anyBusinessName = document.querySelectorAll('#funnelContainer [data-business-name], #funnelContainer .business-name');
-  anyBusinessName.forEach(el => {
-    el.textContent = name;
-  });
-}
+      function updateBusinessNameInFunnel(name) {
+        // Update the main headline directly
+        const headline = document.querySelector('#funnelContainer #mainHeadline');
+        if (headline) {
+          headline.textContent = `How was your experience at ${name}?`;
+        }
+        
+        // Also update the global business name for API calls
+        if (window.updateDemoBusinessName) {
+          window.updateDemoBusinessName(name);
+        }
+      }
       
       nameInput.addEventListener('input', function() {
         currentBusinessName = this.value.trim() || "Your Business";
@@ -540,7 +530,12 @@ function updateBusinessNameInFunnel(name) {
       
       setTimeout(() => {
         updateBusinessNameInFunnel(currentBusinessName);
-        hideDuplicateBusinessNames();
+        
+        // Hide any remaining business title elements
+        const bizTitles = document.querySelectorAll('#funnelContainer #businessTitle, #funnelContainer #businessNameDisplay');
+        bizTitles.forEach(el => {
+          if (el) el.style.display = 'none';
+        });
         
         // Find and override all action buttons
         setTimeout(() => {
@@ -552,17 +547,9 @@ function updateBusinessNameInFunnel(name) {
           
           const sendBtn = document.querySelector('#funnelContainer .btn-send');
           if (sendBtn) sendBtn.onclick = showDemoModal;
-          
-          // Hide scrollbars on any element
-          const allElements = document.querySelectorAll('#funnelContainer *');
-          allElements.forEach(el => {
-            el.style.scrollbarWidth = 'none';
-            el.style.msOverflowStyle = 'none';
-          });
         }, 100);
       }, 150);
     });
 </script>
-
 </body>
 </html>
