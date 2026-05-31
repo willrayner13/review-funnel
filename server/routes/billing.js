@@ -34,18 +34,32 @@ router.get("/subscription-status/:slug", async (req, res) => {
   });
 });
 
-// Create checkout session
 router.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
+  
+  console.log("Received request:", { slug, plan });
+  console.log("BASE_URL:", process.env.BASE_URL);
+  
   let priceId;
-
   if (plan === "pro") priceId = process.env.Pro_subscription;
   else if (plan === "agency") priceId = process.env.Agency_subscription;
   else priceId = process.env.Starter_subscription;
 
+  console.log("Price ID:", priceId);
+
   if (!priceId) {
-    console.error("Missing price ID");
+    console.error("Missing price ID for plan:", plan);
+    console.error("Available env vars:", {
+      Starter_subscription: !!process.env.Starter_subscription,
+      Pro_subscription: !!process.env.Pro_subscription,
+      Agency_subscription: !!process.env.Agency_subscription
+    });
     return res.status(500).json({ error: "Pricing configuration error. Please contact support." });
+  }
+
+  if (!process.env.BASE_URL) {
+    console.error("BASE_URL is missing from environment variables");
+    return res.status(500).json({ error: "Configuration error. BASE_URL not set." });
   }
 
   try {
@@ -61,10 +75,10 @@ router.post("/create-checkout", async (req, res) => {
     res.json({ url: session.url });
   } catch (err) {
     console.error("Stripe checkout error:", err.message);
-    res.status(500).json({ error: "Could not create checkout. Please try again." });
+    console.error("Full error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
-
 // Billing portal
 router.post("/billing-portal", async (req, res) => {
   if (!req.session.slug) return res.status(401).json({ error: "Not logged in" });
