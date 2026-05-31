@@ -30,6 +30,8 @@ body {
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+    padding-top: 64px;
+
 }
 
 a {

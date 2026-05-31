@@ -18,34 +18,17 @@
 </head>
 <body>
 
-<nav>
-  <a href="/"><div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div></a>
-  <div class="nav-links">
-    <a href="/#screenshots">How it works</a>
-    <a href="/#demo-section">Live demo</a>
-    <a href="/#features">Features</a>
-    <a href="/#pricing">Pricing</a>
-    <a href="/about">About</a>
-    <a href="/blog">Blog</a>
-  </div>
-  <a href="/admin"><button class="btn-nav-start">Start free trial →</button></a>
-  <button class="nav-hamburger" id="navHamburger" onclick="toggleNav()" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+<!-- NAV - Unified Component -->
+<div id="rl-nav-placeholder"></div>
 
-<div class="nav-drawer" id="navDrawer">
-  <a href="/#screenshots" onclick="closeNav()">How it works</a>
-  <a href="/#demo-section" onclick="closeNav()">Live demo</a>
-  <a href="/#features" onclick="closeNav()">Features</a>
-  <a href="/#pricing" onclick="closeNav()">Pricing</a>
-  <a href="/about" onclick="closeNav()">About</a>
-  <a href="/blog" onclick="closeNav()">Blog</a>
-  <div class="nav-drawer-cta">
-    <a href="/login" onclick="closeNav()"><button class="btn-nav-login">Sign in</button></a>
-    <a href="/admin" onclick="closeNav()"><button class="btn-nav-start">Start free trial →</button></a>
-  </div>
-</div>
+<script>
+  fetch('/components/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('rl-nav-placeholder').innerHTML = html;
+    })
+    .catch(err => console.error('Navbar failed to load:', err));
+</script>
 
 <div class="page-wrap">
   <div class="post-header">

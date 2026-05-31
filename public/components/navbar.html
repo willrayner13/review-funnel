@@ -1,0 +1,321 @@
+<!-- Premium Unified Navbar Component -->
+<!-- Include this file on any page that needs the main navigation -->
+
+<nav class="rl-nav">
+  <div class="rl-nav-container">
+    
+    <!-- Logo -->
+    <a href="/" class="rl-nav-logo">
+      <span class="rl-nav-dot"></span>
+      <span>ReviewLift</span>
+    </a>
+    
+    <!-- Desktop Navigation Links -->
+    <div class="rl-nav-links">
+      <a href="/#how" class="rl-nav-link">How it works</a>
+      <a href="/#features" class="rl-nav-link">Features</a>
+      <a href="/#pricing" class="rl-nav-link">Pricing</a>
+      <a href="/about" class="rl-nav-link">About</a>
+      <a href="/blog" class="rl-nav-link">Blog</a>
+      <a href="/partner" class="rl-nav-link">Agencies</a>
+    </div>
+    
+    <!-- Desktop CTA Buttons -->
+    <div class="rl-nav-cta">
+      <a href="/login" class="rl-nav-login">Sign in</a>
+      <a href="/admin" class="rl-nav-start">Start free trial →</a>
+    </div>
+    
+    <!-- Mobile Hamburger -->
+    <button class="rl-nav-hamburger" id="rlNavHamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    
+  </div>
+</nav>
+
+<!-- Mobile Drawer -->
+<div class="rl-nav-drawer" id="rlNavDrawer">
+  <div class="rl-nav-drawer-inner">
+    <a href="/#how" class="rl-drawer-link" onclick="closeRlNav()">How it works</a>
+    <a href="/#features" class="rl-drawer-link" onclick="closeRlNav()">Features</a>
+    <a href="/#pricing" class="rl-drawer-link" onclick="closeRlNav()">Pricing</a>
+    <a href="/about" class="rl-drawer-link" onclick="closeRlNav()">About</a>
+    <a href="/blog" class="rl-drawer-link" onclick="closeRlNav()">Blog</a>
+    <a href="/partner" class="rl-drawer-link" onclick="closeRlNav()">Agencies</a>
+    <div class="rl-drawer-divider"></div>
+    <a href="/login" class="rl-drawer-login" onclick="closeRlNav()">Sign in</a>
+    <a href="/admin" class="rl-drawer-start" onclick="closeRlNav()">Start free trial →</a>
+  </div>
+</div>
+
+<style>
+/* ========== UNIFIED NAVBAR STYLES ========== */
+.rl-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(26, 26, 24, 0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(234, 231, 220, 0.09);
+}
+
+.rl-nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rl-nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: #EAE7DC;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+
+.rl-nav-logo:hover {
+  opacity: 0.85;
+}
+
+.rl-nav-dot {
+  width: 7px;
+  height: 7px;
+  background: #C8A96E;
+  border-radius: 50%;
+}
+
+.rl-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.rl-nav-link {
+  font-size: 0.875rem;
+  color: rgba(234, 231, 220, 0.52);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.rl-nav-link:hover {
+  color: #EAE7DC;
+}
+
+.rl-nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rl-nav-login {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(234, 231, 220, 0.52);
+  padding: 8px 16px;
+  border: 1px solid rgba(234, 231, 220, 0.09);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.rl-nav-login:hover {
+  border-color: rgba(234, 231, 220, 0.22);
+  color: #EAE7DC;
+}
+
+.rl-nav-start {
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: #C8A96E;
+  color: #1A1A18;
+  padding: 9px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.rl-nav-start:hover {
+  background: #D4B87A;
+  transform: translateY(-1px);
+}
+
+/* Hamburger Menu */
+.rl-nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  width: 36px;
+  height: 36px;
+}
+
+.rl-nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: rgba(234, 231, 220, 0.52);
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+
+.rl-nav-hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.rl-nav-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.rl-nav-hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile Drawer */
+.rl-nav-drawer {
+  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: rgba(22, 22, 20, 0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(234, 231, 220, 0.09);
+  z-index: 999;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+
+.rl-nav-drawer.open {
+  display: block;
+}
+
+.rl-nav-drawer-inner {
+  padding: 20px 24px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.rl-drawer-link {
+  font-size: 1rem;
+  color: rgba(234, 231, 220, 0.52);
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(234, 231, 220, 0.06);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.rl-drawer-link:hover {
+  color: #EAE7DC;
+}
+
+.rl-drawer-divider {
+  height: 1px;
+  background: rgba(234, 231, 220, 0.06);
+  margin: 16px 0 8px;
+}
+
+.rl-drawer-login {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(234, 231, 220, 0.52);
+  padding: 12px 0;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid rgba(234, 231, 220, 0.12);
+  border-radius: 8px;
+  margin: 8px 0;
+  transition: all 0.2s;
+}
+
+.rl-drawer-login:hover {
+  border-color: rgba(234, 231, 220, 0.25);
+  color: #EAE7DC;
+}
+
+.rl-drawer-start {
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: #C8A96E;
+  color: #1A1A18;
+  padding: 12px 0;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+.rl-drawer-start:hover {
+  background: #D4B87A;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .rl-nav-container {
+    padding: 0 20px;
+  }
+  .rl-nav-links {
+    display: none;
+  }
+  .rl-nav-cta {
+    display: none;
+  }
+  .rl-nav-hamburger {
+    display: flex;
+  }
+}
+</style>
+
+<script>
+// Navbar JavaScript
+(function() {
+  const hamburger = document.getElementById('rlNavHamburger');
+  const drawer = document.getElementById('rlNavDrawer');
+  
+  if (!hamburger || !drawer) return;
+  
+  window.toggleRlNav = function() {
+    hamburger.classList.toggle('open');
+    drawer.classList.toggle('open');
+    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+  };
+  
+  window.closeRlNav = function() {
+    hamburger.classList.remove('open');
+    drawer.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  
+  hamburger.addEventListener('click', toggleRlNav);
+  
+  // Close drawer when clicking outside (optional)
+  document.addEventListener('click', function(e) {
+    if (drawer.classList.contains('open') && !drawer.contains(e.target) && !hamburger.contains(e.target)) {
+      closeRlNav();
+    }
+  });
+  
+  // Close on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) {
+      closeRlNav();
+    }
+  });
+})();
+</script>

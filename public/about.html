@@ -58,30 +58,30 @@
     }
   }
   </script>
+  
+  <style>
+    /* Add body padding for fixed navbar */
+    body {
+      padding-top: 64px;
+    }
+  </style>
 </head>
 <body>
 
-<nav>
-  <a href="/"><div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div></a>
-  <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/#pricing">Pricing</a>
-    <a href="/about">About</a>
-    <a href="/blog">Blog</a>        
-  </div>
-  <a href="/admin"><button class="btn-nav-start">Start free trial →</button></a>
-  <button class="nav-hamburger" id="aboutHamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-<div class="nav-drawer" id="aboutDrawer">
-  <a href="/">Home</a>
-  <a href="/#pricing">Pricing</a>
-  <a href="/about">About</a>
-  <a href="/blog">Blog</a>
-  <a href="/login">Sign in</a>
-  <a href="/admin" class="drawer-cta">Start free trial →</a>
-</div>
+<!-- NAV - Unified Component -->
+<div id="rl-nav-placeholder"></div>
+
+<script>
+  // Load the unified navbar component
+  fetch('/components/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('rl-nav-placeholder').innerHTML = html;
+    })
+    .catch(err => {
+      console.error('Navbar failed to load:', err);
+    });
+</script>
 
 <div class="page-wrap">
 

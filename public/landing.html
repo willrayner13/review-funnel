@@ -53,6 +53,7 @@
       color: var(--cream);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      padding-top: 64px;
     }
     
     a { color: inherit; text-decoration: none; }
@@ -67,58 +68,7 @@
       opacity: 0.4;
     }
 
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 48px;
-      height: 64px;
-      background: rgba(26, 26, 24, 0.88);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .nav-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--accent);
-      border-radius: 50%;
-    }
-    
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-    
-    .nav-links a {
-      font-size: 0.875rem;
-      color: var(--cream-dim);
-      transition: color .2s;
-    }
-    
-    .nav-links a:hover { color: var(--cream); }
-    
-    .nav-cta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  
 
     /* Base laptop adjustments */
 @media (min-width: 1024px) and (max-width: 1366px) {
@@ -136,128 +86,7 @@
   }
 }
     
-    .btn-nav-login {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--cream-dim);
-      padding: 8px 16px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      transition: all .2s;
-      cursor: pointer;
-      background: transparent;
-    }
-    
-    .btn-nav-login:hover {
-      border-color: var(--border-hi);
-      color: var(--cream);
-    }
-    
-    .btn-nav-start {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 700;
-      background: var(--accent);
-      color: #1A1A18;
-      padding: 9px 20px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    
-    .btn-nav-start:hover {
-      background: #D4B87A;
-      transform: translateY(-1px);
-    }
-    
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      width: 36px;
-      height: 36px;
-    }
-    
-    .nav-hamburger span {
-      display: block;
-      width: 22px;
-      height: 2px;
-      background: var(--cream-dim);
-      border-radius: 2px;
-      transition: all .25s;
-    }
-    
-    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-    
-    .nav-drawer {
-      display: none;
-      position: fixed;
-      top: 64px;
-      left: 0;
-      right: 0;
-      background: rgba(22, 22, 20, 0.98);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 20px 24px 28px;
-      flex-direction: column;
-      gap: 0;
-      z-index: 199;
-    }
-    
-    .nav-drawer.open { display: flex; }
-    
-    .nav-drawer a {
-      font-size: 1rem;
-      color: var(--cream-dim);
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      transition: color .2s;
-      display: block;
-    }
-    
-    .nav-drawer a:last-of-type { border-bottom: none; }
-    .nav-drawer a:hover { color: var(--cream); }
-    
-    .nav-drawer-cta {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 16px;
-    }
-    
-    .nav-drawer-cta a { border-bottom: none !important; }
-    
-    .nav-drawer-cta .btn-nav-login {
-      width: 100%;
-      text-align: center;
-      display: block;
-      padding: 12px;
-      border-radius: 8px;
-    }
-    
-    .nav-drawer-cta .btn-nav-start {
-      width: 100%;
-      text-align: center;
-      display: block;
-      padding: 12px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 0.9rem;
-      background: var(--accent);
-      color: #1A1A18;
-    }
-
+  
     section { position: relative; z-index: 1; }
 
     /* HERO */
@@ -1355,22 +1184,16 @@
   }
 }
 
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      nav { padding: 0 20px; }
-      .nav-links { display: none; }
-      .nav-cta { display: none; }
-      .nav-hamburger { display: flex; }
-      
-      .steps-grid { grid-template-columns: 1fr; }
-      .features-grid { grid-template-columns: 1fr 1fr; }
-      .agency-grid { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
-      
-      .how-section, .integrations-section, .features-section, .agency-section, .pricing-section, .cta-section {
-        padding: 60px 24px;
-      }
-    }
+   @media (max-width: 900px) {
+  .steps-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .agency-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+  
+  .how-section, .integrations-section, .features-section, .agency-section, .pricing-section, .cta-section {
+    padding: 60px 24px;
+  }
+}
     
     @media (max-width: 500px) {
       .features-grid { grid-template-columns: 1fr; }
@@ -1382,37 +1205,18 @@
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
-  <div class="nav-links">
-    <a href="#how">How it works</a>
-    <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
-    <a href="/about">About</a>
-    <a href="/blog">Blog</a>
-  </div>
-  <div class="nav-cta">
-    <a href="/login"><button class="btn-nav-login">Sign in</button></a>
-    <a href="/admin"><button class="btn-nav-start">Start free trial →</button></a>
-  </div>
-  <button class="nav-hamburger" id="navHamburger" onclick="toggleNav()" aria-label="Open menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
 
-<div class="nav-drawer" id="navDrawer">
-  <a href="#how" onclick="closeNav()">How it works</a>
-  <a href="#features" onclick="closeNav()">Features</a>
-  <a href="#pricing" onclick="closeNav()">Pricing</a>
-  <a href="/about">About</a>
-  <a href="/blog" onclick="closeNav()">Blog</a>
-  <div class="nav-drawer-cta">
-    <a href="/login" onclick="closeNav()"><button class="btn-nav-login">Sign in</button></a>
-    <a href="/admin" onclick="closeNav()"><button class="btn-nav-start">Start free trial →</button></a>
-  </div>
-</div>
+<!-- NAV - Unified Component -->
+<div id="rl-nav-placeholder"></div>
 
+<script>
+  fetch('/components/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('rl-nav-placeholder').innerHTML = html;
+    })
+    .catch(err => console.error('Navbar failed to load:', err));
+</script>
 
 
 <!-- HERO -->
@@ -1834,12 +1638,7 @@
   </div>
 </div>
         
-        <div class="contact-social">
-          <span>Follow us:</span>
-          <a href="#" class="contact-social-link">LinkedIn</a>
-          <a href="#" class="contact-social-link">X</a>
-          <a href="#" class="contact-social-link">Instagram</a>
-        </div>
+        
       </div>
       
       <!-- Right side - Contact form -->
@@ -1902,18 +1701,7 @@
 </footer>
 
 <script>
-function toggleNav(){
-  const h = document.getElementById('navHamburger');
-  const d = document.getElementById('navDrawer');
-  h.classList.toggle('open');
-  d.classList.toggle('open');
-  document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
-}
-function closeNav(){
-  document.getElementById('navHamburger').classList.remove('open');
-  document.getElementById('navDrawer').classList.remove('open');
-  document.body.style.overflow = '';
-}
+
 
 function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'your-business'; }
   function makeDemoUrl(name) { return window.location.origin + '/demo/' + slugify(name) + '?name=' + encodeURIComponent(name); }
@@ -1951,13 +1739,7 @@ function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').
     btn.textContent = '✓ Copied!';
     setTimeout(() => btn.textContent = 'Copy', 2000);
   }
-document.addEventListener('click', function(e){
-  const drawer = document.getElementById('navDrawer');
-  const hamburger = document.getElementById('navHamburger');
-  if(drawer.classList.contains('open') && !drawer.contains(e.target) && !hamburger.contains(e.target)){
-    closeNav();
-  }
-});
+
 
 function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'your-business'; }
 function makeDemoUrl(name) { return window.location.origin + '/demo/' + slugify(name) + '?name=' + encodeURIComponent(name); }
@@ -1995,6 +1777,8 @@ function copyDemoLink() {
   btn.textContent = '✓ Copied!';
   setTimeout(() => btn.textContent = 'Copy', 2000);
 }
+
+
 
 // Scroll reveal
 const observer = new IntersectionObserver(entries => {

@@ -10,12 +10,25 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
+  <style>
+    body {
+      padding-top: 64px;
+    }
+  </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="nav-logo"><span class="nav-dot"></span>ReviewLift</div>
-</nav>
+<!-- NAV - Unified Component -->
+<div id="rl-nav-placeholder"></div>
+
+<script>
+  fetch('/components/navbar.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('rl-nav-placeholder').innerHTML = html;
+    })
+    .catch(err => console.error('Navbar failed to load:', err));
+</script>
 
 <div class="page-body" id="mainContent"></div>
 
