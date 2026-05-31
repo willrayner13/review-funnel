@@ -91,13 +91,6 @@ app.get("/debug-demo", (req, res) => {
   });
 });
 
-app.use("/css", express.static(path.join(__dirname, "../public/css")));
-app.use("/js", express.static(path.join(__dirname, "../public/js")));
-app.use("/images", express.static(path.join(__dirname, "../public/images")));
-app.use("/components", express.static(path.join(__dirname, "../public/components")));
-app.use("/blog", express.static(path.join(__dirname, "../public/blog")));
-app.use("/funnel", express.static(path.join(__dirname, "../public/funnel")));
-app.use(express.static(path.join(__dirname, "../public")));
 
 // Session store
 app.use(
@@ -194,6 +187,14 @@ app.use(agencyRoutes);
 app.use(nfcRoutes);
 app.use(affiliateRoutes);
 app.use(publicRoutes);
+
+app.use("/css", express.static(path.join(__dirname, "../public/css")));
+app.use("/js", express.static(path.join(__dirname, "../public/js")));
+app.use("/images", express.static(path.join(__dirname, "../public/images")));
+app.use("/components", express.static(path.join(__dirname, "../public/components")));
+app.use("/blog", express.static(path.join(__dirname, "../public/blog")));
+app.use("/funnel", express.static(path.join(__dirname, "../public/funnel")));
+app.use(express.static(path.join(__dirname, "../public")));
 
 // ─── CRON ENDPOINTS (for Vercel cron jobs) ────────────────────────────────────
 app.get("/cron/reputation-scores", async (req, res) => {
