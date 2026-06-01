@@ -42,10 +42,10 @@ const app = express();
 // ─── HELPER FUNCTION FOR ESCAPING ──────────────────────────────────────────────
 function escapeJS(str) {
   if (!str) return '';
-return str
+  return str
     .replace(/\\/g, '\\\\')
     .replace(/'/g, "\\'")
-    .replace(/"/g, '\\"')   // ← add the dot
+    .replace(/"/g, '\\"')
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
     .replace(/\t/g, '\\t');
@@ -54,12 +54,6 @@ return str
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.set("trust proxy", 1);
 app.use(cors());
-
-// Add this right after app.set("trust proxy", 1)
-// BEFORE any other routes
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "landing.html"));
-});
 
 // Webhook MUST come before bodyParser.json() - THIS IS CRITICAL
 app.use("/stripe-webhook", webhookRoutes);
@@ -83,8 +77,14 @@ app.use(
     },
   })
 );
+
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// ─── ROOT ROUTE - Serve landing.html ───────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "landing.html"));
 });
 
 // ─── REVIEW FUNNEL ROUTE (must come before other routes) ───────────────────────
@@ -98,13 +98,18 @@ app.get("/r/:business", async (req, res) => {
       .from("businesses")
       .select("slug")
       .eq("funnel_custom_domain", host)
-      .single();
+      .maybeSingle();
     if (domainMatch) {
       slug = domainMatch.slug;
     }
   }
   
-  const { data, error } = await supabase.from("businesses").select("*").eq("slug", slug).single();
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+    
   if (error || !data) return res.status(404).send("Business not found");
 
   // Record visit event
@@ -148,7 +153,10 @@ app.get("/r/:business", async (req, res) => {
 });
 
 // ─── ROUTES ────────────────────────────────────────────────────────────────────
-// Webhook must come before bodyParser.json()
+// HTML routes FIRST (for static pages)
+app.use(htmlRoutes);
+
+// API routes
 app.use(authRoutes);
 app.use(businessRoutes);
 app.use(funnelRoutes);
@@ -161,6 +169,7 @@ app.use(nfcRoutes);
 app.use(affiliateRoutes);
 app.use(publicRoutes);
 
+// Static files
 app.use("/css", express.static(path.join(__dirname, "../public/css")));
 app.use("/js", express.static(path.join(__dirname, "../public/js")));
 app.use("/images", express.static(path.join(__dirname, "../public/images")));
@@ -213,7 +222,7 @@ app.get("/report/:slug", async (req, res) => {
     .from("businesses")
     .select("name, plan_type, subscription_active, agency_name, agency_logo_url, industry")
     .eq("slug", req.params.slug)
-    .single();
+    .maybeSingle();
 
   if (!business || business.plan_type !== "agency") {
     return res.status(403).json({ error: "Agency plan required" });
