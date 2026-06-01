@@ -55,6 +55,12 @@ return str
 app.set("trust proxy", 1);
 app.use(cors());
 
+// Add this right after app.set("trust proxy", 1)
+// BEFORE any other routes
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "landing.html"));
+});
+
 // Webhook MUST come before bodyParser.json() - THIS IS CRITICAL
 app.use("/stripe-webhook", webhookRoutes);
 
