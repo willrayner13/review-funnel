@@ -24,6 +24,7 @@ router.get("/debug-env", (req, res) => {
 // Subscription status
 router.get("/subscription-status/:slug", async (req, res) => {
   console.log("Looking for slug:", req.params.slug);
+  res.setHeader('Cache-Control', 'no-store');
   
   const { data, error } = await supabase
     .from("businesses")

@@ -35,8 +35,6 @@
     const params = new URLSearchParams(window.location.search);
     const urlSlug = params.get("slug");
     const storageSlug = sessionStorage.getItem("currentSlug");
-    
-    // Define slug from urlSlug or storageSlug
     const slug = urlSlug || storageSlug;
 
     console.log("Checking subscription for slug:", slug);
@@ -50,13 +48,13 @@
       ml.querySelector("a").textContent = "Sign in to your dashboard →";
     } else {
       let attempts = 0;
-      const maxAttempts = 15;
+      const maxAttempts = 30; // increased from 15
 
       async function tryActivate() {
         attempts++;
         try {
           console.log("Attempt", attempts, "- fetching /subscription-status/" + slug);
-          const statusRes = await fetch("/subscription-status/" + slug);
+          const statusRes = await fetch("/subscription-status/" + slug + "?t=" + Date.now()); // cache-bust
           
           if (!statusRes.ok) {
             console.log("Response not OK:", statusRes.status);
@@ -79,7 +77,6 @@
             } catch(e) {
               console.log("Session restore failed:", e);
             }
-
             document.getElementById("status").innerText = "✓ Account activated! Redirecting...";
             document.getElementById("spinner").style.display = "none";
             setTimeout(() => { window.location.href = "/for-business"; }, 1200);
@@ -104,7 +101,8 @@
         }
       }
 
-      tryActivate();
+      // Wait 5 seconds before first attempt — gives webhook time to fire
+      setTimeout(tryActivate, 5000);
     }
   </script>
 </body>
