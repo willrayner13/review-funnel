@@ -54,45 +54,14 @@ function escapeJS(str) {
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.set("trust proxy", 1);
 app.use(cors());
+
+// Webhook MUST come before bodyParser.json() - THIS IS CRITICAL
+app.use("/stripe-webhook", webhookRoutes);
+
+// THEN bodyParser for all other routes
 app.use(bodyParser.json());
 
-app.get("/debug-check", (req, res) => {
-  const cssPath = path.join(__dirname, "../public/css/about.css");
-  const jsPath = path.join(__dirname, "../public/js/about.js");
-  res.json({
-    cssExists: fs.existsSync(cssPath),
-    jsExists: fs.existsSync(jsPath),
-    cssPath: cssPath,
-    jsPath: jsPath
-  });
-});
-
-app.get("/debug-blog/:slug", (req, res) => {
-  const slug = req.params.slug;
-  const paths = [
-    path.join(__dirname, "../public/blog", `${slug}.html`),
-    path.join(__dirname, "../public", `${slug}.html`)
-  ];
-  res.json({
-    slug: slug,
-    paths: paths,
-    exists: paths.map(p => ({ path: p, exists: fs.existsSync(p) }))
-  });
-});
-
-app.get("/debug-demo", (req, res) => {
-  const cssPath = path.join(__dirname, "../public/css/demo.css");
-  const htmlPath = path.join(__dirname, "../public/demo.html");
-  res.json({
-    cssExists: fs.existsSync(cssPath),
-    htmlExists: fs.existsSync(htmlPath),
-    cssPath: cssPath,
-    htmlPath: htmlPath
-  });
-});
-
-
-// Session store
+// Session store AFTER bodyParser
 app.use(
   session({
     store: new SupabaseSessionStore(),
@@ -108,7 +77,6 @@ app.use(
     },
   })
 );
-
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });

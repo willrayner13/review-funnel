@@ -26,14 +26,20 @@
     <div class="loader-wrap"><div class="loader" id="spinner"></div></div>
     <p id="status">Activating your account...</p>
 
-    <div class="manual-link" id="manualLink">
+    <div class="manual-link" id="manualLink" style="display:none;">
       <a href="/for-business">Go to my dashboard →</a>
     </div>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const slug = params.get("slug") || sessionStorage.getItem("currentSlug");
+    const urlSlug = params.get("slug");
+    const storageSlug = sessionStorage.getItem("currentSlug");
+    
+    // Define slug from urlSlug or storageSlug
+    const slug = urlSlug || storageSlug;
+
+    console.log("Checking subscription for slug:", slug);
 
     if (!slug) {
       document.getElementById("status").innerText = "Something went wrong — please sign in.";
@@ -44,34 +50,53 @@
       ml.querySelector("a").textContent = "Sign in to your dashboard →";
     } else {
       let attempts = 0;
+      const maxAttempts = 15;
 
       async function tryActivate() {
         attempts++;
         try {
+          console.log("Attempt", attempts, "- fetching /subscription-status/" + slug);
           const statusRes = await fetch("/subscription-status/" + slug);
+          
+          if (!statusRes.ok) {
+            console.log("Response not OK:", statusRes.status);
+            if (attempts < maxAttempts) {
+              setTimeout(tryActivate, 3000);
+            } else {
+              document.getElementById("status").innerText = "Your account is ready!";
+              document.getElementById("spinner").style.display = "none";
+              document.getElementById("manualLink").style.display = "block";
+            }
+            return;
+          }
+
           const statusData = await statusRes.json();
+          console.log("Status data:", statusData);
 
           if (statusData.subscription_active) {
             try {
               await fetch("/restore-session/" + slug, { method: "POST" });
-            } catch(e) {}
+            } catch(e) {
+              console.log("Session restore failed:", e);
+            }
 
             document.getElementById("status").innerText = "✓ Account activated! Redirecting...";
             document.getElementById("spinner").style.display = "none";
             setTimeout(() => { window.location.href = "/for-business"; }, 1200);
 
-          } else if (attempts < 12) {
+          } else if (attempts < maxAttempts) {
             const dots = ".".repeat((attempts % 3) + 1);
             document.getElementById("status").innerText = "Confirming with Stripe" + dots;
-            setTimeout(tryActivate, 2500);
+            setTimeout(tryActivate, 3000);
           } else {
-            document.getElementById("status").innerText = "Stripe has confirmed your payment.";
+            document.getElementById("status").innerText = "Your account is ready!";
             document.getElementById("spinner").style.display = "none";
             document.getElementById("manualLink").style.display = "block";
           }
         } catch (e) {
-          if (attempts < 12) {
-            setTimeout(tryActivate, 2500);
+          console.error("Fetch error:", e);
+          if (attempts < maxAttempts) {
+            setTimeout(tryActivate, 3000);
           } else {
             document.getElementById("spinner").style.display = "none";
             document.getElementById("manualLink").style.display = "block";

@@ -4,33 +4,70 @@ const supabase = require("../config/database");
 
 const router = express.Router();
 
-// Stripe webhook
+// Stripe webhook - MUST use express.raw() for this specific route
 router.post("/", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  
+  console.log("=== WEBHOOK RECEIVED ===");
+  console.log("Signature present:", !!sig);
+  console.log("Webhook secret present:", !!webhookSecret);
+
+  if (!webhookSecret) {
+    console.error("STRIPE_WEBHOOK_SECRET is not set");
+    return res.status(500).send("Webhook secret not configured");
+  }
+
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    console.log("✅ Webhook verified - event type:", event.type);
   } catch (err) {
-    console.log("Webhook error:", err.message);
-    return res.status(400).send("Webhook error");
+    console.error("❌ Webhook signature verification failed:", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
+  // Handle checkout.session.completed
   if (event.type === "checkout.session.completed") {
-    const sess = event.data.object;
-    const slug = sess.metadata.slug;
-    const plan = sess.metadata.plan;
-    const customer = sess.customer;
+    const session = event.data.object;
+    const slug = session.metadata.slug;
+    const plan = session.metadata.plan;
+    const customer = session.customer;
+    const subscriptionId = session.subscription;
+
+    console.log(`Processing checkout.session.completed for ${slug}, plan: ${plan}, customer: ${customer}`);
 
     try {
-      const mrr = plan === "pro" ? 24.99 : plan === "agency" ? 79 : 9.99;
-      await supabase
-        .from("businesses")
-        .update({ subscription_active: true, plan_type: plan, stripe_customer: customer, subscribed_at: new Date().toISOString(), mrr })
-        .eq("slug", slug);
-      console.log(`Checkout complete for ${slug}, plan: ${plan}`);
+      let mrr = 0;
+      if (plan === "pro") mrr = 24.99;
+      else if (plan === "agency") mrr = 79;
+      else mrr = 9.99;
 
-      const { data: biz } = await supabase.from("businesses").select("referred_by").eq("slug", slug).single();
+      const { error: updateError } = await supabase
+        .from("businesses")
+        .update({
+          subscription_active: true,
+          plan_type: plan,
+          stripe_customer: customer,
+          stripe_subscription_id: subscriptionId,
+          subscribed_at: new Date().toISOString(),
+          mrr: mrr
+        })
+        .eq("slug", slug);
+
+      if (updateError) {
+        console.error("Supabase update error:", updateError);
+      } else {
+        console.log(`✅ Business ${slug} updated to ${plan} plan`);
+      }
+
+      const { data: biz } = await supabase
+        .from("businesses")
+        .select("referred_by")
+        .eq("slug", slug)
+        .single();
+
       if (biz && biz.referred_by) {
         await supabase.from("referral_conversions").insert({
           referral_code: biz.referred_by,
@@ -38,12 +75,14 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
           plan: plan,
           converted_at: new Date().toISOString(),
         });
+        console.log(`✅ Referral conversion recorded for ${slug}`);
       }
     } catch (err) {
-      console.log("Supabase update error:", err.message);
+      console.error("Error processing webhook:", err);
     }
   }
 
+  // Handle subscription events
   if (event.type === "customer.subscription.trial_will_end") {
     console.log(`Trial ending soon: ${event.data.object.customer}`);
   }
