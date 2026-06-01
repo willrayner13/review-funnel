@@ -58,6 +58,21 @@ router.get("/subscription-status/:slug", async (req, res) => {
   });
 });
 
+router.get("/debug-supabase-info", async (req, res) => {
+  // Test a simple query to see what tables exist
+  const { data: tables, error } = await supabase
+    .from("businesses")
+    .select("slug", { count: "exact", head: false })
+    .limit(1);
+  
+  res.json({
+    supabase_url: process.env.SUPABASE_URL ? process.env.SUPABASE_URL.substring(0, 30) + "..." : "missing",
+    has_error: !!error,
+    error_message: error?.message,
+    sample_data: tables,
+  });
+});
+
 router.get("/debug-db-check", async (req, res) => {
   try {
     // Simple count query
