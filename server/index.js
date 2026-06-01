@@ -42,10 +42,10 @@ const app = express();
 // ─── HELPER FUNCTION FOR ESCAPING ──────────────────────────────────────────────
 function escapeJS(str) {
   if (!str) return '';
-  return str
+return str
     .replace(/\\/g, '\\\\')
     .replace(/'/g, "\\'")
-    replace(/"/g, '\\"')
+    .replace(/"/g, '\\"')   // ← add the dot
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
     .replace(/\t/g, '\\t');
@@ -143,7 +143,6 @@ app.get("/r/:business", async (req, res) => {
 
 // ─── ROUTES ────────────────────────────────────────────────────────────────────
 // Webhook must come before bodyParser.json()
-app.use("/stripe-webhook", webhookRoutes);app.use(htmlRoutes);
 app.use(authRoutes);
 app.use(businessRoutes);
 app.use(funnelRoutes);
