@@ -58,6 +58,29 @@ router.get("/subscription-status/:slug", async (req, res) => {
   });
 });
 
+router.get("/debug-db-check", async (req, res) => {
+  // Test 1: Check if we can connect and count businesses
+  const { count, error: countError } = await supabase
+    .from("businesses")
+    .select("*", { count: "exact", head: true });
+  
+  // Test 2: Try to find your specific business
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("slug, name")
+    .eq("slug", "leckyuk-5676")
+    .maybeSingle();
+  
+  res.json({
+    total_businesses: count,
+    count_error: countError?.message,
+    specific_business_found: !!data,
+    specific_business_data: data,
+    supabase_url_configured: !!process.env.SUPABASE_URL,
+    supabase_key_configured: !!process.env.SUPABASE_KEY,
+  });
+});
+
 router.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
   
