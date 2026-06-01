@@ -59,28 +59,38 @@ router.get("/subscription-status/:slug", async (req, res) => {
 });
 
 router.get("/debug-db-check", async (req, res) => {
-  // Test 1: Check if we can connect and count businesses
-  const { count, error: countError } = await supabase
-    .from("businesses")
-    .select("*", { count: "exact", head: true });
-  
-  // Test 2: Try to find your specific business
-  const { data, error } = await supabase
-    .from("businesses")
-    .select("slug, name")
-    .eq("slug", "leckyuk-5676")
-    .maybeSingle();
-  
-  res.json({
-    total_businesses: count,
-    count_error: countError?.message,
-    specific_business_found: !!data,
-    specific_business_data: data,
-    supabase_url_configured: !!process.env.SUPABASE_URL,
-    supabase_key_configured: !!process.env.SUPABASE_KEY,
-  });
+  try {
+    // Simple count query
+    const { data: businesses, error, count } = await supabase
+      .from("businesses")
+      .select("*", { count: "exact", head: true });
+    
+    // Try to find specific business
+    const { data: specificBusiness } = await supabase
+      .from("businesses")
+      .select("slug, name")
+      .eq("slug", "leckyuk-5676")
+      .maybeSingle();
+    
+    // Also test a simple select to see if we can get any data
+    const { data: sampleBusinesses, error: sampleError } = await supabase
+      .from("businesses")
+      .select("slug")
+      .limit(5);
+    
+    res.json({
+      count_method_1: count,
+      count_error: error?.message,
+      specific_business_found: !!specificBusiness,
+      specific_business_slug: specificBusiness?.slug,
+      sample_businesses: sampleBusinesses?.map(b => b.slug) || [],
+      sample_error: sampleError?.message,
+      supabase_url_configured: !!process.env.SUPABASE_URL,
+    });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
 });
-
 router.post("/create-checkout", async (req, res) => {
   const { slug, plan } = req.body;
   
