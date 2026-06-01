@@ -23,13 +23,23 @@ router.get("/debug-env", (req, res) => {
 
 // Subscription status
 router.get("/subscription-status/:slug", async (req, res) => {
+  console.log("=== SUBSCRIPTION STATUS DEBUG ===");
+  console.log("Looking for slug:", req.params.slug);
+  
   const { data, error } = await supabase
     .from("businesses")
     .select("name, subscription_active, plan_type, trial_ends_at, review_link, stripe_customer")
     .eq("slug", req.params.slug)
     .single();
 
-  if (error || !data) return res.status(404).json({ error: "Not found" });
+  console.log("Error:", error);
+  console.log("Data:", data);
+  console.log("Supabase connected:", !!supabase);
+
+  if (error || !data) {
+    console.log("Returning 404 - error or no data");
+    return res.status(404).json({ error: "Not found", debug_error: error?.message, debug_has_data: !!data });
+  }
 
   let cancel_pending = false;
   if (stripe && data.stripe_customer && data.subscription_active) {
@@ -40,7 +50,9 @@ router.get("/subscription-status/:slug", async (req, res) => {
       ]);
       const sub = activeSubs.data[0] || trialSubs.data[0];
       if (sub && sub.cancel_at_period_end) cancel_pending = true;
-    } catch (e) {}
+    } catch (e) {
+      console.log("Stripe error:", e.message);
+    }
   }
 
   res.json({
