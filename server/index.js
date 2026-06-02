@@ -83,6 +83,7 @@ app.get("/health", (req, res) => {
 });
 
 // ─── ROOT ROUTE - Serve landing.html ───────────────────────────────────────────
+// Root route - serve landing.html (place this at the top of your routes)
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "landing.html"));
 });
