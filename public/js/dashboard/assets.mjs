@@ -1,8 +1,8 @@
 // ===== ASSETS MODULE =====
 // Handles QR codes, NFC cards, webhooks, and embed codes
 
-import { showToast } from '../shared/utils.js';
-import { openModal } from '../shared/modal.js';
+import { showToast } from '../shared/utils.mjs';
+import { openModal } from '../shared/modal.mjs';
 
 function copyReviewLink() {
   let input = document.getElementById("assetReviewLink");

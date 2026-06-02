@@ -1,7 +1,7 @@
 // ===== ALERTS MODULE =====
 // Handles SMS alert settings for private feedback
 
-import { showToast } from '../shared/utils.js';
+import { showToast } from '../shared/utils.mjs';
 
 let alertsEnabled = false;
 const alertToggleBg = document.getElementById('alertToggleBg');

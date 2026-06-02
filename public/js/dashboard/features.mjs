@@ -1,7 +1,7 @@
 // ===== FEATURES MODULE =====
 // Builds the feature tiles grid on the dashboard
 
-import { navigateTo } from './navigation.js';
+import { navigateTo } from './navigation.mjs';
 
 function buildFeatureTiles(stats) {
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");

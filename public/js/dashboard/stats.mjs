@@ -1,11 +1,11 @@
 // ===== STATS MODULE =====
 // Handles loading dashboard statistics, activity feed, and polling
 
-import { showToast, escapeHtml, getRelativeTime } from '../shared/utils.js';
-import { buildFeatureTiles } from './features.js';
-import { loadReputationScore } from './reputation.js';
-import { loadFunnelSettings } from './funnel-settings.js';
-import { loadAlertSettings } from './alerts.js';
+import { showToast, escapeHtml, getRelativeTime } from '../shared/utils.mjs';
+import { buildFeatureTiles } from './features.mjs';
+import { loadReputationScore } from './reputation.mjs';
+import { loadFunnelSettings } from './funnel-settings.mjs';
+import { loadAlertSettings } from './alerts.mjs';
 
 let pollingInterval = null;
 

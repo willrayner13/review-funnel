@@ -1,7 +1,7 @@
 // ===== CAMPAIGNS MODULE =====
 // Handles sending SMS and email review requests
 
-import { showToast } from '../shared/utils.js';
+import { showToast } from '../shared/utils.mjs';
 
 async function sendSMS() {
   const phone = document.getElementById("customerPhone")?.value.trim();

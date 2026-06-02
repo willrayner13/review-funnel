@@ -1,8 +1,8 @@
 // ===== NAVIGATION MODULE =====
 // Handles sidebar navigation, keyboard shortcuts, and hash routing
 
-import { loadPrivateFeedback } from './stats.js';
-import { showToast } from '../shared/utils.js';
+import { loadPrivateFeedback } from './stats.mjs';
+import { showToast } from '../shared/utils.mjs';
 
 const navIdMap = {
   'overview': 'overviewSection',

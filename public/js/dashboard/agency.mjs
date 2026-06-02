@@ -1,8 +1,8 @@
 // ===== AGENCY MODULE =====
 // Handles agency client management, white-label, and commission tracking
 
-import { showToast, escapeHtml } from '../shared/utils.js';
-import { openModal } from '../shared/modal.js';
+import { showToast, escapeHtml } from '../shared/utils.mjs';
+import { openModal } from '../shared/modal.mjs';
 
 async function initAgency() {
   await loadAgencyClients();

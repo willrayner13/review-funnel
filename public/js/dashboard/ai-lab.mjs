@@ -1,7 +1,7 @@
 // ===== AI LAB MODULE =====
 // Handles AI reply generation, sentiment trends, send intelligence, and competitor analysis
 
-import { showToast } from '../shared/utils.js';
+import { showToast } from '../shared/utils.mjs';
 
 // ========== AI REPLY GENERATOR ==========
 async function streamToDiv(div, text) {

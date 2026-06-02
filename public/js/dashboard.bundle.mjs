@@ -1,17 +1,17 @@
 // dashboard.bundle.js - Single entry point for all dashboard modules
 
-import { initNavigation, navigateTo } from './dashboard/navigation.js';
-import { loadDashboardData, startPolling, loadActivityFeed, loadPrivateFeedback } from './dashboard/stats.js';
-import { buildFeatureTiles } from './dashboard/features.js';
+import { initNavigation, navigateTo } from './dashboard/navigation.mjs';
+import { loadDashboardData, startPolling, loadActivityFeed, loadPrivateFeedback } from './dashboard/stats.mjs';
+import { buildFeatureTiles } from './dashboard/features.mjs';
 import { loadReputationScore } from './dashboard/reputation.js';
-import { initAlerts, loadAlertSettings, saveAlertSettings } from './dashboard/alerts.js';
-import { initCampaigns, sendSMS, sendEmail } from './dashboard/campaigns.js';
-import { initAILab, generateRepliesStreaming, copyAiReply, analyseCompetitor } from './dashboard/ai-lab.js';
-import { initAssets, copyReviewLink, copyEmbedCode, copyWallUrl, copyWebhook, copyInvoiceWebhook, orderNfcCard } from './dashboard/assets.js';
-import { initAgency, loadAgencyClients, loadAgencyEarnings, checkClientMode, openAddClientModal, copyAgencyLink, switchToClient, removeClient, exitClientMode } from './dashboard/agency.js';
-import { loadFunnelSettings } from './dashboard/funnel-settings.js';
-import { initModals, openModal, closeModal } from './shared/modal.js';
-import { showToast, escapeHtml, getRelativeTime, copyToClipboard } from './shared/utils.js';
+import { initAlerts, loadAlertSettings, saveAlertSettings } from './dashboard/alerts.mjs';
+import { initCampaigns, sendSMS, sendEmail } from './dashboard/campaigns.mjs';
+import { initAILab, generateRepliesStreaming, copyAiReply, analyseCompetitor } from './dashboard/ai-lab.mjs';
+import { initAssets, copyReviewLink, copyEmbedCode, copyWallUrl, copyWebhook, copyInvoiceWebhook, orderNfcCard } from './dashboard/assets.mjs';
+import { initAgency, loadAgencyClients, loadAgencyEarnings, checkClientMode, openAddClientModal, copyAgencyLink, switchToClient, removeClient, exitClientMode } from './dashboard/agency.mjs';
+import { loadFunnelSettings } from './dashboard/funnel-settings.mjs';
+import { initModals, openModal, closeModal } from './shared/modal.mjs';
+import { showToast, escapeHtml, getRelativeTime, copyToClipboard } from './shared/utils.mjs';
 
 // Global variables
 window.slug = null;

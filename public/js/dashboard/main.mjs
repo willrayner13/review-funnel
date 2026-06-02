@@ -1,15 +1,15 @@
 // ===== DASHBOARD MAIN - ENTRY POINT =====
 // This file initializes everything after DOM is ready
 
-import { initNavigation, navigateTo } from './navigation.js';
-import { initStats, loadDashboardData, startPolling } from './stats.js';
-import { initModals, openModal, closeModal } from '../shared/modal.js';
-import { initAlerts, loadAlertSettings } from './alerts.js';
-import { initAgency, loadAgencyClients, checkClientMode } from './agency.js';
-import { initCampaigns } from './campaigns.js';
-import { initAILab } from './ai-lab.js';
-import { initAssets } from './assets.js';
-import { showToast } from '../shared/utils.js';
+import { initNavigation, navigateTo } from './navigation.mjs';
+import { initStats, loadDashboardData, startPolling } from './stats.mjs';
+import { initModals, openModal, closeModal } from '../shared/modal.mjs';
+import { initAlerts, loadAlertSettings } from './alerts.mjs';
+import { initAgency, loadAgencyClients, checkClientMode } from './agency.mjs';
+import { initCampaigns } from './campaigns.mjs';
+import { initAILab } from './ai-lab.mjs';
+import { initAssets } from './assets.mjs';
+import { showToast } from '../shared/utils.mjs';
 
 // Global variables (accessible to other scripts via window)
 window.slug = null;
