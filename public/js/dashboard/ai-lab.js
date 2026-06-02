@@ -227,5 +227,5 @@ export {
   copyAiReply, 
   loadSentimentTrends, 
   loadSendIntelligence, 
-  analyseCompetitor 
+  analyseCompetitor  // ← Make sure this is here
 };
