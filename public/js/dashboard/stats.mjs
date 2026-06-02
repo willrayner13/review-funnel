@@ -336,7 +336,7 @@ async function loadDashboardData() {
   // Load Pro features if available
   if (hasPro && !isAgency) {
     // Import dynamically to avoid circular deps
-    const { loadSentimentTrends, loadSendIntelligence } = await import('./ai-lab.js');
+    const { loadSentimentTrends, loadSendIntelligence } = await import('./ai-lab.mjs');
     loadSentimentTrends();
     loadSendIntelligence();
     loadGrowthChart();
