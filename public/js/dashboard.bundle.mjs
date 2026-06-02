@@ -3,7 +3,7 @@
 import { initNavigation, navigateTo } from './dashboard/navigation.mjs';
 import { loadDashboardData, startPolling, loadActivityFeed, loadPrivateFeedback } from './dashboard/stats.mjs';
 import { buildFeatureTiles } from './dashboard/features.mjs';
-import { loadReputationScore } from './dashboard/reputation.js';
+import { loadReputationScore } from './dashboard/reputation.mjs';
 import { initAlerts, loadAlertSettings, saveAlertSettings } from './dashboard/alerts.mjs';
 import { initCampaigns, sendSMS, sendEmail } from './dashboard/campaigns.mjs';
 import { initAILab, generateRepliesStreaming, copyAiReply, analyseCompetitor } from './dashboard/ai-lab.mjs';
