@@ -182,6 +182,127 @@ async function loadGrowthChart() {
   }
 }
 
+// ========== PULSE STRIP (Always visible top bar) ==========
+async function updatePulseStrip(stats) {
+  const pulseContainer = document.getElementById('pulseStrip');
+  if (!pulseContainer) return;
+  
+  // Calculate today's stats (from today's events)
+  const today = new Date().toISOString().split('T')[0];
+  const todayVisits = stats.recent_events?.filter(e => 
+    e.created_at?.startsWith(today) && e.event_type === 'visit'
+  ).length || 0;
+  
+  const todayPositive = stats.recent_events?.filter(e => 
+    e.created_at?.startsWith(today) && e.event_type === 'positive'
+  ).length || 0;
+  
+  // Calculate weekly trend
+  const lastWeek = new Date();
+  lastWeek.setDate(lastWeek.getDate() - 7);
+  const lastWeekPositive = stats.recent_events?.filter(e => 
+    e.created_at && new Date(e.created_at) >= lastWeek && e.event_type === 'positive'
+  ).length || 0;
+  
+  const thisWeekPositive = stats.positive || 0;
+  const trend = thisWeekPositive - lastWeekPositive;
+  const trendText = trend > 0 ? `↑ ${trend} from last week` : trend < 0 ? `↓ ${Math.abs(trend)} from last week` : 'same as last week';
+  const trendColor = trend > 0 ? 'var(--success)' : trend < 0 ? 'var(--danger)' : 'var(--cream-dim)';
+  
+  pulseContainer.innerHTML = `
+    <div class="pulse-strip">
+      <div class="pulse-item">
+        <span class="pulse-label">📊 Today's visits</span>
+        <span class="pulse-value">${todayVisits}</span>
+      </div>
+      <div class="pulse-divider"></div>
+      <div class="pulse-item">
+        <span class="pulse-label">⭐ Today's ratings</span>
+        <span class="pulse-value">${todayPositive}</span>
+      </div>
+      <div class="pulse-divider"></div>
+      <div class="pulse-item">
+        <span class="pulse-label">📈 Weekly trend</span>
+        <span class="pulse-value" style="color: ${trendColor}">${trendText}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ========== TODAY'S STORY CARD ==========
+async function generateStoryCard(stats) {
+  const storyContainer = document.getElementById('todayStoryCard');
+  if (!storyContainer) return;
+  
+  const visits = stats.visits || 0;
+  const positive = stats.positive || 0;
+  const negative = stats.negative || 0;
+  const avgRating = stats.rating_avg || 0;
+  const conversionRate = stats.visits ? ((stats.reviews / stats.visits) * 100).toFixed(0) : 0;
+  
+  // Generate a unique story based on the data
+  let storyText = '';
+  let storyAction = '';
+  let storyIcon = '';
+  
+  if (visits === 0) {
+    storyText = `No visitors yet today. Share your QR code or review link to get started.`;
+    storyAction = 'Share your review link →';
+    storyIcon = '🔗';
+  } else if (positive >= 5) {
+    storyText = `You've had ${positive} happy customers give you 5 stars today! That's amazing momentum.`;
+    storyAction = 'Share this win →';
+    storyIcon = '🎉';
+  } else if (negative > 0 && positive === 0) {
+    storyText = `You received ${negative} piece${negative > 1 ? 's' : ''} of private feedback. Read and respond to turn things around.`;
+    storyAction = 'View private feedback →';
+    storyIcon = '💬';
+  } else if (conversionRate < 20 && visits > 5) {
+    storyText = `Your conversion rate is ${conversionRate}%. Tweaking your funnel headline could boost reviews by up to 18%.`;
+    storyAction = 'Optimise your funnel →';
+    storyIcon = '🎨';
+  } else if (avgRating > 4.5 && positive > 0) {
+    storyText = `Your average rating is ${avgRating} ★ — well above the UK national average (4.2). Keep it up!`;
+    storyAction = 'Celebrate this milestone →';
+    storyIcon = '🏆';
+  } else if (positive > 0) {
+    storyText = `${positive} happy customer${positive > 1 ? 's' : ''} gave you 5 stars. Every review builds your reputation.`;
+    storyAction = 'Send a thank you →';
+    storyIcon = '⭐';
+  } else {
+    storyText = `Your review funnel is live. ${visits} people have visited — now it's time to turn visitors into reviews.`;
+    storyAction = 'Create a campaign →';
+    storyIcon = '🚀';
+  }
+  
+  storyContainer.innerHTML = `
+    <div class="story-card">
+      <div class="story-icon">${storyIcon}</div>
+      <div class="story-content">
+        <div class="story-text">${storyText}</div>
+        <button class="story-action" onclick="window.handleStoryAction('${storyAction.replace(' →', '')}')">${storyAction}</button>
+      </div>
+    </div>
+  `;
+}
+
+// Add story action handler
+window.handleStoryAction = (action) => {
+  if (action.includes('Share your review link')) {
+    window.copyReviewLinkAndClose();
+  } else if (action.includes('View private feedback')) {
+    window.navigateTo('customers');
+  } else if (action.includes('Optimise your funnel')) {
+    window.navigateTo('funnel-studio');
+  } else if (action.includes('Celebrate this milestone')) {
+    showToast('🎉 Keep up the great work!', 'success');
+  } else if (action.includes('Send a thank you')) {
+    window.navigateTo('campaigns');
+  } else if (action.includes('Create a campaign')) {
+    window.navigateTo('campaigns');
+  }
+};
+
 async function loadDashboardData() {
   const res = await fetch("/stats/" + window.slug);
   if (!res.ok) {
@@ -204,6 +325,9 @@ async function loadDashboardData() {
   if (reviewLinkElement) reviewLinkElement.value = window.location.origin + "/r/" + window.slug;
 
   updateGreeting(stats.business_name);
+
+  await updatePulseStrip(stats);
+  await generateStoryCard(stats);
 
   const isAgency = stats.plan_type === 'agency';
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");

@@ -52,8 +52,14 @@ async function initDashboard() {
     // Start real-time polling
     startPolling();
     
-    // Load agency features if applicable
-    await initAgency();
+    // Load agency features ONLY for agency accounts
+    if (window.isAgency) {
+      await initAgency();
+    } else {
+      // Hide agency section for non-agency users
+      const agencySection = document.getElementById("agencyClientsSection");
+      if (agencySection) agencySection.style.display = "none";
+    }
     
   } catch (error) {
     console.error("Dashboard init error:", error);
