@@ -1,7 +1,6 @@
 // ===== NAVIGATION MODULE =====
 // Handles sidebar navigation, keyboard shortcuts, and hash routing
 
-import { loadPrivateFeedback } from './stats.mjs';
 import { showToast } from '../shared/utils.mjs';
 
 const navIdMap = {
@@ -74,7 +73,12 @@ function initNavigation() {
       if (section) section.classList.add('active');
       window.location.hash = target;
       
-      if (target === 'customers') loadPrivateFeedback();
+      // Dynamic imports for specific sections
+      if (target === 'customers') {
+        import('./stats.mjs').then(module => {
+          module.loadPrivateFeedbackInbox();
+        });
+      }
       if (target === 'assets') {
         // Refresh asset links when assets section loads
         const reviewLink = window.location.origin + "/r/" + window.slug;

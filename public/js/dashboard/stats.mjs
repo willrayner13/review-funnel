@@ -126,6 +126,107 @@ async function loadPrivateFeedback() {
   `).join('');
 }
 
+// ========== PRIVATE FEEDBACK INBOX ==========
+async function loadPrivateFeedbackInbox() {
+  const res = await fetch("/stats/" + window.slug);
+  const stats = await res.json();
+  const container = document.getElementById("privateFeedbackList");
+  if (!container) return;
+  
+  const feedback = stats.feedback || [];
+  
+  // Load read status from localStorage
+  const readFeedback = JSON.parse(localStorage.getItem('read_feedback_' + window.slug) || '[]');
+  
+  // Update sidebar badge count
+  const unreadCount = feedback.filter(msg => !readFeedback.includes(msg)).length;
+  updateFeedbackBadge(unreadCount);
+  
+  if (feedback.length === 0) {
+    container.innerHTML = '<div class="feedback-inbox-empty">📭 No private feedback yet. When customers choose "Could be better", their messages appear here — before they become public reviews.</div>';
+    return;
+  }
+  
+  container.innerHTML = feedback.map(msg => {
+    const isRead = readFeedback.includes(msg);
+    return `
+      <div class="feedback-card ${isRead ? 'read' : 'unread'}" data-message="${escapeHtml(msg).replace(/"/g, '&quot;')}">
+        <div class="feedback-card-header">
+          <div class="feedback-status ${isRead ? 'status-read' : 'status-unread'}"></div>
+          <div class="feedback-time">${getRelativeTime(new Date().toISOString())}</div>
+        </div>
+        <div class="feedback-message">${escapeHtml(msg)}</div>
+        <div class="feedback-actions">
+          <button class="feedback-btn reply-btn" onclick="window.replyToFeedback('${escapeHtml(msg).replace(/'/g, "\\'")}')">✉️ Reply via email</button>
+          <button class="feedback-btn resolve-btn" onclick="window.markFeedbackResolved('${escapeHtml(msg).replace(/'/g, "\\'")}')">✓ Mark resolved</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Auto-mark as read when viewed
+  if (!container.dataset.markedRead) {
+    const currentFeedback = feedback.filter(msg => !readFeedback.includes(msg));
+    if (currentFeedback.length > 0) {
+      const updatedRead = [...readFeedback, ...currentFeedback];
+      localStorage.setItem('read_feedback_' + window.slug, JSON.stringify(updatedRead));
+      updateFeedbackBadge(0);
+    }
+    container.dataset.markedRead = 'true';
+  }
+}
+
+function updateFeedbackBadge(count) {
+  const customersNav = document.querySelector('.nav-item[data-nav="customers"]');
+  if (!customersNav) return;
+  
+  if (count > 0) {
+    customersNav.classList.add('has-new');
+    // Add or update badge number
+    let badge = customersNav.querySelector('.nav-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'nav-badge';
+      customersNav.appendChild(badge);
+    }
+    badge.textContent = count > 9 ? '9+' : count;
+    badge.style.display = 'inline-block';
+  } else {
+    customersNav.classList.remove('has-new');
+    const badge = customersNav.querySelector('.nav-badge');
+    if (badge) badge.style.display = 'none';
+  }
+}
+
+// Expose reply and resolve functions globally
+window.replyToFeedback = function(message) {
+  const subject = encodeURIComponent('Regarding your recent feedback');
+  const body = encodeURIComponent('Thank you for your feedback. We take your concerns seriously and would like to address them.\n\nOriginal feedback: "' + message + '"\n\nCould you please share more details so we can make things right?');
+  window.location.href = 'mailto:customer@example.com?subject=' + subject + '&body=' + body;
+  showToast('Opening email client...', 'success');
+};
+
+window.markFeedbackResolved = function(message) {
+  // Mark as resolved in localStorage
+  const resolvedFeedback = JSON.parse(localStorage.getItem('resolved_feedback_' + window.slug) || '[]');
+  if (!resolvedFeedback.includes(message)) {
+    resolvedFeedback.push(message);
+    localStorage.setItem('resolved_feedback_' + window.slug, JSON.stringify(resolvedFeedback));
+  }
+  
+  // Remove from UI
+  const cards = document.querySelectorAll('.feedback-card');
+  for (let i = 0; i < cards.length; i++) {
+    if (cards[i].dataset.message === message) {
+      cards[i].style.opacity = '0.5';
+      cards[i].style.pointerEvents = 'none';
+      break;
+    }
+  }
+  
+  showToast('✓ Marked as resolved', 'success');
+};
+
 async function loadGrowthChart() {
   try {
     const res = await fetch("/review-growth/" + window.slug);
@@ -573,6 +674,7 @@ export {
   updateTicker,
   loadActivityFeed,
   loadPrivateFeedback,
+  loadPrivateFeedbackInbox,
   loadDashboardData,
   startPolling,
   loadGrowthChart
