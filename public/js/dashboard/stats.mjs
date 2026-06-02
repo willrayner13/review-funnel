@@ -207,6 +207,11 @@ async function loadDashboardData() {
 
   const isAgency = stats.plan_type === 'agency';
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");
+  
+  // Set global flags for other modules
+  window.isAgency = isAgency;
+  window.hasPro = hasPro;
+  window.currentPlan = stats.plan_type;
 
   // Update UI elements
   const statVisits = document.getElementById("statVisits");

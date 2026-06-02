@@ -5,13 +5,34 @@ import { showToast, escapeHtml } from '../shared/utils.mjs';
 import { openModal } from '../shared/modal.mjs';
 
 async function initAgency() {
+  // Skip if not an agency account
+  if (!window.isAgency) {
+    console.log("Skipping agency init - not an agency account");
+    return;
+  }
+  
   await loadAgencyClients();
   await loadAgencyEarnings();
 }
 
 async function loadAgencyClients() {
+  // Skip if not an agency account
+  if (!window.isAgency) {
+    const agencySection = document.getElementById("agencyClientsSection");
+    if (agencySection) agencySection.style.display = "none";
+    return;
+  }
+  
   try {
     const res = await fetch("/agency/clients");
+    
+    // Handle 403 Forbidden - user is not an agency
+    if (res.status === 403) {
+      const agencySection = document.getElementById("agencyClientsSection");
+      if (agencySection) agencySection.style.display = "none";
+      return;
+    }
+    
     const data = await res.json();
 
     if (data.error) {
@@ -71,8 +92,15 @@ async function loadAgencyClients() {
 }
 
 async function loadAgencyEarnings() {
+  // Skip if not an agency account
+  if (!window.isAgency) return;
+  
   try {
     const res = await fetch("/agency/earnings");
+    
+    // Handle 403 Forbidden - user is not an agency
+    if (res.status === 403) return;
+    
     const data = await res.json();
     
     const totalMonthly = document.getElementById("agencyMonthlyEarnings");

@@ -309,7 +309,15 @@ async function initDashboard() {
     initAILab();
     initAssets();
     startPolling();
-    await initAgency();
+    
+    // Only load agency features if user is actually an agency
+    if (window.isAgency) {
+      await initAgency();
+    } else {
+      // Hide agency section for non-agency users
+      const agencySection = document.getElementById("agencyClientsSection");
+      if (agencySection) agencySection.style.display = "none";
+    }
     
     // Initialize FAB menu
     const fabMain = document.getElementById('fabMain');
