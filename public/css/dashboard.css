@@ -1415,6 +1415,43 @@ input:focus, select:focus, textarea:focus {
   line-height: 1.2;
 }
 
+/* ===== SMART SEND BUTTON ===== */
+#smartSendBtn {
+  background: linear-gradient(135deg, var(--accent) 0%, #D4B87A 100%);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+#smartSendBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(200, 169, 110, 0.3);
+}
+
+#smartSendBtn.btn-loading {
+  opacity: 0.7;
+}
+
+#smartSendBtn.btn-loading::after {
+  border-top-color: #1A1A18;
+}
+
+/* SMS Tracker */
+#smsTracker {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 600px) {
   .action-card {
     padding: 16px;
