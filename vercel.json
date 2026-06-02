@@ -3,6 +3,7 @@
     { "src": "server/index.js", "use": "@vercel/node" }
   ],
   "routes": [
+    { "src": "/", "dest": "/public/landing.html" },
     { "src": "/css/(.*)", "dest": "/public/css/$1" },
     { "src": "/js/(.*)", "dest": "/public/js/$1" },
     { "src": "/images/(.*)", "dest": "/public/images/$1" },
@@ -17,6 +18,7 @@
     { "src": "/favicon-32x32.png", "dest": "/public/favicon-32x32.png" },
     { "src": "/robots.txt", "dest": "/public/robots.txt" },
     { "src": "/sitemap.xml", "dest": "/public/sitemap.xml" },
+    { "src": "/llms.txt", "dest": "/public/llms.txt" },
     { "src": "/(.*)\\.html", "dest": "/public/$1.html" },
     { "src": "/stripe-webhook", "dest": "server/index.js" },
     { "src": "/create-checkout", "dest": "server/index.js" },
