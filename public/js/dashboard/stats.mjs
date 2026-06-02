@@ -390,7 +390,9 @@ async function loadDashboardData() {
   if (stats.recent_events) updateTicker(stats.recent_events);
   
   if (!isAgency) {
-    buildFeatureTiles(stats);
+    // Replace static feature tiles with dynamic action queue
+    const { generateActionQueue } = await import('./actions.mjs');
+    await generateActionQueue(stats);
   }
   
   await loadActivityFeed();
