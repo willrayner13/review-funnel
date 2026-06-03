@@ -16,6 +16,12 @@
   <link rel="stylesheet" href="/css/dashboard.css">
   <style>
   /* Funnel Studio Preview Styles - Direct fix */
+
+    .fs-mobile-frame {
+    width: 380px !important;
+    background: transparent !important;
+  }
+
   .fs-mobile-screen {
     background: #1A1A18 !important;
     border-radius: 32px !important;
@@ -23,6 +29,7 @@
     min-height: 500px !important;
     display: flex !important;
     flex-direction: column !important;
+    border: 1px solid rgba(200, 169, 110, 0.2) !important;
   }
   
   .fs-mobile-biz {
@@ -92,8 +99,9 @@
     color: rgba(234,231,220,0.6) !important;
   }
   
-  /* Desktop Preview Styles */
+  /* Desktop Preview */
   .fs-desktop-frame {
+    width: 500px !important;
     background: #1E1E1C !important;
     border-radius: 12px !important;
     overflow: hidden !important;
@@ -140,7 +148,7 @@
     background: #242422 !important;
     border-radius: 24px !important;
     padding: 40px !important;
-    max-width: 500px !important;
+    max-width: 400px !important;
     margin: 0 auto !important;
     text-align: center !important;
   }
@@ -152,7 +160,7 @@
   }
   
   .fs-desktop-question {
-    font-size: 1.6rem !important;
+    font-size: 1.4rem !important;
     font-weight: 600 !important;
     margin-bottom: 32px !important;
     color: #EAE7DC !important;
@@ -191,6 +199,7 @@
     gap: 24px !important;
     justify-content: center !important;
     flex-wrap: wrap !important;
+    margin: 20px 0 !important;
   }
   
   .fs-mobile-frame, .fs-desktop-frame {
@@ -209,6 +218,59 @@
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
+  }
+   .fs-device-btn {
+    background: var(--surface-2) !important;
+    border: 1px solid var(--border) !important;
+    padding: 8px 16px !important;
+    border-radius: 40px !important;
+    cursor: pointer !important;
+    color: var(--cream-dim) !important;
+  }
+  
+  .fs-device-btn.active {
+    background: #C8A96E !important;
+    color: #1A1A18 !important;
+  }
+  
+  .fs-save-bar {
+    margin-top: 24px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid rgba(234,231,220,0.09) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  
+  .fs-preview-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+  
+  .fs-zoom-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  
+  .fs-zoom-btn {
+    background: var(--surface-2) !important;
+    border: 1px solid var(--border) !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    color: var(--cream) !important;
+  }
+  
+  .fs-zoom-label {
+    font-size: 0.8rem !important;
+    min-width: 45px !important;
+    text-align: center !important;
   }
 </style>
   

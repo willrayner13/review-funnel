@@ -330,169 +330,169 @@ function copyFSLink() {
 }
 
 // ========== MAIN CSS INJECTION - THIS IS THE FIX ==========
-function injectPreviewStyles() {
-  console.log('🎨 Injecting funnel preview styles...');
+// function injectPreviewStyles() {
+//   console.log('🎨 Injecting funnel preview styles...');
   
-  // Get the preview containers
-  const mobileScreen = document.querySelector('.fs-mobile-screen');
-  const desktopCard = document.querySelector('.fs-desktop-card');
+//   // Get the preview containers
+//   const mobileScreen = document.querySelector('.fs-mobile-screen');
+//   const desktopCard = document.querySelector('.fs-desktop-card');
   
-  if (mobileScreen) {
-    // Apply styles directly to the mobile screen
-    mobileScreen.style.cssText = `
-      background: #1A1A18;
-      border-radius: 32px;
-      padding: 20px 16px;
-      min-height: 500px;
-      display: flex;
-      flex-direction: column;
-    `;
+//   if (mobileScreen) {
+//     // Apply styles directly to the mobile screen
+//     mobileScreen.style.cssText = `
+//       background: #1A1A18;
+//       border-radius: 32px;
+//       padding: 20px 16px;
+//       min-height: 500px;
+//       display: flex;
+//       flex-direction: column;
+//     `;
     
-    const mobileContent = mobileScreen.querySelector('.fs-mobile-content');
-    if (mobileContent) {
-      mobileContent.style.cssText = `
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-      `;
-    }
+//     const mobileContent = mobileScreen.querySelector('.fs-mobile-content');
+//     if (mobileContent) {
+//       mobileContent.style.cssText = `
+//         flex: 1;
+//         display: flex;
+//         flex-direction: column;
+//       `;
+//     }
     
-    // Style all buttons in mobile preview
-    const mobileHappyBtn = mobileScreen.querySelector('.fs-mobile-btn.happy');
-    if (mobileHappyBtn) {
-      mobileHappyBtn.style.cssText = `
-        background: ${fsState.accentColor};
-        color: #1A1A18;
-        padding: 16px;
-        border-radius: 60px;
-        border: none;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        margin-bottom: 12px;
-        width: 100%;
-      `;
-    }
+//     // Style all buttons in mobile preview
+//     const mobileHappyBtn = mobileScreen.querySelector('.fs-mobile-btn.happy');
+//     if (mobileHappyBtn) {
+//       mobileHappyBtn.style.cssText = `
+//         background: ${fsState.accentColor};
+//         color: #1A1A18;
+//         padding: 16px;
+//         border-radius: 60px;
+//         border: none;
+//         font-weight: 600;
+//         font-size: 1rem;
+//         cursor: pointer;
+//         margin-bottom: 12px;
+//         width: 100%;
+//       `;
+//     }
     
-    const mobileSadBtn = mobileScreen.querySelector('.fs-mobile-btn.sad');
-    if (mobileSadBtn) {
-      mobileSadBtn.style.cssText = `
-        background: transparent;
-        border: 1px solid rgba(234,231,220,0.2);
-        color: #EAE7DC;
-        padding: 16px;
-        border-radius: 60px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        width: 100%;
-      `;
-    }
+//     const mobileSadBtn = mobileScreen.querySelector('.fs-mobile-btn.sad');
+//     if (mobileSadBtn) {
+//       mobileSadBtn.style.cssText = `
+//         background: transparent;
+//         border: 1px solid rgba(234,231,220,0.2);
+//         color: #EAE7DC;
+//         padding: 16px;
+//         border-radius: 60px;
+//         font-weight: 600;
+//         font-size: 1rem;
+//         cursor: pointer;
+//         width: 100%;
+//       `;
+//     }
     
-    const mobileBiz = mobileScreen.querySelector('.fs-mobile-biz');
-    if (mobileBiz) {
-      mobileBiz.style.cssText = `
-        text-align: center;
-        font-weight: 600;
-        margin-bottom: 24px;
-        color: ${fsState.accentColor};
-      `;
-    }
+//     const mobileBiz = mobileScreen.querySelector('.fs-mobile-biz');
+//     if (mobileBiz) {
+//       mobileBiz.style.cssText = `
+//         text-align: center;
+//         font-weight: 600;
+//         margin-bottom: 24px;
+//         color: ${fsState.accentColor};
+//       `;
+//     }
     
-    const mobileQuestion = mobileScreen.querySelector('.fs-mobile-question');
-    if (mobileQuestion) {
-      mobileQuestion.style.cssText = `
-        text-align: center;
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 32px;
-        color: #EAE7DC;
-      `;
-    }
+//     const mobileQuestion = mobileScreen.querySelector('.fs-mobile-question');
+//     if (mobileQuestion) {
+//       mobileQuestion.style.cssText = `
+//         text-align: center;
+//         font-size: 1.4rem;
+//         font-weight: 600;
+//         margin-bottom: 32px;
+//         color: #EAE7DC;
+//       `;
+//     }
     
-    const mobilePower = mobileScreen.querySelector('.fs-mobile-power');
-    if (mobilePower) {
-      mobilePower.style.cssText = `
-        text-align: center;
-        font-size: 0.65rem;
-        color: rgba(234,231,220,0.3);
-        margin-top: 32px;
-      `;
-    }
+//     const mobilePower = mobileScreen.querySelector('.fs-mobile-power');
+//     if (mobilePower) {
+//       mobilePower.style.cssText = `
+//         text-align: center;
+//         font-size: 0.65rem;
+//         color: rgba(234,231,220,0.3);
+//         margin-top: 32px;
+//       `;
+//     }
     
-    console.log('✅ Mobile preview styles applied');
-  }
+//     console.log('✅ Mobile preview styles applied');
+//   }
   
-  if (desktopCard) {
-    // Apply styles directly to the desktop card
-    desktopCard.style.cssText = `
-      background: #1A1A18;
-      border-radius: 24px;
-      padding: 40px;
-      max-width: 500px;
-      margin: 0 auto;
-      text-align: center;
-    `;
+//   if (desktopCard) {
+//     // Apply styles directly to the desktop card
+//     desktopCard.style.cssText = `
+//       background: #1A1A18;
+//       border-radius: 24px;
+//       padding: 40px;
+//       max-width: 500px;
+//       margin: 0 auto;
+//       text-align: center;
+//     `;
     
-    const desktopBiz = desktopCard.querySelector('.fs-desktop-biz');
-    if (desktopBiz) {
-      desktopBiz.style.cssText = `
-        font-weight: 600;
-        margin-bottom: 16px;
-        color: ${fsState.accentColor};
-      `;
-    }
+//     const desktopBiz = desktopCard.querySelector('.fs-desktop-biz');
+//     if (desktopBiz) {
+//       desktopBiz.style.cssText = `
+//         font-weight: 600;
+//         margin-bottom: 16px;
+//         color: ${fsState.accentColor};
+//       `;
+//     }
     
-    const desktopQuestion = desktopCard.querySelector('.fs-desktop-question');
-    if (desktopQuestion) {
-      desktopQuestion.style.cssText = `
-        font-size: 1.6rem;
-        font-weight: 600;
-        margin-bottom: 32px;
-        color: #EAE7DC;
-      `;
-    }
+//     const desktopQuestion = desktopCard.querySelector('.fs-desktop-question');
+//     if (desktopQuestion) {
+//       desktopQuestion.style.cssText = `
+//         font-size: 1.6rem;
+//         font-weight: 600;
+//         margin-bottom: 32px;
+//         color: #EAE7DC;
+//       `;
+//     }
     
-    const desktopButtons = desktopCard.querySelector('.fs-desktop-buttons');
-    if (desktopButtons) {
-      desktopButtons.style.cssText = `
-        display: flex;
-        gap: 16px;
-        justify-content: center;
-      `;
-    }
+//     const desktopButtons = desktopCard.querySelector('.fs-desktop-buttons');
+//     if (desktopButtons) {
+//       desktopButtons.style.cssText = `
+//         display: flex;
+//         gap: 16px;
+//         justify-content: center;
+//       `;
+//     }
     
-    const desktopHappyBtn = desktopCard.querySelector('.fs-desktop-btn.happy');
-    if (desktopHappyBtn) {
-      desktopHappyBtn.style.cssText = `
-        background: ${fsState.accentColor};
-        color: #1A1A18;
-        padding: 14px 28px;
-        border-radius: 60px;
-        border: none;
-        font-weight: 600;
-        cursor: pointer;
-        flex: 1;
-      `;
-    }
+//     const desktopHappyBtn = desktopCard.querySelector('.fs-desktop-btn.happy');
+//     if (desktopHappyBtn) {
+//       desktopHappyBtn.style.cssText = `
+//         background: ${fsState.accentColor};
+//         color: #1A1A18;
+//         padding: 14px 28px;
+//         border-radius: 60px;
+//         border: none;
+//         font-weight: 600;
+//         cursor: pointer;
+//         flex: 1;
+//       `;
+//     }
     
-    const desktopSadBtn = desktopCard.querySelector('.fs-desktop-btn.sad');
-    if (desktopSadBtn) {
-      desktopSadBtn.style.cssText = `
-        background: transparent;
-        border: 1px solid rgba(234,231,220,0.2);
-        color: #EAE7DC;
-        padding: 14px 28px;
-        border-radius: 60px;
-        font-weight: 600;
-        cursor: pointer;
-        flex: 1;
-      `;
-    }
+//     const desktopSadBtn = desktopCard.querySelector('.fs-desktop-btn.sad');
+//     if (desktopSadBtn) {
+//       desktopSadBtn.style.cssText = `
+//         background: transparent;
+//         border: 1px solid rgba(234,231,220,0.2);
+//         color: #EAE7DC;
+//         padding: 14px 28px;
+//         border-radius: 60px;
+//         font-weight: 600;
+//         cursor: pointer;
+//         flex: 1;
+//       `;
+//     }
     
-    console.log('✅ Desktop preview styles applied');
-  }
-}
+//     console.log('✅ Desktop preview styles applied');
+//   }
+// }
 
 function initFunnelStudio(slug) {
   console.log('🚀 Initializing Funnel Studio for slug:', slug);
@@ -503,7 +503,7 @@ function initFunnelStudio(slug) {
   setFSDevice('split');
   
   // Apply styles immediately
-  setTimeout(() => injectPreviewStyles(), 100);
+  // setTimeout(() => injectPreviewStyles(), 100);
   
   fetch('/stats/' + slug)
     .then(r => r.json())
@@ -545,12 +545,12 @@ function initFunnelStudio(slug) {
       showAISSuggestion(fsState.headline);
       
       // Re-apply styles after data loads
-      setTimeout(() => injectPreviewStyles(), 200);
+      // setTimeout(() => injectPreviewStyles(), 200);
     })
     .catch(err => {
       console.error('Failed to load funnel stats:', err);
       updateFSPreview();
-      setTimeout(() => injectPreviewStyles(), 200);
+      // setTimeout(() => injectPreviewStyles(), 200);
     });
 }
 
