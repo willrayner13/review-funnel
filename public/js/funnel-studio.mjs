@@ -30,12 +30,97 @@ const CONVERSION_BENCHMARKS = {
   'default': { baseline: 18, better: 22, best: 26 }
 };
 
+// Template style configurations
+const TEMPLATE_STYLES = {
+  classic: {
+    bg: '#1A1A18',
+    cardBg: '#242422',
+    accent: '#C8A96E',
+    textColor: '#EAE7DC',
+    buttonTextColor: '#1A1A18'
+  },
+  bright: {
+    bg: '#FAFAFA',
+    cardBg: '#FFFFFF',
+    accent: '#C8A96E',
+    textColor: '#1A1A18',
+    buttonTextColor: '#1A1A18'
+  },
+  medical: {
+    bg: '#F0F4F8',
+    cardBg: '#FFFFFF',
+    accent: '#3B82F6',
+    textColor: '#1A1A18',
+    buttonTextColor: '#FFFFFF'
+  },
+  bold: {
+    bg: '#C8A96E',
+    cardBg: 'rgba(0,0,0,0.2)',
+    accent: '#FFFFFF',
+    textColor: '#1A1A18',
+    buttonTextColor: '#1A1A18'
+  },
+  luxury: {
+    bg: '#0A0A0A',
+    cardBg: '#141414',
+    accent: '#C8A96E',
+    textColor: '#EAE7DC',
+    buttonTextColor: '#1A1A18'
+  }
+};
+
+// Apply template styles to previews
+function applyTemplateStyles(template) {
+  const style = TEMPLATE_STYLES[template] || TEMPLATE_STYLES.classic;
+  
+  // Apply to mobile preview
+  const mobileScreen = document.querySelector('.fs-mobile-screen');
+  if (mobileScreen) {
+    mobileScreen.style.backgroundColor = style.bg;
+  }
+  
+  // Apply to desktop card
+  const desktopCard = document.querySelector('.fs-desktop-card');
+  if (desktopCard) {
+    desktopCard.style.backgroundColor = style.cardBg;
+  }
+  
+  // Update happy buttons
+  const happyBtns = document.querySelectorAll('#fsPreviewHappy, #fsPreviewHappyDesktop');
+  happyBtns.forEach(btn => {
+    btn.style.background = style.accent;
+    btn.style.color = style.buttonTextColor;
+  });
+  
+  // Update sad buttons
+  const sadBtns = document.querySelectorAll('#fsPreviewSad, #fsPreviewSadDesktop');
+  sadBtns.forEach(btn => {
+    btn.style.borderColor = `rgba(234,231,220,0.2)`;
+    btn.style.color = style.textColor;
+  });
+  
+  // Update business name color
+  const bizElements = document.querySelectorAll('#fsPreviewBiz, #fsPreviewBizDesktop');
+  bizElements.forEach(el => {
+    el.style.color = style.accent;
+  });
+  
+  // Update question text color
+  const questionElements = document.querySelectorAll('#fsPreviewQuestion, #fsPreviewQuestionDesktop');
+  questionElements.forEach(el => {
+    el.style.color = style.textColor;
+  });
+}
+
 window.selectFSTemplate = function(template, el) {
   fsState.template = template;
   fsState.saved = false;
   
   document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
   if (el) el.classList.add('selected');
+  
+  // Apply template styles to previews
+  applyTemplateStyles(template);
   
   updateFSPreview();
   updateFSSaveStatus();
@@ -51,16 +136,20 @@ window.selectFSColor = function(color, el) {
   const colorInput = document.querySelector('.fs-color-input');
   if (colorInput) colorInput.value = color;
   
-  updateFSPreview();
-  updateFSSaveStatus();
-  
+  // ONLY update funnel preview buttons, NOT global --accent
   const happyBtns = document.querySelectorAll('#fsPreviewHappy, #fsPreviewHappyDesktop');
   happyBtns.forEach(btn => {
-    btn.style.background = fsState.accentColor;
-    btn.style.borderColor = fsState.accentColor;
+    btn.style.background = color;
   });
   
-  document.documentElement.style.setProperty('--accent', color);
+  // Update business name color in preview only
+  const bizElements = document.querySelectorAll('#fsPreviewBiz, #fsPreviewBizDesktop');
+  bizElements.forEach(el => {
+    el.style.color = color;
+  });
+  
+  updateFSPreview();
+  updateFSSaveStatus();
 };
 
 window.setFSDevice = function(device) {
@@ -129,9 +218,9 @@ function updateFSPreview() {
   if (happyEl) happyEl.innerHTML = `😊 ${fsState.happyLabel}`;
   if (sadEl) sadEl.innerHTML = `😕 ${fsState.sadLabel}`;
   
+  // Apply accent color to happy button (preserve template bg)
   if (happyEl) {
     happyEl.style.background = fsState.accentColor;
-    happyEl.style.borderColor = fsState.accentColor;
   }
   
   const bizDesktop = document.getElementById('fsPreviewBizDesktop');
@@ -146,7 +235,16 @@ function updateFSPreview() {
   
   if (happyDesktop) {
     happyDesktop.style.background = fsState.accentColor;
-    happyDesktop.style.borderColor = fsState.accentColor;
+  }
+  
+  // Update logo preview
+  const logoPreview = document.getElementById('fsLogoPreview');
+  const logoImg = document.getElementById('fsLogoPreviewImg');
+  if (fsState.logoUrl && logoPreview && logoImg) {
+    logoImg.src = fsState.logoUrl;
+    logoPreview.style.display = 'block';
+  } else if (logoPreview) {
+    logoPreview.style.display = 'none';
   }
   
   if (conversionPredictionTimeout) clearTimeout(conversionPredictionTimeout);
@@ -317,12 +415,18 @@ function initFunnelStudio(slug) {
       if (stats.funnel_template) {
         fsState.template = stats.funnel_template;
         const selectedTemplate = document.querySelector(`[data-template="${fsState.template}"]`);
-        if (selectedTemplate) window.selectFSTemplate(fsState.template, selectedTemplate);
+        if (selectedTemplate) {
+          window.selectFSTemplate(fsState.template, selectedTemplate);
+        }
+        // Apply template styles immediately
+        applyTemplateStyles(fsState.template);
       }
       if (stats.funnel_accent_color) {
         fsState.accentColor = stats.funnel_accent_color;
         const colorSwatch = document.querySelector(`[data-color="${fsState.accentColor}"]`);
-        if (colorSwatch) window.selectFSColor(fsState.accentColor, colorSwatch);
+        if (colorSwatch) {
+          window.selectFSColor(fsState.accentColor, colorSwatch);
+        }
       }
       if (stats.funnel_logo_url) {
         fsState.logoUrl = stats.funnel_logo_url;
@@ -348,6 +452,16 @@ function initFunnelStudio(slug) {
       updateFSPreview();
       updateFSCharCount();
       updateConversionPrediction();
+      
+      // Apply logo preview
+      if (fsState.logoUrl) {
+        const logoPreview = document.getElementById('fsLogoPreview');
+        const logoImg = document.getElementById('fsLogoPreviewImg');
+        if (logoPreview && logoImg) {
+          logoImg.src = fsState.logoUrl;
+          logoPreview.style.display = 'block';
+        }
+      }
     })
     .catch(err => {
       console.error('Failed to load funnel stats:', err);
@@ -380,5 +494,4 @@ if (document.readyState === 'loading') {
   setTimeout(() => initFunnelStudio(window.slug), 500);
 }
 
-// ===== THIS IS THE EXPORT - MUST BE AT THE VERY BOTTOM =====
 export { initFunnelStudio };
