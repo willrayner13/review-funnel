@@ -12,7 +12,6 @@ import { loadFunnelSettings } from './dashboard/funnel-settings.mjs';
 import { initModals, openModal, closeModal } from './shared/modal.mjs';
 import { showToast, escapeHtml, getRelativeTime, copyToClipboard } from './shared/utils.mjs';
 import { initFunnelStudio } from './funnel-studio.js';
-
 // Global variables
 window.slug = null;
 window.currentPlan = "starter";

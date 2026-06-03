@@ -385,3 +385,6 @@ if (document.readyState === 'loading') {
 } else {
   setTimeout(checkAndInit, 500);
 }
+
+// EXPORT for dashboard.bundle.mjs
+export { initFunnelStudio };
