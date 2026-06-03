@@ -12,11 +12,12 @@
   "author": "",
   "license": "ISC",
   "engines": {
-  "node": "20.x"
-},
+    "node": "20.x"
+  },
   "type": "commonjs",
   "dependencies": {
     "@supabase/supabase-js": "^2.101.0",
+    "@tabler/icons-webfont": "^3.44.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
