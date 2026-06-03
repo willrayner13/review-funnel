@@ -291,6 +291,16 @@ app.use((req, res) => {
   });
 });
 
+// Weekly digest cron endpoint
+app.get("/cron/weekly-digest", async (req, res) => {
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const sendWeeklyDigests = require("./cron/weekly-digest");
+  const result = await sendWeeklyDigests();
+  res.json(result);
+});
+
 // ─── SERVERLESS EXPORT ────────────────────────────────────────────────────────
 const serverless = require("serverless-http");
 module.exports = app;

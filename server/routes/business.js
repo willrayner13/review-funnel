@@ -264,4 +264,20 @@ router.post("/restore-session/:slug", async (req, res) => {
   }
 });
 
+// Update weekly digest preference
+router.post("/update-digest-preference", async (req, res) => {
+  if (!req.session.slug) return res.status(401).json({ error: "Not authorised" });
+  
+  const { enabled } = req.body;
+  
+  const { error } = await supabase
+    .from("businesses")
+    .update({ weekly_digest_enabled: enabled })
+    .eq("slug", req.session.slug);
+  
+  if (error) return res.status(500).json({ error: error.message });
+  
+  res.json({ success: true, enabled });
+});
+
 module.exports = router;
