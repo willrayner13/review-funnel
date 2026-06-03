@@ -1,11 +1,8 @@
 // ========== FUNNEL STUDIO MODULE ==========
 // ReviewLift Funnel Studio - All funnel customization functionality
-// Now with live split preview and conversion predictions
 
-// Import showToast from shared utils
 import { showToast } from './shared/utils.mjs';
 
-// Make sure showToast is available globally
 window.showToast = showToast;
 
 let fsState = {
@@ -16,7 +13,7 @@ let fsState = {
   happyLabel: 'Great experience!',
   sadLabel: 'Could be better',
   thankyouMsg: 'Thanks for your feedback!',
-  device: 'split', // 'mobile', 'desktop', or 'split'
+  device: 'split',
   zoom: 100,
   saved: false
 };
@@ -24,7 +21,6 @@ let fsState = {
 let fsSlug = '';
 let conversionPredictionTimeout = null;
 
-// Industry benchmark data for conversion predictions
 const CONVERSION_BENCHMARKS = {
   'How was your experience?': { baseline: 18, better: 22, best: 26 },
   'How did we do today?': { baseline: 22, better: 26, best: 31 },
@@ -34,7 +30,6 @@ const CONVERSION_BENCHMARKS = {
   'default': { baseline: 18, better: 22, best: 26 }
 };
 
-// ========== TEMPLATE SELECTION ==========
 function selectFSTemplate(template, el) {
   fsState.template = template;
   fsState.saved = false;
@@ -61,15 +56,10 @@ function updateTemplatePreview(template) {
   
   const style = templateStyles[template] || templateStyles.classic;
   
-  if (mobilePreview) {
-    mobilePreview.style.backgroundColor = style.bg;
-  }
-  if (desktopPreview) {
-    desktopPreview.style.backgroundColor = style.bg;
-  }
+  if (mobilePreview) mobilePreview.style.backgroundColor = style.bg;
+  if (desktopPreview) desktopPreview.style.backgroundColor = style.bg;
 }
 
-// ========== COLOR SELECTION ==========
 function selectFSColor(color, el) {
   fsState.accentColor = color;
   fsState.saved = false;
@@ -82,12 +72,9 @@ function selectFSColor(color, el) {
   
   updateFSPreview();
   updateFSSaveStatus();
-  
-  // Apply accent color to previews
   document.documentElement.style.setProperty('--accent', color);
 }
 
-// ========== DEVICE TOGGLE (with split view) ==========
 function setFSDevice(device) {
   fsState.device = device;
   
@@ -116,7 +103,6 @@ function setFSDevice(device) {
   }
 }
 
-// ========== ZOOM ==========
 function zoomFS(delta) {
   fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
   const zoomLabel = document.getElementById('fsZoomLabel');
@@ -136,7 +122,6 @@ function zoomFS(delta) {
   }
 }
 
-// ========== CONVERSION PREDICTION ==========
 function calculateConversionPrediction(headline) {
   const benchmarks = CONVERSION_BENCHMARKS[headline] || CONVERSION_BENCHMARKS.default;
   const isQuestion = headline.includes('?');
@@ -221,7 +206,6 @@ function showAISSuggestion(headline) {
   }
 }
 
-// ========== LIVE PREVIEW UPDATE ==========
 function updateFSPreview() {
   const headlineInput = document.getElementById('fsHeadline');
   const happyInput = document.getElementById('fsHappyLabel');
@@ -277,7 +261,6 @@ function updateFSPreview() {
     logoPreview.style.display = 'none';
   }
   
-  // Update conversion prediction with debounce
   if (conversionPredictionTimeout) clearTimeout(conversionPredictionTimeout);
   conversionPredictionTimeout = setTimeout(() => {
     updateConversionPrediction();
@@ -285,6 +268,9 @@ function updateFSPreview() {
   
   fsState.saved = false;
   updateFSSaveStatus();
+  
+  // Re-inject styles after preview update
+  setTimeout(() => injectPreviewStyles(), 50);
 }
 
 function updateFSCharCount() {
@@ -298,7 +284,6 @@ function updateFSCharCount() {
   }
 }
 
-// ========== AI SUGGESTIONS ==========
 function applyAISuggestion(type, customText = null) {
   if (type === 'headline') {
     const headlineInput = document.getElementById('fsHeadline');
@@ -321,7 +306,6 @@ function applyAISuggestion(type, customText = null) {
   }
 }
 
-// ========== SAVE STATUS ==========
 function updateFSSaveStatus() {
   const status = document.getElementById('fsSaveStatus');
   if (status) {
@@ -335,7 +319,6 @@ function updateFSSaveStatus() {
   }
 }
 
-// ========== SAVE SETTINGS ==========
 async function saveFSSettings() {
   const btn = document.getElementById('fsSaveBtn');
   if (btn) {
@@ -378,7 +361,6 @@ async function saveFSSettings() {
   }
 }
 
-// ========== COPY LINK ==========
 function copyFSLink() {
   const link = document.getElementById('fsLinkDisplay');
   if (link) {
@@ -387,74 +369,186 @@ function copyFSLink() {
   }
 }
 
-// ========== INJECT CSS INTO PREVIEW (FIX FOR CSS NOT LOADING) ==========
-async function injectPreviewStyles() {
-  console.log('Injecting funnel preview styles...');
+// ========== CSS INJECTION FIX ==========
+function injectPreviewStyles() {
+  console.log('🎨 Injecting funnel preview styles...');
   
-  const mobilePreview = document.getElementById('fsMobileFrame');
-  const desktopPreview = document.getElementById('fsDesktopFrame');
+  const mobileContent = document.getElementById('fsMobileContent');
+  const desktopContent = document.querySelector('.fs-desktop-content');
   
-  // Get the funnel CSS content
-  try {
-    const funnelCssResponse = await fetch('/css/funnel.css');
-    const funnelCss = await funnelCssResponse.text();
+  // Remove any existing injected stylesheets from preview containers
+  const mobileExisting = mobileContent?.querySelectorAll('.funnel-injected-styles');
+  const desktopExisting = desktopContent?.querySelectorAll('.funnel-injected-styles');
+  
+  mobileExisting?.forEach(el => el.remove());
+  desktopExisting?.forEach(el => el.remove());
+  
+  // Create fresh style elements
+  if (mobileContent) {
+    const styleEl = document.createElement('style');
+    styleEl.className = 'funnel-injected-styles';
+    styleEl.setAttribute('data-injected', 'true');
     
-    const globalCssResponse = await fetch('/css/global.css');
-    const globalCss = await globalCssResponse.text();
-    
-    const dashboardCssResponse = await fetch('/css/dashboard.css');
-    const dashboardCss = await dashboardCssResponse.text();
-    
-    // Inject into mobile preview
-    if (mobilePreview) {
-      let styleTag = mobilePreview.querySelector('style.funnel-injected-styles');
-      if (!styleTag) {
-        styleTag = document.createElement('style');
-        styleTag.className = 'funnel-injected-styles';
-        mobilePreview.appendChild(styleTag);
+    // Add critical funnel styles directly
+    styleEl.textContent = `
+      /* Funnel Preview Critical Styles */
+      .fs-mobile-screen {
+        background: #1A1A18;
+        border-radius: 32px;
+        padding: 20px 16px;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
       }
-      styleTag.textContent = funnelCss + '\n' + globalCss + '\n' + dashboardCss;
-      console.log('Mobile preview styles injected');
-    }
-    
-    // Inject into desktop preview
-    if (desktopPreview) {
-      let styleTag = desktopPreview.querySelector('style.funnel-injected-styles');
-      if (!styleTag) {
-        styleTag = document.createElement('style');
-        styleTag.className = 'funnel-injected-styles';
-        desktopPreview.appendChild(styleTag);
+      .fs-mobile-biz {
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 24px;
+        color: #C8A96E;
       }
-      styleTag.textContent = funnelCss + '\n' + globalCss + '\n' + dashboardCss;
-      console.log('Desktop preview styles injected');
-    }
+      .fs-mobile-question {
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 32px;
+        color: #EAE7DC;
+      }
+      .fs-mobile-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .fs-mobile-btn {
+        padding: 16px;
+        border-radius: 60px;
+        border: none;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .fs-mobile-btn.happy {
+        background: #C8A96E;
+        color: #1A1A18;
+      }
+      .fs-mobile-btn.sad {
+        background: transparent;
+        border: 1px solid rgba(234,231,220,0.2);
+        color: #EAE7DC;
+      }
+      .fs-mobile-power {
+        text-align: center;
+        font-size: 0.65rem;
+        color: rgba(234,231,220,0.3);
+        margin-top: 32px;
+      }
+      .fs-desktop-card {
+        background: #1A1A18;
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .fs-desktop-biz {
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #C8A96E;
+      }
+      .fs-desktop-question {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-bottom: 32px;
+        color: #EAE7DC;
+      }
+      .fs-desktop-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+      }
+      .fs-desktop-btn {
+        padding: 14px 28px;
+        border-radius: 60px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .fs-desktop-btn.happy {
+        background: #C8A96E;
+        color: #1A1A18;
+      }
+      .fs-desktop-btn.sad {
+        background: transparent;
+        border: 1px solid rgba(234,231,220,0.2);
+        color: #EAE7DC;
+      }
+    `;
     
-    // Also ensure the preview content containers have proper classes for funnel styling
-    const mobileContent = document.getElementById('fsMobileContent');
-    const desktopContent = document.querySelector('.fs-desktop-content');
+    mobileContent.appendChild(styleEl);
+    console.log('✅ Mobile preview styles injected');
+  }
+  
+  if (desktopContent) {
+    const styleEl = document.createElement('style');
+    styleEl.className = 'funnel-injected-styles';
+    styleEl.setAttribute('data-injected', 'true');
     
-    if (mobileContent) {
-      mobileContent.classList.add('funnel-mobile-preview');
-    }
-    if (desktopContent) {
-      desktopContent.classList.add('funnel-desktop-preview');
-    }
+    styleEl.textContent = `
+      .fs-desktop-card {
+        background: #1A1A18;
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .fs-desktop-biz {
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #C8A96E;
+      }
+      .fs-desktop-question {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-bottom: 32px;
+        color: #EAE7DC;
+      }
+      .fs-desktop-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+      }
+      .fs-desktop-btn {
+        padding: 14px 28px;
+        border-radius: 60px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .fs-desktop-btn.happy {
+        background: #C8A96E;
+        color: #1A1A18;
+      }
+      .fs-desktop-btn.sad {
+        background: transparent;
+        border: 1px solid rgba(234,231,220,0.2);
+        color: #EAE7DC;
+      }
+    `;
     
-  } catch (error) {
-    console.error('Failed to inject funnel styles:', error);
+    desktopContent.appendChild(styleEl);
+    console.log('✅ Desktop preview styles injected');
   }
 }
 
 function initFunnelStudio(slug) {
+  console.log('🚀 Initializing Funnel Studio for slug:', slug);
   fsSlug = slug;
   const linkDisplay = document.getElementById('fsLinkDisplay');
   if (linkDisplay) linkDisplay.textContent = window.location.origin + '/r/' + slug;
   
-  // Set default device to split view
   setFSDevice('split');
-  
-  // Inject CSS styles into preview frames
-  injectPreviewStyles();
+  injectPreviewStyles(); // Inject immediately
   
   fetch('/stats/' + slug)
     .then(r => r.json())
@@ -495,13 +589,15 @@ function initFunnelStudio(slug) {
       updateConversionPrediction();
       showAISSuggestion(fsState.headline);
       
-      // Re-inject styles after data loads (in case DOM changed)
       setTimeout(() => injectPreviewStyles(), 200);
     })
-    .catch(() => updateFSPreview());
+    .catch(err => {
+      console.error('Failed to load funnel stats:', err);
+      updateFSPreview();
+      injectPreviewStyles();
+    });
 }
 
-// ========== KEYBOARD SHORTCUTS ==========
 document.addEventListener('keydown', function(e) {
   const fsSection = document.getElementById('funnelStudioSection');
   if (!fsSection || !fsSection.classList.contains('active')) return;
@@ -512,14 +608,23 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ========== INITIALIZE WHEN SECTION BECOMES VISIBLE ==========
+// Initialize when section becomes visible
 const fsObserver = new MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
     if (mutation.target.id === 'funnelStudioSection' &&
-        mutation.target.classList.contains('active') &&
-        fsSlug) {
-      initFunnelStudio(fsSlug);
-      // Re-inject styles every time the section becomes visible
+        mutation.target.classList.contains('active')) {
+      if (fsSlug) {
+        initFunnelStudio(fsSlug);
+      } else {
+        // Wait for slug to be available
+        const checkSlug = setInterval(() => {
+          if (window.slug) {
+            clearInterval(checkSlug);
+            initFunnelStudio(window.slug);
+          }
+        }, 100);
+        setTimeout(() => clearInterval(checkSlug), 5000);
+      }
       setTimeout(() => injectPreviewStyles(), 150);
     }
   });
@@ -528,6 +633,17 @@ const fsObserver = new MutationObserver(function(mutations) {
 const fsSectionElement = document.getElementById('funnelStudioSection');
 if (fsSectionElement) {
   fsObserver.observe(fsSectionElement, { attributes: true, attributeFilter: ['class'] });
+}
+
+// Try to initialize if DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.slug) {
+      initFunnelStudio(window.slug);
+    }
+  });
+} else if (window.slug) {
+  setTimeout(() => initFunnelStudio(window.slug), 500);
 }
 
 // Expose functions globally
