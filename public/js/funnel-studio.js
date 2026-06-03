@@ -355,14 +355,6 @@ function initFunnelStudio(slug) {
     });
 }
 
-// Auto-initialize when funnel studio section becomes visible
-function checkAndInit() {
-  const fsSection = document.getElementById('funnelStudioSection');
-  if (fsSection && fsSection.classList.contains('active') && window.slug) {
-    initFunnelStudio(window.slug);
-  }
-}
-
 // Watch for section visibility
 const observer = new MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
@@ -379,12 +371,14 @@ if (fsSection) {
   observer.observe(fsSection, { attributes: true, attributeFilter: ['class'] });
 }
 
-// Also try to init on DOM ready
+// Auto-init on DOM ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', checkAndInit);
-} else {
-  setTimeout(checkAndInit, 500);
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.slug) initFunnelStudio(window.slug);
+  });
+} else if (window.slug) {
+  setTimeout(() => initFunnelStudio(window.slug), 500);
 }
 
-// EXPORT for dashboard.bundle.mjs
+// ===== THIS IS THE EXPORT - MUST BE AT THE VERY BOTTOM =====
 export { initFunnelStudio };
