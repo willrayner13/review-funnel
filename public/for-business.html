@@ -193,6 +193,84 @@
     color: #EAE7DC !important;
   }
   
+
+  .fs-workspace {
+  display: grid;
+  grid-template-columns: 200px 1fr 280px;
+  gap: 20px;
+  align-items: start;
+  min-height: 600px;
+}
+
+.fs-preview-area {
+  background: #1E1E1C;
+  border-radius: 16px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.fs-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fs-settings {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.fs-settings-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.fs-settings-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.fs-settings-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cream-dim);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.fs-flow-builder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.fs-flow-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--cream-dim);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 1100px) {
+  .fs-workspace {
+    grid-template-columns: 1fr;
+  }
+  .fs-flow-builder {
+    display: none;
+  }
+}
   /* Split view layout */
 #fsSplitContainer {
   overflow-x: auto !important;
@@ -392,13 +470,16 @@
       </div>
 
       <!-- FUNNEL STUDIO SECTION -->
+      <!-- FUNNEL STUDIO SECTION -->
       <div id="funnelStudioSection" class="content-section">
         <div class="fs-container">
           <div class="fs-header">
             <div><h2>🎨 Funnel Studio</h2><p>Design every step of your customer's review journey</p></div>
             <div class="fs-status-badge"><span class="fs-status-dot"></span> Live & collecting reviews</div>
           </div>
+          
           <div class="fs-workspace">
+            <!-- LEFT COLUMN: Flow Builder -->
             <div class="fs-flow-builder">
               <div class="fs-flow-title"><i class="ti ti-route"></i> Customer Flow</div>
               <div class="flow-node active" data-node="visit">
@@ -422,58 +503,62 @@
               </div>
             </div>
 
-<div class="fs-preview-area">
-  <div class="fs-preview-header">
-    <div class="fs-device-toggle">
-      <button class="fs-device-btn" onclick="setFSDevice('mobile')">📱 Mobile</button>
-      <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
-      <button class="fs-device-btn active" onclick="setFSDevice('split')">🔄 Split view</button>
-    </div>
-    <div class="fs-zoom-controls">
-      <button class="fs-zoom-btn" onclick="zoomFS(-10)">−</button>
-      <span class="fs-zoom-label" id="fsZoomLabel">100%</span>
-      <button class="fs-zoom-btn" onclick="zoomFS(10)">+</button>
-    </div>
-  </div>
-  
-<div id="fsSplitContainer" style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; overflow: visible;">    <div class="fs-mobile-frame" id="fsMobileFrame">
-      <div class="fs-mobile-screen">
-        <div class="fs-mobile-notch"></div>
-        <div class="fs-mobile-status"><span>9:41</span><span>●●● ○○ Wi-Fi</span></div>
-        <div class="fs-mobile-content" id="fsMobileContent">
-          <div class="fs-mobile-biz" id="fsPreviewBiz">Your Business</div>
-          <div class="fs-mobile-question" id="fsPreviewQuestion">How was your experience?</div>
-          <div class="fs-mobile-buttons">
-            <button class="fs-mobile-btn happy" id="fsPreviewHappy">😊 Great experience!</button>
-            <button class="fs-mobile-btn sad" id="fsPreviewSad">😕 Could be better</button>
-          </div>
-          <div class="fs-mobile-power">Powered by <span>ReviewLift</span></div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="fs-desktop-frame" id="fsDesktopFrame">
-      <div class="fs-desktop-chrome">
-        <div class="fs-desktop-dots"><div class="fs-desktop-dot red"></div><div class="fs-desktop-dot yellow"></div><div class="fs-desktop-dot green"></div></div>
-        <div class="fs-desktop-url">reviewlift.app/r/your-business</div>
-      </div>
-      <div class="fs-desktop-content">
-        <div class="fs-desktop-card">
-          <div class="fs-desktop-biz" id="fsPreviewBizDesktop">Your Business</div>
-          <div class="fs-desktop-question" id="fsPreviewQuestionDesktop">How was your experience?</div>
-          <div class="fs-desktop-buttons">
-            <button class="fs-desktop-btn happy" id="fsPreviewHappyDesktop">😊 Great experience!</button>
-            <button class="fs-desktop-btn sad" id="fsPreviewSadDesktop">😕 Could be better</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>  <!-- Close fsSplitContainer -->
+            <!-- MIDDLE COLUMN: Preview Area -->
+            <div class="fs-preview-area">
+              <div class="fs-preview-header">
+                <div class="fs-device-toggle">
+                  <button class="fs-device-btn" onclick="setFSDevice('mobile')">📱 Mobile</button>
+                  <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
+                  <button class="fs-device-btn active" onclick="setFSDevice('split')">🔄 Split view</button>
+                </div>
+                <div class="fs-zoom-controls">
+                  <button class="fs-zoom-btn" onclick="zoomFS(-10)">−</button>
+                  <span class="fs-zoom-label" id="fsZoomLabel">100%</span>
+                  <button class="fs-zoom-btn" onclick="zoomFS(10)">+</button>
+                </div>
+              </div>
+              
+              <div id="fsSplitContainer" style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; overflow: visible;">
+                <div class="fs-mobile-frame" id="fsMobileFrame">
+                  <div class="fs-mobile-screen">
+                    <div class="fs-mobile-notch"></div>
+                    <div class="fs-mobile-status"><span>9:41</span><span>●●● ○○ Wi-Fi</span></div>
+                    <div class="fs-mobile-content" id="fsMobileContent">
+                      <div class="fs-mobile-biz" id="fsPreviewBiz">Your Business</div>
+                      <div class="fs-mobile-question" id="fsPreviewQuestion">How was your experience?</div>
+                      <div class="fs-mobile-buttons">
+                        <button class="fs-mobile-btn happy" id="fsPreviewHappy">😊 Great experience!</button>
+                        <button class="fs-mobile-btn sad" id="fsPreviewSad">😕 Could be better</button>
+                      </div>
+                      <div class="fs-mobile-power">Powered by <span>ReviewLift</span></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="fs-desktop-frame" id="fsDesktopFrame">
+                  <div class="fs-desktop-chrome">
+                    <div class="fs-desktop-dots"><div class="fs-desktop-dot red"></div><div class="fs-desktop-dot yellow"></div><div class="fs-desktop-dot green"></div></div>
+                    <div class="fs-desktop-url">reviewlift.app/r/your-business</div>
+                  </div>
+                  <div class="fs-desktop-content">
+                    <div class="fs-desktop-card">
+                      <div class="fs-desktop-biz" id="fsPreviewBizDesktop">Your Business</div>
+                      <div class="fs-desktop-question" id="fsPreviewQuestionDesktop">How was your experience?</div>
+                      <div class="fs-desktop-buttons">
+                        <button class="fs-desktop-btn happy" id="fsPreviewHappyDesktop">😊 Great experience!</button>
+                        <button class="fs-desktop-btn sad" id="fsPreviewSadDesktop">😕 Could be better</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-  <!-- Conversion Prediction and AI Suggestions -->
-  <div id="conversionPrediction"></div>
-  <div id="aiSuggestionBox"></div>
+              <!-- Conversion Prediction and AI Suggestions -->
+              <div id="conversionPrediction"></div>
+              <div id="aiSuggestionBox"></div>
+            </div>
 
+            <!-- RIGHT COLUMN: Settings Panel -->
             <div class="fs-settings" id="fsSettingsPanel">
               <div class="fs-settings-section">
                 <div class="fs-settings-label">🎭 Template</div>
@@ -486,7 +571,7 @@
                   <div class="fs-template-thumb" data-template="bright" onclick="selectFSTemplate('bright', this)">
                     <div class="fs-template-preview" style="background:linear-gradient(135deg,#fff,#f0f0f0);"></div>
                     <div class="fs-template-name">Luxe White</div>
-                    <div class="fs-template-tag">Retail & Food</div>
+                    <div class="fs-template-tag">Retail &amp; Food</div>
                   </div>
                   <div class="fs-template-thumb" data-template="medical" onclick="selectFSTemplate('medical', this)">
                     <div class="fs-template-preview" style="background:linear-gradient(135deg,#F8FAFC,#E2E8F0);"></div>
@@ -496,7 +581,7 @@
                   <div class="fs-template-thumb" data-template="bold" onclick="selectFSTemplate('bold', this)">
                     <div class="fs-template-preview" style="background:linear-gradient(135deg,#C8A96E,#A88B5C);"></div>
                     <div class="fs-template-name">Bold Impact</div>
-                    <div class="fs-template-tag">Trades & Gyms</div>
+                    <div class="fs-template-tag">Trades &amp; Gyms</div>
                   </div>
                   <div class="fs-template-thumb" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
                     <div class="fs-template-preview" style="background:linear-gradient(135deg,#0A0A0A,#1A1A1A);"></div>
@@ -555,6 +640,7 @@
               </div>
             </div>
           </div>
+          <!-- END fs-workspace -->
 
           <div class="fs-save-bar">
             <div><span class="fs-save-status" id="fsSaveStatus">Changes not saved</span></div>
