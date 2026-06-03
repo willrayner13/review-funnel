@@ -14,7 +14,204 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/dashboard.css">
-  <link rel="stylesheet" href="/css/global.css">
+  <style>
+  /* Funnel Studio Preview Styles - Direct fix */
+  .fs-mobile-screen {
+    background: #1A1A18 !important;
+    border-radius: 32px !important;
+    padding: 20px 16px !important;
+    min-height: 500px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .fs-mobile-biz {
+    text-align: center !important;
+    font-weight: 600 !important;
+    margin-bottom: 24px !important;
+    color: #C8A96E !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .fs-mobile-question {
+    text-align: center !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 32px !important;
+    color: #EAE7DC !important;
+    line-height: 1.3 !important;
+  }
+  
+  .fs-mobile-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .fs-mobile-btn {
+    padding: 16px !important;
+    border-radius: 60px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    border: none !important;
+  }
+  
+  .fs-mobile-btn.happy {
+    background: #C8A96E !important;
+    color: #1A1A18 !important;
+  }
+  
+  .fs-mobile-btn.sad {
+    background: transparent !important;
+    border: 1px solid rgba(234,231,220,0.2) !important;
+    color: #EAE7DC !important;
+  }
+  
+  .fs-mobile-power {
+    text-align: center !important;
+    font-size: 0.65rem !important;
+    color: rgba(234,231,220,0.3) !important;
+    margin-top: 32px !important;
+  }
+  
+  .fs-mobile-notch {
+    width: 40% !important;
+    height: 20px !important;
+    background: #1A1A18 !important;
+    border-radius: 0 0 12px 12px !important;
+    margin: -20px auto 0 !important;
+  }
+  
+  .fs-mobile-status {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 8px 12px !important;
+    font-size: 0.7rem !important;
+    color: rgba(234,231,220,0.6) !important;
+  }
+  
+  /* Desktop Preview Styles */
+  .fs-desktop-frame {
+    background: #1E1E1C !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+  }
+  
+  .fs-desktop-chrome {
+    background: #2A2A28 !important;
+    padding: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  
+  .fs-desktop-dots {
+    display: flex !important;
+    gap: 6px !important;
+  }
+  
+  .fs-desktop-dot {
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+  }
+  
+  .fs-desktop-dot.red { background: #FF5F56 !important; }
+  .fs-desktop-dot.yellow { background: #FFBD2E !important; }
+  .fs-desktop-dot.green { background: #27C93F !important; }
+  
+  .fs-desktop-url {
+    font-size: 0.7rem !important;
+    color: rgba(234,231,220,0.5) !important;
+    background: #1E1E1C !important;
+    padding: 4px 12px !important;
+    border-radius: 6px !important;
+    flex: 1 !important;
+  }
+  
+  .fs-desktop-content {
+    padding: 40px 20px !important;
+    background: #1A1A18 !important;
+  }
+  
+  .fs-desktop-card {
+    background: #242422 !important;
+    border-radius: 24px !important;
+    padding: 40px !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+  
+  .fs-desktop-biz {
+    font-weight: 600 !important;
+    margin-bottom: 16px !important;
+    color: #C8A96E !important;
+  }
+  
+  .fs-desktop-question {
+    font-size: 1.6rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 32px !important;
+    color: #EAE7DC !important;
+  }
+  
+  .fs-desktop-buttons {
+    display: flex !important;
+    gap: 16px !important;
+    justify-content: center !important;
+  }
+  
+  .fs-desktop-btn {
+    padding: 14px 28px !important;
+    border-radius: 60px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    flex: 1 !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .fs-desktop-btn.happy {
+    background: #C8A96E !important;
+    color: #1A1A18 !important;
+    border: none !important;
+  }
+  
+  .fs-desktop-btn.sad {
+    background: transparent !important;
+    border: 1px solid rgba(234,231,220,0.2) !important;
+    color: #EAE7DC !important;
+  }
+  
+  /* Split view layout */
+  #fsSplitContainer {
+    display: flex !important;
+    gap: 24px !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .fs-mobile-frame, .fs-desktop-frame {
+    transition: transform 0.2s ease !important;
+  }
+  
+  .fs-device-btn.active {
+    background: #C8A96E !important;
+    color: #1A1A18 !important;
+  }
+  
+  .fs-save-bar {
+    margin-top: 24px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid rgba(234,231,220,0.09) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+</style>
+  
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -156,55 +353,58 @@
               </div>
             </div>
 
-            <div class="fs-preview-area">
-              <div class="fs-preview-header">
-                <div class="fs-device-toggle">
-  <button class="fs-device-btn" onclick="setFSDevice('mobile')">📱 Mobile</button>
-  <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
-  <button class="fs-device-btn active" onclick="setFSDevice('split')">🔄 Split view</button>
-</div>
-                <div class="fs-zoom-controls">
-                  <button class="fs-zoom-btn" onclick="zoomFS(-10)">−</button>
-                  <span class="fs-zoom-label" id="fsZoomLabel">100%</span>
-                  <button class="fs-zoom-btn" onclick="zoomFS(10)">+</button>
-                </div>
-              </div>
-              <div class="fs-mobile-frame" id="fsMobileFrame">
-                <div class="fs-mobile-screen">
-                  <div class="fs-mobile-notch"></div>
-                  <div class="fs-mobile-status"><span>9:41</span><span>●●● ○○ Wi-Fi</span></div>
-                  <div class="fs-mobile-content" id="fsMobileContent">
-                    <div class="fs-mobile-biz" id="fsPreviewBiz">Your Business</div>
-                    <div class="fs-mobile-question" id="fsPreviewQuestion">How was your experience?</div>
-                    <div class="fs-mobile-buttons">
-                      <button class="fs-mobile-btn happy" id="fsPreviewHappy">😊 Great experience!</button>
-                      <button class="fs-mobile-btn sad" id="fsPreviewSad">😕 Could be better</button>
-                    </div>
-                    <div class="fs-mobile-power">Powered by <span>ReviewLift</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="fs-desktop-frame" id="fsDesktopFrame">
-                <div class="fs-desktop-chrome">
-                  <div class="fs-desktop-dots"><div class="fs-desktop-dot red"></div><div class="fs-desktop-dot yellow"></div><div class="fs-desktop-dot green"></div></div>
-                  <div class="fs-desktop-url">reviewlift.app/r/your-business</div>
-                </div>
-                <div class="fs-desktop-content">
-                  <div class="fs-desktop-card">
-                    <div class="fs-desktop-biz" id="fsPreviewBizDesktop">Your Business</div>
-                    <div class="fs-desktop-question" id="fsPreviewQuestionDesktop">How was your experience?</div>
-                    <div class="fs-desktop-buttons">
-                      <button class="fs-desktop-btn happy" id="fsPreviewHappyDesktop">😊 Great experience!</button>
-                      <button class="fs-desktop-btn sad" id="fsPreviewSadDesktop">😕 Could be better</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                        </div>
+<div class="fs-preview-area">
+  <div class="fs-preview-header">
+    <div class="fs-device-toggle">
+      <button class="fs-device-btn" onclick="setFSDevice('mobile')">📱 Mobile</button>
+      <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
+      <button class="fs-device-btn active" onclick="setFSDevice('split')">🔄 Split view</button>
+    </div>
+    <div class="fs-zoom-controls">
+      <button class="fs-zoom-btn" onclick="zoomFS(-10)">−</button>
+      <span class="fs-zoom-label" id="fsZoomLabel">100%</span>
+      <button class="fs-zoom-btn" onclick="zoomFS(10)">+</button>
+    </div>
+  </div>
+  
+  <div id="fsSplitContainer" style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+    <div class="fs-mobile-frame" id="fsMobileFrame">
+      <div class="fs-mobile-screen">
+        <div class="fs-mobile-notch"></div>
+        <div class="fs-mobile-status"><span>9:41</span><span>●●● ○○ Wi-Fi</span></div>
+        <div class="fs-mobile-content" id="fsMobileContent">
+          <div class="fs-mobile-biz" id="fsPreviewBiz">Your Business</div>
+          <div class="fs-mobile-question" id="fsPreviewQuestion">How was your experience?</div>
+          <div class="fs-mobile-buttons">
+            <button class="fs-mobile-btn happy" id="fsPreviewHappy">😊 Great experience!</button>
+            <button class="fs-mobile-btn sad" id="fsPreviewSad">😕 Could be better</button>
+          </div>
+          <div class="fs-mobile-power">Powered by <span>ReviewLift</span></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="fs-desktop-frame" id="fsDesktopFrame">
+      <div class="fs-desktop-chrome">
+        <div class="fs-desktop-dots"><div class="fs-desktop-dot red"></div><div class="fs-desktop-dot yellow"></div><div class="fs-desktop-dot green"></div></div>
+        <div class="fs-desktop-url">reviewlift.app/r/your-business</div>
+      </div>
+      <div class="fs-desktop-content">
+        <div class="fs-desktop-card">
+          <div class="fs-desktop-biz" id="fsPreviewBizDesktop">Your Business</div>
+          <div class="fs-desktop-question" id="fsPreviewQuestionDesktop">How was your experience?</div>
+          <div class="fs-desktop-buttons">
+            <button class="fs-desktop-btn happy" id="fsPreviewHappyDesktop">😊 Great experience!</button>
+            <button class="fs-desktop-btn sad" id="fsPreviewSadDesktop">😕 Could be better</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  <!-- Close fsSplitContainer -->
 
-            <!-- Conversion Prediction and AI Suggestions -->
-            <div id="conversionPrediction"></div>
-            <div id="aiSuggestionBox"></div>
+  <!-- Conversion Prediction and AI Suggestions -->
+  <div id="conversionPrediction"></div>
+  <div id="aiSuggestionBox"></div>
 
             <div class="fs-settings" id="fsSettingsPanel">
               <div class="fs-settings-section">
