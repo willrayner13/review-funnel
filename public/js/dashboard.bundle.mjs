@@ -11,6 +11,7 @@ import { initAgency, loadAgencyClients, loadAgencyEarnings, checkClientMode, ope
 import { loadFunnelSettings } from './dashboard/funnel-settings.mjs';
 import { initModals, openModal, closeModal } from './shared/modal.mjs';
 import { showToast, escapeHtml, getRelativeTime, copyToClipboard } from './shared/utils.mjs';
+import { initFunnelStudio } from './funnel-studio.js';
 
 // Global variables
 window.slug = null;
@@ -42,119 +43,7 @@ window.copyAgencyLink = copyAgencyLink;
 window.switchToClient = switchToClient;
 window.removeClient = removeClient;
 window.exitClientMode = exitClientMode;
-window.copyFSLink = () => {
-  const link = document.getElementById('fsLinkDisplay');
-  if (link) {
-    navigator.clipboard.writeText(link.textContent);
-    showToast('Funnel link copied!', 'success');
-  }
-};
-window.setFSDevice = (device) => {
-  const mobileFrame = document.getElementById('fsMobileFrame');
-  const desktopFrame = document.getElementById('fsDesktopFrame');
-  const buttons = document.querySelectorAll('.fs-device-btn');
-  buttons.forEach(b => b.classList.remove('active'));
-  if (device === 'mobile') {
-    if (mobileFrame) mobileFrame.style.display = 'block';
-    if (desktopFrame) desktopFrame.style.display = 'none';
-    if (buttons[0]) buttons[0].classList.add('active');
-  } else {
-    if (mobileFrame) mobileFrame.style.display = 'none';
-    if (desktopFrame) desktopFrame.style.display = 'block';
-    if (buttons[1]) buttons[1].classList.add('active');
-  }
-};
-window.zoomFS = (delta) => {
-  let zoom = parseInt(document.getElementById('fsZoomLabel')?.textContent || '100');
-  zoom = Math.max(60, Math.min(150, zoom + delta));
-  const zoomLabel = document.getElementById('fsZoomLabel');
-  const mobileFrame = document.getElementById('fsMobileFrame');
-  if (zoomLabel) zoomLabel.textContent = zoom + '%';
-  if (mobileFrame) {
-    mobileFrame.style.transform = `scale(${zoom / 100})`;
-    mobileFrame.style.transformOrigin = 'top center';
-  }
-};
-window.selectFSTemplate = (template, el) => {
-  document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  showToast(`Template: ${template}`, 'success');
-};
-window.selectFSColor = (color, el) => {
-  document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
-  if (el) el.classList.add('selected');
-  document.querySelector('.fs-color-input').value = color;
-  document.documentElement.style.setProperty('--accent', color);
-  showToast('Color updated', 'success');
-};
-window.updateFSPreview = () => {
-  const headline = document.getElementById('fsHeadline')?.value;
-  const happy = document.getElementById('fsHappyLabel')?.value;
-  const sad = document.getElementById('fsSadLabel')?.value;
-  const bizName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
-  if (document.getElementById('fsPreviewBiz')) document.getElementById('fsPreviewBiz').textContent = bizName;
-  if (document.getElementById('fsPreviewBizDesktop')) document.getElementById('fsPreviewBizDesktop').textContent = bizName;
-  if (document.getElementById('fsPreviewQuestion')) document.getElementById('fsPreviewQuestion').textContent = headline;
-  if (document.getElementById('fsPreviewQuestionDesktop')) document.getElementById('fsPreviewQuestionDesktop').textContent = headline;
-  if (document.getElementById('fsPreviewHappy')) document.getElementById('fsPreviewHappy').innerHTML = `😊 ${happy}`;
-  if (document.getElementById('fsPreviewHappyDesktop')) document.getElementById('fsPreviewHappyDesktop').innerHTML = `😊 ${happy}`;
-  if (document.getElementById('fsPreviewSad')) document.getElementById('fsPreviewSad').innerHTML = `😕 ${sad}`;
-  if (document.getElementById('fsPreviewSadDesktop')) document.getElementById('fsPreviewSadDesktop').innerHTML = `😕 ${sad}`;
-};
-window.updateFSCharCount = () => {
-  const headline = document.getElementById('fsHeadline');
-  const count = document.getElementById('fsHeadlineCount');
-  if (headline && count) count.textContent = headline.value.length;
-};
-window.applyAISuggestion = (type) => {
-  if (type === 'headline') {
-    const input = document.getElementById('fsHeadline');
-    if (input) input.value = 'How did we do today?';
-  } else if (type === 'happy') {
-    const input = document.getElementById('fsHappyLabel');
-    if (input) input.value = 'Loved it! ⭐';
-  } else if (type === 'color') {
-    window.selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
-  }
-  window.updateFSPreview();
-  window.updateFSCharCount();
-  showToast('AI suggestion applied', 'success');
-};
-window.saveFSSettings = async () => {
-  const btn = document.getElementById('fsSaveBtn');
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Saving...';
-  }
-  const data = {
-    funnel_template: document.querySelector('.fs-template-thumb.selected')?.dataset.template || 'classic',
-    funnel_accent_color: document.querySelector('.fs-color-swatch.selected')?.dataset.color || '#C8A96E',
-    funnel_logo_url: document.getElementById('fsLogoUrl')?.value || '',
-    funnel_headline: document.getElementById('fsHeadline')?.value || '',
-    funnel_happy_label: document.getElementById('fsHappyLabel')?.value || '',
-    funnel_unhappy_label: document.getElementById('fsSadLabel')?.value || '',
-    funnel_thankyou_message: document.getElementById('fsThankyouMsg')?.value || ''
-  };
-  try {
-    const res = await fetch('/update-funnel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    if (result.success) {
-      showToast('Funnel updated! Changes are live.', 'success');
-    } else {
-      showToast(result.error || 'Could not save', 'error');
-    }
-  } catch (e) {
-    showToast('Something went wrong', 'error');
-  }
-  if (btn) {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
-  }
-};
+
 window.openAutomationModal = () => showToast('Integration setup wizard coming soon', 'success');
 window.showAutomationDemo = () => showToast('Demo video would play here', 'success');
 window.showAllIntegrations = () => showToast('Full integrations catalog coming soon', 'success');
@@ -308,6 +197,10 @@ async function initDashboard() {
     initAILab();
     initAssets();
     startPolling();
+
+     if (typeof initFunnelStudio === 'function' && window.slug) {
+        initFunnelStudio(window.slug);
+    }
     
     // Only load agency features if user is actually an agency
     if (window.isAgency) {
