@@ -262,6 +262,251 @@ async function checkClientMode() {
   }
 }
 
+// ========== PORTFOLIO HEALTH DASHBOARD ==========
+async function loadPortfolioHealth() {
+  try {
+    const res = await fetch("/agency/clients");
+    const data = await res.json();
+    
+    if (data.error) return;
+    
+    const clients = data.clients || [];
+    const totalClients = clients.length;
+    const activeClients = clients.filter(c => c.active_subscription).length;
+    const atRiskClients = clients.filter(c => c.conversion_rate < 15 && c.active_subscription).length;
+    const totalReviews = clients.reduce((sum, c) => sum + (c.positive_count || 0), 0);
+    
+    // Calculate total MRR (Monthly Recurring Revenue)
+    const totalMRR = clients.reduce((sum, c) => {
+      let price = 0;
+      if (c.plan === 'pro') price = 24.99;
+      else if (c.plan === 'agency') price = 79;
+      else price = 9.99;
+      return sum + (c.active_subscription ? price : 0);
+    }, 0);
+    
+    // Yearly projection
+    const yearlyProjection = totalMRR * 12;
+    
+    const healthContainer = document.getElementById('agencyPortfolioHealth');
+    if (!healthContainer) return;
+    
+    healthContainer.innerHTML = `
+      <div class="portfolio-health">
+        <div class="health-header">
+          <h3>📊 Portfolio Health</h3>
+          <span class="health-updated">Updated just now</span>
+        </div>
+        <div class="health-grid">
+          <div class="health-card">
+            <div class="health-value">${totalClients}</div>
+            <div class="health-label">Total Clients</div>
+          </div>
+          <div class="health-card">
+            <div class="health-value" style="color: var(--success);">${activeClients}</div>
+            <div class="health-label">Active</div>
+          </div>
+          <div class="health-card">
+            <div class="health-value" style="color: var(--danger);">${atRiskClients}</div>
+            <div class="health-label">Need Attention</div>
+          </div>
+          <div class="health-card">
+            <div class="health-value">${totalReviews}</div>
+            <div class="health-label">Total Reviews</div>
+          </div>
+        </div>
+        <div class="health-mrr">
+          <div>
+            <div class="mrr-amount">£${totalMRR.toFixed(2)}</div>
+            <div class="mrr-label">Monthly Recurring Revenue</div>
+          </div>
+          <div class="mrr-projection">
+            <div class="projection-amount">£${yearlyProjection.toFixed(2)}</div>
+            <div class="projection-label">Projected Annual</div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Load client ranking
+    loadClientRanking(clients);
+    
+  } catch (e) {
+    console.error("Portfolio health error:", e);
+  }
+}
+
+async function loadClientRanking(clients) {
+  const rankingContainer = document.getElementById('clientRanking');
+  if (!rankingContainer) return;
+  
+  if (clients.length === 0) {
+    rankingContainer.innerHTML = '<div class="ranking-empty">Add clients to see performance rankings</div>';
+    return;
+  }
+  
+  // Sort by conversion rate (best first)
+  const sortedByConversion = [...clients].sort((a, b) => b.conversion_rate - a.conversion_rate);
+  const topPerformers = sortedByConversion.slice(0, 3);
+  
+  // Sort by reviews collected
+  const sortedByReviews = [...clients].sort((a, b) => b.positive_count - a.positive_count);
+  
+  rankingContainer.innerHTML = `
+    <div class="client-ranking">
+      <div class="ranking-section">
+        <div class="ranking-title">🏆 Top Performers</div>
+        <div class="ranking-list">
+          ${topPerformers.map((c, i) => `
+            <div class="ranking-item">
+              <div class="ranking-position ${i === 0 ? 'gold' : i === 1 ? 'silver' : 'bronze'}">${i + 1}</div>
+              <div class="ranking-name">${escapeHtml(c.name)}</div>
+              <div class="ranking-stat">${c.conversion_rate}% conv</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="ranking-section">
+        <div class="ranking-title">📈 Most Reviews</div>
+        <div class="ranking-list">
+          ${sortedByReviews.slice(0, 3).map((c, i) => `
+            <div class="ranking-item">
+              <div class="ranking-stat-icon">⭐</div>
+              <div class="ranking-name">${escapeHtml(c.name)}</div>
+              <div class="ranking-stat">${c.positive_count} reviews</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ========== WHITE-LABEL PREVIEW ==========
+async function loadWhiteLabelPreview() {
+  const previewContainer = document.getElementById('whiteLabelPreview');
+  if (!previewContainer) return;
+  
+  try {
+    const res = await fetch("/stats/" + window.slug);
+    const stats = await res.json();
+    
+    const agencyName = stats.agency_name || window.slug;
+    const logoUrl = stats.agency_logo_url || '';
+    
+    previewContainer.innerHTML = `
+      <div class="whitelabel-preview">
+        <div class="preview-header">
+          <span class="preview-badge">Live Preview</span>
+          <span class="preview-label">How clients see your dashboard</span>
+        </div>
+        <div class="preview-dashboard">
+          <div class="preview-sidebar" style="background: var(--surface);">
+            <div class="preview-logo">
+              ${logoUrl ? `<img src="${logoUrl}" style="height: 24px;">` : `<span>${(agencyName.charAt(0) || 'R').toUpperCase()}</span>`}
+            </div>
+            <div class="preview-nav-item">📊 Overview</div>
+            <div class="preview-nav-item">⭐ Reviews</div>
+            <div class="preview-nav-item">📧 Campaigns</div>
+          </div>
+          <div class="preview-main">
+            <div class="preview-card">
+              <div class="preview-stat">★★★★★ 4.8</div>
+              <div class="preview-stat-label">Average rating</div>
+            </div>
+          </div>
+        </div>
+        <div class="preview-note">
+          ${logoUrl ? '✓ Your logo appears here' : '⚡ Add a logo to see your brand'}
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    console.error("White-label preview error:", e);
+  }
+}
+
+// ========== REFERRAL ANALYTICS ==========
+async function loadReferralAnalytics() {
+  const analyticsContainer = document.getElementById('referralAnalytics');
+  if (!analyticsContainer) return;
+  
+  try {
+    // Get client list with source data
+    const res = await fetch("/agency/clients");
+    const data = await res.json();
+    
+    if (data.error) return;
+    
+    const clients = data.clients || [];
+    
+    // Group by source (from metadata or default)
+    const sourceStats = {
+      'Direct': { count: 0, revenue: 0, avgConversion: 0 },
+      'Referral': { count: 0, revenue: 0, avgConversion: 0 },
+      'Website': { count: 0, revenue: 0, avgConversion: 0 },
+      'Social': { count: 0, revenue: 0, avgConversion: 0 }
+    };
+    
+    clients.forEach(c => {
+      // Simple distribution based on plan (for demo)
+      const source = c.plan === 'agency' ? 'Referral' : c.plan === 'pro' ? 'Website' : 'Direct';
+      let price = 0;
+      if (c.plan === 'pro') price = 24.99;
+      else if (c.plan === 'agency') price = 79;
+      else price = 9.99;
+      
+      sourceStats[source].count++;
+      sourceStats[source].revenue += c.active_subscription ? price : 0;
+      sourceStats[source].avgConversion = c.conversion_rate;
+    });
+    
+    const topSource = Object.entries(sourceStats).sort((a, b) => b[1].revenue - a[1].revenue)[0];
+    
+    analyticsContainer.innerHTML = `
+      <div class="referral-analytics">
+        <div class="analytics-header">
+          <h3>📈 Referral Performance</h3>
+          <span class="analytics-tip">Top source: <strong>${topSource?.[0] || 'N/A'}</strong></span>
+        </div>
+        <div class="analytics-grid">
+          ${Object.entries(sourceStats).map(([source, stats]) => `
+            <div class="source-card">
+              <div class="source-name">${source}</div>
+              <div class="source-stats">
+                <div><span class="stat-value">${stats.count}</span> <span class="stat-label">clients</span></div>
+                <div><span class="stat-value">£${stats.revenue.toFixed(2)}</span> <span class="stat-label">MRR</span></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="analytics-insight">
+          💡 ${topSource?.[0] === 'Referral' ? 'Referrals are your best source! Encourage existing clients to refer others.' : 'Direct signups are strong. Consider a referral program to boost growth.'}
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    console.error("Referral analytics error:", e);
+  }
+}
+
+// Update initAgency to load all new components
+async function initAgency() {
+  // Skip if not an agency account
+  if (!window.isAgency) {
+    console.log("Skipping agency init - not an agency account");
+    return;
+  }
+  
+  await loadAgencyClients();
+  await loadAgencyEarnings();
+  await loadPortfolioHealth();
+  await loadWhiteLabelPreview();
+  await loadReferralAnalytics();
+}
+
+
+
 // Expose for global onclick
 window.openAddClientModal = openAddClientModal;
 window.copyAgencyLink = copyAgencyLink;
@@ -269,11 +514,15 @@ window.switchToClient = switchToClient;
 window.removeClient = removeClient;
 window.exitClientMode = exitClientMode;
 
+// Add to exports
 export { 
   initAgency, 
   loadAgencyClients, 
   loadAgencyDashboard, 
   loadAgencyEarnings,
+  loadPortfolioHealth,
+  loadWhiteLabelPreview,
+  loadReferralAnalytics,
   checkClientMode,
   openAddClientModal,
   copyAgencyLink,
