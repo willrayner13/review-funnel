@@ -30,10 +30,115 @@ const INDUSTRY_DEFAULTS = {
   other: { bestChannel: "sms", bestWindow: "10am-2pm, next day", smsRate: 18, emailRate: 10 },
 };
 
+// Industry benchmarks for analytics
+const INDUSTRY_BENCHMARKS = {
+  dentist: {
+    avgRating: 4.7,
+    conversionRate: 32,
+    reviewVelocity: 12,
+    responseRate: 68,
+    description: "Dental practices"
+  },
+  plumber: {
+    avgRating: 4.5,
+    conversionRate: 24,
+    reviewVelocity: 8,
+    responseRate: 52,
+    description: "Plumbing & heating businesses"
+  },
+  electrician: {
+    avgRating: 4.6,
+    conversionRate: 26,
+    reviewVelocity: 9,
+    responseRate: 58,
+    description: "Electrical services"
+  },
+  salon: {
+    avgRating: 4.8,
+    conversionRate: 38,
+    reviewVelocity: 15,
+    responseRate: 72,
+    description: "Hair & beauty salons"
+  },
+  builder: {
+    avgRating: 4.4,
+    conversionRate: 22,
+    reviewVelocity: 6,
+    responseRate: 48,
+    description: "Construction & building"
+  },
+  restaurant: {
+    avgRating: 4.6,
+    conversionRate: 28,
+    reviewVelocity: 18,
+    responseRate: 45,
+    description: "Restaurants & cafés"
+  },
+  gym: {
+    avgRating: 4.7,
+    conversionRate: 30,
+    reviewVelocity: 10,
+    responseRate: 55,
+    description: "Gyms & fitness centres"
+  },
+  cleaner: {
+    avgRating: 4.8,
+    conversionRate: 35,
+    reviewVelocity: 11,
+    responseRate: 62,
+    description: "Cleaning services"
+  },
+  accountant: {
+    avgRating: 4.6,
+    conversionRate: 28,
+    reviewVelocity: 5,
+    responseRate: 70,
+    description: "Accounting firms"
+  },
+  solicitor: {
+    avgRating: 4.5,
+    conversionRate: 26,
+    reviewVelocity: 4,
+    responseRate: 65,
+    description: "Legal services"
+  },
+  "estate-agent": {
+    avgRating: 4.4,
+    conversionRate: 24,
+    reviewVelocity: 7,
+    responseRate: 50,
+    description: "Estate agents"
+  },
+  vet: {
+    avgRating: 4.8,
+    conversionRate: 34,
+    reviewVelocity: 10,
+    responseRate: 66,
+    description: "Veterinary practices"
+  },
+  physio: {
+    avgRating: 4.8,
+    conversionRate: 36,
+    reviewVelocity: 12,
+    responseRate: 68,
+    description: "Physiotherapy & health"
+  },
+  other: {
+    avgRating: 4.6,
+    conversionRate: 28,
+    reviewVelocity: 8,
+    responseRate: 55,
+    description: "Similar businesses"
+  }
+};
+
+// Add to exports at the bottom
 module.exports = {
   SMS_TRIAL_LIMIT,
   SMS_MONTHLY_LIMIT,
   MILESTONES,
   HTML_PAGES,
   INDUSTRY_DEFAULTS,
+  INDUSTRY_BENCHMARKS  // ← ADD THIS
 };
+

@@ -487,6 +487,7 @@ async function loadDashboardData() {
   await loadReputationScore();
   await loadFunnelSettings();
   await loadAlertSettings();
+  await loadBenchmarks(stats); 
   
   if (stats.recent_events) updateTicker(stats.recent_events);
   
@@ -668,6 +669,138 @@ function startPolling() {
   }, 30000);
 }
 
+// ========== INDUSTRY BENCHMARKS ==========
+async function loadBenchmarks(stats) {
+  const container = document.getElementById('benchmarkContainer');
+  if (!container) return;
+  
+  const industry = stats.industry || 'other';
+  const benchmark = INDUSTRY_BENCHMARKS[industry] || INDUSTRY_BENCHMARKS.other;
+  
+  // Calculate performance ratings
+  const ratingDiff = (stats.rating_avg - benchmark.avgRating).toFixed(1);
+  const ratingStatus = ratingDiff > 0 ? 'above' : ratingDiff < 0 ? 'below' : 'average';
+  const ratingColor = ratingDiff > 0 ? 'var(--success)' : ratingDiff < 0 ? 'var(--danger)' : 'var(--cream-dim)';
+  
+  const conversionDiff = stats.conversion_rate - benchmark.conversionRate;
+  const conversionStatus = conversionDiff > 0 ? 'above' : conversionDiff < 0 ? 'below' : 'average';
+  const conversionColor = conversionDiff > 0 ? 'var(--success)' : conversionDiff < 0 ? 'var(--danger)' : 'var(--cream-dim)';
+  
+  const velocityDiff = stats.reviews - benchmark.reviewVelocity;
+  const velocityStatus = velocityDiff > 0 ? 'above' : velocityDiff < 0 ? 'below' : 'average';
+  const velocityColor = velocityDiff > 0 ? 'var(--success)' : velocityDiff < 0 ? 'var(--danger)' : 'var(--cream-dim)';
+  
+  // Calculate overall percentile
+  let overallRating = 'Average';
+  let overallColor = 'var(--cream-dim)';
+  if (ratingDiff > 0.2 && conversionDiff > 5 && velocityDiff > 2) {
+    overallRating = 'Top 10%';
+    overallColor = 'var(--success)';
+  } else if (ratingDiff > 0 && conversionDiff > 0 && velocityDiff > 0) {
+    overallRating = 'Above Average';
+    overallColor = 'var(--accent)';
+  } else if (ratingDiff < -0.2 || conversionDiff < -5) {
+    overallRating = 'Needs Attention';
+    overallColor = 'var(--danger)';
+  }
+  
+  // Generate insight message
+  let insightText = '';
+  let insightAction = '';
+  
+  if (conversionDiff < -5) {
+    insightText = `Your conversion rate is ${Math.abs(conversionDiff)}% below the industry average. Try personalising your funnel headline.`;
+    insightAction = 'Optimise funnel →';
+  } else if (velocityDiff < -2) {
+    insightText = `You're collecting ${Math.abs(velocityDiff)} fewer reviews than similar businesses. Send a campaign today.`;
+    insightAction = 'Start campaign →';
+  } else if (ratingDiff < -0.2) {
+    insightText = `Your rating is ${Math.abs(ratingDiff)}★ below the industry average. Check your private feedback for patterns.`;
+    insightAction = 'View feedback →';
+  } else if (conversionDiff > 10) {
+    insightText = `Your conversion rate is ${conversionDiff}% above average! You're outperforming ${benchmark.description}.`;
+    insightAction = 'Share this win →';
+  } else {
+    insightText = `You're performing on par with ${benchmark.description}. A few more reviews could push you above average.`;
+    insightAction = 'Send campaign →';
+  }
+  
+  container.innerHTML = `
+    <div class="benchmark-section">
+      <div class="benchmark-header">
+        <h3>📊 Industry Comparison</h3>
+        <span class="benchmark-badge" style="background: ${overallColor}20; color: ${overallColor};">${overallRating}</span>
+      </div>
+      
+      <div class="benchmark-grid">
+        <div class="benchmark-card">
+          <div class="benchmark-label">⭐ Average Rating</div>
+          <div class="benchmark-values">
+            <div>
+              <span class="benchmark-your">${stats.rating_avg || 0} ★</span>
+              <span class="benchmark-vs">vs</span>
+              <span class="benchmark-industry">${benchmark.avgRating} ★</span>
+            </div>
+            <div class="benchmark-bar">
+              <div class="benchmark-bar-fill" style="width: ${(stats.rating_avg / 5) * 100}%; background: ${ratingColor};"></div>
+            </div>
+            <div class="benchmark-status ${ratingStatus}">${ratingStatus === 'above' ? '↑ Above average' : ratingStatus === 'below' ? '↓ Below average' : '— Average'}</div>
+          </div>
+        </div>
+        
+        <div class="benchmark-card">
+          <div class="benchmark-label">📈 Conversion Rate</div>
+          <div class="benchmark-values">
+            <div>
+              <span class="benchmark-your">${stats.conversion_rate || 0}%</span>
+              <span class="benchmark-vs">vs</span>
+              <span class="benchmark-industry">${benchmark.conversionRate}%</span>
+            </div>
+            <div class="benchmark-bar">
+              <div class="benchmark-bar-fill" style="width: ${Math.min(100, (stats.conversion_rate || 0))}%; background: ${conversionColor};"></div>
+            </div>
+            <div class="benchmark-status ${conversionStatus}">${conversionStatus === 'above' ? '↑ Above average' : conversionStatus === 'below' ? '↓ Below average' : '— Average'}</div>
+          </div>
+        </div>
+        
+        <div class="benchmark-card">
+          <div class="benchmark-label">📝 Reviews per Month</div>
+          <div class="benchmark-values">
+            <div>
+              <span class="benchmark-your">${stats.reviews || 0}</span>
+              <span class="benchmark-vs">vs</span>
+              <span class="benchmark-industry">${benchmark.reviewVelocity}</span>
+            </div>
+            <div class="benchmark-bar">
+              <div class="benchmark-bar-fill" style="width: ${Math.min(100, ((stats.reviews || 0) / benchmark.reviewVelocity) * 100)}%; background: ${velocityColor};"></div>
+            </div>
+            <div class="benchmark-status ${velocityStatus}">${velocityStatus === 'above' ? '↑ Above average' : velocityStatus === 'below' ? '↓ Below average' : '— Average'}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="benchmark-insight">
+        <div class="benchmark-insight-icon">💡</div>
+        <div class="benchmark-insight-text">${insightText}</div>
+        <button class="benchmark-insight-btn" onclick="window.handleBenchmarkAction('${insightAction.replace(' →', '')}')">${insightAction}</button>
+      </div>
+    </div>
+  `;
+}
+
+// Add benchmark action handler
+window.handleBenchmarkAction = (action) => {
+  if (action.includes('Optimise funnel')) {
+    window.navigateTo('funnel-studio');
+  } else if (action.includes('Start campaign') || action.includes('Send campaign')) {
+    window.navigateTo('campaigns');
+  } else if (action.includes('View feedback')) {
+    window.navigateTo('customers');
+  } else if (action.includes('Share this win')) {
+    showToast('🎉 Great work! Keep it up!', 'success');
+  }
+};
+
 // Export for use in other modules
 export {
   updateGreeting,
@@ -677,5 +810,6 @@ export {
   loadPrivateFeedbackInbox,
   loadDashboardData,
   startPolling,
-  loadGrowthChart
+  loadGrowthChart,
+  loadBenchmarks  // ← ADD THIS
 };
