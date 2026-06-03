@@ -243,6 +243,15 @@ async function loadPrivateFeedbackInbox() {
   // Update sidebar badge count
   const unreadCount = feedback.filter(msg => !readFeedback.includes(msg)).length;
   updateFeedbackBadge(unreadCount);
+
+    // Update sidebar badge count
+  const unreadCount = feedback.filter(msg => !readFeedback.includes(msg)).length;
+  updateFeedbackBadge(unreadCount);
+  
+  // Also update mobile inbox badge
+  if (window.updateMobileInboxBadge) {
+    window.updateMobileInboxBadge(unreadCount);
+  }
   
   if (feedback.length === 0) {
     container.innerHTML = '<div class="feedback-inbox-empty">📭 No private feedback yet. When customers choose "Could be better", their messages appear here — before they become public reviews.</div>';
@@ -532,13 +541,22 @@ async function loadDashboardData() {
   await updatePulseStrip(stats);
   await generateStoryCard(stats);
 
-  const isAgency = stats.plan_type === 'agency';
+   const isAgency = stats.plan_type === 'agency';
   const hasPro = stats.subscription_active && (stats.plan_type === "pro" || stats.plan_type === "agency");
   
   // Set global flags for other modules
   window.isAgency = isAgency;
   window.hasPro = hasPro;
   window.currentPlan = stats.plan_type;
+
+  // Update mobile badges
+  if (window.updateMobileSendBadge) {
+    window.updateMobileSendBadge(hasPro);
+  }
+  if (window.updateMobileInboxBadge) {
+    // This will be updated again when feedback loads, but set default to 0
+    window.updateMobileInboxBadge(0);
+  }
 
   // Update UI elements
   const statVisits = document.getElementById("statVisits");

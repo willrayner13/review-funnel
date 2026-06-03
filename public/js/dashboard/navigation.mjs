@@ -92,6 +92,44 @@ function initNavigation() {
       if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
+
+  // Mobile menu functions
+window.toggleMobileMenu = function() {
+  const menu = document.getElementById('mobileMoreMenu');
+  if (menu) {
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
+};
+
+window.closeMobileMenu = function() {
+  const menu = document.getElementById('mobileMoreMenu');
+  if (menu) menu.style.display = 'none';
+};
+
+// Update mobile badge for unread feedback
+window.updateMobileInboxBadge = function(count) {
+  const badge = document.getElementById('mobileInboxBadge');
+  if (badge) {
+    badge.style.display = count > 0 ? 'block' : 'none';
+  }
+};
+
+// Update mobile send badge (show if user has Pro features)
+window.updateMobileSendBadge = function(hasPro) {
+  const badge = document.getElementById('mobileSendBadge');
+  if (badge) {
+    badge.style.display = hasPro ? 'block' : 'none';
+  }
+};
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMoreMenu');
+  const moreTab = document.querySelector('.mobile-tab[data-tab="more"]');
+  if (menu && menu.style.display === 'block' && moreTab && !moreTab.contains(e.target) && !menu.contains(e.target)) {
+    closeMobileMenu();
+  }
+});
   
   // Keyboard shortcuts (Cmd/Ctrl + number)
   document.addEventListener('keydown', (e) => {

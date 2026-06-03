@@ -589,13 +589,62 @@
     </div>
   </div>
 
-  <!-- MOBILE TAB BAR -->
-  <div id="mobileTabBar" style="position:fixed; bottom:0; left:0; right:0; background:#1A1A18; border-top:1px solid var(--border); display:none; justify-content:space-around; padding:10px 16px 20px; z-index:200;">
-    <div onclick="navigateToMobile('overview')" class="mobile-tab" data-tab="overview" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;"><i class="ti ti-dashboard" style="font-size:1.3rem;"></i><span style="font-size:0.6rem;">Home</span></div>
-    <div onclick="navigateToMobile('customers')" class="mobile-tab" data-tab="customers" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;"><i class="ti ti-users" style="font-size:1.3rem;"></i><span style="font-size:0.6rem;">Reviews</span></div>
-    <div onclick="navigateToMobile('automations')" class="mobile-tab" data-tab="automations" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;"><i class="ti ti-zap" style="font-size:1.3rem;"></i><span style="font-size:0.6rem;">Auto</span></div>
-    <div onclick="navigateToMobile('assets')" class="mobile-tab" data-tab="assets" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;"><i class="ti ti-package" style="font-size:1.3rem;"></i><span style="font-size:0.6rem;">Assets</span></div>
-    <div onclick="navigateToMobile('settings')" class="mobile-tab" data-tab="settings" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;"><i class="ti ti-settings" style="font-size:1.3rem;"></i><span style="font-size:0.6rem;">Settings</span></div>
+  <!-- MOBILE TAB BAR - Optimized (4 tabs) -->
+  <div id="mobileTabBar" style="position:fixed; bottom:0; left:0; right:0; background:#1A1A18; border-top:1px solid var(--border); display:none; justify-content:space-around; padding:8px 12px 20px; z-index:200;">
+    <!-- Home Tab -->
+    <div onclick="navigateToMobile('overview')" class="mobile-tab" data-tab="overview" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+      <i class="ti ti-dashboard" style="font-size:1.3rem;"></i>
+      <span style="font-size:0.6rem;">Home</span>
+    </div>
+    
+    <!-- Send Tab (Campaigns - Killer feature) -->
+    <div onclick="navigateToMobile('campaigns')" class="mobile-tab" data-tab="campaigns" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+      <i class="ti ti-send" style="font-size:1.3rem;"></i>
+      <span style="font-size:0.6rem;">Send</span>
+      <div id="mobileSendBadge" style="position:absolute; top:-4px; right:20px; background:var(--success); width:8px; height:8px; border-radius:50%; display:none;"></div>
+    </div>
+    
+    <!-- Inbox Tab (Private feedback - Urgency) -->
+    <div onclick="navigateToMobile('customers')" class="mobile-tab" data-tab="customers" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+      <i class="ti ti-mail" style="font-size:1.3rem;"></i>
+      <span style="font-size:0.6rem;">Inbox</span>
+      <div id="mobileInboxBadge" style="position:absolute; top:-4px; right:20px; background:var(--danger); width:8px; height:8px; border-radius:50%; display:none;"></div>
+    </div>
+    
+    <!-- More Tab (Dropdown menu) -->
+    <div onclick="toggleMobileMenu()" class="mobile-tab" data-tab="more" style="display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; opacity:0.6;">
+      <i class="ti ti-menu-2" style="font-size:1.3rem;"></i>
+      <span style="font-size:0.6rem;">More</span>
+    </div>
+  </div>
+
+  <!-- Mobile More Menu (Hidden by default) -->
+  <div id="mobileMoreMenu" style="position:fixed; bottom:70px; right:16px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:12px 0; min-width:160px; z-index:250; display:none; box-shadow:0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
+    <div onclick="navigateToMobile('funnel-studio'); closeMobileMenu()" class="mobile-menu-item" style="display:flex; align-items:center; gap:12px; padding:12px 20px; cursor:pointer; transition:background 0.2s;">
+      <i class="ti ti-palette" style="font-size:1rem; color:var(--accent);"></i>
+      <span style="font-size:0.8rem;">Funnel Studio</span>
+    </div>
+    <div onclick="navigateToMobile('ai-lab'); closeMobileMenu()" class="mobile-menu-item" style="display:flex; align-items:center; gap:12px; padding:12px 20px; cursor:pointer; transition:background 0.2s;">
+      <i class="ti ti-brain" style="font-size:1rem; color:var(--accent);"></i>
+      <span style="font-size:0.8rem;">AI Lab</span>
+    </div>
+    <div onclick="navigateToMobile('assets'); closeMobileMenu()" class="mobile-menu-item" style="display:flex; align-items:center; gap:12px; padding:12px 20px; cursor:pointer; transition:background 0.2s;">
+      <i class="ti ti-package" style="font-size:1rem; color:var(--accent);"></i>
+      <span style="font-size:0.8rem;">Assets</span>
+    </div>
+    <div onclick="navigateToMobile('analytics'); closeMobileMenu()" class="mobile-menu-item" style="display:flex; align-items:center; gap:12px; padding:12px 20px; cursor:pointer; transition:background 0.2s;">
+      <i class="ti ti-chart-line" style="font-size:1rem; color:var(--accent);"></i>
+      <span style="font-size:0.8rem;">Analytics</span>
+    </div>
+    <div onclick="navigateToMobile('settings'); closeMobileMenu()" class="mobile-menu-item" style="display:flex; align-items:center; gap:12px; padding:12px 20px; cursor:pointer; transition:background 0.2s;">
+      <i class="ti ti-settings" style="font-size:1rem; color:var(--accent);"></i>
+      <span style="font-size:0.8rem;">Settings</span>
+    </div>
+    <div style="height:1px; background:var(--border); margin:8px 0;"></div>
+    <div onclick="closeMobileMenu(); window.confirmLogout?.()" class="mobile-menu-item" style="display:flex; align-items:center; gap:12px; padding:12px 20px; cursor:pointer; transition:background 0.2s;">
+      <i class="ti ti-logout" style="font-size:1rem; color:var(--danger);"></i>
+      <span style="font-size:0.8rem; color:var(--danger);">Log out</span>
+    </div>
   </div>
 
   <style>

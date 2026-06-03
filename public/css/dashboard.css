@@ -1617,6 +1617,28 @@ input:focus, select:focus, textarea:focus {
   background: var(--accent-dim);
 }
 
+/* Mobile Menu Items */
+.mobile-menu-item:hover {
+  background: rgba(200, 169, 110, 0.1);
+}
+
+/* Mobile tab active state */
+.mobile-tab.active {
+  opacity: 1 !important;
+  color: var(--accent) !important;
+}
+
+/* Mobile badge animations */
+#mobileInboxBadge, #mobileSendBadge {
+  transition: all 0.2s ease;
+}
+
+/* Ensure mobile menu is above other content */
+#mobileMoreMenu {
+  backdrop-filter: blur(12px);
+  background: rgba(36, 36, 34, 0.95);
+}
+
 @media (max-width: 768px) {
   .benchmark-grid {
     grid-template-columns: 1fr;
