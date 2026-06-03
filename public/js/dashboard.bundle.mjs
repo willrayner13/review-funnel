@@ -175,6 +175,7 @@ window.doCancel = async () => {
 };
 
 // Initialize dashboard
+// Initialize dashboard
 async function initDashboard() {
   try {
     const sessionRes = await fetch("/session");
@@ -197,8 +198,9 @@ async function initDashboard() {
     initAssets();
     startPolling();
 
-     if (typeof initFunnelStudio === 'function' && window.slug) {
-        initFunnelStudio(window.slug);
+    // Initialize Funnel Studio
+    if (typeof initFunnelStudio === 'function' && window.slug) {
+      initFunnelStudio(window.slug);
     }
     
     // Only load agency features if user is actually an agency
