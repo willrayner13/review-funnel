@@ -156,9 +156,10 @@
             <div class="fs-preview-area">
               <div class="fs-preview-header">
                 <div class="fs-device-toggle">
-                  <button class="fs-device-btn active" onclick="setFSDevice('mobile')">📱 Mobile</button>
-                  <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
-                </div>
+  <button class="fs-device-btn" onclick="setFSDevice('mobile')">📱 Mobile</button>
+  <button class="fs-device-btn" onclick="setFSDevice('desktop')">💻 Desktop</button>
+  <button class="fs-device-btn active" onclick="setFSDevice('split')">🔄 Split view</button>
+</div>
                 <div class="fs-zoom-controls">
                   <button class="fs-zoom-btn" onclick="zoomFS(-10)">−</button>
                   <span class="fs-zoom-label" id="fsZoomLabel">100%</span>
@@ -196,7 +197,11 @@
                   </div>
                 </div>
               </div>
-            </div>
+                        </div>
+
+            <!-- Conversion Prediction and AI Suggestions -->
+            <div id="conversionPrediction"></div>
+            <div id="aiSuggestionBox"></div>
 
             <div class="fs-settings" id="fsSettingsPanel">
               <div class="fs-settings-section">

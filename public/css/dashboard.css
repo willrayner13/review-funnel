@@ -1441,6 +1441,35 @@ input:focus, select:focus, textarea:focus {
   animation: fadeInUp 0.3s ease;
 }
 
+/* ===== FUNNEL STUDIO SPLIT VIEW ===== */
+#fsSplitContainer {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.fs-device-btn.active {
+  background: var(--accent);
+  color: #1A1A18;
+}
+
+/* Conversion prediction animations */
+#conversionPrediction {
+  animation: fadeInUp 0.3s ease;
+}
+
+/* Mobile and desktop frames for split view */
+.fs-mobile-frame,
+.fs-desktop-frame {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fs-mobile-frame:hover,
+.fs-desktop-frame:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
