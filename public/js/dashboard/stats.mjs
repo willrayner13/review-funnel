@@ -241,10 +241,7 @@ async function loadPrivateFeedbackInbox() {
   const readFeedback = JSON.parse(localStorage.getItem('read_feedback_' + window.slug) || '[]');
   
   // Update sidebar badge count
-  const unreadCount = feedback.filter(msg => !readFeedback.includes(msg)).length;
-  updateFeedbackBadge(unreadCount);
-
-    // Update sidebar badge count
+  // Update sidebar badge count
   const unreadCount = feedback.filter(msg => !readFeedback.includes(msg)).length;
   updateFeedbackBadge(unreadCount);
   
@@ -252,7 +249,6 @@ async function loadPrivateFeedbackInbox() {
   if (window.updateMobileInboxBadge) {
     window.updateMobileInboxBadge(unreadCount);
   }
-  
   if (feedback.length === 0) {
     container.innerHTML = '<div class="feedback-inbox-empty">📭 No private feedback yet. When customers choose "Could be better", their messages appear here — before they become public reviews.</div>';
     return;
