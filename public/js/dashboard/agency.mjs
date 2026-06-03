@@ -4,16 +4,7 @@
 import { showToast, escapeHtml } from '../shared/utils.mjs';
 import { openModal } from '../shared/modal.mjs';
 
-async function initAgency() {
-  // Skip if not an agency account
-  if (!window.isAgency) {
-    console.log("Skipping agency init - not an agency account");
-    return;
-  }
-  
-  await loadAgencyClients();
-  await loadAgencyEarnings();
-}
+
 
 async function loadAgencyClients() {
   // Skip if not an agency account
