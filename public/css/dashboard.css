@@ -270,7 +270,7 @@ body {
   padding: clamp(16px, 4vw, 32px);
   animation: fadeSlideUp 0.3s ease;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;          /* ← was: overflow-x: hidden */
   max-width: 1600px;
   margin: 0 auto;
   width: 100%;

@@ -194,13 +194,13 @@
   }
   
   /* Split view layout */
-  #fsSplitContainer {
-    display: flex !important;
-    gap: 24px !important;
-    justify-content: center !important;
-    flex-wrap: wrap !important;
-    margin: 20px 0 !important;
-  }
+#fsSplitContainer {
+  overflow-x: auto !important;
+  padding-bottom: 16px !important;  /* space for scrollbar */
+  justify-content: flex-start !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200,169,110,0.3) transparent;
+}
   
   .fs-mobile-frame, .fs-desktop-frame {
     transition: transform 0.2s ease !important;
@@ -272,6 +272,13 @@
     min-width: 45px !important;
     text-align: center !important;
   }
+
+  @media (min-width: 1100px) {
+  #fsSplitContainer {
+    justify-content: center !important;
+    overflow-x: visible !important;
+  }
+}
 </style>
   
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -429,8 +436,7 @@
     </div>
   </div>
   
-  <div id="fsSplitContainer" style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
-    <div class="fs-mobile-frame" id="fsMobileFrame">
+<div id="fsSplitContainer" style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; overflow: visible;">    <div class="fs-mobile-frame" id="fsMobileFrame">
       <div class="fs-mobile-screen">
         <div class="fs-mobile-notch"></div>
         <div class="fs-mobile-status"><span>9:41</span><span>●●● ○○ Wi-Fi</span></div>
