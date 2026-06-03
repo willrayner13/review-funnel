@@ -2,6 +2,7 @@
 // ReviewLift Funnel Studio - All funnel customization functionality
 // Now with live split preview and conversion predictions
 
+// Import showToast from shared utils
 import { showToast } from './shared/utils.mjs';
 
 // Make sure showToast is available globally
@@ -213,7 +214,7 @@ function showAISSuggestion(headline) {
             <div style="font-weight: 600; font-size: 0.85rem;">Try: "${suggestion.text}"</div>
             <div style="font-size: 0.7rem; color: var(--cream-dim);">${suggestion.reason} — predicted +${suggestion.improvement}% conversion</div>
           </div>
-          <button onclick="applyAISuggestion('headline', '${suggestion.text.replace(/'/g, "\\'")}')" style="background: rgba(139,92,246,0.15); border: none; color: #A78BFA; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.7rem;">Use →</button>
+          <button onclick="window.applyAISuggestion('headline', '${suggestion.text.replace(/'/g, "\\'")}')" style="background: rgba(139,92,246,0.15); border: none; color: #A78BFA; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.7rem;">Use →</button>
         </div>
       </div>
     `;
@@ -386,6 +387,64 @@ function copyFSLink() {
   }
 }
 
+// ========== INJECT CSS INTO PREVIEW (FIX FOR CSS NOT LOADING) ==========
+async function injectPreviewStyles() {
+  console.log('Injecting funnel preview styles...');
+  
+  const mobilePreview = document.getElementById('fsMobileFrame');
+  const desktopPreview = document.getElementById('fsDesktopFrame');
+  
+  // Get the funnel CSS content
+  try {
+    const funnelCssResponse = await fetch('/css/funnel.css');
+    const funnelCss = await funnelCssResponse.text();
+    
+    const globalCssResponse = await fetch('/css/global.css');
+    const globalCss = await globalCssResponse.text();
+    
+    const dashboardCssResponse = await fetch('/css/dashboard.css');
+    const dashboardCss = await dashboardCssResponse.text();
+    
+    // Inject into mobile preview
+    if (mobilePreview) {
+      let styleTag = mobilePreview.querySelector('style.funnel-injected-styles');
+      if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.className = 'funnel-injected-styles';
+        mobilePreview.appendChild(styleTag);
+      }
+      styleTag.textContent = funnelCss + '\n' + globalCss + '\n' + dashboardCss;
+      console.log('Mobile preview styles injected');
+    }
+    
+    // Inject into desktop preview
+    if (desktopPreview) {
+      let styleTag = desktopPreview.querySelector('style.funnel-injected-styles');
+      if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.className = 'funnel-injected-styles';
+        desktopPreview.appendChild(styleTag);
+      }
+      styleTag.textContent = funnelCss + '\n' + globalCss + '\n' + dashboardCss;
+      console.log('Desktop preview styles injected');
+    }
+    
+    // Also ensure the preview content containers have proper classes for funnel styling
+    const mobileContent = document.getElementById('fsMobileContent');
+    const desktopContent = document.querySelector('.fs-desktop-content');
+    
+    if (mobileContent) {
+      mobileContent.classList.add('funnel-mobile-preview');
+    }
+    if (desktopContent) {
+      desktopContent.classList.add('funnel-desktop-preview');
+    }
+    
+  } catch (error) {
+    console.error('Failed to inject funnel styles:', error);
+  }
+}
+
 function initFunnelStudio(slug) {
   fsSlug = slug;
   const linkDisplay = document.getElementById('fsLinkDisplay');
@@ -393,6 +452,9 @@ function initFunnelStudio(slug) {
   
   // Set default device to split view
   setFSDevice('split');
+  
+  // Inject CSS styles into preview frames
+  injectPreviewStyles();
   
   fetch('/stats/' + slug)
     .then(r => r.json())
@@ -432,6 +494,9 @@ function initFunnelStudio(slug) {
       updateFSCharCount();
       updateConversionPrediction();
       showAISSuggestion(fsState.headline);
+      
+      // Re-inject styles after data loads (in case DOM changed)
+      setTimeout(() => injectPreviewStyles(), 200);
     })
     .catch(() => updateFSPreview());
 }
@@ -454,6 +519,8 @@ const fsObserver = new MutationObserver(function(mutations) {
         mutation.target.classList.contains('active') &&
         fsSlug) {
       initFunnelStudio(fsSlug);
+      // Re-inject styles every time the section becomes visible
+      setTimeout(() => injectPreviewStyles(), 150);
     }
   });
 });
