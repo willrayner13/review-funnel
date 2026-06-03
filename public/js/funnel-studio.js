@@ -39,25 +39,6 @@ function selectFSTemplate(template, el) {
   
   updateFSPreview();
   updateFSSaveStatus();
-  updateTemplatePreview(template);
-}
-
-function updateTemplatePreview(template) {
-  const mobilePreview = document.querySelector('.fs-mobile-frame');
-  const desktopPreview = document.querySelector('.fs-desktop-frame');
-  
-  const templateStyles = {
-    classic: { bg: '#1A1A18', cardBg: '#242422', accent: '#C8A96E' },
-    bright: { bg: '#FAFAFA', cardBg: '#FFFFFF', accent: '#C8A96E' },
-    medical: { bg: '#F0F4F8', cardBg: '#FFFFFF', accent: '#3B82F6' },
-    bold: { bg: '#C8A96E', cardBg: 'rgba(0,0,0,0.2)', accent: '#FFFFFF' },
-    luxury: { bg: '#0A0A0A', cardBg: '#141414', accent: '#C8A96E' }
-  };
-  
-  const style = templateStyles[template] || templateStyles.classic;
-  
-  if (mobilePreview) mobilePreview.style.backgroundColor = style.bg;
-  if (desktopPreview) desktopPreview.style.backgroundColor = style.bg;
 }
 
 function selectFSColor(color, el) {
@@ -72,6 +53,14 @@ function selectFSColor(color, el) {
   
   updateFSPreview();
   updateFSSaveStatus();
+  
+  // Update both previews with new accent color
+  const happyBtns = document.querySelectorAll('#fsPreviewHappy, #fsPreviewHappyDesktop');
+  happyBtns.forEach(btn => {
+    btn.style.background = fsState.accentColor;
+    btn.style.borderColor = fsState.accentColor;
+  });
+  
   document.documentElement.style.setProperty('--accent', color);
 }
 
@@ -80,7 +69,6 @@ function setFSDevice(device) {
   
   const mobileFrame = document.getElementById('fsMobileFrame');
   const desktopFrame = document.getElementById('fsDesktopFrame');
-  const splitContainer = document.getElementById('fsSplitContainer');
   const buttons = document.querySelectorAll('.fs-device-btn');
   
   buttons.forEach(b => b.classList.remove('active'));
@@ -88,17 +76,14 @@ function setFSDevice(device) {
   if (device === 'mobile') {
     if (mobileFrame) mobileFrame.style.display = 'block';
     if (desktopFrame) desktopFrame.style.display = 'none';
-    if (splitContainer) splitContainer.style.display = 'none';
     if (buttons[0]) buttons[0].classList.add('active');
   } else if (device === 'desktop') {
     if (mobileFrame) mobileFrame.style.display = 'none';
     if (desktopFrame) desktopFrame.style.display = 'block';
-    if (splitContainer) splitContainer.style.display = 'none';
     if (buttons[1]) buttons[1].classList.add('active');
   } else if (device === 'split') {
     if (mobileFrame) mobileFrame.style.display = 'block';
     if (desktopFrame) desktopFrame.style.display = 'block';
-    if (splitContainer) splitContainer.style.display = 'flex';
     if (buttons[2]) buttons[2].classList.add('active');
   }
 }
@@ -119,90 +104,6 @@ function zoomFS(delta) {
   if (desktopFrame && fsState.device !== 'split') {
     desktopFrame.style.transform = `scale(${scale})`;
     desktopFrame.style.transformOrigin = 'top center';
-  }
-}
-
-function calculateConversionPrediction(headline) {
-  const benchmarks = CONVERSION_BENCHMARKS[headline] || CONVERSION_BENCHMARKS.default;
-  const isQuestion = headline.includes('?');
-  const hasEmoji = headline.includes('⭐') || headline.includes('🎉') || headline.includes('😊');
-  const length = headline.length;
-  
-  let multiplier = 1.0;
-  if (isQuestion) multiplier += 0.05;
-  if (hasEmoji) multiplier += 0.08;
-  if (length < 30) multiplier += 0.03;
-  if (length > 60) multiplier -= 0.05;
-  
-  const predicted = Math.min(45, Math.round(benchmarks.baseline * multiplier));
-  const potential = Math.min(55, Math.round(benchmarks.best * multiplier));
-  
-  return { predicted, potential, baseline: benchmarks.baseline };
-}
-
-function updateConversionPrediction() {
-  const headline = document.getElementById('fsHeadline')?.value || fsState.headline;
-  const prediction = calculateConversionPrediction(headline);
-  
-  const predictionContainer = document.getElementById('conversionPrediction');
-  if (!predictionContainer) return;
-  
-  const improvement = prediction.predicted - prediction.baseline;
-  const improvementText = improvement > 0 ? `+${improvement}% better than average` : improvement < 0 ? `${improvement}% below average` : 'average';
-  const improvementColor = improvement > 0 ? 'var(--success)' : improvement < 0 ? 'var(--danger)' : 'var(--cream-dim)';
-  
-  predictionContainer.innerHTML = `
-    <div style="background: rgba(200,169,110,0.06); border-radius: 12px; padding: 14px 16px; margin-top: 16px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-        <div>
-          <div style="font-size: 0.65rem; color: var(--cream-dim); letter-spacing: 0.5px;">📈 PREDICTED CONVERSION</div>
-          <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent);">${prediction.predicted}%</div>
-          <div style="font-size: 0.7rem; color: ${improvementColor};">${improvementText}</div>
-        </div>
-        <div style="width: 1px; height: 40px; background: var(--border);"></div>
-        <div>
-          <div style="font-size: 0.65rem; color: var(--cream-dim); letter-spacing: 0.5px;">🎯 OPTIMISED POTENTIAL</div>
-          <div style="font-size: 1.6rem; font-weight: 800; color: var(--success);">${prediction.potential}%</div>
-          <div style="font-size: 0.7rem; color: var(--cream-dim);">with A/B testing</div>
-        </div>
-        <div style="flex: 1; min-width: 180px;">
-          <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 6px;">Impact of changes:</div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="font-size: 0.65rem; background: rgba(200,169,110,0.1); padding: 3px 8px; border-radius: 20px;">❓ Questions +5%</span>
-            <span style="font-size: 0.65rem; background: rgba(200,169,110,0.1); padding: 3px 8px; border-radius: 20px;">⭐ Emojis +8%</span>
-            <span style="font-size: 0.65rem; background: rgba(200,169,110,0.1); padding: 3px 8px; border-radius: 20px;">📏 Short text +3%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function showAISSuggestion(headline) {
-  const suggestions = [
-    { text: 'How did we do today?', improvement: 18, reason: 'Personal and conversational' },
-    { text: 'Loved it? Leave a review! ⭐', improvement: 24, reason: 'Emotion + clear CTA' },
-    { text: 'Rate your experience', improvement: 12, reason: 'Simple and direct' },
-    { text: 'What did you think of your visit?', improvement: 15, reason: 'Specific and engaging' },
-    { text: 'Had a good time? Tell Google! 🎉', improvement: 21, reason: 'Celebratory tone + emoji' }
-  ];
-  
-  const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
-  
-  const suggestionContainer = document.getElementById('aiSuggestionBox');
-  if (suggestionContainer) {
-    suggestionContainer.innerHTML = `
-      <div style="background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; padding: 14px; margin-top: 12px;">
-        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-          <span style="font-size: 1.2rem;">💡</span>
-          <div style="flex: 1;">
-            <div style="font-weight: 600; font-size: 0.85rem;">Try: "${suggestion.text}"</div>
-            <div style="font-size: 0.7rem; color: var(--cream-dim);">${suggestion.reason} — predicted +${suggestion.improvement}% conversion</div>
-          </div>
-          <button onclick="window.applyAISuggestion('headline', '${suggestion.text.replace(/'/g, "\\'")}')" style="background: rgba(139,92,246,0.15); border: none; color: #A78BFA; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.7rem;">Use →</button>
-        </div>
-      </div>
-    `;
   }
 }
 
@@ -251,16 +152,6 @@ function updateFSPreview() {
     happyDesktop.style.borderColor = fsState.accentColor;
   }
   
-  // Update logo preview
-  const logoPreview = document.getElementById('fsLogoPreview');
-  const logoImg = document.getElementById('fsLogoPreviewImg');
-  if (fsState.logoUrl && logoPreview && logoImg) {
-    logoImg.src = fsState.logoUrl;
-    logoPreview.style.display = 'block';
-  } else if (logoPreview) {
-    logoPreview.style.display = 'none';
-  }
-  
   if (conversionPredictionTimeout) clearTimeout(conversionPredictionTimeout);
   conversionPredictionTimeout = setTimeout(() => {
     updateConversionPrediction();
@@ -268,9 +159,6 @@ function updateFSPreview() {
   
   fsState.saved = false;
   updateFSSaveStatus();
-  
-  // Re-inject styles after preview update
-  setTimeout(() => injectPreviewStyles(), 50);
 }
 
 function updateFSCharCount() {
@@ -278,8 +166,80 @@ function updateFSCharCount() {
   const count = document.getElementById('fsHeadlineCount');
   if (headline && count) {
     count.textContent = headline.value.length;
-    if (count.style) {
-      count.style.color = headline.value.length > 55 ? '#D4897C' : 'var(--cream-dim)';
+  }
+}
+
+function calculateConversionPrediction(headline) {
+  const benchmarks = CONVERSION_BENCHMARKS[headline] || CONVERSION_BENCHMARKS.default;
+  const isQuestion = headline.includes('?');
+  const hasEmoji = headline.includes('⭐') || headline.includes('🎉') || headline.includes('😊');
+  const length = headline.length;
+  
+  let multiplier = 1.0;
+  if (isQuestion) multiplier += 0.05;
+  if (hasEmoji) multiplier += 0.08;
+  if (length < 30) multiplier += 0.03;
+  if (length > 60) multiplier -= 0.05;
+  
+  const predicted = Math.min(45, Math.round(benchmarks.baseline * multiplier));
+  const potential = Math.min(55, Math.round(benchmarks.best * multiplier));
+  
+  return { predicted, potential, baseline: benchmarks.baseline };
+}
+
+function updateConversionPrediction() {
+  const headline = document.getElementById('fsHeadline')?.value || fsState.headline;
+  const prediction = calculateConversionPrediction(headline);
+  
+  const predictionContainer = document.getElementById('conversionPrediction');
+  if (!predictionContainer) return;
+  
+  const improvement = prediction.predicted - prediction.baseline;
+  const improvementText = improvement > 0 ? `+${improvement}% better than average` : improvement < 0 ? `${improvement}% below average` : 'average';
+  const improvementColor = improvement > 0 ? '#6A9E7F' : improvement < 0 ? '#C0675A' : 'rgba(234,231,220,0.52)';
+  
+  predictionContainer.innerHTML = `
+    <div style="background: rgba(200,169,110,0.06); border-radius: 12px; padding: 14px 16px; margin-top: 16px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div style="font-size: 0.65rem; color: rgba(234,231,220,0.52); letter-spacing: 0.5px;">📈 PREDICTED CONVERSION</div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #C8A96E;">${prediction.predicted}%</div>
+          <div style="font-size: 0.7rem; color: ${improvementColor};">${improvementText}</div>
+        </div>
+        <div style="width: 1px; height: 40px; background: rgba(234,231,220,0.09);"></div>
+        <div>
+          <div style="font-size: 0.65rem; color: rgba(234,231,220,0.52); letter-spacing: 0.5px;">🎯 OPTIMISED POTENTIAL</div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #6A9E7F;">${prediction.potential}%</div>
+          <div style="font-size: 0.7rem; color: rgba(234,231,220,0.52);">with A/B testing</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function showAISSuggestion(headline) {
+  const suggestions = [
+    { text: 'How did we do today?', improvement: 18, reason: 'Personal and conversational' },
+    { text: 'Loved it? Leave a review! ⭐', improvement: 24, reason: 'Emotion + clear CTA' }
+  ];
+  
+  const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+  
+  const suggestionContainer = document.getElementById('aiSuggestionBox');
+  if (suggestionContainer && suggestionContainer.parentElement) {
+    if (!suggestionContainer.innerHTML) {
+      suggestionContainer.innerHTML = `
+        <div style="background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; padding: 14px; margin-top: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-size: 1.2rem;">💡</span>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.85rem;">Try: "${suggestion.text}"</div>
+              <div style="font-size: 0.7rem; color: rgba(234,231,220,0.52);">${suggestion.reason} — predicted +${suggestion.improvement}% conversion</div>
+            </div>
+            <button onclick="window.applyAISuggestion('headline')" style="background: rgba(139,92,246,0.15); border: none; color: #A78BFA; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.7rem;">Use →</button>
+          </div>
+        </div>
+      `;
     }
   }
 }
@@ -311,10 +271,10 @@ function updateFSSaveStatus() {
   if (status) {
     if (fsState.saved) {
       status.textContent = '✓ All changes saved';
-      status.className = 'fs-save-status saved';
+      status.style.color = '#6A9E7F';
     } else {
       status.textContent = 'Changes not saved';
-      status.className = 'fs-save-status';
+      status.style.color = 'rgba(234,231,220,0.52)';
     }
   }
 }
@@ -369,175 +329,168 @@ function copyFSLink() {
   }
 }
 
-// ========== CSS INJECTION FIX ==========
+// ========== MAIN CSS INJECTION - THIS IS THE FIX ==========
 function injectPreviewStyles() {
   console.log('🎨 Injecting funnel preview styles...');
   
-  const mobileContent = document.getElementById('fsMobileContent');
-  const desktopContent = document.querySelector('.fs-desktop-content');
+  // Get the preview containers
+  const mobileScreen = document.querySelector('.fs-mobile-screen');
+  const desktopCard = document.querySelector('.fs-desktop-card');
   
-  // Remove any existing injected stylesheets from preview containers
-  const mobileExisting = mobileContent?.querySelectorAll('.funnel-injected-styles');
-  const desktopExisting = desktopContent?.querySelectorAll('.funnel-injected-styles');
-  
-  mobileExisting?.forEach(el => el.remove());
-  desktopExisting?.forEach(el => el.remove());
-  
-  // Create fresh style elements
-  if (mobileContent) {
-    const styleEl = document.createElement('style');
-    styleEl.className = 'funnel-injected-styles';
-    styleEl.setAttribute('data-injected', 'true');
+  if (mobileScreen) {
+    // Apply styles directly to the mobile screen
+    mobileScreen.style.cssText = `
+      background: #1A1A18;
+      border-radius: 32px;
+      padding: 20px 16px;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+    `;
     
-    // Add critical funnel styles directly
-    styleEl.textContent = `
-      /* Funnel Preview Critical Styles */
-      .fs-mobile-screen {
-        background: #1A1A18;
-        border-radius: 32px;
-        padding: 20px 16px;
-        min-height: 500px;
+    const mobileContent = mobileScreen.querySelector('.fs-mobile-content');
+    if (mobileContent) {
+      mobileContent.style.cssText = `
+        flex: 1;
         display: flex;
         flex-direction: column;
-      }
-      .fs-mobile-biz {
-        text-align: center;
-        font-weight: 600;
-        margin-bottom: 24px;
-        color: #C8A96E;
-      }
-      .fs-mobile-question {
-        text-align: center;
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 32px;
-        color: #EAE7DC;
-      }
-      .fs-mobile-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .fs-mobile-btn {
+      `;
+    }
+    
+    // Style all buttons in mobile preview
+    const mobileHappyBtn = mobileScreen.querySelector('.fs-mobile-btn.happy');
+    if (mobileHappyBtn) {
+      mobileHappyBtn.style.cssText = `
+        background: ${fsState.accentColor};
+        color: #1A1A18;
         padding: 16px;
         border-radius: 60px;
         border: none;
         font-weight: 600;
         font-size: 1rem;
         cursor: pointer;
-        transition: all 0.2s;
-      }
-      .fs-mobile-btn.happy {
-        background: #C8A96E;
-        color: #1A1A18;
-      }
-      .fs-mobile-btn.sad {
+        margin-bottom: 12px;
+        width: 100%;
+      `;
+    }
+    
+    const mobileSadBtn = mobileScreen.querySelector('.fs-mobile-btn.sad');
+    if (mobileSadBtn) {
+      mobileSadBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(234,231,220,0.2);
         color: #EAE7DC;
-      }
-      .fs-mobile-power {
+        padding: 16px;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        width: 100%;
+      `;
+    }
+    
+    const mobileBiz = mobileScreen.querySelector('.fs-mobile-biz');
+    if (mobileBiz) {
+      mobileBiz.style.cssText = `
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 24px;
+        color: ${fsState.accentColor};
+      `;
+    }
+    
+    const mobileQuestion = mobileScreen.querySelector('.fs-mobile-question');
+    if (mobileQuestion) {
+      mobileQuestion.style.cssText = `
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 32px;
+        color: #EAE7DC;
+      `;
+    }
+    
+    const mobilePower = mobileScreen.querySelector('.fs-mobile-power');
+    if (mobilePower) {
+      mobilePower.style.cssText = `
         text-align: center;
         font-size: 0.65rem;
         color: rgba(234,231,220,0.3);
         margin-top: 32px;
-      }
-      .fs-desktop-card {
-        background: #1A1A18;
-        border-radius: 24px;
-        padding: 40px;
-        max-width: 500px;
-        margin: 0 auto;
-        text-align: center;
-      }
-      .fs-desktop-biz {
-        font-weight: 600;
-        margin-bottom: 16px;
-        color: #C8A96E;
-      }
-      .fs-desktop-question {
-        font-size: 1.6rem;
-        font-weight: 600;
-        margin-bottom: 32px;
-        color: #EAE7DC;
-      }
-      .fs-desktop-buttons {
-        display: flex;
-        gap: 16px;
-        justify-content: center;
-      }
-      .fs-desktop-btn {
-        padding: 14px 28px;
-        border-radius: 60px;
-        border: none;
-        font-weight: 600;
-        cursor: pointer;
-      }
-      .fs-desktop-btn.happy {
-        background: #C8A96E;
-        color: #1A1A18;
-      }
-      .fs-desktop-btn.sad {
-        background: transparent;
-        border: 1px solid rgba(234,231,220,0.2);
-        color: #EAE7DC;
-      }
-    `;
+      `;
+    }
     
-    mobileContent.appendChild(styleEl);
-    console.log('✅ Mobile preview styles injected');
+    console.log('✅ Mobile preview styles applied');
   }
   
-  if (desktopContent) {
-    const styleEl = document.createElement('style');
-    styleEl.className = 'funnel-injected-styles';
-    styleEl.setAttribute('data-injected', 'true');
+  if (desktopCard) {
+    // Apply styles directly to the desktop card
+    desktopCard.style.cssText = `
+      background: #1A1A18;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: center;
+    `;
     
-    styleEl.textContent = `
-      .fs-desktop-card {
-        background: #1A1A18;
-        border-radius: 24px;
-        padding: 40px;
-        max-width: 500px;
-        margin: 0 auto;
-        text-align: center;
-      }
-      .fs-desktop-biz {
+    const desktopBiz = desktopCard.querySelector('.fs-desktop-biz');
+    if (desktopBiz) {
+      desktopBiz.style.cssText = `
         font-weight: 600;
         margin-bottom: 16px;
-        color: #C8A96E;
-      }
-      .fs-desktop-question {
+        color: ${fsState.accentColor};
+      `;
+    }
+    
+    const desktopQuestion = desktopCard.querySelector('.fs-desktop-question');
+    if (desktopQuestion) {
+      desktopQuestion.style.cssText = `
         font-size: 1.6rem;
         font-weight: 600;
         margin-bottom: 32px;
         color: #EAE7DC;
-      }
-      .fs-desktop-buttons {
+      `;
+    }
+    
+    const desktopButtons = desktopCard.querySelector('.fs-desktop-buttons');
+    if (desktopButtons) {
+      desktopButtons.style.cssText = `
         display: flex;
         gap: 16px;
         justify-content: center;
-      }
-      .fs-desktop-btn {
+      `;
+    }
+    
+    const desktopHappyBtn = desktopCard.querySelector('.fs-desktop-btn.happy');
+    if (desktopHappyBtn) {
+      desktopHappyBtn.style.cssText = `
+        background: ${fsState.accentColor};
+        color: #1A1A18;
         padding: 14px 28px;
         border-radius: 60px;
         border: none;
         font-weight: 600;
         cursor: pointer;
-      }
-      .fs-desktop-btn.happy {
-        background: #C8A96E;
-        color: #1A1A18;
-      }
-      .fs-desktop-btn.sad {
+        flex: 1;
+      `;
+    }
+    
+    const desktopSadBtn = desktopCard.querySelector('.fs-desktop-btn.sad');
+    if (desktopSadBtn) {
+      desktopSadBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(234,231,220,0.2);
         color: #EAE7DC;
-      }
-    `;
+        padding: 14px 28px;
+        border-radius: 60px;
+        font-weight: 600;
+        cursor: pointer;
+        flex: 1;
+      `;
+    }
     
-    desktopContent.appendChild(styleEl);
-    console.log('✅ Desktop preview styles injected');
+    console.log('✅ Desktop preview styles applied');
   }
 }
 
@@ -548,7 +501,9 @@ function initFunnelStudio(slug) {
   if (linkDisplay) linkDisplay.textContent = window.location.origin + '/r/' + slug;
   
   setFSDevice('split');
-  injectPreviewStyles(); // Inject immediately
+  
+  // Apply styles immediately
+  setTimeout(() => injectPreviewStyles(), 100);
   
   fetch('/stats/' + slug)
     .then(r => r.json())
@@ -589,61 +544,45 @@ function initFunnelStudio(slug) {
       updateConversionPrediction();
       showAISSuggestion(fsState.headline);
       
+      // Re-apply styles after data loads
       setTimeout(() => injectPreviewStyles(), 200);
     })
     .catch(err => {
       console.error('Failed to load funnel stats:', err);
       updateFSPreview();
-      injectPreviewStyles();
+      setTimeout(() => injectPreviewStyles(), 200);
     });
 }
 
-document.addEventListener('keydown', function(e) {
+// Auto-initialize when funnel studio section becomes visible
+function checkAndInit() {
   const fsSection = document.getElementById('funnelStudioSection');
-  if (!fsSection || !fsSection.classList.contains('active')) return;
-  
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    saveFSSettings();
+  if (fsSection && fsSection.classList.contains('active') && window.slug) {
+    initFunnelStudio(window.slug);
   }
-});
-
-// Initialize when section becomes visible
-const fsObserver = new MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    if (mutation.target.id === 'funnelStudioSection' &&
-        mutation.target.classList.contains('active')) {
-      if (fsSlug) {
-        initFunnelStudio(fsSlug);
-      } else {
-        // Wait for slug to be available
-        const checkSlug = setInterval(() => {
-          if (window.slug) {
-            clearInterval(checkSlug);
-            initFunnelStudio(window.slug);
-          }
-        }, 100);
-        setTimeout(() => clearInterval(checkSlug), 5000);
-      }
-      setTimeout(() => injectPreviewStyles(), 150);
-    }
-  });
-});
-
-const fsSectionElement = document.getElementById('funnelStudioSection');
-if (fsSectionElement) {
-  fsObserver.observe(fsSectionElement, { attributes: true, attributeFilter: ['class'] });
 }
 
-// Try to initialize if DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    if (window.slug) {
+// Watch for section visibility
+const observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.target.id === 'funnelStudioSection' &&
+        mutation.target.classList.contains('active') &&
+        window.slug) {
       initFunnelStudio(window.slug);
     }
   });
-} else if (window.slug) {
-  setTimeout(() => initFunnelStudio(window.slug), 500);
+});
+
+const fsSection = document.getElementById('funnelStudioSection');
+if (fsSection) {
+  observer.observe(fsSection, { attributes: true, attributeFilter: ['class'] });
+}
+
+// Also try to init on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', checkAndInit);
+} else {
+  setTimeout(checkAndInit, 500);
 }
 
 // Expose functions globally
