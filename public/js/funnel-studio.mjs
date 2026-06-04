@@ -101,7 +101,7 @@ function applyTemplateStyles(template) {
     desktopCard.style.backgroundColor = style.cardBg;
   }
   
-  // Update happy buttons (using multiple selectors for compatibility)
+  // Update happy buttons
   const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
   happyBtns.forEach(btn => {
     btn.style.background = style.accent;
@@ -128,34 +128,21 @@ function applyTemplateStyles(template) {
   questionElements.forEach(el => {
     el.style.color = style.textColor;
   });
-  
-  // Update phone body background
-  const phoneBody = document.querySelector('.phone-body');
-  if (phoneBody) {
-    phoneBody.style.backgroundColor = 'transparent';
-  }
-  
-  // Update browser body
-  const browserBody = document.querySelector('.browser-body');
-  if (browserBody) {
-    browserBody.style.backgroundColor = style.previewBg;
-  }
 }
 
-// Template selection
+// Template selection - FIXED: properly removes previous selection
 window.selectFSTemplate = function(template, el) {
   console.log('Template selected:', template);
   fsState.template = template;
   fsState.saved = false;
   
-  // Update UI for simplified template options
-  document.querySelectorAll('.template-option').forEach(opt => opt.classList.remove('selected'));
-  if (el) el.classList.add('selected');
+  // Remove selected class from ALL template options (both old and new)
+  document.querySelectorAll('.template-option, .fs-template-thumb').forEach(opt => {
+    opt.classList.remove('selected');
+  });
   
-  // Also update older template thumbs for backward compatibility
-  document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
-  const oldThumb = document.querySelector(`.fs-template-thumb[data-template="${template}"]`);
-  if (oldThumb) oldThumb.classList.add('selected');
+  // Add selected class to the clicked element
+  if (el) el.classList.add('selected');
   
   // Apply template styles
   applyTemplateStyles(template);
@@ -164,25 +151,25 @@ window.selectFSTemplate = function(template, el) {
   updateFSSaveStatus();
 };
 
-// Color selection
+// Color selection - FIXED: properly removes previous selection
 window.selectFSColor = function(color, el) {
   console.log('Color selected:', color);
   fsState.accentColor = color;
   fsState.saved = false;
   
-  // Update UI for simplified color options
-  document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+  // Remove selected class from ALL color options (both old and new)
+  document.querySelectorAll('.color-option, .fs-color-swatch').forEach(opt => {
+    opt.classList.remove('selected');
+  });
+  
+  // Add selected class to the clicked element
   if (el) el.classList.add('selected');
   
-  // Also update older color swatches for backward compatibility
-  document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
-  const oldSwatch = document.querySelector(`.fs-color-swatch[data-color="${color}"]`);
-  if (oldSwatch) oldSwatch.classList.add('selected');
-  
+  // Update color input value if it exists
   const colorInput = document.querySelector('.fs-color-input, .custom-color');
   if (colorInput) colorInput.value = color;
   
-  // Update happy buttons (multiple selectors for compatibility)
+  // Update happy buttons
   const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
   happyBtns.forEach(btn => {
     btn.style.background = color;
@@ -203,14 +190,10 @@ window.setFSDevice = function(device) {
   console.log('Device set to:', device);
   fsState.device = device;
   
-  // For simplified version
   const mobilePreview = document.getElementById('fsPhonePreview');
   const desktopPreview = document.getElementById('fsDesktopPreview');
-  
-  // For older version
   const mobileFrame = document.getElementById('fsMobileFrame');
   const desktopFrame = document.getElementById('fsDesktopFrame');
-  
   const buttons = document.querySelectorAll('.view-btn, .fs-device-btn');
   
   buttons.forEach(b => b.classList.remove('active'));
@@ -220,25 +203,22 @@ window.setFSDevice = function(device) {
     if (desktopPreview) desktopPreview.style.display = 'none';
     if (mobileFrame) mobileFrame.style.display = 'block';
     if (desktopFrame) desktopFrame.style.display = 'none';
-    const mobileBtn = document.querySelector('.view-btn[data-view="mobile"], .fs-device-btn[onclick*="mobile"]');
+    const mobileBtn = document.querySelector('.view-btn[data-view="mobile"], .fs-device-btn:first-child');
     if (mobileBtn) mobileBtn.classList.add('active');
-    if (buttons[0]) buttons[0].classList.add('active');
   } else if (device === 'desktop') {
     if (mobilePreview) mobilePreview.style.display = 'none';
     if (desktopPreview) desktopPreview.style.display = 'block';
     if (mobileFrame) mobileFrame.style.display = 'none';
     if (desktopFrame) desktopFrame.style.display = 'block';
-    const desktopBtn = document.querySelector('.view-btn[data-view="desktop"], .fs-device-btn[onclick*="desktop"]');
+    const desktopBtn = document.querySelector('.view-btn[data-view="desktop"], .fs-device-btn:nth-child(2)');
     if (desktopBtn) desktopBtn.classList.add('active');
-    if (buttons[1]) buttons[1].classList.add('active');
   } else if (device === 'split') {
     if (mobilePreview) mobilePreview.style.display = 'block';
     if (desktopPreview) desktopPreview.style.display = 'block';
     if (mobileFrame) mobileFrame.style.display = 'block';
     if (desktopFrame) desktopFrame.style.display = 'block';
-    const splitBtn = document.querySelector('.view-btn[data-view="split"], .fs-device-btn[onclick*="split"]');
+    const splitBtn = document.querySelector('.view-btn[data-view="split"], .fs-device-btn:nth-child(3)');
     if (splitBtn) splitBtn.classList.add('active');
-    if (buttons[2]) buttons[2].classList.add('active');
   }
 };
 
@@ -292,7 +272,7 @@ function updateFSPreview() {
   happyButtons.forEach(btn => btn.innerHTML = `😊 ${fsState.happyLabel}`);
   sadButtons.forEach(btn => btn.innerHTML = `😕 ${fsState.sadLabel}`);
   
-  // Update older preview elements for backward compatibility
+  // Update older preview elements
   const oldBiz = document.getElementById('fsPreviewBiz');
   const oldBizDesktop = document.getElementById('fsPreviewBizDesktop');
   const oldQuestion = document.getElementById('fsPreviewQuestion');
@@ -311,7 +291,7 @@ function updateFSPreview() {
   if (oldSad) oldSad.innerHTML = `😕 ${fsState.sadLabel}`;
   if (oldSadDesktop) oldSadDesktop.innerHTML = `😕 ${fsState.sadLabel}`;
   
-  // Apply accent color to happy buttons (preserve template bg)
+  // Apply accent color to happy buttons
   const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
   happyBtns.forEach(btn => {
     btn.style.background = fsState.accentColor;
@@ -496,10 +476,8 @@ function initFunnelStudio(slug) {
   fetch('/stats/' + slug)
     .then(r => r.json())
     .then(stats => {
-      // Load saved template
       if (stats.funnel_template) {
         fsState.template = stats.funnel_template;
-        // Try simplified template option first
         let templateEl = document.querySelector(`.template-option[data-template="${fsState.template}"]`);
         if (!templateEl) {
           templateEl = document.querySelector(`.fs-template-thumb[data-template="${fsState.template}"]`);
@@ -511,10 +489,8 @@ function initFunnelStudio(slug) {
         }
       }
       
-      // Load saved color
       if (stats.funnel_accent_color) {
         fsState.accentColor = stats.funnel_accent_color;
-        // Try simplified color option first
         let colorEl = document.querySelector(`.color-option[data-color="${fsState.accentColor}"]`);
         if (!colorEl) {
           colorEl = document.querySelector(`.fs-color-swatch[data-color="${fsState.accentColor}"]`);
@@ -523,14 +499,12 @@ function initFunnelStudio(slug) {
           document.querySelectorAll('.color-option, .fs-color-swatch').forEach(opt => opt.classList.remove('selected'));
           colorEl.classList.add('selected');
         }
-        // Apply color to buttons
         const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
         happyBtns.forEach(btn => btn.style.background = fsState.accentColor);
         const bizElements = document.querySelectorAll('.preview-name, #fsPreviewBiz, #fsPreviewBizDesktop');
         bizElements.forEach(el => el.style.color = fsState.accentColor);
       }
       
-      // Load saved text
       if (stats.funnel_headline) {
         fsState.headline = stats.funnel_headline;
         const headlineInput = document.getElementById('fsHeadline');
@@ -556,7 +530,6 @@ function initFunnelStudio(slug) {
       updateFSCharCount();
       updateConversionPrediction();
       
-      // Apply logo preview
       if (fsState.logoUrl) {
         const logoPreview = document.getElementById('fsLogoPreview');
         const logoImg = document.getElementById('fsLogoPreviewImg');
@@ -572,7 +545,6 @@ function initFunnelStudio(slug) {
     });
 }
 
-// Watch for section visibility
 const observer = new MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
     if (mutation.target.id === 'funnelStudioSection' &&
@@ -588,7 +560,6 @@ if (fsSection) {
   observer.observe(fsSection, { attributes: true, attributeFilter: ['class'] });
 }
 
-// Auto-init on DOM ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     if (window.slug) initFunnelStudio(window.slug);
