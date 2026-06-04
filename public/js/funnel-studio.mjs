@@ -37,40 +37,35 @@ const TEMPLATE_STYLES = {
     cardBg: '#242422',
     accent: '#C8A96E',
     textColor: '#EAE7DC',
-    buttonTextColor: '#1A1A18',
-    previewBg: '#1A1A18'
+    buttonTextColor: '#1A1A18'
   },
   bright: {
     bg: '#FAFAFA',
     cardBg: '#FFFFFF',
     accent: '#C8A96E',
     textColor: '#1A1A18',
-    buttonTextColor: '#1A1A18',
-    previewBg: '#FAFAFA'
+    buttonTextColor: '#1A1A18'
   },
   medical: {
     bg: '#F0F4F8',
     cardBg: '#FFFFFF',
     accent: '#3B82F6',
     textColor: '#1A1A18',
-    buttonTextColor: '#FFFFFF',
-    previewBg: '#F0F4F8'
+    buttonTextColor: '#FFFFFF'
   },
   bold: {
     bg: '#C8A96E',
-    cardBg: 'rgba(0,0,0,0.2)',
+    cardBg: 'rgba(0,0,0,0.1)',
     accent: '#FFFFFF',
     textColor: '#1A1A18',
-    buttonTextColor: '#1A1A18',
-    previewBg: '#C8A96E'
+    buttonTextColor: '#1A1A18'
   },
   luxury: {
     bg: '#0A0A0A',
     cardBg: '#141414',
     accent: '#C8A96E',
     textColor: '#EAE7DC',
-    buttonTextColor: '#1A1A18',
-    previewBg: '#0A0A0A'
+    buttonTextColor: '#1A1A18'
   }
 };
 
@@ -78,106 +73,69 @@ const TEMPLATE_STYLES = {
 function applyTemplateStyles(template) {
   const style = TEMPLATE_STYLES[template] || TEMPLATE_STYLES.classic;
   
-  // For simplified version (phone-screen / phone-card)
-  const phoneScreen = document.querySelector('.phone-screen');
-  if (phoneScreen) {
-    phoneScreen.style.backgroundColor = style.previewBg;
-  }
+  // Update mobile preview background
+  const phoneMock = document.querySelector('.phone-mock');
+  if (phoneMock) phoneMock.style.backgroundColor = style.bg;
   
-  // For desktop content
-  const desktopContent = document.querySelector('.desktop-content');
-  if (desktopContent) {
-    desktopContent.style.backgroundColor = style.cardBg;
-  }
-  
-  // Also handle the older class names for backward compatibility
-  const mobileScreen = document.querySelector('.fs-mobile-screen');
-  if (mobileScreen) {
-    mobileScreen.style.backgroundColor = style.previewBg;
-  }
-  
-  const desktopCard = document.querySelector('.fs-desktop-card');
-  if (desktopCard) {
-    desktopCard.style.backgroundColor = style.cardBg;
-  }
-  
-  // Update happy buttons
-  const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
-  happyBtns.forEach(btn => {
-    btn.style.background = style.accent;
-    btn.style.color = style.buttonTextColor;
-    btn.style.border = 'none';
-  });
-  
-  // Update sad buttons
-  const sadBtns = document.querySelectorAll('.preview-sad, #fsPreviewSad, #fsPreviewSadDesktop');
-  sadBtns.forEach(btn => {
-    btn.style.border = `1px solid rgba(234,231,220,0.2)`;
-    btn.style.color = style.textColor;
-    btn.style.background = 'transparent';
-  });
+  // Update desktop card background
+  const desktopCard = document.querySelector('.desktop-card');
+  if (desktopCard) desktopCard.style.backgroundColor = style.cardBg;
   
   // Update business name color
-  const bizElements = document.querySelectorAll('.preview-name, #fsPreviewBiz, #fsPreviewBizDesktop');
-  bizElements.forEach(el => {
+  document.querySelectorAll('.preview-business').forEach(el => {
     el.style.color = style.accent;
   });
   
   // Update question text color
-  const questionElements = document.querySelectorAll('.preview-question, #fsPreviewQuestion, #fsPreviewQuestionDesktop');
-  questionElements.forEach(el => {
+  document.querySelectorAll('.preview-question').forEach(el => {
     el.style.color = style.textColor;
+  });
+  
+  // Update happy buttons
+  document.querySelectorAll('.preview-btn.happy-btn, .happy-btn').forEach(btn => {
+    btn.style.background = fsState.accentColor;
+    btn.style.color = style.buttonTextColor;
+  });
+  
+  // Update sad buttons
+  document.querySelectorAll('.preview-btn.sad-btn, .sad-btn').forEach(btn => {
+    btn.style.border = '1px solid rgba(234,231,220,0.2)';
+    btn.style.color = style.textColor;
+    btn.style.background = 'transparent';
   });
 }
 
-// Template selection - FIXED: properly removes previous selection
+// Template selection
 window.selectFSTemplate = function(template, el) {
   console.log('Template selected:', template);
   fsState.template = template;
   fsState.saved = false;
   
-  // Remove selected class from ALL template options (both old and new)
-  document.querySelectorAll('.template-option, .fs-template-thumb').forEach(opt => {
-    opt.classList.remove('selected');
-  });
-  
-  // Add selected class to the clicked element
+  document.querySelectorAll('.template-item').forEach(opt => opt.classList.remove('selected'));
   if (el) el.classList.add('selected');
   
-  // Apply template styles
   applyTemplateStyles(template);
-  
   updateFSPreview();
   updateFSSaveStatus();
 };
 
-// Color selection - FIXED: properly removes previous selection
+// Color selection
 window.selectFSColor = function(color, el) {
   console.log('Color selected:', color);
   fsState.accentColor = color;
   fsState.saved = false;
   
-  // Remove selected class from ALL color options (both old and new)
-  document.querySelectorAll('.color-option, .fs-color-swatch').forEach(opt => {
-    opt.classList.remove('selected');
-  });
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  if (el && el.classList) el.classList.add('selected');
   
-  // Add selected class to the clicked element
-  if (el) el.classList.add('selected');
+  const customColor = document.querySelector('.custom-color');
+  if (customColor) customColor.value = color;
   
-  // Update color input value if it exists
-  const colorInput = document.querySelector('.fs-color-input, .custom-color');
-  if (colorInput) colorInput.value = color;
-  
-  // Update happy buttons
-  const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
-  happyBtns.forEach(btn => {
+  document.querySelectorAll('.preview-btn.happy-btn, .happy-btn').forEach(btn => {
     btn.style.background = color;
   });
   
-  // Update business name color
-  const bizElements = document.querySelectorAll('.preview-name, #fsPreviewBiz, #fsPreviewBizDesktop');
-  bizElements.forEach(el => {
+  document.querySelectorAll('.preview-business').forEach(el => {
     el.style.color = color;
   });
   
@@ -190,35 +148,24 @@ window.setFSDevice = function(device) {
   console.log('Device set to:', device);
   fsState.device = device;
   
-  const mobilePreview = document.getElementById('fsPhonePreview');
+  const mobilePreview = document.getElementById('fsMobilePreview');
   const desktopPreview = document.getElementById('fsDesktopPreview');
-  const mobileFrame = document.getElementById('fsMobileFrame');
-  const desktopFrame = document.getElementById('fsDesktopFrame');
-  const buttons = document.querySelectorAll('.view-btn, .fs-device-btn');
+  const buttons = document.querySelectorAll('.fs-device-btn');
   
   buttons.forEach(b => b.classList.remove('active'));
   
   if (device === 'mobile') {
     if (mobilePreview) mobilePreview.style.display = 'block';
     if (desktopPreview) desktopPreview.style.display = 'none';
-    if (mobileFrame) mobileFrame.style.display = 'block';
-    if (desktopFrame) desktopFrame.style.display = 'none';
-    const mobileBtn = document.querySelector('.view-btn[data-view="mobile"], .fs-device-btn:first-child');
-    if (mobileBtn) mobileBtn.classList.add('active');
+    if (buttons[0]) buttons[0].classList.add('active');
   } else if (device === 'desktop') {
     if (mobilePreview) mobilePreview.style.display = 'none';
     if (desktopPreview) desktopPreview.style.display = 'block';
-    if (mobileFrame) mobileFrame.style.display = 'none';
-    if (desktopFrame) desktopFrame.style.display = 'block';
-    const desktopBtn = document.querySelector('.view-btn[data-view="desktop"], .fs-device-btn:nth-child(2)');
-    if (desktopBtn) desktopBtn.classList.add('active');
+    if (buttons[1]) buttons[1].classList.add('active');
   } else if (device === 'split') {
     if (mobilePreview) mobilePreview.style.display = 'block';
     if (desktopPreview) desktopPreview.style.display = 'block';
-    if (mobileFrame) mobileFrame.style.display = 'block';
-    if (desktopFrame) desktopFrame.style.display = 'block';
-    const splitBtn = document.querySelector('.view-btn[data-view="split"], .fs-device-btn:nth-child(3)');
-    if (splitBtn) splitBtn.classList.add('active');
+    if (buttons[2]) buttons[2].classList.add('active');
   }
 };
 
@@ -226,24 +173,14 @@ window.setFSDevice = function(device) {
 window.zoomFS = function(delta) {
   fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
   const zoomLabel = document.getElementById('fsZoomLabel');
-  const mobilePreview = document.getElementById('fsPhonePreview');
-  const desktopPreview = document.getElementById('fsDesktopPreview');
-  const mobileFrame = document.getElementById('fsMobileFrame');
-  const desktopFrame = document.getElementById('fsDesktopFrame');
+  const previewContainer = document.getElementById('fsPreviewContainer');
   
   if (zoomLabel) zoomLabel.textContent = fsState.zoom + '%';
   
   const scale = fsState.zoom / 100;
-  const targetMobile = mobilePreview || mobileFrame;
-  const targetDesktop = desktopPreview || desktopFrame;
-  
-  if (targetMobile && fsState.device !== 'desktop') {
-    targetMobile.style.transform = `scale(${scale})`;
-    targetMobile.style.transformOrigin = 'top center';
-  }
-  if (targetDesktop && fsState.device !== 'mobile') {
-    targetDesktop.style.transform = `scale(${scale})`;
-    targetDesktop.style.transformOrigin = 'top center';
+  if (previewContainer) {
+    previewContainer.style.transform = `scale(${scale})`;
+    previewContainer.style.transformOrigin = 'top center';
   }
 };
 
@@ -261,51 +198,40 @@ function updateFSPreview() {
   
   const businessName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
   
-  // Update simplified preview elements
-  const bizElements = document.querySelectorAll('.preview-name');
-  const questionElements = document.querySelectorAll('.preview-question');
-  const happyButtons = document.querySelectorAll('.preview-happy');
-  const sadButtons = document.querySelectorAll('.preview-sad');
-  
-  bizElements.forEach(el => el.textContent = businessName);
-  questionElements.forEach(el => el.textContent = fsState.headline);
-  happyButtons.forEach(btn => btn.innerHTML = `😊 ${fsState.happyLabel}`);
-  sadButtons.forEach(btn => btn.innerHTML = `😕 ${fsState.sadLabel}`);
-  
-  // Update older preview elements
-  const oldBiz = document.getElementById('fsPreviewBiz');
-  const oldBizDesktop = document.getElementById('fsPreviewBizDesktop');
-  const oldQuestion = document.getElementById('fsPreviewQuestion');
-  const oldQuestionDesktop = document.getElementById('fsPreviewQuestionDesktop');
-  const oldHappy = document.getElementById('fsPreviewHappy');
-  const oldHappyDesktop = document.getElementById('fsPreviewHappyDesktop');
-  const oldSad = document.getElementById('fsPreviewSad');
-  const oldSadDesktop = document.getElementById('fsPreviewSadDesktop');
-  
-  if (oldBiz) oldBiz.textContent = businessName;
-  if (oldBizDesktop) oldBizDesktop.textContent = businessName;
-  if (oldQuestion) oldQuestion.textContent = fsState.headline;
-  if (oldQuestionDesktop) oldQuestionDesktop.textContent = fsState.headline;
-  if (oldHappy) oldHappy.innerHTML = `😊 ${fsState.happyLabel}`;
-  if (oldHappyDesktop) oldHappyDesktop.innerHTML = `😊 ${fsState.happyLabel}`;
-  if (oldSad) oldSad.innerHTML = `😕 ${fsState.sadLabel}`;
-  if (oldSadDesktop) oldSadDesktop.innerHTML = `😕 ${fsState.sadLabel}`;
-  
-  // Apply accent color to happy buttons
-  const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
-  happyBtns.forEach(btn => {
-    btn.style.background = fsState.accentColor;
+  // Update all preview elements
+  document.querySelectorAll('.preview-business').forEach(el => el.textContent = businessName);
+  document.querySelectorAll('.preview-question').forEach(el => el.textContent = fsState.headline);
+  document.querySelectorAll('.preview-btn.happy-btn, .happy-btn').forEach(btn => {
+    btn.innerHTML = `😊 ${fsState.happyLabel}`;
+  });
+  document.querySelectorAll('.preview-btn.sad-btn, .sad-btn').forEach(btn => {
+    btn.innerHTML = `😕 ${fsState.sadLabel}`;
   });
   
-  // Update logo preview
-  const logoPreview = document.getElementById('fsLogoPreview');
-  const logoImg = document.getElementById('fsLogoPreviewImg');
-  if (fsState.logoUrl && logoPreview && logoImg) {
-    logoImg.src = fsState.logoUrl;
-    logoPreview.style.display = 'block';
-  } else if (logoPreview) {
-    logoPreview.style.display = 'none';
+  // Update browser URL
+  const browserUrl = document.querySelector('.browser-url');
+  if (browserUrl && fsSlug) {
+    browserUrl.textContent = window.location.origin + '/r/' + fsSlug;
   }
+  
+  // Update logo preview
+  const logoElements = document.querySelectorAll('.preview-logo-img, #previewLogoImg, #previewLogoDesktop');
+  logoElements.forEach(img => {
+    if (fsState.logoUrl && fsState.logoUrl.trim()) {
+      img.src = fsState.logoUrl;
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+  });
+  
+  // Apply accent color
+  document.querySelectorAll('.preview-btn.happy-btn, .happy-btn').forEach(btn => {
+    btn.style.background = fsState.accentColor;
+  });
+  document.querySelectorAll('.preview-business').forEach(el => {
+    el.style.color = fsState.accentColor;
+  });
   
   // Update char counter
   const countSpan = document.getElementById('fsHeadlineCount');
@@ -387,7 +313,7 @@ function updateFSSaveStatus() {
       status.textContent = '✓ Saved';
       status.style.color = '#6A9E7F';
     } else {
-      status.textContent = 'Unsaved changes';
+      status.textContent = '⚠️ Unsaved changes';
       status.style.color = 'rgba(234,231,220,0.52)';
     }
   }
@@ -431,7 +357,7 @@ window.saveFSSettings = async function() {
   
   if (btn) {
     btn.disabled = false;
-    btn.textContent = 'Save';
+    btn.textContent = '💾 Save changes';
   }
 };
 
@@ -459,17 +385,18 @@ window.applyAISuggestion = function(type, customText = null) {
       updateFSPreview();
       showToast('AI suggestion applied to happy button!', 'success');
     }
-  } else if (type === 'color') {
-    window.selectFSColor('#10B981', document.querySelector('.color-option[style*="background: #10B981"], .fs-color-swatch[data-color="#10B981"]'));
-    showToast('AI colour suggestion applied!', 'success');
   }
 };
 
 function initFunnelStudio(slug) {
   console.log('Initializing Funnel Studio for slug:', slug);
   fsSlug = slug;
+  
   const linkDisplay = document.getElementById('fsLinkDisplay');
   if (linkDisplay) linkDisplay.textContent = window.location.origin + '/r/' + slug;
+  
+  const browserUrl = document.querySelector('.browser-url');
+  if (browserUrl) browserUrl.textContent = window.location.origin + '/r/' + slug;
   
   window.setFSDevice('split');
   
@@ -478,12 +405,9 @@ function initFunnelStudio(slug) {
     .then(stats => {
       if (stats.funnel_template) {
         fsState.template = stats.funnel_template;
-        let templateEl = document.querySelector(`.template-option[data-template="${fsState.template}"]`);
-        if (!templateEl) {
-          templateEl = document.querySelector(`.fs-template-thumb[data-template="${fsState.template}"]`);
-        }
+        const templateEl = document.querySelector(`.template-item[data-template="${fsState.template}"]`);
         if (templateEl) {
-          document.querySelectorAll('.template-option, .fs-template-thumb').forEach(opt => opt.classList.remove('selected'));
+          document.querySelectorAll('.template-item').forEach(opt => opt.classList.remove('selected'));
           templateEl.classList.add('selected');
           applyTemplateStyles(fsState.template);
         }
@@ -491,18 +415,20 @@ function initFunnelStudio(slug) {
       
       if (stats.funnel_accent_color) {
         fsState.accentColor = stats.funnel_accent_color;
-        let colorEl = document.querySelector(`.color-option[data-color="${fsState.accentColor}"]`);
-        if (!colorEl) {
-          colorEl = document.querySelector(`.fs-color-swatch[data-color="${fsState.accentColor}"]`);
-        }
+        const colorEl = document.querySelector(`.color-swatch[data-color="${fsState.accentColor}"]`);
         if (colorEl) {
-          document.querySelectorAll('.color-option, .fs-color-swatch').forEach(opt => opt.classList.remove('selected'));
+          document.querySelectorAll('.color-swatch').forEach(opt => opt.classList.remove('selected'));
           colorEl.classList.add('selected');
         }
-        const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
-        happyBtns.forEach(btn => btn.style.background = fsState.accentColor);
-        const bizElements = document.querySelectorAll('.preview-name, #fsPreviewBiz, #fsPreviewBizDesktop');
-        bizElements.forEach(el => el.style.color = fsState.accentColor);
+        const customColor = document.querySelector('.custom-color');
+        if (customColor) customColor.value = fsState.accentColor;
+        
+        document.querySelectorAll('.preview-btn.happy-btn, .happy-btn').forEach(btn => {
+          btn.style.background = fsState.accentColor;
+        });
+        document.querySelectorAll('.preview-business').forEach(el => {
+          el.style.color = fsState.accentColor;
+        });
       }
       
       if (stats.funnel_headline) {
@@ -531,13 +457,14 @@ function initFunnelStudio(slug) {
       updateConversionPrediction();
       
       if (fsState.logoUrl) {
-        const logoPreview = document.getElementById('fsLogoPreview');
-        const logoImg = document.getElementById('fsLogoPreviewImg');
-        if (logoPreview && logoImg) {
-          logoImg.src = fsState.logoUrl;
-          logoPreview.style.display = 'block';
-        }
+        document.querySelectorAll('.preview-logo-img').forEach(img => {
+          img.src = fsState.logoUrl;
+          img.style.display = 'block';
+        });
       }
+      
+      fsState.saved = true;
+      updateFSSaveStatus();
     })
     .catch(err => {
       console.error('Failed to load funnel stats:', err);
@@ -545,6 +472,7 @@ function initFunnelStudio(slug) {
     });
 }
 
+// Watch for section visibility
 const observer = new MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
     if (mutation.target.id === 'funnelStudioSection' &&
@@ -560,6 +488,7 @@ if (fsSection) {
   observer.observe(fsSection, { attributes: true, attributeFilter: ['class'] });
 }
 
+// Auto-init on DOM ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     if (window.slug) initFunnelStudio(window.slug);
