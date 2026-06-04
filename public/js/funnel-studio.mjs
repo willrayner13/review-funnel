@@ -37,35 +37,40 @@ const TEMPLATE_STYLES = {
     cardBg: '#242422',
     accent: '#C8A96E',
     textColor: '#EAE7DC',
-    buttonTextColor: '#1A1A18'
+    buttonTextColor: '#1A1A18',
+    previewBg: '#1A1A18'
   },
   bright: {
     bg: '#FAFAFA',
     cardBg: '#FFFFFF',
     accent: '#C8A96E',
     textColor: '#1A1A18',
-    buttonTextColor: '#1A1A18'
+    buttonTextColor: '#1A1A18',
+    previewBg: '#FAFAFA'
   },
   medical: {
     bg: '#F0F4F8',
     cardBg: '#FFFFFF',
     accent: '#3B82F6',
     textColor: '#1A1A18',
-    buttonTextColor: '#FFFFFF'
+    buttonTextColor: '#FFFFFF',
+    previewBg: '#F0F4F8'
   },
   bold: {
     bg: '#C8A96E',
     cardBg: 'rgba(0,0,0,0.2)',
     accent: '#FFFFFF',
     textColor: '#1A1A18',
-    buttonTextColor: '#1A1A18'
+    buttonTextColor: '#1A1A18',
+    previewBg: '#C8A96E'
   },
   luxury: {
     bg: '#0A0A0A',
     cardBg: '#141414',
     accent: '#C8A96E',
     textColor: '#EAE7DC',
-    buttonTextColor: '#1A1A18'
+    buttonTextColor: '#1A1A18',
+    previewBg: '#0A0A0A'
   }
 };
 
@@ -73,77 +78,118 @@ const TEMPLATE_STYLES = {
 function applyTemplateStyles(template) {
   const style = TEMPLATE_STYLES[template] || TEMPLATE_STYLES.classic;
   
-  // Apply to mobile preview
-  const mobileScreen = document.querySelector('.fs-mobile-screen');
-  if (mobileScreen) {
-    mobileScreen.style.backgroundColor = style.bg;
+  // For simplified version (phone-screen / phone-card)
+  const phoneScreen = document.querySelector('.phone-screen');
+  if (phoneScreen) {
+    phoneScreen.style.backgroundColor = style.previewBg;
   }
   
-  // Apply to desktop card
+  // For desktop content
+  const desktopContent = document.querySelector('.desktop-content');
+  if (desktopContent) {
+    desktopContent.style.backgroundColor = style.cardBg;
+  }
+  
+  // Also handle the older class names for backward compatibility
+  const mobileScreen = document.querySelector('.fs-mobile-screen');
+  if (mobileScreen) {
+    mobileScreen.style.backgroundColor = style.previewBg;
+  }
+  
   const desktopCard = document.querySelector('.fs-desktop-card');
   if (desktopCard) {
     desktopCard.style.backgroundColor = style.cardBg;
   }
   
-  // Update happy buttons
-  const happyBtns = document.querySelectorAll('#fsPreviewHappy, #fsPreviewHappyDesktop');
+  // Update happy buttons (using multiple selectors for compatibility)
+  const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
   happyBtns.forEach(btn => {
     btn.style.background = style.accent;
     btn.style.color = style.buttonTextColor;
+    btn.style.border = 'none';
   });
   
   // Update sad buttons
-  const sadBtns = document.querySelectorAll('#fsPreviewSad, #fsPreviewSadDesktop');
+  const sadBtns = document.querySelectorAll('.preview-sad, #fsPreviewSad, #fsPreviewSadDesktop');
   sadBtns.forEach(btn => {
-    btn.style.borderColor = `rgba(234,231,220,0.2)`;
+    btn.style.border = `1px solid rgba(234,231,220,0.2)`;
     btn.style.color = style.textColor;
+    btn.style.background = 'transparent';
   });
   
   // Update business name color
-  const bizElements = document.querySelectorAll('#fsPreviewBiz, #fsPreviewBizDesktop');
+  const bizElements = document.querySelectorAll('.preview-name, #fsPreviewBiz, #fsPreviewBizDesktop');
   bizElements.forEach(el => {
     el.style.color = style.accent;
   });
   
   // Update question text color
-  const questionElements = document.querySelectorAll('#fsPreviewQuestion, #fsPreviewQuestionDesktop');
+  const questionElements = document.querySelectorAll('.preview-question, #fsPreviewQuestion, #fsPreviewQuestionDesktop');
   questionElements.forEach(el => {
     el.style.color = style.textColor;
   });
+  
+  // Update phone body background
+  const phoneBody = document.querySelector('.phone-body');
+  if (phoneBody) {
+    phoneBody.style.backgroundColor = 'transparent';
+  }
+  
+  // Update browser body
+  const browserBody = document.querySelector('.browser-body');
+  if (browserBody) {
+    browserBody.style.backgroundColor = style.previewBg;
+  }
 }
 
+// Template selection
 window.selectFSTemplate = function(template, el) {
+  console.log('Template selected:', template);
   fsState.template = template;
   fsState.saved = false;
   
-  document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
+  // Update UI for simplified template options
+  document.querySelectorAll('.template-option').forEach(opt => opt.classList.remove('selected'));
   if (el) el.classList.add('selected');
   
-  // Apply template styles to previews
+  // Also update older template thumbs for backward compatibility
+  document.querySelectorAll('.fs-template-thumb').forEach(t => t.classList.remove('selected'));
+  const oldThumb = document.querySelector(`.fs-template-thumb[data-template="${template}"]`);
+  if (oldThumb) oldThumb.classList.add('selected');
+  
+  // Apply template styles
   applyTemplateStyles(template);
   
   updateFSPreview();
   updateFSSaveStatus();
 };
 
+// Color selection
 window.selectFSColor = function(color, el) {
+  console.log('Color selected:', color);
   fsState.accentColor = color;
   fsState.saved = false;
   
-  document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
+  // Update UI for simplified color options
+  document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
   if (el) el.classList.add('selected');
   
-  const colorInput = document.querySelector('.fs-color-input');
+  // Also update older color swatches for backward compatibility
+  document.querySelectorAll('.fs-color-swatch').forEach(s => s.classList.remove('selected'));
+  const oldSwatch = document.querySelector(`.fs-color-swatch[data-color="${color}"]`);
+  if (oldSwatch) oldSwatch.classList.add('selected');
+  
+  const colorInput = document.querySelector('.fs-color-input, .custom-color');
   if (colorInput) colorInput.value = color;
   
-  // ONLY update funnel preview buttons, NOT global --accent
-  const happyBtns = document.querySelectorAll('#fsPreviewHappy, #fsPreviewHappyDesktop');
+  // Update happy buttons (multiple selectors for compatibility)
+  const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
   happyBtns.forEach(btn => {
     btn.style.background = color;
   });
   
-  // Update business name color in preview only
-  const bizElements = document.querySelectorAll('#fsPreviewBiz, #fsPreviewBizDesktop');
+  // Update business name color
+  const bizElements = document.querySelectorAll('.preview-name, #fsPreviewBiz, #fsPreviewBizDesktop');
   bizElements.forEach(el => {
     el.style.color = color;
   });
@@ -152,49 +198,76 @@ window.selectFSColor = function(color, el) {
   updateFSSaveStatus();
 };
 
+// Device view toggle
 window.setFSDevice = function(device) {
+  console.log('Device set to:', device);
   fsState.device = device;
   
+  // For simplified version
+  const mobilePreview = document.getElementById('fsPhonePreview');
+  const desktopPreview = document.getElementById('fsDesktopPreview');
+  
+  // For older version
   const mobileFrame = document.getElementById('fsMobileFrame');
   const desktopFrame = document.getElementById('fsDesktopFrame');
-  const buttons = document.querySelectorAll('.fs-device-btn');
+  
+  const buttons = document.querySelectorAll('.view-btn, .fs-device-btn');
   
   buttons.forEach(b => b.classList.remove('active'));
   
   if (device === 'mobile') {
+    if (mobilePreview) mobilePreview.style.display = 'block';
+    if (desktopPreview) desktopPreview.style.display = 'none';
     if (mobileFrame) mobileFrame.style.display = 'block';
     if (desktopFrame) desktopFrame.style.display = 'none';
+    const mobileBtn = document.querySelector('.view-btn[data-view="mobile"], .fs-device-btn[onclick*="mobile"]');
+    if (mobileBtn) mobileBtn.classList.add('active');
     if (buttons[0]) buttons[0].classList.add('active');
   } else if (device === 'desktop') {
+    if (mobilePreview) mobilePreview.style.display = 'none';
+    if (desktopPreview) desktopPreview.style.display = 'block';
     if (mobileFrame) mobileFrame.style.display = 'none';
     if (desktopFrame) desktopFrame.style.display = 'block';
+    const desktopBtn = document.querySelector('.view-btn[data-view="desktop"], .fs-device-btn[onclick*="desktop"]');
+    if (desktopBtn) desktopBtn.classList.add('active');
     if (buttons[1]) buttons[1].classList.add('active');
   } else if (device === 'split') {
+    if (mobilePreview) mobilePreview.style.display = 'block';
+    if (desktopPreview) desktopPreview.style.display = 'block';
     if (mobileFrame) mobileFrame.style.display = 'block';
     if (desktopFrame) desktopFrame.style.display = 'block';
+    const splitBtn = document.querySelector('.view-btn[data-view="split"], .fs-device-btn[onclick*="split"]');
+    if (splitBtn) splitBtn.classList.add('active');
     if (buttons[2]) buttons[2].classList.add('active');
   }
 };
 
+// Zoom function
 window.zoomFS = function(delta) {
   fsState.zoom = Math.max(60, Math.min(150, fsState.zoom + delta));
   const zoomLabel = document.getElementById('fsZoomLabel');
+  const mobilePreview = document.getElementById('fsPhonePreview');
+  const desktopPreview = document.getElementById('fsDesktopPreview');
   const mobileFrame = document.getElementById('fsMobileFrame');
   const desktopFrame = document.getElementById('fsDesktopFrame');
   
   if (zoomLabel) zoomLabel.textContent = fsState.zoom + '%';
   
   const scale = fsState.zoom / 100;
-  if (mobileFrame) {
-    mobileFrame.style.transform = `scale(${scale})`;
-    mobileFrame.style.transformOrigin = 'top center';
+  const targetMobile = mobilePreview || mobileFrame;
+  const targetDesktop = desktopPreview || desktopFrame;
+  
+  if (targetMobile && fsState.device !== 'desktop') {
+    targetMobile.style.transform = `scale(${scale})`;
+    targetMobile.style.transformOrigin = 'top center';
   }
-  if (desktopFrame && fsState.device !== 'split') {
-    desktopFrame.style.transform = `scale(${scale})`;
-    desktopFrame.style.transformOrigin = 'top center';
+  if (targetDesktop && fsState.device !== 'mobile') {
+    targetDesktop.style.transform = `scale(${scale})`;
+    targetDesktop.style.transformOrigin = 'top center';
   }
 };
 
+// Update preview text
 function updateFSPreview() {
   const headlineInput = document.getElementById('fsHeadline');
   const happyInput = document.getElementById('fsHappyLabel');
@@ -208,34 +281,41 @@ function updateFSPreview() {
   
   const businessName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
   
-  const bizEl = document.getElementById('fsPreviewBiz');
-  const questionEl = document.getElementById('fsPreviewQuestion');
-  const happyEl = document.getElementById('fsPreviewHappy');
-  const sadEl = document.getElementById('fsPreviewSad');
+  // Update simplified preview elements
+  const bizElements = document.querySelectorAll('.preview-name');
+  const questionElements = document.querySelectorAll('.preview-question');
+  const happyButtons = document.querySelectorAll('.preview-happy');
+  const sadButtons = document.querySelectorAll('.preview-sad');
   
-  if (bizEl) bizEl.textContent = businessName;
-  if (questionEl) questionEl.textContent = fsState.headline;
-  if (happyEl) happyEl.innerHTML = `😊 ${fsState.happyLabel}`;
-  if (sadEl) sadEl.innerHTML = `😕 ${fsState.sadLabel}`;
+  bizElements.forEach(el => el.textContent = businessName);
+  questionElements.forEach(el => el.textContent = fsState.headline);
+  happyButtons.forEach(btn => btn.innerHTML = `😊 ${fsState.happyLabel}`);
+  sadButtons.forEach(btn => btn.innerHTML = `😕 ${fsState.sadLabel}`);
   
-  // Apply accent color to happy button (preserve template bg)
-  if (happyEl) {
-    happyEl.style.background = fsState.accentColor;
-  }
+  // Update older preview elements for backward compatibility
+  const oldBiz = document.getElementById('fsPreviewBiz');
+  const oldBizDesktop = document.getElementById('fsPreviewBizDesktop');
+  const oldQuestion = document.getElementById('fsPreviewQuestion');
+  const oldQuestionDesktop = document.getElementById('fsPreviewQuestionDesktop');
+  const oldHappy = document.getElementById('fsPreviewHappy');
+  const oldHappyDesktop = document.getElementById('fsPreviewHappyDesktop');
+  const oldSad = document.getElementById('fsPreviewSad');
+  const oldSadDesktop = document.getElementById('fsPreviewSadDesktop');
   
-  const bizDesktop = document.getElementById('fsPreviewBizDesktop');
-  const questionDesktop = document.getElementById('fsPreviewQuestionDesktop');
-  const happyDesktop = document.getElementById('fsPreviewHappyDesktop');
-  const sadDesktop = document.getElementById('fsPreviewSadDesktop');
+  if (oldBiz) oldBiz.textContent = businessName;
+  if (oldBizDesktop) oldBizDesktop.textContent = businessName;
+  if (oldQuestion) oldQuestion.textContent = fsState.headline;
+  if (oldQuestionDesktop) oldQuestionDesktop.textContent = fsState.headline;
+  if (oldHappy) oldHappy.innerHTML = `😊 ${fsState.happyLabel}`;
+  if (oldHappyDesktop) oldHappyDesktop.innerHTML = `😊 ${fsState.happyLabel}`;
+  if (oldSad) oldSad.innerHTML = `😕 ${fsState.sadLabel}`;
+  if (oldSadDesktop) oldSadDesktop.innerHTML = `😕 ${fsState.sadLabel}`;
   
-  if (bizDesktop) bizDesktop.textContent = businessName;
-  if (questionDesktop) questionDesktop.textContent = fsState.headline;
-  if (happyDesktop) happyDesktop.innerHTML = `😊 ${fsState.happyLabel}`;
-  if (sadDesktop) sadDesktop.innerHTML = `😕 ${fsState.sadLabel}`;
-  
-  if (happyDesktop) {
-    happyDesktop.style.background = fsState.accentColor;
-  }
+  // Apply accent color to happy buttons (preserve template bg)
+  const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
+  happyBtns.forEach(btn => {
+    btn.style.background = fsState.accentColor;
+  });
   
   // Update logo preview
   const logoPreview = document.getElementById('fsLogoPreview');
@@ -246,6 +326,10 @@ function updateFSPreview() {
   } else if (logoPreview) {
     logoPreview.style.display = 'none';
   }
+  
+  // Update char counter
+  const countSpan = document.getElementById('fsHeadlineCount');
+  if (countSpan && headlineInput) countSpan.textContent = headlineInput.value.length;
   
   if (conversionPredictionTimeout) clearTimeout(conversionPredictionTimeout);
   conversionPredictionTimeout = setTimeout(() => {
@@ -320,10 +404,10 @@ function updateFSSaveStatus() {
   const status = document.getElementById('fsSaveStatus');
   if (status) {
     if (fsState.saved) {
-      status.textContent = '✓ All changes saved';
+      status.textContent = '✓ Saved';
       status.style.color = '#6A9E7F';
     } else {
-      status.textContent = 'Changes not saved';
+      status.textContent = 'Unsaved changes';
       status.style.color = 'rgba(234,231,220,0.52)';
     }
   }
@@ -333,7 +417,7 @@ window.saveFSSettings = async function() {
   const btn = document.getElementById('fsSaveBtn');
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Saving...';
+    btn.textContent = 'Saving...';
   }
   
   const data = {
@@ -367,7 +451,7 @@ window.saveFSSettings = async function() {
   
   if (btn) {
     btn.disabled = false;
-    btn.innerHTML = '<i class="ti ti-device-floppy"></i> Save changes';
+    btn.textContent = 'Save';
   }
 };
 
@@ -396,7 +480,7 @@ window.applyAISuggestion = function(type, customText = null) {
       showToast('AI suggestion applied to happy button!', 'success');
     }
   } else if (type === 'color') {
-    window.selectFSColor('#10B981', document.querySelector('[data-color="#10B981"]'));
+    window.selectFSColor('#10B981', document.querySelector('.color-option[style*="background: #10B981"], .fs-color-swatch[data-color="#10B981"]'));
     showToast('AI colour suggestion applied!', 'success');
   }
 };
@@ -412,27 +496,41 @@ function initFunnelStudio(slug) {
   fetch('/stats/' + slug)
     .then(r => r.json())
     .then(stats => {
+      // Load saved template
       if (stats.funnel_template) {
         fsState.template = stats.funnel_template;
-        const selectedTemplate = document.querySelector(`[data-template="${fsState.template}"]`);
-        if (selectedTemplate) {
-          window.selectFSTemplate(fsState.template, selectedTemplate);
+        // Try simplified template option first
+        let templateEl = document.querySelector(`.template-option[data-template="${fsState.template}"]`);
+        if (!templateEl) {
+          templateEl = document.querySelector(`.fs-template-thumb[data-template="${fsState.template}"]`);
         }
-        // Apply template styles immediately
-        applyTemplateStyles(fsState.template);
+        if (templateEl) {
+          document.querySelectorAll('.template-option, .fs-template-thumb').forEach(opt => opt.classList.remove('selected'));
+          templateEl.classList.add('selected');
+          applyTemplateStyles(fsState.template);
+        }
       }
+      
+      // Load saved color
       if (stats.funnel_accent_color) {
         fsState.accentColor = stats.funnel_accent_color;
-        const colorSwatch = document.querySelector(`[data-color="${fsState.accentColor}"]`);
-        if (colorSwatch) {
-          window.selectFSColor(fsState.accentColor, colorSwatch);
+        // Try simplified color option first
+        let colorEl = document.querySelector(`.color-option[data-color="${fsState.accentColor}"]`);
+        if (!colorEl) {
+          colorEl = document.querySelector(`.fs-color-swatch[data-color="${fsState.accentColor}"]`);
         }
+        if (colorEl) {
+          document.querySelectorAll('.color-option, .fs-color-swatch').forEach(opt => opt.classList.remove('selected'));
+          colorEl.classList.add('selected');
+        }
+        // Apply color to buttons
+        const happyBtns = document.querySelectorAll('.preview-happy, #fsPreviewHappy, #fsPreviewHappyDesktop');
+        happyBtns.forEach(btn => btn.style.background = fsState.accentColor);
+        const bizElements = document.querySelectorAll('.preview-name, #fsPreviewBiz, #fsPreviewBizDesktop');
+        bizElements.forEach(el => el.style.color = fsState.accentColor);
       }
-      if (stats.funnel_logo_url) {
-        fsState.logoUrl = stats.funnel_logo_url;
-        const logoInput = document.getElementById('fsLogoUrl');
-        if (logoInput) logoInput.value = stats.funnel_logo_url;
-      }
+      
+      // Load saved text
       if (stats.funnel_headline) {
         fsState.headline = stats.funnel_headline;
         const headlineInput = document.getElementById('fsHeadline');
@@ -447,6 +545,11 @@ function initFunnelStudio(slug) {
         fsState.sadLabel = stats.funnel_unhappy_label;
         const sadInput = document.getElementById('fsSadLabel');
         if (sadInput) sadInput.value = stats.funnel_unhappy_label;
+      }
+      if (stats.funnel_logo_url) {
+        fsState.logoUrl = stats.funnel_logo_url;
+        const logoInput = document.getElementById('fsLogoUrl');
+        if (logoInput) logoInput.value = stats.funnel_logo_url;
       }
       
       updateFSPreview();
