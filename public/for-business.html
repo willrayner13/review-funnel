@@ -1162,391 +1162,6 @@
     opacity: 0.9;
   }
 
-    /* ===== SIMPLE FUNNEL STUDIO STYLES ===== */
-  
-  .fs-container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .fs-header-simple {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 28px;
-  }
-  
-  .fs-header-simple h2 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  
-  .fs-header-simple p {
-    font-size: 0.8rem;
-    color: var(--cream-dim);
-  }
-  
-  .fs-badge {
-    font-size: 0.7rem;
-    color: #6A9E7F;
-    background: rgba(106,158,127,0.1);
-    padding: 4px 12px;
-    border-radius: 20px;
-  }
-  
-  /* Two Column Layout */
-  .fs-two-col {
-    display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 24px;
-  }
-  
-  /* Preview Column */
-  .fs-preview-col {
-    background: #1E1E1C;
-    border-radius: 20px;
-    padding: 20px;
-  }
-  
-  .fs-view-controls {
-    margin-bottom: 20px;
-  }
-  
-  .fs-view-buttons {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .view-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 6px 14px;
-    border-radius: 30px;
-    cursor: pointer;
-    color: var(--cream-dim);
-    font-size: 0.75rem;
-    transition: all 0.2s;
-  }
-  
-  .view-btn:hover {
-    background: var(--surface-2);
-  }
-  
-  .view-btn.active {
-    background: var(--accent);
-    color: #1A1A18;
-    border-color: var(--accent);
-  }
-  
-  #fsPreviewArea {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  
-  /* Phone Card */
-  .phone-card {
-    width: 300px;
-  }
-  
-  .phone-screen {
-    background: #1A1A18;
-    border-radius: 32px;
-    border: 1px solid rgba(200,169,110,0.15);
-    overflow: hidden;
-  }
-  
-  .phone-header {
-    text-align: center;
-    padding: 12px;
-    font-size: 0.7rem;
-    color: rgba(234,231,220,0.5);
-    border-bottom: 1px solid rgba(234,231,220,0.05);
-  }
-  
-  .phone-body {
-    padding: 24px 20px;
-    text-align: center;
-  }
-  
-  /* Browser Card */
-  .browser-card {
-    width: 420px;
-  }
-  
-  .browser-header {
-    background: #2A2A28;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-radius: 12px 12px 0 0;
-  }
-  
-  .browser-dots {
-    color: rgba(234,231,220,0.4);
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-  }
-  
-  .browser-url {
-    flex: 1;
-    background: #1E1E1C;
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 0.65rem;
-    color: rgba(234,231,220,0.4);
-  }
-  
-  .browser-body {
-    background: #1A1A18;
-    padding: 32px;
-    border-radius: 0 0 12px 12px;
-  }
-  
-  .desktop-content {
-    background: #242422;
-    border-radius: 20px;
-    padding: 32px;
-    text-align: center;
-  }
-  
-  .desktop-buttons {
-    display: flex;
-    gap: 12px;
-  }
-  
-  /* Shared Preview Styles */
-  .preview-name {
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #C8A96E;
-    font-size: 0.85rem;
-  }
-  
-  .preview-question {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 28px;
-    color: #EAE7DC;
-    line-height: 1.3;
-  }
-  
-  .preview-happy {
-    width: 100%;
-    padding: 12px;
-    background: #C8A96E;
-    color: #1A1A18;
-    border: none;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 10px;
-    font-size: 0.85rem;
-  }
-  
-  .preview-sad {
-    width: 100%;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid rgba(234,231,220,0.2);
-    color: #EAE7DC;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.85rem;
-  }
-  
-  .preview-powered {
-    font-size: 0.55rem;
-    color: rgba(234,231,220,0.2);
-    margin-top: 20px;
-  }
-  
-  /* Settings Column */
-  .fs-settings-col {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 20px;
-  }
-  
-  .setting-row {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  
-  .setting-row:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-  
-  .setting-row label {
-    display: block;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--cream-dim);
-    margin-bottom: 10px;
-  }
-  
-  .template-row {
-    display: flex;
-    gap: 12px;
-  }
-  
-  .template-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 30px;
-    font-size: 0.8rem;
-  }
-  
-  .template-option:hover {
-    background: var(--surface-2);
-  }
-  
-  .template-option.selected {
-    background: rgba(200,169,110,0.15);
-  }
-  
-  .template-dot {
-    width: 20px;
-    height: 20px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-  }
-  
-  .color-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  
-  .color-option {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s;
-  }
-  
-  .color-option.selected {
-    border-color: var(--cream);
-    transform: scale(1.1);
-  }
-  
-  .color-input {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    cursor: pointer;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-  }
-  
-  .simple-input {
-    width: 100%;
-    padding: 10px 12px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--cream);
-    font-size: 0.85rem;
-  }
-  
-  .input-hint {
-    font-size: 0.6rem;
-    color: var(--cream-dim);
-    margin-top: 5px;
-    text-align: right;
-  }
-  
-  .ai-simple {
-    background: rgba(139,92,246,0.06);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 0.75rem;
-    color: var(--cream-dim);
-    cursor: pointer;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  
-  .ai-simple:hover {
-    background: rgba(139,92,246,0.1);
-  }
-  
-  .save-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .save-status {
-    font-size: 0.7rem;
-    color: var(--cream-dim);
-  }
-  
-  .save-button {
-    background: var(--accent);
-    color: #1A1A18;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.8rem;
-  }
-  
-  .save-button:hover {
-    background: #D4B87A;
-  }
-  
-  .link-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--surface-2);
-    border-radius: 40px;
-    padding: 8px 12px;
-  }
-  
-  .link-row code {
-    flex: 1;
-    font-size: 0.65rem;
-    color: var(--cream-dim);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .link-copy {
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 4px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    color: var(--cream);
-    font-size: 0.7rem;
-  }
-  
-  @media (max-width: 900px) {
-    .fs-two-col {
-      grid-template-columns: 1fr;
-    }
-  }
-
     /* ===== FUNNEL PREVIEW CRITICAL STYLES (from actual funnel) ===== */
   
   .fs-mobile-screen, .fs-desktop-card {
@@ -1721,144 +1336,211 @@
       </div>
 
             <!-- FUNNEL STUDIO SECTION - REDESIGNED -->
-      <!-- FUNNEL STUDIO SECTION - SIMPLIFIED -->
       <div id="funnelStudioSection" class="content-section">
         <div class="fs-container">
-          <!-- Simple Header -->
-          <div class="fs-header-simple">
+          <!-- Header -->
+          <div class="fs-header">
             <div>
-              <h2>Funnel Studio</h2>
-              <p>Customize your review form</p>
+              <h2>🎨 Funnel Studio</h2>
+              <p>Customize your review collection funnel</p>
             </div>
-            <div class="fs-badge">● Live</div>
+            <div class="fs-status-badge">
+              <span class="fs-status-dot"></span>
+              Live & collecting reviews
+            </div>
           </div>
 
-          <!-- Two Column Layout (Preview + Settings) -->
-          <div class="fs-two-col">
-            <!-- LEFT: Preview -->
-            <div class="fs-preview-col">
-              <div class="fs-view-controls">
-                <div class="fs-view-buttons">
-                  <button class="view-btn" data-view="mobile" onclick="setFSDevice('mobile')">📱 Mobile</button>
-                  <button class="view-btn" data-view="desktop" onclick="setFSDevice('desktop')">💻 Desktop</button>
-                  <button class="view-btn active" data-view="split" onclick="setFSDevice('split')">Both</button>
+          <!-- Main 3-Column Layout -->
+          <div class="fs-layout">
+            <!-- LEFT: Flow Builder -->
+            <div class="fs-flow-panel">
+              <div class="fs-panel-title">
+                <i class="ti ti-route"></i> Customer Journey
+              </div>
+              <div class="flow-steps">
+                <div class="flow-step completed">
+                  <div class="flow-step-number">1</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">Customer visits</div>
+                    <div class="flow-step-desc">Scan QR code or click link</div>
+                  </div>
+                </div>
+                <div class="flow-line"></div>
+                <div class="flow-step active">
+                  <div class="flow-step-number">2</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">Rating question</div>
+                    <div class="flow-step-desc">"How was your experience?"</div>
+                  </div>
+                </div>
+                <div class="flow-split-branches">
+                  <div class="flow-branch happy">
+                    <span>😊 Happy</span>
+                    <span class="branch-arrow">→ Google Review</span>
+                  </div>
+                  <div class="flow-branch sad">
+                    <span>😕 Unhappy</span>
+                    <span class="branch-arrow">→ Private feedback</span>
+                  </div>
+                </div>
+                <div class="flow-line"></div>
+                <div class="flow-step">
+                  <div class="flow-step-number">3</div>
+                  <div class="flow-step-content">
+                    <div class="flow-step-title">Review posted</div>
+                    <div class="flow-step-desc">Or feedback captured privately</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MIDDLE: Preview Area -->
+            <div class="fs-preview-panel">
+              <div class="fs-preview-toolbar">
+                <div class="fs-device-buttons">
+                  <button class="fs-device-btn" data-device="mobile" onclick="setFSDevice('mobile')">📱</button>
+                  <button class="fs-device-btn" data-device="desktop" onclick="setFSDevice('desktop')">💻</button>
+                  <button class="fs-device-btn active" data-device="split" onclick="setFSDevice('split')">🔄 Split</button>
+                </div>
+                <div class="fs-zoom-buttons">
+                  <button onclick="zoomFS(-10)">−</button>
+                  <span id="fsZoomLabel">100%</span>
+                  <button onclick="zoomFS(10)">+</button>
                 </div>
               </div>
 
-              <div id="fsPreviewArea">
+              <div id="fsPreviewContainer">
                 <!-- Mobile Preview -->
-                <div class="phone-card" id="fsPhonePreview">
-                  <div class="phone-screen">
-                    <div class="phone-header">
-                      <span>9:41</span>
-                    </div>
-                    <div class="phone-body">
-                      <div class="preview-name" id="previewBiz">Your Business</div>
+                <div class="fs-mobile-preview" id="fsMobilePreview">
+                  <div class="phone-mock">
+                    <div class="phone-notch"></div>
+                    <div class="phone-time">9:41</div>
+                    <div class="phone-content">
+                      <div class="preview-business" id="previewBiz">Your Business</div>
                       <div class="preview-question" id="previewQuestion">How was your experience?</div>
-                      <button class="preview-happy" id="previewHappyBtn">😊 Great experience!</button>
-                      <button class="preview-sad" id="previewSadBtn">😕 Could be better</button>
-                      <div class="preview-powered">ReviewLift</div>
+                      <div class="preview-buttons">
+                        <button class="preview-btn happy-btn" id="previewHappyBtn">😊 Great experience!</button>
+                        <button class="preview-btn sad-btn" id="previewSadBtn">😕 Could be better</button>
+                      </div>
+                      <div class="preview-footer">Powered by ReviewLift</div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Desktop Preview -->
-                <div class="browser-card" id="fsDesktopPreview">
-                  <div class="browser-header">
-                    <div class="browser-dots">●●●</div>
-                    <div class="browser-url">reviewlift.app/r/your-business</div>
-                  </div>
-                  <div class="browser-body">
-                    <div class="desktop-content">
-                      <div class="preview-name" id="previewBizDesktop">Your Business</div>
-                      <div class="preview-question" id="previewQuestionDesktop">How was your experience?</div>
-                      <div class="desktop-buttons">
-                        <button class="preview-happy" id="previewHappyBtnDesktop">😊 Great experience!</button>
-                        <button class="preview-sad" id="previewSadBtnDesktop">😕 Could be better</button>
+                <div class="fs-desktop-preview" id="fsDesktopPreview">
+                  <div class="browser-mock">
+                    <div class="browser-bar">
+                      <div class="browser-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                      </div>
+                      <div class="browser-url">reviewlift.app/r/your-business</div>
+                    </div>
+                    <div class="browser-content">
+                      <div class="desktop-card">
+                        <div class="preview-business" id="previewBizDesktop">Your Business</div>
+                        <div class="preview-question" id="previewQuestionDesktop">How was your experience?</div>
+                        <div class="preview-buttons horizontal">
+                          <button class="preview-btn happy-btn" id="previewHappyBtnDesktop">😊 Great experience!</button>
+                          <button class="preview-btn sad-btn" id="previewSadBtnDesktop">😕 Could be better</button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <!-- Live Stats -->
+              <div class="preview-stats" id="conversionPrediction"></div>
             </div>
 
-            <!-- RIGHT: Simple Settings -->
-            <div class="fs-settings-col">
-              <!-- Template -->
-              <div class="setting-row">
-                <label>Template</label>
-                <div class="template-row">
-                  <div class="template-option selected" data-template="classic" onclick="selectFSTemplate('classic', this)">
-                    <div class="template-dot" style="background:#1A1A18;"></div>
-                    <span>Dark</span>
+            <!-- RIGHT: Settings -->
+            <div class="fs-settings-panel">
+              <!-- Templates -->
+              <div class="settings-group">
+                <div class="settings-label">🎭 Templates</div>
+                <div class="template-grid" id="templateGrid">
+                  <div class="template-item selected" data-template="classic" onclick="selectFSTemplate('classic', this)">
+                    <div class="template-color" style="background: #1A1A18;"></div>
+                    <div class="template-name">Dark</div>
                   </div>
-                  <div class="template-option" data-template="bright" onclick="selectFSTemplate('bright', this)">
-                    <div class="template-dot" style="background:#FFFFFF;"></div>
-                    <span>Light</span>
+                  <div class="template-item" data-template="bright" onclick="selectFSTemplate('bright', this)">
+                    <div class="template-color" style="background: #FFFFFF;"></div>
+                    <div class="template-name">Light</div>
                   </div>
-                  <div class="template-option" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
-                    <div class="template-dot" style="background:#0A0A0A;"></div>
-                    <span>Luxury</span>
+                  <div class="template-item" data-template="medical" onclick="selectFSTemplate('medical', this)">
+                    <div class="template-color" style="background: #F0F4F8;"></div>
+                    <div class="template-name">Medical</div>
+                  </div>
+                  <div class="template-item" data-template="bold" onclick="selectFSTemplate('bold', this)">
+                    <div class="template-color" style="background: #C8A96E;"></div>
+                    <div class="template-name">Bold</div>
+                  </div>
+                  <div class="template-item" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
+                    <div class="template-color" style="background: #0A0A0A;"></div>
+                    <div class="template-name">Luxury</div>
                   </div>
                 </div>
               </div>
 
-              <!-- Color -->
-              <div class="setting-row">
-                <label>Accent Color</label>
-                <div class="color-row">
-                  <div class="color-option selected" style="background:#C8A96E;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E', this)"></div>
-                  <div class="color-option" style="background:#3B82F6;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6', this)"></div>
-                  <div class="color-option" style="background:#10B981;" data-color="#10B981" onclick="selectFSColor('#10B981', this)"></div>
-                  <div class="color-option" style="background:#8B5CF6;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6', this)"></div>
-                  <input type="color" class="color-input" value="#C8A96E" onchange="selectFSColor(this.value, null)">
+              <!-- Colors -->
+              <div class="settings-group">
+                <div class="settings-label">🎨 Accent Color</div>
+                <div class="color-picker">
+                  <div class="color-swatch selected" style="background: #C8A96E;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E', this)"></div>
+                  <div class="color-swatch" style="background: #3B82F6;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6', this)"></div>
+                  <div class="color-swatch" style="background: #10B981;" data-color="#10B981" onclick="selectFSColor('#10B981', this)"></div>
+                  <div class="color-swatch" style="background: #8B5CF6;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6', this)"></div>
+                  <div class="color-swatch" style="background: #EF4444;" data-color="#EF4444" onclick="selectFSColor('#EF4444', this)"></div>
+                  <div class="color-swatch" style="background: #F59E0B;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B', this)"></div>
+                  <input type="color" class="custom-color" value="#C8A96E" onchange="selectFSColor(this.value, null)">
                 </div>
               </div>
 
-              <!-- Text -->
-              <div class="setting-row">
-                <label>Headline</label>
-                <input type="text" class="simple-input" id="fsHeadline" value="How was your experience?" oninput="updateFSPreview()">
-                <div class="input-hint"><span id="fsHeadlineCount">21</span>/60 characters</div>
+              <!-- Text Settings -->
+              <div class="settings-group">
+                <div class="settings-label">✏️ Text</div>
+                <input type="text" class="settings-input" id="fsHeadline" placeholder="Headline question" value="How was your experience?" oninput="updateFSPreview()">
+                <div class="char-counter"><span id="fsHeadlineCount">21</span>/60</div>
+                <input type="text" class="settings-input" id="fsHappyLabel" placeholder="Happy button text" value="Great experience!" oninput="updateFSPreview()" style="margin-top: 8px;">
+                <input type="text" class="settings-input" id="fsSadLabel" placeholder="Sad button text" value="Could be better" oninput="updateFSPreview()" style="margin-top: 8px;">
               </div>
 
-              <div class="setting-row">
-                <label>Happy Button</label>
-                <input type="text" class="simple-input" id="fsHappyLabel" value="Great experience!" oninput="updateFSPreview()">
+              <!-- Logo -->
+              <div class="settings-group">
+                <div class="settings-label">🖼️ Logo URL</div>
+                <input type="url" class="settings-input" id="fsLogoUrl" placeholder="https://your-logo.png" oninput="updateFSPreview()">
               </div>
 
-              <div class="setting-row">
-                <label>Sad Button</label>
-                <input type="text" class="simple-input" id="fsSadLabel" value="Could be better" oninput="updateFSPreview()">
-              </div>
-
-              <!-- AI Suggestions (compact) -->
-              <div class="setting-row">
-                <label>AI Suggestions</label>
-                <div class="ai-simple" onclick="applyAISuggestion('headline')">
-                  <span>✨</span> "How did we do today?" converts 18% better
+              <!-- AI Suggestions -->
+              <div class="settings-group">
+                <div class="settings-label">🤖 AI Suggestions</div>
+                <div class="ai-tip" onclick="applyAISuggestion('headline')">
+                  <span>💡</span> "How did we do today?" converts 18% better
                 </div>
-                <div class="ai-simple" onclick="applyAISuggestion('happy')" style="margin-top: 8px;">
-                  <span>✨</span> "Loved it! ⭐" increases clicks by 23%
+                <div class="ai-tip" onclick="applyAISuggestion('happy')" style="margin-top: 6px;">
+                  <span>💡</span> "Loved it! ⭐" increases click-through by 23%
                 </div>
-              </div>
-
-              <!-- Save -->
-              <div class="setting-row save-row">
-                <div class="save-status" id="fsSaveStatus">Unsaved changes</div>
-                <button class="save-button" id="fsSaveBtn" onclick="saveFSSettings()">Save</button>
-              </div>
-
-              <!-- Link -->
-              <div class="setting-row link-row">
-                <span>🔗</span>
-                <code id="fsLinkDisplay">Loading...</code>
-                <button class="link-copy" onclick="copyFSLink()">Copy</button>
               </div>
             </div>
           </div>
+
+          <!-- Action Bar -->
+          <div class="fs-action-bar">
+            <div class="fs-link-info">
+              <span>🔗 Your funnel:</span>
+              <code id="fsLinkDisplay">Loading...</code>
+              <button onclick="copyFSLink()">Copy</button>
+            </div>
+            <div class="fs-save-info">
+              <span id="fsSaveStatus">Changes not saved</span>
+              <button class="save-btn" id="fsSaveBtn" onclick="saveFSSettings()">💾 Save changes</button>
+            </div>
+          </div>
         </div>
-      </div>     <!-- CUSTOMERS SECTION -->
+      </div>      <!-- CUSTOMERS SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
         <div class="panel">
