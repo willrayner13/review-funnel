@@ -190,18 +190,18 @@ async function initDashboard() {
     
     await checkClientMode();
     initModals();
-    await loadDashboardData();
-    initNavigation();
-    initAlerts();
-    initCampaigns();
-    initAILab();
-    initAssets();
-    startPolling();
+await loadDashboardData();
+initNavigation();
+initAlerts();
+initCampaigns();
+initAILab();
+initAssets();
+startPolling();
 
     // Initialize Funnel Studio
-    if (typeof initFunnelStudio === 'function' && window.slug) {
-      initFunnelStudio(window.slug);
-    }
+if (typeof initFunnelStudio === 'function' && window.slug) {
+  initFunnelStudio(window.slug);
+}
     
     // Only load agency features if user is actually an agency
     if (window.isAgency) {
