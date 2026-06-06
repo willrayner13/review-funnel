@@ -16,7 +16,603 @@
   <link rel="stylesheet" href="/css/dashboard.css">
   <style>
   /* Funnel Studio Preview Styles - Direct fix */
+/* ============================================================
+   FUNNEL STUDIO CSS
+   Add this to dashboard.css (or paste into the <style> block
+   in for-business.html, replacing all existing fs- rules)
+============================================================ */
 
+/* ── Wrapper ─────────────────────────────────────────────── */
+.fs-wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.fs-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.fs-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.fs-subtitle {
+  font-size: 0.82rem;
+  color: var(--cream-dim);
+  margin: 0;
+}
+
+.fs-live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(106,158,127,0.12);
+  border: 1px solid rgba(106,158,127,0.3);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  color: #6A9E7F;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fs-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6A9E7F;
+  animation: fsPulse 2s infinite;
+}
+
+@keyframes fsPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ── Body: two-column (settings | preview) ───────────────── */
+.fs-body {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── Left panel ─────────────────────────────────────────── */
+.fs-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+/* scrollbar */
+.fs-panel::-webkit-scrollbar { width: 4px; }
+.fs-panel::-webkit-scrollbar-track { background: transparent; }
+.fs-panel::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.2); border-radius: 4px; }
+
+/* ── Group ──────────────────────────────────────────────── */
+.fs-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fs-group-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cream-dim);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fs-optional {
+  font-size: 0.65rem;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.6;
+}
+
+.fs-char-count {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: rgba(234,231,220,0.4);
+}
+
+/* ── Templates ──────────────────────────────────────────── */
+.fs-templates {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.fs-tpl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 0.65rem;
+  color: var(--cream-dim);
+  transition: border-color 0.15s, color 0.15s;
+  flex: 1;
+  min-width: 48px;
+}
+
+.fs-tpl:hover { border-color: var(--border-hover); color: var(--cream); }
+.fs-tpl.selected { border-color: var(--accent); color: var(--accent); }
+
+.fs-tpl-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Colours ────────────────────────────────────────────── */
+.fs-colours {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fs-colour {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.fs-colour:hover   { transform: scale(1.15); }
+.fs-colour.selected { border-color: var(--cream); transform: scale(1.1); }
+
+.fs-colour-custom {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* ── Inputs ─────────────────────────────────────────────── */
+.fs-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--cream);
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.fs-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ── AI tips ────────────────────────────────────────────── */
+.fs-ai-tip {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: rgba(139,92,246,0.06);
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--cream-dim);
+  cursor: pointer;
+  transition: background 0.15s;
+  line-height: 1.4;
+}
+
+.fs-ai-tip:hover { background: rgba(139,92,246,0.12); color: var(--cream); }
+
+.fs-ai-icon {
+  color: #A78BFA;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Save row ───────────────────────────────────────────── */
+.fs-save-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.fs-save-status {
+  font-size: 0.72rem;
+  color: rgba(234,231,220,0.45);
+}
+
+.fs-copy-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--cream-dim);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.fs-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.fs-save-btn {
+  background: var(--accent);
+  color: #1A1A18;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.fs-save-btn:hover { background: #D4B87A; transform: translateY(-1px); }
+.fs-save-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── Funnel link ────────────────────────────────────────── */
+.fs-link-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  flex-wrap: wrap;
+}
+
+.fs-link-label {
+  font-size: 0.7rem;
+  color: var(--cream-dim);
+  white-space: nowrap;
+}
+
+.fs-link-code {
+  font-size: 0.72rem;
+  color: var(--accent);
+  word-break: break-all;
+  flex: 1;
+  font-family: monospace;
+}
+
+/* ── Right: preview wrap ────────────────────────────────── */
+.fs-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Device bar */
+.fs-device-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  width: fit-content;
+}
+
+.fs-dev-btn {
+  background: transparent;
+  border: none;
+  color: var(--cream-dim);
+  border-radius: 7px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.fs-dev-btn:hover  { color: var(--cream); }
+.fs-dev-btn.active { background: var(--surface-2); color: var(--cream); }
+
+/* Preview container */
+.fs-previews {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  min-height: 480px;
+}
+
+/* ── Mobile phone mock ──────────────────────────────────── */
+.fs-mobile {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  min-width: 220px;
+}
+
+.fs-phone {
+  width: 240px;
+  min-height: 460px;
+  border-radius: 32px;
+  padding: 16px 14px 20px;
+  background: #1A1A18;
+  border: 6px solid #2E2E2B;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.fs-phone-notch {
+  width: 80px;
+  height: 20px;
+  background: #2E2E2B;
+  border-radius: 0 0 12px 12px;
+  margin: -16px auto 8px;
+}
+
+.fs-phone-status {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: rgba(234,231,220,0.4);
+  padding: 0 4px;
+  margin-bottom: 16px;
+}
+
+.fs-phone-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* ── Desktop browser mock ───────────────────────────────── */
+.fs-desktop {
+  display: flex;
+  justify-content: center;
+  flex: 2;
+  min-width: 320px;
+}
+
+.fs-browser {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+.fs-browser-bar {
+  background: #2A2A28;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fs-browser-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.fs-browser-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.fs-browser-url {
+  flex: 1;
+  background: #1A1A18;
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 0.68rem;
+  color: rgba(234,231,220,0.4);
+  font-family: monospace;
+}
+
+.fs-browser-body {
+  background: #1A1A18;
+  padding: 32px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  transition: background 0.3s;
+}
+
+.fs-desktop-card {
+  background: #242422;
+  border-radius: 16px;
+  padding: 32px 28px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  transition: background 0.3s;
+}
+
+/* ── Preview elements (shared) ──────────────────────────── */
+.fs-preview-logo {
+  max-height: 36px;
+  max-width: 80%;
+  object-fit: contain;
+}
+
+.fs-preview-biz {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #C8A96E;
+  letter-spacing: -0.01em;
+  transition: color 0.2s;
+}
+
+.fs-preview-q {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: #EAE7DC;
+  transition: color 0.2s;
+}
+
+/* Smaller in phone */
+.fs-phone .fs-preview-q { font-size: 0.9rem; }
+.fs-phone .fs-preview-biz { font-size: 0.78rem; }
+
+.fs-preview-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.fs-btns-row {
+  flex-direction: row;
+  gap: 10px;
+}
+
+.fs-preview-btn {
+  padding: 11px 16px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: default;
+  transition: background 0.2s, color 0.2s;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+
+.fs-btn-happy {
+  background: #C8A96E;
+  color: #1A1A18;
+  border-color: transparent;
+}
+
+.fs-btn-sad {
+  background: transparent;
+  color: rgba(234,231,220,0.7);
+  border-color: rgba(234,231,220,0.2);
+}
+
+.fs-preview-footer {
+  font-size: 0.6rem;
+  color: rgba(234,231,220,0.25);
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* ── Conversion bar ─────────────────────────────────────── */
+.fs-conversion {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+
+.fs-conv-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.fs-conv-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(234,231,220,0.4);
+  margin-bottom: 4px;
+}
+
+.fs-conv-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.fs-conv-diff {
+  font-size: 0.7rem;
+  margin-top: 3px;
+}
+
+.fs-conv-divider {
+  width: 1px;
+  height: 48px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .fs-body {
+    grid-template-columns: 1fr;
+  }
+  .fs-panel {
+    position: static;
+    max-height: none;
+  }
+  .fs-previews {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .fs-desktop { display: none !important; }
+  .fs-dev-btn[data-device="desktop"],
+  .fs-dev-btn[data-device="split"] { display: none; }
+  .fs-phone { width: 100%; max-width: 280px; }
+}
     .fs-mobile-frame {
     width: 380px !important;
     background: transparent !important;
@@ -505,15 +1101,17 @@
   }
   
   /* Inputs */
-  .fs-input {
-    width: 100%;
-    padding: 10px 12px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--cream);
-    font-size: 0.85rem;
-  }
+.fs-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--cream);
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
   
   .fs-input-label {
     display: block;
@@ -1336,213 +1934,207 @@
       </div>
 
             <!-- FUNNEL STUDIO SECTION - REDESIGNED -->
-      <div id="funnelStudioSection" class="content-section">
-        <div class="fs-container">
-          <!-- Header -->
-          <div class="fs-header">
-            <div>
-              <h2>🎨 Funnel Studio</h2>
-              <p>Customize your review collection funnel</p>
-            </div>
-            <div class="fs-status-badge">
-              <span class="fs-status-dot"></span>
-              Live & collecting reviews
-            </div>
-          </div>
+<!-- ============================================================
+     FUNNEL STUDIO SECTION
+     Drop this in for-business.html replacing the existing
+     #funnelStudioSection div entirely
+============================================================ -->
+<div id="funnelStudioSection" class="content-section">
+  <div class="fs-wrap">
 
-          <!-- Main 3-Column Layout -->
-          <div class="fs-layout">
-            <!-- LEFT: Flow Builder -->
-            <div class="fs-flow-panel">
-              <div class="fs-panel-title">
-                <i class="ti ti-route"></i> Customer Journey
-              </div>
-              <div class="flow-steps">
-                <div class="flow-step completed">
-                  <div class="flow-step-number">1</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">Customer visits</div>
-                    <div class="flow-step-desc">Scan QR code or click link</div>
-                  </div>
-                </div>
-                <div class="flow-line"></div>
-                <div class="flow-step active">
-                  <div class="flow-step-number">2</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">Rating question</div>
-                    <div class="flow-step-desc">"How was your experience?"</div>
-                  </div>
-                </div>
-                <div class="flow-split-branches">
-                  <div class="flow-branch happy">
-                    <span>😊 Happy</span>
-                    <span class="branch-arrow">→ Google Review</span>
-                  </div>
-                  <div class="flow-branch sad">
-                    <span>😕 Unhappy</span>
-                    <span class="branch-arrow">→ Private feedback</span>
-                  </div>
-                </div>
-                <div class="flow-line"></div>
-                <div class="flow-step">
-                  <div class="flow-step-number">3</div>
-                  <div class="flow-step-content">
-                    <div class="flow-step-title">Review posted</div>
-                    <div class="flow-step-desc">Or feedback captured privately</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <!-- Header -->
+    <div class="fs-head">
+      <div>
+        <h2 class="fs-title">Funnel Studio</h2>
+        <p class="fs-subtitle">Customise your review funnel — changes go live instantly</p>
+      </div>
+      <div class="fs-live-badge"><span class="fs-live-dot"></span>Live</div>
+    </div>
 
-            <!-- MIDDLE: Preview Area -->
-            <div class="fs-preview-panel">
-              <div class="fs-preview-toolbar">
-                <div class="fs-device-buttons">
-                  <button class="fs-device-btn" data-device="mobile" onclick="setFSDevice('mobile')">📱</button>
-                  <button class="fs-device-btn" data-device="desktop" onclick="setFSDevice('desktop')">💻</button>
-                  <button class="fs-device-btn active" data-device="split" onclick="setFSDevice('split')">🔄 Split</button>
-                </div>
-                <div class="fs-zoom-buttons">
-                  <button onclick="zoomFS(-10)">−</button>
-                  <span id="fsZoomLabel">100%</span>
-                  <button onclick="zoomFS(10)">+</button>
-                </div>
-              </div>
+    <!-- Body: settings left, preview right -->
+    <div class="fs-body">
 
-              <div id="fsPreviewContainer">
-                <!-- Mobile Preview -->
-                <div class="fs-mobile-preview" id="fsMobilePreview">
-                  <div class="phone-mock">
-                    <div class="phone-notch"></div>
-                    <div class="phone-time">9:41</div>
-                    <div class="phone-content">
-                      <img class="preview-logo-img" id="previewLogoImg" style="display: none; max-width: 60px; margin: 0 auto 12px;" alt="logo">
-                      <div class="preview-business" id="previewBiz">Your Business</div>
-                      <div class="preview-question" id="previewQuestion">How was your experience?</div>
-                      <div class="preview-buttons">
-                        <button class="preview-btn happy-btn" id="previewHappyBtn">😊 Great experience!</button>
-                        <button class="preview-btn sad-btn" id="previewSadBtn">😕 Could be better</button>
-                      </div>
-                      <div class="preview-footer">Powered by ReviewLift</div>
-                    </div>
-                  </div>
-                </div>
+      <!-- LEFT: Settings -->
+      <div class="fs-panel" id="fsSettingsPanel">
 
-                <!-- Desktop Preview -->
-                <div class="fs-desktop-preview" id="fsDesktopPreview">
-                  <div class="browser-mock">
-                    <div class="browser-bar">
-                      <div class="browser-dots">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                      </div>
-                      <div class="browser-url">reviewlift.app/r/your-business</div>
-                    </div>
-                    <div class="browser-content">
-                      <div class="desktop-card">
-                        <img class="preview-logo-img" id="previewLogoDesktop" style="display: none; max-width: 60px; margin: 0 auto 12px;" alt="logo">
-                        <div class="preview-business" id="previewBizDesktop">Your Business</div>
-                        <div class="preview-question" id="previewQuestionDesktop">How was your experience?</div>
-                        <div class="preview-buttons horizontal">
-                          <button class="preview-btn happy-btn" id="previewHappyBtnDesktop">😊 Great experience!</button>
-                          <button class="preview-btn sad-btn" id="previewSadBtnDesktop">😕 Could be better</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Live Stats -->
-              <div class="preview-stats" id="conversionPrediction"></div>
-            </div>
-
-            <!-- RIGHT: Settings -->
-            <div class="fs-settings-panel">
-              <!-- Templates -->
-              <div class="settings-group">
-                <div class="settings-label">🎭 Templates</div>
-                <div class="template-grid" id="templateGrid">
-                  <div class="template-item selected" data-template="classic" onclick="selectFSTemplate('classic', this)">
-                    <div class="template-color" style="background: #1A1A18;"></div>
-                    <div class="template-name">Dark</div>
-                  </div>
-                  <div class="template-item" data-template="bright" onclick="selectFSTemplate('bright', this)">
-                    <div class="template-color" style="background: #FFFFFF;"></div>
-                    <div class="template-name">Light</div>
-                  </div>
-                  <div class="template-item" data-template="medical" onclick="selectFSTemplate('medical', this)">
-                    <div class="template-color" style="background: #F0F4F8;"></div>
-                    <div class="template-name">Medical</div>
-                  </div>
-                  <div class="template-item" data-template="bold" onclick="selectFSTemplate('bold', this)">
-                    <div class="template-color" style="background: #C8A96E;"></div>
-                    <div class="template-name">Bold</div>
-                  </div>
-                  <div class="template-item" data-template="luxury" onclick="selectFSTemplate('luxury', this)">
-                    <div class="template-color" style="background: #0A0A0A;"></div>
-                    <div class="template-name">Luxury</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Colors -->
-              <div class="settings-group">
-                <div class="settings-label">🎨 Accent Color</div>
-                <div class="color-picker">
-                  <div class="color-swatch selected" style="background: #C8A96E;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E', this)"></div>
-                  <div class="color-swatch" style="background: #3B82F6;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6', this)"></div>
-                  <div class="color-swatch" style="background: #10B981;" data-color="#10B981" onclick="selectFSColor('#10B981', this)"></div>
-                  <div class="color-swatch" style="background: #8B5CF6;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6', this)"></div>
-                  <div class="color-swatch" style="background: #EF4444;" data-color="#EF4444" onclick="selectFSColor('#EF4444', this)"></div>
-                  <div class="color-swatch" style="background: #F59E0B;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B', this)"></div>
-                  <input type="color" class="custom-color" value="#C8A96E" onchange="selectFSColor(this.value, null)">
-                </div>
-              </div>
-
-              <!-- Text Settings -->
-              <div class="settings-group">
-                <div class="settings-label">✏️ Text</div>
-                <input type="text" class="settings-input" id="fsHeadline" placeholder="Headline question" value="How was your experience?" oninput="updateFSPreview()">
-                <div class="char-counter"><span id="fsHeadlineCount">21</span>/60</div>
-                <input type="text" class="settings-input" id="fsHappyLabel" placeholder="Happy button text" value="Great experience!" oninput="updateFSPreview()" style="margin-top: 8px;">
-                <input type="text" class="settings-input" id="fsSadLabel" placeholder="Sad button text" value="Could be better" oninput="updateFSPreview()" style="margin-top: 8px;">
-              </div>
-
-              <!-- Logo -->
-              <div class="settings-group">
-                <div class="settings-label">🖼️ Logo URL</div>
-                <input type="url" class="settings-input" id="fsLogoUrl" placeholder="https://your-logo.png" oninput="updateFSPreview()">
-              </div>
-
-              <!-- AI Suggestions -->
-              <div class="settings-group">
-                <div class="settings-label">🤖 AI Suggestions</div>
-                <div class="ai-tip" onclick="applyAISuggestion('headline')">
-                  <span>💡</span> "How did we do today?" converts 18% better
-                </div>
-                <div class="ai-tip" onclick="applyAISuggestion('happy')" style="margin-top: 6px;">
-                  <span>💡</span> "Loved it! ⭐" increases click-through by 23%
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Action Bar -->
-          <div class="fs-action-bar">
-            <div class="fs-link-info">
-              <span>🔗 Your funnel:</span>
-              <code id="fsLinkDisplay">Loading...</code>
-              <button onclick="copyFSLink()">Copy</button>
-            </div>
-            <div class="fs-save-info">
-              <span id="fsSaveStatus">Changes not saved</span>
-              <button class="save-btn" id="fsSaveBtn" onclick="saveFSSettings()">💾 Save changes</button>
-            </div>
+        <!-- Templates -->
+        <div class="fs-group">
+          <div class="fs-group-label">Template</div>
+          <div class="fs-templates">
+            <button class="fs-tpl selected" data-template="classic" onclick="selectFSTemplate('classic',this)" title="Dark">
+              <div class="fs-tpl-dot" style="background:#1A1A18;"></div>
+              <span>Dark</span>
+            </button>
+            <button class="fs-tpl" data-template="bright" onclick="selectFSTemplate('bright',this)" title="Light">
+              <div class="fs-tpl-dot" style="background:#fff; border:1px solid #ddd;"></div>
+              <span>Light</span>
+            </button>
+            <button class="fs-tpl" data-template="medical" onclick="selectFSTemplate('medical',this)" title="Medical">
+              <div class="fs-tpl-dot" style="background:#F0F4F8;"></div>
+              <span>Medical</span>
+            </button>
+            <button class="fs-tpl" data-template="bold" onclick="selectFSTemplate('bold',this)" title="Bold">
+              <div class="fs-tpl-dot" style="background:#C8A96E;"></div>
+              <span>Bold</span>
+            </button>
+            <button class="fs-tpl" data-template="luxury" onclick="selectFSTemplate('luxury',this)" title="Luxury">
+              <div class="fs-tpl-dot" style="background:#0A0A0A;"></div>
+              <span>Luxury</span>
+            </button>
           </div>
         </div>
-      </div>      <!-- CUSTOMERS SECTION -->
+
+        <!-- Accent colour -->
+        <div class="fs-group">
+          <div class="fs-group-label">Accent colour</div>
+          <div class="fs-colours">
+            <button class="fs-colour selected" style="background:#C8A96E;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E',this)"></button>
+            <button class="fs-colour" style="background:#3B82F6;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6',this)"></button>
+            <button class="fs-colour" style="background:#10B981;" data-color="#10B981" onclick="selectFSColor('#10B981',this)"></button>
+            <button class="fs-colour" style="background:#8B5CF6;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6',this)"></button>
+            <button class="fs-colour" style="background:#EF4444;" data-color="#EF4444" onclick="selectFSColor('#EF4444',this)"></button>
+            <button class="fs-colour" style="background:#F59E0B;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B',this)"></button>
+            <input type="color" class="fs-colour-custom" value="#C8A96E" title="Custom colour"
+              oninput="selectFSColor(this.value,null)">
+          </div>
+        </div>
+
+        <!-- Wording -->
+        <div class="fs-group">
+          <div class="fs-group-label">Headline <span class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</span></div>
+          <input class="fs-input" id="fsHeadline" type="text" maxlength="60"
+            value="How was your experience?"
+            oninput="updateFSPreview();updateFSCharCount()">
+        </div>
+
+        <div class="fs-group">
+          <div class="fs-group-label">Happy button</div>
+          <input class="fs-input" id="fsHappyLabel" type="text"
+            value="Great experience!" oninput="updateFSPreview()">
+        </div>
+
+        <div class="fs-group">
+          <div class="fs-group-label">Unhappy button</div>
+          <input class="fs-input" id="fsSadLabel" type="text"
+            value="Could be better" oninput="updateFSPreview()">
+        </div>
+
+        <div class="fs-group">
+          <div class="fs-group-label">Thank you message</div>
+          <input class="fs-input" id="fsThankyouMsg" type="text"
+            placeholder="Thanks for your feedback!">
+        </div>
+
+        <!-- Logo -->
+        <div class="fs-group">
+          <div class="fs-group-label">Logo URL <span class="fs-optional">(optional)</span></div>
+          <input class="fs-input" id="fsLogoUrl" type="url"
+            placeholder="https://your-site.com/logo.png" oninput="updateFSPreview()">
+          <div id="fsLogoPreview" style="display:none; margin-top:8px; text-align:center;">
+            <img id="fsLogoPreviewImg" style="max-height:32px; max-width:100%;" alt="">
+          </div>
+        </div>
+
+        <!-- AI tips -->
+        <div class="fs-group">
+          <div class="fs-group-label">AI suggestions</div>
+          <div class="fs-ai-tip" onclick="applyAISuggestion('headline')">
+            <span class="fs-ai-icon">✦</span>
+            <span>"How did we do today?" converts 18% better for service businesses</span>
+          </div>
+          <div class="fs-ai-tip" onclick="applyAISuggestion('happy')" style="margin-top:6px;">
+            <span class="fs-ai-icon">✦</span>
+            <span>"Loved it! ⭐" increases click-through by 23%</span>
+          </div>
+        </div>
+
+        <!-- Save bar -->
+        <div class="fs-save-row">
+          <span class="fs-save-status" id="fsSaveStatus">Unsaved changes</span>
+          <div style="display:flex;gap:8px;">
+            <button class="fs-copy-btn" onclick="copyFSLink()">Copy link</button>
+            <button class="fs-save-btn" id="fsSaveBtn" onclick="saveFSSettings()">
+              <i class="ti ti-device-floppy"></i> Save
+            </button>
+          </div>
+        </div>
+
+        <!-- Funnel link -->
+        <div class="fs-link-row">
+          <span class="fs-link-label">Your funnel</span>
+          <code class="fs-link-code" id="fsLinkDisplay">Loading...</code>
+        </div>
+
+      </div><!-- end fs-panel -->
+
+      <!-- RIGHT: Preview -->
+      <div class="fs-preview-wrap">
+
+        <!-- Device toggle -->
+        <div class="fs-device-bar">
+          <button class="fs-dev-btn" data-device="mobile" onclick="setFSDevice('mobile')">📱 Mobile</button>
+          <button class="fs-dev-btn active" data-device="split" onclick="setFSDevice('split')">⬛ Split</button>
+          <button class="fs-dev-btn" data-device="desktop" onclick="setFSDevice('desktop')">💻 Desktop</button>
+        </div>
+
+        <!-- Preview area -->
+        <div class="fs-previews" id="fsPreviewContainer">
+
+          <!-- Mobile mock -->
+          <div class="fs-mobile" id="fsMobilePreview">
+            <div class="fs-phone" id="fsPhoneMock">
+              <div class="fs-phone-notch"></div>
+              <div class="fs-phone-status">
+                <span>9:41</span><span>●●● Wi-Fi</span>
+              </div>
+              <div class="fs-phone-body">
+                <img id="previewLogoImg" class="fs-preview-logo" style="display:none;" alt="">
+                <div class="fs-preview-biz" id="previewBiz">Your Business</div>
+                <div class="fs-preview-q" id="previewQuestion">How was your experience?</div>
+                <div class="fs-preview-btns">
+                  <button class="fs-preview-btn fs-btn-happy" id="previewHappyBtn">😊 Great experience!</button>
+                  <button class="fs-preview-btn fs-btn-sad" id="previewSadBtn">😕 Could be better</button>
+                </div>
+                <div class="fs-preview-footer">Powered by <strong>ReviewLift</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop mock -->
+          <div class="fs-desktop" id="fsDesktopPreview" style="display:none;">
+            <div class="fs-browser">
+              <div class="fs-browser-bar">
+                <div class="fs-browser-dots">
+                  <span style="background:#FF5F56;"></span>
+                  <span style="background:#FFBD2E;"></span>
+                  <span style="background:#27C93F;"></span>
+                </div>
+                <div class="fs-browser-url">reviewlift.app/r/your-business</div>
+              </div>
+              <div class="fs-browser-body" id="fsBrowserBody">
+                <div class="fs-desktop-card">
+                  <img id="previewLogoDesktop" class="fs-preview-logo" style="display:none;" alt="">
+                  <div class="fs-preview-biz" id="previewBizDesktop">Your Business</div>
+                  <div class="fs-preview-q" id="previewQuestionDesktop">How was your experience?</div>
+                  <div class="fs-preview-btns fs-btns-row">
+                    <button class="fs-preview-btn fs-btn-happy" id="previewHappyBtnDesktop">😊 Great experience!</button>
+                    <button class="fs-preview-btn fs-btn-sad" id="previewSadBtnDesktop">😕 Could be better</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end fsPreviewContainer -->
+
+        <!-- Conversion bar -->
+        <div id="conversionPrediction" class="fs-conversion"></div>
+
+      </div><!-- end fs-preview-wrap -->
+
+    </div><!-- end fs-body -->
+  </div><!-- end fs-wrap -->
+</div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
         <div class="panel">
