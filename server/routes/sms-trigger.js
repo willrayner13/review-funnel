@@ -4,10 +4,12 @@ const smsService = require('../services/smsService');
 
 const router = express.Router();
 
-// Twilio webhook for incoming SMS triggers
+// IMPORTANT: Parse URL-encoded form data from Twilio
+router.use(express.urlencoded({ extended: true }));
+
 router.post('/sms-trigger', async (req, res) => {
   try {
-    console.log('📱 SMS Trigger hit!', req.body);
+    console.log('📱 SMS Trigger received:', req.body);
     
     const { Body, From, To } = req.body;
     
@@ -23,7 +25,7 @@ router.post('/sms-trigger', async (req, res) => {
       .eq('autopilot_trigger_number', To)
       .single();
     
-    console.log('Business lookup result:', { businessSlug: business?.slug, error });
+    console.log('Business found:', business?.slug, 'Enabled:', business?.autopilot_enabled);
     
     if (error || !business) {
       console.log('No business found for number:', To);
@@ -86,7 +88,7 @@ router.post('/sms-trigger', async (req, res) => {
     
   } catch (err) {
     console.error('SMS Trigger Error:', err);
-    res.status(500).send('<Response><Message>Server error</Message></Response>');
+    res.send('<Response></Response>');
   }
 });
 

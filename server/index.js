@@ -65,6 +65,7 @@ app.use("/stripe-webhook", webhookRoutes);
 
 // THEN bodyParser for all other routes
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); 
 
 // Session store AFTER bodyParser
 app.use(
