@@ -12,6 +12,8 @@ import { loadFunnelSettings } from './dashboard/funnel-settings.mjs';
 import { initModals, openModal, closeModal } from './shared/modal.mjs';
 import { showToast, escapeHtml, getRelativeTime, copyToClipboard } from './shared/utils.mjs';
 import { initFunnelStudio } from './funnel-studio.mjs';
+import { initAutoPilot } from './auto-pilot.mjs';
+
 // Global variables
 window.slug = null;
 window.currentPlan = "starter";
@@ -196,6 +198,8 @@ initAlerts();
 initCampaigns();
 initAILab();
 initAssets();
+initAutoPilot(window.slug);
+
 startPolling();
 
     // Initialize Funnel Studio

@@ -1,4 +1,14 @@
 const supabase = require("../config/database");
+const { processQueue } = require('../services/queueService');
+
+// Add to your existing cron function
+async function processAutomationQueue() {
+  const result = await processQueue();
+  console.log(`[Cron] Processed ${result.processed} queue items`);
+  return result;
+}
+
+// Call it alongside your existing logic
 
 async function markConversions() {
   const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();

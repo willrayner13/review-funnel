@@ -2247,6 +2247,264 @@
         </div>
       </div>
 
+      <!-- AUTO-PILOT SECTION - Automated Review Requests -->
+<div id="autoPilotSection" class="content-section">
+  <div style="max-width: 900px; margin: 0 auto;">
+    
+    <!-- Header -->
+    <div style="margin-bottom: 32px;">
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">🤖 Auto-Pilot</h2>
+      <p style="color: var(--cream-dim);">Review requests that send themselves — no manual work required.</p>
+    </div>
+
+    <!-- Status Card -->
+    <div class="panel" id="autoPilotStatusCard">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <div id="autoPilotStatusDot" style="width: 10px; height: 10px; background: #6A9E7F; border-radius: 50%;"></div>
+            <h3 style="margin: 0;" id="autoPilotStatusText">Auto-Pilot Active</h3>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--cream-dim); margin: 0;" id="autoPilotStatusDesc">Your review requests are sending automatically.</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoPilotToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- Stats Row -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; padding: 16px; background: var(--surface-2); border-radius: 16px;">
+        <div style="text-align: center;">
+          <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent);" id="apSentCount">0</div>
+          <div style="font-size: 0.7rem; color: var(--cream-dim);">Requests sent (30d)</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 1.8rem; font-weight: 800; color: var(--success);" id="apConvertedCount">0</div>
+          <div style="font-size: 0.7rem; color: var(--cream-dim);">Reviews received</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 1.8rem; font-weight: 800;" id="apConvRate" style="color: var(--cream);">0%</div>
+          <div style="font-size: 0.7rem; color: var(--cream-dim);">Conversion rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trigger Method Selection -->
+    <div class="panel">
+      <h3>📱 How do you want to trigger review requests?</h3>
+      <p style="font-size: 0.8rem; color: var(--cream-dim); margin-bottom: 20px;">Choose the method that matches how you work.</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;" id="triggerMethodContainer">
+        
+        <!-- Option 1: SMS Text Trigger -->
+        <div class="trigger-option" data-method="sms" style="border: 1px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="width: 48px; height: 48px; background: rgba(200,169,110,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="ti ti-message" style="font-size: 1.5rem; color: var(--accent);"></i></div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600;">📱 Text message trigger</div>
+              <div style="font-size: 0.75rem; color: var(--cream-dim);">After every job, text your customer's number to your dedicated ReviewLift number.</div>
+            </div>
+            <div class="radio-indicator" style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);"></div>
+          </div>
+          <div id="smsTriggerDetails" style="display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <div style="background: var(--surface-2); border-radius: 12px; padding: 16px;">
+              <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Your dedicated number:</div>
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <code id="apTriggerNumber" style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px; font-size: 1rem;">Loading...</code>
+                <button onclick="copyTriggerNumber()" style="background: var(--surface-3); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">📋 Copy</button>
+              </div>
+              <div style="margin-top: 16px; background: rgba(200,169,110,0.08); border-radius: 12px; padding: 12px;">
+                <div style="font-size: 0.7rem; font-weight: 600; margin-bottom: 8px;">📖 How it works:</div>
+                <ol style="font-size: 0.75rem; color: var(--cream-dim); margin-left: 20px; line-height: 1.6;">
+                  <li>Save your ReviewLift number as "ReviewLift" in your contacts</li>
+                  <li>After finishing a job, text: <code style="background: var(--surface-3); padding: 2px 6px; border-radius: 4px;">07911 234567 boiler repair</code></li>
+                  <li>ReviewLift sends a review request 2 hours later (or your chosen delay)</li>
+                  <li>You'll get a confirmation text: "✓ Review request queued for 07911 234567"</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option 2: Email Forwarding -->
+        <div class="trigger-option" data-method="email" style="border: 1px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="width: 48px; height: 48px; background: rgba(200,169,110,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="ti ti-mail" style="font-size: 1.5rem; color: var(--accent);"></i></div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600;">📧 Email forwarding (works with ANY booking system)</div>
+              <div style="font-size: 0.75rem; color: var(--cream-dim);">Forward booking confirmation emails to your unique ReviewLift address. AI extracts customer details.</div>
+            </div>
+            <div class="radio-indicator" style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);"></div>
+          </div>
+          <div id="emailTriggerDetails" style="display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <div style="background: var(--surface-2); border-radius: 12px; padding: 16px;">
+              <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Your email address:</div>
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <code id="apEmailAddress" style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px; font-size: 0.85rem;">auto@your-slug.send.reviewlift.app</code>
+                <button onclick="copyEmailAddress()" style="background: var(--surface-3); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">📋 Copy</button>
+              </div>
+              <div style="margin-top: 16px; background: rgba(200,169,110,0.08); border-radius: 12px; padding: 12px;">
+                <div style="font-size: 0.7rem; font-weight: 600; margin-bottom: 8px;">📖 Works with:</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Fresha</span>
+                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Booksy</span>
+                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Calendly</span>
+                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Square</span>
+                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Timely</span>
+                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Acuity</span>
+                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">+ any system with email</span>
+                </div>
+                <p style="font-size: 0.7rem; color: var(--cream-dim); margin: 0;">Set up email forwarding in your booking system to send confirmations to this address. We'll automatically extract customer details and queue review requests.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option 3: Stripe Invoicing -->
+        <div class="trigger-option" data-method="stripe" style="border: 1px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="width: 48px; height: 48px; background: rgba(200,169,110,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="ti ti-brand-stripe" style="font-size: 1.5rem; color: var(--accent);"></i></div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600;">💳 Stripe invoices (automatic)</div>
+              <div style="font-size: 0.75rem; color: var(--cream-dim);">Review requests send automatically after every paid invoice. Zero setup once connected.</div>
+            </div>
+            <div class="radio-indicator" style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);"></div>
+          </div>
+          <div id="stripeTriggerDetails" style="display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <div style="background: var(--surface-2); border-radius: 12px; padding: 16px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Connect Stripe account</div>
+                  <div style="font-size: 0.7rem; color: var(--cream-dim);">One-click connection. We'll send review requests automatically after each paid invoice.</div>
+                </div>
+                <button id="connectStripeBtn" class="btn-full" style="width: auto; padding: 10px 24px; background: var(--accent); color: #1A1A18;">Connect Stripe →</button>
+              </div>
+              <div id="stripeConnectedStatus" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <i class="ti ti-circle-check" style="color: var(--success);"></i>
+                  <span style="font-size: 0.75rem; color: var(--success);">✓ Stripe connected. Review requests will send automatically after invoice payments.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delay & Action Settings -->
+    <div class="panel">
+      <h3>⚙️ When & how to send</h3>
+      
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 8px; font-size: 0.8rem;">Delay after trigger</label>
+        <select id="apDelayHours" style="width: 100%; padding: 12px; background: var(--surface-2); border-radius: 8px;">
+          <option value="0">Immediately (0 hours)</option>
+          <option value="1">1 hour later</option>
+          <option value="2" selected>2 hours later (recommended)</option>
+          <option value="4">4 hours later</option>
+          <option value="24">Next day (24 hours)</option>
+          <option value="48">2 days later</option>
+        </select>
+        <div id="delayInsight" style="margin-top: 8px; font-size: 0.7rem; color: var(--accent);"></div>
+      </div>
+      
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 8px; font-size: 0.8rem;">Send via</label>
+        <select id="apAction" style="width: 100%; padding: 12px; background: var(--surface-2); border-radius: 8px;">
+          <option value="sms">SMS only</option>
+          <option value="email">Email only</option>
+          <option value="both">SMS + Email (best conversion)</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label style="display: block; margin-bottom: 8px; font-size: 0.8rem;">Quiet hours (don't send during)</label>
+        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+          <select id="apQuietStart" style="padding: 10px; background: var(--surface-2); border-radius: 8px;">
+            <option value="21">9:00 PM</option>
+            <option value="22">10:00 PM</option>
+            <option value="23">11:00 PM</option>
+          </select>
+          <span>to</span>
+          <select id="apQuietEnd" style="padding: 10px; background: var(--surface-2); border-radius: 8px;">
+            <option value="6">6:00 AM</option>
+            <option value="7">7:00 AM</option>
+            <option value="8" selected>8:00 AM</option>
+            <option value="9">9:00 AM</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="panel">
+      <h3>📋 Recent automation activity</h3>
+      <div id="apActivityList" style="max-height: 300px; overflow-y: auto;">
+        <div style="text-align: center; padding: 40px; color: var(--cream-dim);">Loading activity...</div>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+      <button id="saveAutoPilotBtn" class="btn-full" style="width: auto; padding: 12px 32px;">💾 Save Auto-Pilot Settings</button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--surface-2);
+    transition: 0.3s;
+    border-radius: 34px;
+  }
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--cream-dim);
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+  input:checked + .toggle-slider {
+    background-color: var(--accent);
+  }
+  input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+    background-color: #1A1A18;
+  }
+  .trigger-option.selected {
+    border-color: var(--accent);
+    background: rgba(200,169,110,0.05);
+  }
+  .trigger-option.selected .radio-indicator {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: inset 0 0 0 3px #1A1A18;
+  }
+</style>
+
       <!-- ASSETS SECTION -->
       <div id="assetsSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Assets Gallery</h2>

@@ -37,6 +37,11 @@ const publicRoutes = require("./routes/public");
 const runReputationScores = require("./cron/reputation-scores");
 const markConversions = require("./cron/mark-conversions");
 
+const smsTriggerRoutes = require('./routes/sms-trigger');
+
+const autoPilotRoutes = require('./routes/auto-pilot');
+
+
 const app = express();
 
 // ─── HELPER FUNCTION FOR ESCAPING ──────────────────────────────────────────────
@@ -77,6 +82,11 @@ app.use(
     },
   })
 );
+
+app.use(smsTriggerRoutes);
+
+app.use(autoPilotRoutes);
+
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
