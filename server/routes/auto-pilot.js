@@ -1,5 +1,6 @@
 const express = require('express');
 const supabase = require('../config/database');
+const { getIndustryRecommendation, getDelayOptions } = require('../config/benchmarks');
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.get('/api/auto-pilot/:slug', async (req, res) => {
   
   const { data: business, error } = await supabase
     .from('businesses')
-    .select('autopilot_enabled, autopilot_delay_hours, autopilot_action, autopilot_quiet_hours_start, autopilot_quiet_hours_end, autopilot_trigger_method, autopilot_trigger_number')
+    .select('autopilot_enabled, autopilot_delay_hours, autopilot_action, autopilot_quiet_hours_start, autopilot_quiet_hours_end, autopilot_trigger_method, autopilot_trigger_number, industry')
     .eq('slug', slug)
     .single();
   
@@ -29,11 +30,15 @@ router.get('/api/auto-pilot/:slug', async (req, res) => {
   const sent = stats?.filter(s => s.status === 'sent').length || 0;
   const total = stats?.length || 0;
   
+  // 👇 ADD THIS RIGHT HERE - before sending the response
+  const recommendation = getIndustryRecommendation(business.industry);
+  
   res.json({
     ...business,
     autopilot_sent_30d: sent,
     autopilot_converted_30d: total,
-    autopilot_trigger_number: business?.autopilot_trigger_number || '+447846879077'
+    autopilot_trigger_number: business?.autopilot_trigger_number || '+447846879077',
+    recommendation  // 👈 Add this line
   });
 });
 

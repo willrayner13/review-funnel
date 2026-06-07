@@ -2340,8 +2340,8 @@
           <div id="smsMethodDetails" style="margin-top: 16px; padding: 16px; background: var(--surface-2); border-radius: 12px; display: none;">
             <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Your dedicated number:</div>
             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-              <code style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px;">+447846879077</code>
-              <button onclick="copyToClipboard('+447846879077')" style="background: var(--surface-3); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Copy</button>
+              <code style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px;" id="apTriggerNumberDisplay">+447846879077</code>
+              <button onclick="copyTriggerNumber()" style="background: var(--surface-3); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Copy</button>
             </div>
             <div style="margin-top: 12px; font-size: 0.7rem; color: var(--cream-dim);">
               After each job, text: <code style="background: var(--surface-3); padding: 2px 6px;">07911 234567 boiler repair</code>
@@ -2351,23 +2351,26 @@
           <!-- Email Details -->
           <div id="emailMethodDetails" style="margin-top: 16px; padding: 16px; background: var(--surface-2); border-radius: 12px; display: none;">
             <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Forward booking confirmations to:</div>
-            <code style="background: var(--surface-3); padding: 8px 12px; border-radius: 8px; display: inline-block;">auto@plumbinguk-3225.reviewlift.app</code>
+            <code style="background: var(--surface-3); padding: 8px 12px; border-radius: 8px; display: inline-block;" id="apEmailAddressDisplay">auto@your-slug.reviewlift.app</code>
             <div style="margin-top: 12px; font-size: 0.7rem; color: var(--cream-dim);">Works with Fresha, Booksy, Calendly, Square, and any system that sends email confirmations.</div>
           </div>
         </div>
 
-        <!-- Delay Settings -->
+        <!-- Delay Settings WITH RECOMMENDATION -->
         <div class="settings-group">
           <div class="settings-label">⏰ Send delay</div>
           <select id="apDelaySelect" style="width: 100%; padding: 12px; background: var(--surface-2); border-radius: 8px;">
-            <option value="0">Immediately</option>
-            <option value="1">1 hour later</option>
-            <option value="2" selected>2 hours later (recommended)</option>
-            <option value="4">4 hours later</option>
-            <option value="24">Next day</option>
-            <option value="48">2 days later</option>
+            <option value="0">Immediately (0h) - 33% conversion</option>
+            <option value="1">1 hour later - 29% conversion</option>
+            <option value="2" selected>2 hours later - 27% conversion</option>
+            <option value="4">4 hours later - 23% conversion</option>
+            <option value="12">12 hours later - 24% conversion</option>
+            <option value="24">Next day - 20% conversion</option>
+            <option value="48">2 days later - 18% conversion</option>
           </select>
-          <div id="delayInsight" style="margin-top: 8px; font-size: 0.7rem; color: var(--accent);"></div>
+          <div id="delayInsight" style="margin-top: 8px; padding: 12px; background: rgba(200,169,110,0.1); border-radius: 8px; font-size: 0.75rem; color: var(--accent); display: none;">
+            <i class="ti ti-bulb"></i> <span id="recommendationText"></span>
+          </div>
         </div>
 
         <!-- Action -->
@@ -2378,6 +2381,25 @@
             <option value="email">Email only</option>
             <option value="both">SMS + Email (best conversion)</option>
           </select>
+        </div>
+
+        <!-- Quiet Hours -->
+        <div class="settings-group">
+          <div class="settings-label">🌙 Quiet hours (don't send during)</div>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <select id="apQuietStart" style="padding: 10px; background: var(--surface-2); border-radius: 8px;">
+              <option value="21">9:00 PM</option>
+              <option value="22">10:00 PM</option>
+              <option value="23">11:00 PM</option>
+            </select>
+            <span>to</span>
+            <select id="apQuietEnd" style="padding: 10px; background: var(--surface-2); border-radius: 8px;">
+              <option value="6">6:00 AM</option>
+              <option value="7">7:00 AM</option>
+              <option value="8" selected>8:00 AM</option>
+              <option value="9">9:00 AM</option>
+            </select>
+          </div>
         </div>
 
         <!-- Save Button -->

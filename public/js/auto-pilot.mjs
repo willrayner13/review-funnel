@@ -1,85 +1,93 @@
-// Auto-Pilot Module - Automation settings UI
-
 import { showToast } from './shared/utils.mjs';
 
-let apState = {
-  enabled: false,
-  triggerMethod: 'sms',
-  delayHours: 2,
-  action: 'sms',
-  quietStart: 21,
-  quietEnd: 8,
-  triggerNumber: '',
-  emailAddress: ''
-};
+let currentSlug = null;
 
 export async function initAutoPilot(slug) {
-  console.log('Initializing Auto-Pilot for:', slug);
-  await loadAutoPilotSettings(slug);
-  bindAutoPilotEvents(slug);
-  loadActivityLog(slug);
+  currentSlug = slug;
+  await loadSettings();
+  await loadActivityLog();
+  bindEvents();
 }
 
-async function loadAutoPilotSettings(slug) {
+async function loadSettings() {
   try {
-    const res = await fetch(`/stats/${slug}`);
+    const res = await fetch(`/api/auto-pilot/${currentSlug}`);
     const data = await res.json();
     
-    apState.enabled = data.autopilot_enabled || false;
-    apState.delayHours = data.autopilot_delay_hours || 2;
-    apState.action = data.autopilot_action || 'sms';
-    apState.quietStart = data.autopilot_quiet_hours_start || 21;
-    apState.quietEnd = data.autopilot_quiet_hours_end || 8;
-    apState.triggerNumber = data.autopilot_trigger_number || '';
-    apState.emailAddress = `auto@${slug}.send.reviewlift.app`;
+    // Set toggle
+    const toggle = document.getElementById('apToggle');
+    if (toggle) toggle.checked = data.autopilot_enabled || false;
     
-    // Update UI
-    const toggle = document.getElementById('autoPilotToggle');
-    if (toggle) toggle.checked = apState.enabled;
+    // Set delay select
+    const delaySelect = document.getElementById('apDelaySelect');
+    if (delaySelect) delaySelect.value = data.autopilot_delay_hours || 2;
     
-    document.getElementById('apDelayHours').value = apState.delayHours;
-    document.getElementById('apAction').value = apState.action;
-    document.getElementById('apQuietStart').value = apState.quietStart;
-    document.getElementById('apQuietEnd').value = apState.quietEnd;
+    // Set action select
+    const actionSelect = document.getElementById('apActionSelect');
+    if (actionSelect) actionSelect.value = data.autopilot_action || 'sms';
     
-    if (apState.triggerNumber) {
-      document.getElementById('apTriggerNumber').innerText = apState.triggerNumber;
+    // Set quiet hours
+    const quietStart = document.getElementById('apQuietStart');
+    const quietEnd = document.getElementById('apQuietEnd');
+    if (quietStart) quietStart.value = data.autopilot_quiet_hours_start || 21;
+    if (quietEnd) quietEnd.value = data.autopilot_quiet_hours_end || 8;
+    
+    // Update stats
+    document.getElementById('apStatSent').innerText = data.autopilot_sent_30d || 0;
+    document.getElementById('apStatConverted').innerText = data.autopilot_converted_30d || 0;
+    const rate = data.autopilot_sent_30d > 0 
+      ? Math.round((data.autopilot_converted_30d / data.autopilot_sent_30d) * 100) 
+      : 0;
+    document.getElementById('apStatRate').innerText = `${rate}%`;
+    
+    // Update status badge
+    const statusText = document.getElementById('apStatusText');
+    const statusDot = document.querySelector('#apStatusBadge .fs-status-dot');
+    if (data.autopilot_enabled) {
+      statusText.innerText = 'Active';
+      statusDot.style.background = '#6A9E7F';
+    } else {
+      statusText.innerText = 'Disabled';
+      statusDot.style.background = '#C0675A';
     }
     
-    document.getElementById('apEmailAddress').innerText = apState.emailAddress;
+    // Show industry recommendation
+    if (data.recommendation && data.recommendation.optimal_delay) {
+      const delayInsight = document.getElementById('delayInsight');
+      const recommendationText = document.getElementById('recommendationText');
+      if (delayInsight && recommendationText) {
+        const rec = data.recommendation;
+        recommendationText.innerHTML = `💡 For ${data.industry || 'your industry'}, sending ${rec.best_time?.toLowerCase() || `${rec.optimal_delay} hours later`} typically converts at ${rec.conversion_rate}% — ${rec.optimal_delay === data.autopilot_delay_hours ? '✓ You\'re already optimised!' : `try ${rec.optimal_delay} hours for better results.`}`;
+        delayInsight.style.display = 'block';
+        
+        // Highlight recommended option in select
+        const option = document.querySelector(`#apDelaySelect option[value="${rec.optimal_delay}"]`);
+        if (option && rec.optimal_delay !== data.autopilot_delay_hours) {
+          option.style.fontWeight = 'bold';
+          option.style.color = '#C8A96E';
+          option.textContent = option.textContent + ' ⭐ Recommended';
+        }
+      }
+    }
     
-    // Highlight selected trigger method
+    // Set trigger method
     const method = data.autopilot_trigger_method || 'sms';
     selectTriggerMethod(method);
     
-    // Update stats
-    document.getElementById('apSentCount').innerText = data.autopilot_sent_30d || 0;
-    document.getElementById('apConvertedCount').innerText = data.autopilot_converted_30d || 0;
-    const sent = data.autopilot_sent_30d || 0;
-    const converted = data.autopilot_converted_30d || 0;
-    const rate = sent > 0 ? Math.round((converted / sent) * 100) : 0;
-    document.getElementById('apConvRate').innerText = `${rate}%`;
-    
-    // Delay insight based on industry
-    const industry = data.industry || 'local business';
-    const insights = {
-      'salon': 'Salons convert 24% better with 1-hour delay',
-      'barber': 'Barbers see 22% conversion with 1-hour delay',
-      'dental': 'Dentists convert best next morning at 10am',
-      'plumbing': 'Plumbers get 21% conversion sending same evening',
-      'physio': 'Physiotherapists: 2-hour delay = 21% conversion'
-    };
-    const insight = insights[industry] || '2 hours is optimal for most businesses';
-    document.getElementById('delayInsight').innerHTML = `💡 ${insight}`;
+    // Set email address display
+    const emailDisplay = document.getElementById('apEmailAddressDisplay');
+    if (emailDisplay) {
+      emailDisplay.innerText = `auto@${currentSlug}.reviewlift.app`;
+    }
     
   } catch (e) {
     console.error('Failed to load Auto-Pilot settings:', e);
   }
 }
 
-async function loadActivityLog(slug) {
+async function loadActivityLog() {
   try {
-    const res = await fetch(`/api/auto-pilot/logs/${slug}`);
+    const res = await fetch(`/api/auto-pilot/logs/${currentSlug}`);
     const logs = await res.json();
     
     const container = document.getElementById('apActivityList');
@@ -106,40 +114,43 @@ async function loadActivityLog(slug) {
 }
 
 function selectTriggerMethod(method) {
-  document.querySelectorAll('.trigger-option').forEach(opt => {
-    opt.classList.remove('selected');
-    const details = opt.querySelector('[id$="TriggerDetails"]');
-    if (details) details.style.display = 'none';
-  });
+  // Hide all detail panels
+  document.getElementById('smsMethodDetails').style.display = 'none';
+  document.getElementById('emailMethodDetails').style.display = 'none';
   
-  const selected = document.querySelector(`.trigger-option[data-method="${method}"]`);
-  if (selected) {
-    selected.classList.add('selected');
-    const details = selected.querySelector(`#${method}TriggerDetails`);
-    if (details) details.style.display = 'block';
+  // Show selected
+  if (method === 'sms') {
+    document.getElementById('smsMethodDetails').style.display = 'block';
+  } else if (method === 'email') {
+    document.getElementById('emailMethodDetails').style.display = 'block';
   }
   
-  apState.triggerMethod = method;
+  // Update button active states
+  document.querySelectorAll('.trigger-method-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-method') === method) {
+      btn.classList.add('active');
+    }
+  });
 }
 
-function bindAutoPilotEvents(slug) {
-  // Save button
-  document.getElementById('saveAutoPilotBtn')?.addEventListener('click', async () => {
+function bindEvents() {
+  document.getElementById('apSaveBtn')?.addEventListener('click', async () => {
     const data = {
-      autopilot_enabled: document.getElementById('autoPilotToggle').checked,
-      autopilot_trigger_method: apState.triggerMethod,
-      autopilot_delay_hours: parseInt(document.getElementById('apDelayHours').value),
-      autopilot_action: document.getElementById('apAction').value,
-      autopilot_quiet_hours_start: parseInt(document.getElementById('apQuietStart').value),
-      autopilot_quiet_hours_end: parseInt(document.getElementById('apQuietEnd').value)
+      enabled: document.getElementById('apToggle').checked,
+      delayHours: parseInt(document.getElementById('apDelaySelect').value),
+      action: document.getElementById('apActionSelect').value,
+      quietStart: parseInt(document.getElementById('apQuietStart').value),
+      quietEnd: parseInt(document.getElementById('apQuietEnd').value),
+      triggerMethod: document.querySelector('.trigger-method-btn.active')?.getAttribute('data-method') || 'sms'
     };
     
-    const btn = document.getElementById('saveAutoPilotBtn');
+    const btn = document.getElementById('apSaveBtn');
     btn.disabled = true;
     btn.textContent = 'Saving...';
     
     try {
-      const res = await fetch('/update-auto-pilot', {
+      const res = await fetch('/api/auto-pilot/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -148,7 +159,11 @@ function bindAutoPilotEvents(slug) {
       
       if (result.success) {
         showToast('Auto-Pilot settings saved!', 'success');
-        apState.enabled = data.autopilot_enabled;
+        document.getElementById('apSaveStatus').innerHTML = '✓ Saved';
+        document.getElementById('apSaveStatus').style.color = '#6A9E7F';
+        setTimeout(() => {
+          document.getElementById('apSaveStatus').innerHTML = '✓ Settings saved';
+        }, 2000);
       } else {
         showToast(result.error || 'Failed to save', 'error');
       }
@@ -156,27 +171,21 @@ function bindAutoPilotEvents(slug) {
       showToast('Something went wrong', 'error');
     } finally {
       btn.disabled = false;
-      btn.textContent = '💾 Save Auto-Pilot Settings';
+      btn.textContent = '💾 Save changes';
     }
   });
   
-  // Trigger method selection
-  document.querySelectorAll('.trigger-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      const method = opt.getAttribute('data-method');
+  document.querySelectorAll('.trigger-method-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const method = btn.getAttribute('data-method');
       selectTriggerMethod(method);
     });
   });
-  
-  // Stripe connect button
-  document.getElementById('connectStripeBtn')?.addEventListener('click', () => {
-    window.location.href = `/stripe/connect/${slug}`;
-  });
 }
 
-// Global functions for copy buttons
+// Global copy functions
 window.copyTriggerNumber = () => {
-  const number = document.getElementById('apTriggerNumber')?.innerText;
+  const number = document.getElementById('apTriggerNumberDisplay')?.innerText;
   if (number) {
     navigator.clipboard.writeText(number);
     showToast('Number copied!', 'success');
@@ -184,7 +193,7 @@ window.copyTriggerNumber = () => {
 };
 
 window.copyEmailAddress = () => {
-  const email = document.getElementById('apEmailAddress')?.innerText;
+  const email = document.getElementById('apEmailAddressDisplay')?.innerText;
   if (email) {
     navigator.clipboard.writeText(email);
     showToast('Email address copied!', 'success');

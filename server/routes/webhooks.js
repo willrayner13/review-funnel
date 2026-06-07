@@ -1,8 +1,12 @@
 const express = require("express");
 const stripe = require("../config/stripe");
 const supabase = require("../config/database");
+const multer = require('multer');
+const Papa = require('papaparse');
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
+
 
 // Stripe webhook - MUST use express.raw() for this specific route
 router.post("/", express.raw({ type: "application/json" }), async (req, res) => {
@@ -103,6 +107,64 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
   }
 
   res.json({ received: true });
+});
+
+router.post('/upload-csv/:slug', upload.single('file'), async (req, res) => {
+  const { slug } = req.params;
+  
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  
+  const csvString = req.file.buffer.toString('utf8');
+  
+  Papa.parse(csvString, {
+    header: true,
+    skipEmptyLines: true,
+    complete: async (results) => {
+      const customers = results.data;
+      let queued = 0;
+      
+      const { data: business } = await supabase
+        .from('businesses')
+        .select('autopilot_delay_hours')
+        .eq('slug', slug)
+        .single();
+      
+      const delayHours = business?.autopilot_delay_hours || 2;
+      
+      for (const customer of customers) {
+        const phone = customer.phone || customer.mobile || customer.tel;
+        const email = customer.email;
+        const name = customer.name || customer.full_name;
+        const service = customer.service || customer.job_type;
+        
+        if (!phone && !email) continue;
+        
+        const sendAt = new Date();
+        sendAt.setHours(sendAt.getHours() + delayHours);
+        sendAt.setMinutes(sendAt.getMinutes() + queued); // Stagger to avoid spam
+        
+        await supabase.from('review_queue').insert({
+          business_slug: slug,
+          customer_name: name,
+          customer_phone: phone,
+          customer_email: email,
+          service: service,
+          trigger_source: 'csv',
+          send_at: sendAt.toISOString(),
+          status: 'pending'
+        });
+        
+        queued++;
+      }
+      
+      res.json({ success: true, queued, total: customers.length });
+    },
+    error: (error) => {
+      res.status(500).json({ error: error.message });
+    }
+  });
 });
 
 module.exports = router;
