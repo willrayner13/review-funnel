@@ -92,4 +92,21 @@ router.post('/sms-trigger', async (req, res) => {
   }
 });
 
+// Test endpoint - remove after debugging
+router.get('/test-twilio', async (req, res) => {
+  const twilio = require('twilio');
+  const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
+  
+  try {
+    const message = await client.messages.create({
+      body: 'Test from ReviewLift - credentials working!',
+      from: process.env.TWILIO_PHONE,
+      to: '+447375030520'
+    });
+    res.json({ success: true, sid: message.sid });
+  } catch (err) {
+    res.json({ success: false, error: err.message, code: err.code });
+  }
+});
+
 module.exports = router;
