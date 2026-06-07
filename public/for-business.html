@@ -2338,8 +2338,8 @@
               📧 Email forwarding
             </button>
             <button class="trigger-method-btn" data-method="stripe" style="padding: 10px 20px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 40px; cursor: pointer;">
-              💳 Stripe
-            </button>
+  💳 Stripe
+</button>
           </div>
           
           <!-- SMS Details -->
@@ -2360,6 +2360,23 @@
             <code style="background: var(--surface-3); padding: 8px 12px; border-radius: 8px; display: inline-block;" id="apEmailAddressDisplay">auto@your-slug.reviewlift.app</code>
             <div style="margin-top: 12px; font-size: 0.7rem; color: var(--cream-dim);">Works with Fresha, Booksy, Calendly, Square, and any system that sends email confirmations.</div>
           </div>
+
+          <!-- Inside the Stripe trigger-method-btn section, add this div -->
+<div id="stripeMethodDetails" style="margin-top: 16px; padding: 16px; background: var(--surface-2); border-radius: 12px; display: none;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+    <div>
+      <div style="font-weight: 600; margin-bottom: 4px;">Connect Stripe account</div>
+      <div style="font-size: 0.7rem; color: var(--cream-dim);">Review requests send automatically after each paid invoice.</div>
+    </div>
+    <button id="connectStripeBtn" class="btn-full" style="width: auto; padding: 10px 24px; background: #635BFF; color: white;">Connect Stripe →</button>
+  </div>
+  <div id="stripeConnectedStatus" style="display: none; margin-top: 12px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <i class="ti ti-circle-check" style="color: var(--success);"></i>
+      <span style="font-size: 0.75rem; color: var(--success);">✓ Stripe connected</span>
+    </div>
+  </div>
+</div>
         </div>
 
         <!-- Delay Settings WITH RECOMMENDATION -->
@@ -2499,6 +2516,29 @@
             <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Share anywhere — email, social, text</p>
             <input id="assetReviewLink" readonly style="width:100%;padding:8px;background:var(--surface-3);border-radius:6px;font-size:0.7rem;margin-bottom:10px;"><button onclick="copyAssetReviewLink()" class="btn-full" style="background:var(--accent);color:#1A1A18;padding:8px 16px;">Copy link →</button>
           </div>
+          <div class="panel">
+  <h3>📁 Bulk Import Customers</h3>
+  <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Upload a CSV file with customer details to send review requests in bulk.</p>
+  <input type="file" id="csvFile" accept=".csv" style="margin-bottom:12px;">
+  <button onclick="uploadCSV()" class="btn-full" style="background:var(--accent);">Upload & Send →</button>
+  <a href="/api/csv-template/your-slug" download style="display:block;margin-top:12px;font-size:0.7rem;color:var(--accent);">Download template CSV</a>
+  <div id="csvUploadResult" style="margin-top:12px;font-size:0.75rem;"></div>
+</div>
+
+<script>
+window.uploadCSV = async () => {
+  const file = document.getElementById('csvFile').files[0];
+  if (!file) return;
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const res = await fetch(`/api/upload-csv/${window.slug}`, { method: 'POST', body: formData });
+  const data = await res.json();
+  
+  document.getElementById('csvUploadResult').innerHTML = `✅ ${data.queued} customers queued for review requests!`;
+};
+</script>
         </div>
         <div class="panel" style="margin-top:20px;">
           <h3>🔌 Integrations</h3>
@@ -2720,7 +2760,53 @@
       .mobile-tab.active { opacity: 1 !important; color: var(--accent) !important; }
     }
   </style>
+<script>
+// Auto-Pilot copy functions
+window.copyTriggerNumber = () => {
+  const number = document.getElementById('apTriggerNumberDisplay')?.innerText;
+  if (number) {
+    navigator.clipboard.writeText(number);
+    showToast('Number copied!', 'success');
+  }
+};
 
+window.copyEmailAddress = () => {
+  const email = document.getElementById('apEmailAddressDisplay')?.innerText;
+  if (email) {
+    navigator.clipboard.writeText(email);
+    showToast('Email address copied!', 'success');
+  }
+};
+
+// Stripe Connect
+document.getElementById('connectStripeBtn')?.addEventListener('click', () => {
+  window.location.href = `/stripe/connect/${window.slug}`;
+});
+
+// Check if Stripe was just connected
+if (window.location.search.includes('stripe=connected')) {
+  const statusDiv = document.getElementById('stripeConnectedStatus');
+  if (statusDiv) statusDiv.style.display = 'block';
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+// CSV upload
+window.uploadCSV = async () => {
+  const file = document.getElementById('csvFile')?.files[0];
+  if (!file) return;
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const res = await fetch(`/api/upload-csv/${window.slug}`, { method: 'POST', body: formData });
+  const data = await res.json();
+  
+  const resultDiv = document.getElementById('csvUploadResult');
+  if (resultDiv) {
+    resultDiv.innerHTML = `✅ ${data.queued || 0} customers queued for review requests!`;
+  }
+};
+</script>
    <!-- Scripts - Single bundle -->
 <script type="module" src="/js/dashboard.bundle.mjs"></script>
 </body></html>
