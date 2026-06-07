@@ -1858,6 +1858,12 @@
 
         <div style="padding: 16px 12px 8px 12px; margin-top:8px;"><span style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.5;">Account</span></div>
         <div class="nav-item" data-nav="settings" data-tooltip="Settings"><i class="ti ti-settings"></i><span>Settings</span></div>
+
+                <div style="padding: 16px 12px 8px 12px; margin-top:8px;"><span style="font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--cream-dim); opacity:0.5;">Account</span></div>
+
+        <div class="nav-item" data-nav="auto-pilot" data-tooltip="Auto-Pilot">
+  <i class="ti ti-robot"></i><span>Auto-Pilot</span>
+</div>
       </nav>
 
       <div class="sidebar-footer">
@@ -2247,7 +2253,7 @@
         </div>
       </div>
 
-      <!-- AUTO-PILOT SECTION - Automated Review Requests -->
+   <!-- AUTO-PILOT SECTION - Automated Review Requests -->
 <div id="autoPilotSection" class="content-section">
   <div style="max-width: 900px; margin: 0 auto;">
     
@@ -2311,7 +2317,7 @@
             <div style="background: var(--surface-2); border-radius: 12px; padding: 16px;">
               <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Your dedicated number:</div>
               <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <code id="apTriggerNumber" style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px; font-size: 1rem;">Loading...</code>
+                <code id="apTriggerNumber" style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px; font-size: 1rem;">+447846879077</code>
                 <button onclick="copyTriggerNumber()" style="background: var(--surface-3); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">📋 Copy</button>
               </div>
               <div style="margin-top: 16px; background: rgba(200,169,110,0.08); border-radius: 12px; padding: 12px;">
@@ -2341,7 +2347,7 @@
             <div style="background: var(--surface-2); border-radius: 12px; padding: 16px;">
               <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Your email address:</div>
               <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <code id="apEmailAddress" style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px; font-size: 0.85rem;">auto@your-slug.send.reviewlift.app</code>
+                <code id="apEmailAddress" style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px; font-size: 0.85rem;">auto@plumbinguk-3225.send.reviewlift.app</code>
                 <button onclick="copyEmailAddress()" style="background: var(--surface-3); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">📋 Copy</button>
               </div>
               <div style="margin-top: 16px; background: rgba(200,169,110,0.08); border-radius: 12px; padding: 12px;">
@@ -2352,7 +2358,6 @@
                   <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Calendly</span>
                   <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Square</span>
                   <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Timely</span>
-                  <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">Acuity</span>
                   <span style="background: var(--surface-3); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem;">+ any system with email</span>
                 </div>
                 <p style="font-size: 0.7rem; color: var(--cream-dim); margin: 0;">Set up email forwarding in your booking system to send confirmations to this address. We'll automatically extract customer details and queue review requests.</p>
@@ -2451,9 +2456,7 @@
     </div>
 
   </div>
-</div>
-
-<style>
+</div><style>
   .toggle-switch {
     position: relative;
     display: inline-block;

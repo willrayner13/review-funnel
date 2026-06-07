@@ -36,6 +36,8 @@ const publicRoutes = require("./routes/public");
 // Cron jobs
 const runReputationScores = require("./cron/reputation-scores");
 const markConversions = require("./cron/mark-conversions");
+const { processQueue } = require('./cron/process-queue');
+
 
 const smsTriggerRoutes = require('./routes/sms-trigger');
 
@@ -204,6 +206,15 @@ app.get("/cron/mark-conversions", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
   const result = await markConversions();
+  res.json(result);
+});
+
+app.get('/cron/process-queue', async (req, res) => {
+  // Optional: Add secret check
+  // if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+  //   return res.status(401).json({ error: 'Unauthorized' });
+  // }
+  const result = await processQueue();
   res.json(result);
 });
 
