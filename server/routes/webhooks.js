@@ -167,4 +167,150 @@ router.post('/upload-csv/:slug', upload.single('file'), async (req, res) => {
   });
 });
 
+// Existing Stripe webhook handler
+router.post('/stripe-webhook', async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  
+  let event;
+  
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error(`Webhook Error: ${err.message}`);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  
+  // Handle invoice paid event
+  if (event.type === 'invoice.paid') {
+    await handleStripeInvoice(event);
+  }
+  
+  // Handle checkout completion
+  if (event.type === 'checkout.session.completed') {
+    await handleStripeCheckout(event);
+  }
+  
+  res.json({ received: true });
+});
+
+
+async function handleStripeInvoice(event) {
+  const invoice = event.data.object;
+  const customerEmail = invoice.customer_email;
+  const customerName = invoice.customer_name;
+  const customerPhone = invoice.customer_phone;
+  const amount = invoice.amount_paid / 100;
+  const description = invoice.lines?.data[0]?.description || 
+                      invoice.lines?.data[0]?.plan?.nickname || 
+                      'invoice';
+  
+  if (!customerEmail && !customerPhone) return;
+  
+  // Find business by Stripe account ID
+  const { data: business } = await supabase
+    .from('businesses')
+    .select('slug, autopilot_enabled, autopilot_delay_hours, name')
+    .eq('stripe_account_id', invoice.account)
+    .single();
+  
+  if (!business?.autopilot_enabled) return;
+  
+  const delayHours = business.autopilot_delay_hours || 2;
+  const sendAt = new Date();
+  sendAt.setHours(sendAt.getHours() + delayHours);
+  
+  await supabase.from('review_queue').insert({
+    business_slug: business.slug,
+    customer_name: customerName,
+    customer_email: customerEmail,
+    customer_phone: customerPhone,
+    service: description,
+    trigger_source: 'stripe',
+    send_at: sendAt.toISOString(),
+    status: 'pending'
+  });
+  
+  await supabase.from('automation_logs').insert({
+    business_slug: business.slug,
+    trigger_type: 'stripe',
+    customer_identifier: customerEmail || customerPhone,
+    status: 'queued',
+    message: `Invoice £${amount} - ${description}`
+  });
+  
+  console.log(`💰 Stripe invoice paid for ${business.slug}, queued review request`);
+}
+
+async function handleStripeCheckout(event) {
+  const session = event.data.object;
+  const customerEmail = session.customer_email;
+  const customerName = session.customer_details?.name;
+  const amount = session.amount_total / 100;
+  
+  if (!customerEmail) return;
+  
+  const { data: business } = await supabase
+    .from('businesses')
+    .select('slug, autopilot_enabled, autopilot_delay_hours')
+    .eq('stripe_account_id', session.account)
+    .single();
+  
+  if (!business?.autopilot_enabled) return;
+  
+  const delayHours = business.autopilot_delay_hours || 2;
+  const sendAt = new Date();
+  sendAt.setHours(sendAt.getHours() + delayHours);
+  
+  await supabase.from('review_queue').insert({
+    business_slug: business.slug,
+    customer_name: customerName,
+    customer_email: customerEmail,
+    service: `Purchase of £${amount}`,
+    trigger_source: 'stripe',
+    send_at: sendAt.toISOString(),
+    status: 'pending'
+  });
+}
+
+// Stripe OAuth connection for businesses
+router.get('/stripe/connect/:slug', async (req, res) => {
+  const { slug } = req.params;
+  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  
+  const authUrl = stripe.oauth.authorizeUrl({
+    client_id: process.env.STRIPE_CLIENT_ID,
+    scope: 'read_write',
+    redirect_uri: `${process.env.BASE_URL}/stripe/oauth/callback`,
+    state: slug
+  });
+  
+  res.redirect(authUrl);
+});
+
+router.get('/stripe/oauth/callback', async (req, res) => {
+  const { code, state } = req.query;
+  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  
+  try {
+    const response = await stripe.oauth.token({
+      grant_type: 'authorization_code',
+      code: code
+    });
+    
+    await supabase
+      .from('businesses')
+      .update({ 
+        stripe_account_id: response.stripe_user_id,
+        stripe_connected: true
+      })
+      .eq('slug', state);
+    
+    res.redirect(`/dashboard/${state}?stripe=connected`);
+  } catch (err) {
+    console.error('Stripe OAuth error:', err);
+    res.redirect(`/dashboard/${state}?stripe=error`);
+  }
+});
+
 module.exports = router;

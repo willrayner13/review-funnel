@@ -11,6 +11,11 @@ const emailService = require("./services/emailService");
 const smsService = require("./services/smsService");
 const aiService = require("./services/aiService");
 const pdfService = require("./services/pdfService");
+const emailParserRoutes = require('./routes/email-parser');
+const csvUploadRoutes = require('./routes/csv-upload');
+const analyticsRoutes = require('./routes/analytics');
+const reportsRoutes = require('./routes/reports');
+
 
 // Config
 const supabase = require("./config/database");
@@ -64,6 +69,11 @@ function escapeJS(str) {
 // ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.set("trust proxy", 1);
 app.use(cors());
+
+app.use(emailParserRoutes);
+app.use(csvUploadRoutes);
+app.use(analyticsRoutes);
+app.use(reportsRoutes);
 
 // Webhook MUST come before bodyParser.json() - THIS IS CRITICAL
 app.use("/stripe-webhook", webhookRoutes);
