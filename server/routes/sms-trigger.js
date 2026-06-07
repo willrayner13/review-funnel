@@ -93,8 +93,24 @@ router.post('/sms-trigger', async (req, res) => {
 });
 
 // Test endpoint - remove after debugging
+// Test endpoint to check Twilio credentials
 router.get('/test-twilio', async (req, res) => {
   const twilio = require('twilio');
+  
+  // Log what credentials are loaded
+  console.log('TWILIO_SID loaded:', !!process.env.TWILIO_SID);
+  console.log('TWILIO_TOKEN loaded:', !!process.env.TWILIO_TOKEN);
+  console.log('TWILIO_PHONE loaded:', process.env.TWILIO_PHONE);
+  
+  if (!process.env.TWILIO_SID || !process.env.TWILIO_TOKEN) {
+    return res.json({ 
+      success: false, 
+      error: 'Missing credentials',
+      hasSid: !!process.env.TWILIO_SID,
+      hasToken: !!process.env.TWILIO_TOKEN
+    });
+  }
+  
   const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
   
   try {
@@ -105,7 +121,12 @@ router.get('/test-twilio', async (req, res) => {
     });
     res.json({ success: true, sid: message.sid });
   } catch (err) {
-    res.json({ success: false, error: err.message, code: err.code });
+    res.json({ 
+      success: false, 
+      error: err.message, 
+      code: err.code,
+      sid: process.env.TWILIO_SID?.substring(0, 10) + '...'
+    });
   }
 });
 
