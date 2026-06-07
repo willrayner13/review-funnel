@@ -43,6 +43,9 @@ const smsTriggerRoutes = require('./routes/sms-trigger');
 
 const autoPilotRoutes = require('./routes/auto-pilot');
 
+import { initAutoPilot } from './auto-pilot.mjs';
+
+
 
 const app = express();
 
@@ -89,6 +92,9 @@ app.use(
 app.use(smsTriggerRoutes);
 
 app.use(autoPilotRoutes);
+
+initAutoPilot(window.slug);
+
 
 
 app.get("/health", (req, res) => {

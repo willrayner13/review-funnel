@@ -316,7 +316,7 @@ body {
   z-index: 0;
 }
 
-/* Auto-Pilot Toggle Switch */
+/* Auto-Pilot Toggle */
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -349,6 +349,18 @@ body {
   background-color: var(--cream-dim);
   transition: 0.3s;
   border-radius: 50%;
+}
+input:checked + .toggle-slider {
+  background-color: var(--accent);
+}
+input:checked + .toggle-slider:before {
+  transform: translateX(24px);
+  background-color: #1A1A18;
+}
+.trigger-method-btn.active {
+  background: var(--accent) !important;
+  color: #1A1A18 !important;
+  border-color: var(--accent) !important;
 }
 input:checked + .toggle-slider {
   background-color: var(--accent);

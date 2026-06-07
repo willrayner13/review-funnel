@@ -3,13 +3,13 @@ const supabase = require('../config/database');
 
 const router = express.Router();
 
-// Get Auto-Pilot settings and stats
+// Get Auto-Pilot settings
 router.get('/api/auto-pilot/:slug', async (req, res) => {
   const { slug } = req.params;
   
   const { data: business, error } = await supabase
     .from('businesses')
-    .select('autopilot_enabled, autopilot_delay_hours, autopilot_action, autopilot_quiet_hours_start, autopilot_quiet_hours_end, autopilot_trigger_number, industry')
+    .select('autopilot_enabled, autopilot_delay_hours, autopilot_action, autopilot_quiet_hours_start, autopilot_quiet_hours_end, autopilot_trigger_method, autopilot_trigger_number')
     .eq('slug', slug)
     .single();
   
@@ -19,41 +19,40 @@ router.get('/api/auto-pilot/:slug', async (req, res) => {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   
-  const { data: sentStats } = await supabase
+  const { data: stats } = await supabase
     .from('review_queue')
     .select('status')
     .eq('business_slug', slug)
-    .eq('trigger_source', 'auto_pilot')
+    .eq('trigger_source', 'sms')
     .gte('created_at', thirtyDaysAgo.toISOString());
   
-  const sent = sentStats?.length || 0;
-  const converted = sentStats?.filter(s => s.status === 'sent')?.length || 0;
+  const sent = stats?.filter(s => s.status === 'sent').length || 0;
+  const total = stats?.length || 0;
   
   res.json({
     ...business,
     autopilot_sent_30d: sent,
-    autopilot_converted_30d: converted
+    autopilot_converted_30d: total,
+    autopilot_trigger_number: business?.autopilot_trigger_number || '+447846879077'
   });
 });
 
 // Update Auto-Pilot settings
-router.post('/update-auto-pilot', async (req, res) => {
-  if (!req.session.slug) return res.status(401).json({ error: 'Not authorised' });
+router.post('/api/auto-pilot/update', async (req, res) => {
+  if (!req.session?.slug) return res.status(401).json({ error: 'Not authenticated' });
   
-  const { autopilot_enabled, autopilot_trigger_method, autopilot_delay_hours, autopilot_action, autopilot_quiet_hours_start, autopilot_quiet_hours_end } = req.body;
-  
-  const updateData = {
-    autopilot_enabled,
-    autopilot_trigger_method,
-    autopilot_delay_hours,
-    autopilot_action,
-    autopilot_quiet_hours_start,
-    autopilot_quiet_hours_end
-  };
+  const { enabled, delayHours, action, quietStart, quietEnd, triggerMethod } = req.body;
   
   const { error } = await supabase
     .from('businesses')
-    .update(updateData)
+    .update({
+      autopilot_enabled: enabled,
+      autopilot_delay_hours: delayHours,
+      autopilot_action: action,
+      autopilot_quiet_hours_start: quietStart,
+      autopilot_quiet_hours_end: quietEnd,
+      autopilot_trigger_method: triggerMethod
+    })
     .eq('slug', req.session.slug);
   
   if (error) return res.status(500).json({ error: error.message });
@@ -75,13 +74,6 @@ router.get('/api/auto-pilot/logs/:slug', async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
   
   res.json(data || []);
-});
-
-// Stripe OAuth connect
-router.get('/stripe/connect/:slug', async (req, res) => {
-  // Implement Stripe Connect OAuth flow here
-  // Redirect to Stripe authorization URL
-  res.redirect(`https://connect.stripe.com/oauth/authorize?client_id=${process.env.STRIPE_CLIENT_ID}&scope=read_write&redirect_uri=${process.env.BASE_URL}/stripe/oauth/callback`);
 });
 
 module.exports = router;
