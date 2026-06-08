@@ -11,11 +11,6 @@ const emailService = require("./services/emailService");
 const smsService = require("./services/smsService");
 const aiService = require("./services/aiService");
 const pdfService = require("./services/pdfService");
-const emailParserRoutes = require('./routes/email-parser');
-const csvUploadRoutes = require('./routes/csv-upload');
-const analyticsRoutes = require('./routes/analytics');
-const reportsRoutes = require('./routes/reports');
-
 
 // Config
 const supabase = require("./config/database");
@@ -38,19 +33,18 @@ const nfcRoutes = require("./routes/nfc");
 const affiliateRoutes = require("./routes/affiliate");
 const publicRoutes = require("./routes/public");
 
+// NEW ROUTES
+const emailParserRoutes = require('./routes/email-parser');
+const csvUploadRoutes = require('./routes/csv-upload');
+const analyticsRoutes = require('./routes/analytics');
+const reportsRoutes = require('./routes/reports');
+const smsTriggerRoutes = require('./routes/sms-trigger');
+const autoPilotRoutes = require('./routes/auto-pilot');
+
 // Cron jobs
 const runReputationScores = require("./cron/reputation-scores");
 const markConversions = require("./cron/mark-conversions");
 const { processQueue } = require('./cron/process-queue');
-
-
-const smsTriggerRoutes = require('./routes/sms-trigger');
-
-const autoPilotRoutes = require('./routes/auto-pilot');
-
-import { initAutoPilot } from './auto-pilot.mjs';
-
-
 
 const app = express();
 
@@ -65,23 +59,17 @@ function escapeJS(str) {
     .replace(/\r/g, '\\r')
     .replace(/\t/g, '\\t');
 }
-// ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 
-// ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
+// ─── MIDDLEWARE (ORDER MATTERS!) ────────────────────────────────────────────────
 app.set("trust proxy", 1);
 app.use(cors());
-
-app.use(emailParserRoutes);
-app.use(csvUploadRoutes);
-app.use(analyticsRoutes);
-app.use(reportsRoutes);
 
 // Webhook MUST come before bodyParser.json() - THIS IS CRITICAL
 app.use("/stripe-webhook", webhookRoutes);
 
 // THEN bodyParser for all other routes
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Session store AFTER bodyParser
 app.use(
@@ -100,90 +88,15 @@ app.use(
   })
 );
 
+// ─── ROUTES ────────────────────────────────────────────────────────────────────
+// Mount all routes AFTER middleware
+app.use(emailParserRoutes);
+app.use(csvUploadRoutes);
+app.use(analyticsRoutes);
+app.use(reportsRoutes);
 app.use(smsTriggerRoutes);
-
 app.use(autoPilotRoutes);
 
-initAutoPilot(window.slug);
-
-
-
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-});
-
-// ─── ROOT ROUTE - Serve landing.html ───────────────────────────────────────────
-// Root route - serve landing.html (place this at the top of your routes)
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "landing.html"));
-});
-
-// ─── REVIEW FUNNEL ROUTE (must come before other routes) ───────────────────────
-app.get("/r/:business", async (req, res) => {
-  let slug = req.params.business;
-  
-  // Check if this is a custom domain request
-  const host = req.get('host');
-  if (host && host !== process.env.BASE_URL?.replace('https://', '')) {
-    const { data: domainMatch } = await supabase
-      .from("businesses")
-      .select("slug")
-      .eq("funnel_custom_domain", host)
-      .maybeSingle();
-    if (domainMatch) {
-      slug = domainMatch.slug;
-    }
-  }
-  
-  const { data, error } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle();
-    
-  if (error || !data) return res.status(404).send("Business not found");
-
-  // Record visit event
-  await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
-
-  // Get translated content if language is set
-  let headline = data.funnel_headline || `How was your experience at ${data.name}?`;
-  let happyLabel = data.funnel_happy_label || 'Great experience!';
-  let unhappyLabel = data.funnel_unhappy_label || 'Could be better';
-  let thankyouMessage = data.funnel_thankyou_message || 'Thank you for your feedback — it means a lot to us.';
-  
-  if (data.funnel_language && data.funnel_language !== 'en') {
-    headline = data.funnel_translated_headline || headline;
-    happyLabel = data.funnel_translated_happy_label || happyLabel;
-    unhappyLabel = data.funnel_translated_unhappy_label || unhappyLabel;
-    thankyouMessage = data.funnel_translated_thankyou_message || thankyouMessage;
-  }
-
-  // Read the funnel loader HTML template
-  const loaderPath = path.join(__dirname, "../public", "funnel-loader-template.html");
-  let loaderHtml = fs.readFileSync(loaderPath, "utf8");
-  
-  // Inject business data into the page
-  const injectedHtml = loaderHtml.replace('</body>', `
-    <script>
-      window.serverSlug = "${escapeJS(slug)}";
-      window.serverBusinessName = "${escapeJS(data.name)}";
-      window.serverReviewLink = "${escapeJS(data.review_link || '')}";
-      window.serverFunnelTemplate = "${escapeJS(data.funnel_template || 'classic')}";
-      window.serverFunnelAccentColor = "${escapeJS(data.funnel_accent_color || '#C8A96E')}";
-      window.serverFunnelLogoUrl = "${escapeJS(data.funnel_logo_url || '')}";
-      window.serverFunnelHeadline = "${escapeJS(headline)}";
-      window.serverFunnelHappyLabel = "${escapeJS(happyLabel)}";
-      window.serverFunnelUnhappyLabel = "${escapeJS(unhappyLabel)}";
-      window.serverFunnelThankyouMessage = "${escapeJS(thankyouMessage)}";
-      window.isLapsed = ${!data.subscription_active};
-    </script>
-  </body>`);
-  
-  res.send(injectedHtml);
-});
-
-// ─── ROUTES ────────────────────────────────────────────────────────────────────
 // HTML routes FIRST (for static pages)
 app.use(htmlRoutes);
 
@@ -209,6 +122,75 @@ app.use("/blog", express.static(path.join(__dirname, "../public/blog")));
 app.use("/funnel", express.static(path.join(__dirname, "../public/funnel")));
 app.use(express.static(path.join(__dirname, "../public")));
 
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// ─── ROOT ROUTE - Serve landing.html ───────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "landing.html"));
+});
+
+// ─── REVIEW FUNNEL ROUTE (must come before other routes) ───────────────────────
+app.get("/r/:business", async (req, res) => {
+  let slug = req.params.business;
+  
+  const host = req.get('host');
+  if (host && host !== process.env.BASE_URL?.replace('https://', '')) {
+    const { data: domainMatch } = await supabase
+      .from("businesses")
+      .select("slug")
+      .eq("funnel_custom_domain", host)
+      .maybeSingle();
+    if (domainMatch) {
+      slug = domainMatch.slug;
+    }
+  }
+  
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+    
+  if (error || !data) return res.status(404).send("Business not found");
+
+  await supabase.from("events").insert({ business_slug: slug, event_type: "visit" });
+
+  let headline = data.funnel_headline || `How was your experience at ${data.name}?`;
+  let happyLabel = data.funnel_happy_label || 'Great experience!';
+  let unhappyLabel = data.funnel_unhappy_label || 'Could be better';
+  let thankyouMessage = data.funnel_thankyou_message || 'Thank you for your feedback — it means a lot to us.';
+  
+  if (data.funnel_language && data.funnel_language !== 'en') {
+    headline = data.funnel_translated_headline || headline;
+    happyLabel = data.funnel_translated_happy_label || happyLabel;
+    unhappyLabel = data.funnel_translated_unhappy_label || unhappyLabel;
+    thankyouMessage = data.funnel_translated_thankyou_message || thankyouMessage;
+  }
+
+  const loaderPath = path.join(__dirname, "../public", "funnel-loader-template.html");
+  let loaderHtml = fs.readFileSync(loaderPath, "utf8");
+  
+  const injectedHtml = loaderHtml.replace('</body>', `
+    <script>
+      window.serverSlug = "${escapeJS(slug)}";
+      window.serverBusinessName = "${escapeJS(data.name)}";
+      window.serverReviewLink = "${escapeJS(data.review_link || '')}";
+      window.serverFunnelTemplate = "${escapeJS(data.funnel_template || 'classic')}";
+      window.serverFunnelAccentColor = "${escapeJS(data.funnel_accent_color || '#C8A96E')}";
+      window.serverFunnelLogoUrl = "${escapeJS(data.funnel_logo_url || '')}";
+      window.serverFunnelHeadline = "${escapeJS(headline)}";
+      window.serverFunnelHappyLabel = "${escapeJS(happyLabel)}";
+      window.serverFunnelUnhappyLabel = "${escapeJS(unhappyLabel)}";
+      window.serverFunnelThankyouMessage = "${escapeJS(thankyouMessage)}";
+      window.isLapsed = ${!data.subscription_active};
+    </script>
+  </body>`);
+  
+  res.send(injectedHtml);
+});
+
 // ─── CRON ENDPOINTS (for Vercel cron jobs) ────────────────────────────────────
 app.get("/cron/reputation-scores", async (req, res) => {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -227,11 +209,16 @@ app.get("/cron/mark-conversions", async (req, res) => {
 });
 
 app.get('/cron/process-queue', async (req, res) => {
-  // Optional: Add secret check
-  // if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   return res.status(401).json({ error: 'Unauthorized' });
-  // }
   const result = await processQueue();
+  res.json(result);
+});
+
+app.get("/cron/weekly-digest", async (req, res) => {
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const sendWeeklyDigests = require("./cron/weekly-digest");
+  const result = await sendWeeklyDigests();
   res.json(result);
 });
 
@@ -328,16 +315,6 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "../public", "404.html"), (err) => {
     if (err) res.status(404).send("Page not found");
   });
-});
-
-// Weekly digest cron endpoint
-app.get("/cron/weekly-digest", async (req, res) => {
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  const sendWeeklyDigests = require("./cron/weekly-digest");
-  const result = await sendWeeklyDigests();
-  res.json(result);
 });
 
 // ─── SERVERLESS EXPORT ────────────────────────────────────────────────────────
