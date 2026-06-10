@@ -1898,6 +1898,15 @@
         </div>
       </div>
 
+      <!-- Quick setup banner for logged-in users -->
+<div style="background: linear-gradient(135deg, rgba(200,169,110,0.08) 0%, rgba(200,169,110,0.02) 100%); border-bottom: 1px solid rgba(200,169,110,0.15); padding: 12px 32px; text-align: center;">
+  <p style="font-size: 0.85rem; margin: 0;">
+    🛠️ <strong>Need help setting up?</strong> 
+    <a href="https://cal.com/reviewlift/10min-setup" target="_blank" style="color: var(--accent); text-decoration: underline;">Book a free 10-minute setup call</a> 
+    — we'll install everything for you.
+  </p>
+</div>
+
       <div id="navProgressBar"></div>
 
       <!-- Hidden elements -->
@@ -2368,7 +2377,40 @@
       <div style="font-weight: 600; margin-bottom: 4px;">Connect Stripe account</div>
       <div style="font-size: 0.7rem; color: var(--cream-dim);">Review requests send automatically after each paid invoice.</div>
     </div>
-    <button id="connectStripeBtn" class="btn-full" style="width: auto; padding: 10px 24px; background: #635BFF; color: white;">Connect Stripe →</button>
+    <button id="connectStripeBtn" class="btn-full" style="width: auto; padding: 10px 24px; background: #635BFF; color: white;" onclick="connectStripe()">
+  Connect Stripe →
+</button>
+
+<script>
+window.connectStripe = async () => {
+  // Check if already connected
+  const statusRes = await fetch(`/api/stripe/status/${window.slug}`);
+  const status = await statusRes.json();
+  
+  if (status.connected) {
+    if (confirm('Stripe is already connected. Disconnect and reconnect?')) {
+      await fetch(`/stripe/disconnect/${window.slug}`, { method: 'POST' });
+      window.location.href = `/stripe/connect/${window.slug}`;
+    }
+  } else {
+    window.location.href = `/stripe/connect/${window.slug}`;
+  }
+};
+
+// Check Stripe connection status on page load
+async function checkStripeStatus() {
+  const res = await fetch(`/api/stripe/status/${window.slug}`);
+  const data = await res.json();
+  
+  const statusDiv = document.getElementById('stripeConnectedStatus');
+  if (statusDiv && data.connected) {
+    statusDiv.style.display = 'block';
+    const connectBtn = document.getElementById('connectStripeBtn');
+    if (connectBtn) connectBtn.textContent = '✓ Connected';
+  }
+}
+checkStripeStatus();
+</script>
   </div>
   <div id="stripeConnectedStatus" style="display: none; margin-top: 12px;">
     <div style="display: flex; align-items: center; gap: 8px;">
@@ -2434,7 +2476,107 @@
       </div>
     </div>
   </div>
-</div><style>
+</div>
+
+<!-- REPORTS SECTION -->
+<div id="reportsSection" class="content-section">
+  <div class="fs-container">
+    
+    <!-- Header -->
+    <div class="fs-header">
+      <div>
+        <h2>📊 Reports</h2>
+        <p>Download performance reports for your business or clients</p>
+      </div>
+    </div>
+
+    <!-- Report Options Grid -->
+    <div class="fs-layout" style="grid-template-columns: repeat(2, 1fr);">
+      
+      <!-- Monthly Report Card -->
+      <div class="panel" style="margin-bottom: 0;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; background: rgba(200,169,110,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-calendar-month" style="font-size: 1.5rem; color: var(--accent);"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0;">Monthly Performance Report</h3>
+            <p style="font-size: 0.75rem; color: var(--cream-dim); margin: 4px 0 0;">Detailed metrics for the last 30 days</p>
+          </div>
+        </div>
+        <div style="background: var(--surface-2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Reviews collected</span>
+            <span style="font-weight: 600;" id="reportReviewsCollected">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Conversion rate</span>
+            <span style="font-weight: 600;" id="reportConversionRate">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-size: 0.7rem;">Total visits</span>
+            <span style="font-weight: 600;" id="reportTotalVisits">--</span>
+          </div>
+        </div>
+        <button onclick="downloadMonthlyReport()" class="btn-full" style="background: var(--accent); color: #1A1A18;">
+          <i class="ti ti-download"></i> Download PDF Report
+        </button>
+      </div>
+
+      <!-- Quarterly Report Card -->
+      <div class="panel" style="margin-bottom: 0;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; background: rgba(200,169,110,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-chart-bar" style="font-size: 1.5rem; color: var(--accent);"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0;">Quarterly Performance Report</h3>
+            <p style="font-size: 0.75rem; color: var(--cream-dim); margin: 4px 0 0;">90-day performance overview</p>
+          </div>
+        </div>
+        <div style="background: var(--surface-2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Total reviews</span>
+            <span style="font-weight: 600;" id="quarterlyTotalReviews">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Average rating</span>
+            <span style="font-weight: 600;" id="quarterlyAvgRating">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-size: 0.7rem;">Trend vs last quarter</span>
+            <span style="font-weight: 600;" id="quarterlyTrend">--</span>
+          </div>
+        </div>
+        <button onclick="downloadQuarterlyReport()" class="btn-full" style="background: var(--surface-2); color: var(--cream); border: 1px solid var(--border);">
+          <i class="ti ti-download"></i> Download PDF Report
+        </button>
+      </div>
+
+      <!-- Annual Report Card (Agency only) -->
+      <div class="panel" id="annualReportCard" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; background: rgba(106,158,127,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-chart-pie" style="font-size: 1.5rem; color: var(--success);"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0;">Agency Client Report</h3>
+            <p style="font-size: 0.75rem; color: var(--cream-dim); margin: 4px 0 0;">White-label report for your clients</p>
+          </div>
+        </div>
+        <select id="clientSelect" style="width: 100%; padding: 12px; background: var(--surface-2); border-radius: 8px; margin-bottom: 16px;">
+          <option value="">Select client...</option>
+        </select>
+        <button onclick="downloadClientReport()" class="btn-full" style="background: var(--success); color: #1A1A18;">
+          <i class="ti ti-download"></i> Download Client Report
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
   .toggle-switch {
     position: relative;
     display: inline-block;
@@ -2486,6 +2628,164 @@
   }
 </style>
 
+<!-- AUTO-PILOT DASHBOARD SECTION -->
+<div id="autoPilotSection" class="content-section">
+  <div class="fs-container">
+    
+    <!-- Header -->
+    <div class="fs-header">
+      <div>
+        <h2>🤖 Auto-Pilot</h2>
+        <p>Review requests that send themselves — no manual work required</p>
+      </div>
+      <div class="fs-status-badge" id="apStatusBadge">
+        <span class="fs-status-dot" id="apStatusDot"></span>
+        <span id="apStatusText">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="fs-layout">
+      
+      <!-- Left: Stats & Activity -->
+      <div class="fs-flow-panel" style="grid-column: span 1;">
+        <div class="fs-panel-title">
+          <i class="ti ti-chart-bar"></i> Performance
+        </div>
+        
+        <div style="background: var(--surface-2); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+          <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Last 30 days</div>
+          <div style="display: flex; justify-content: space-between; gap: 16px;">
+            <div>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--accent);" id="apStatSent">0</div>
+              <div style="font-size: 0.7rem;">Requests sent</div>
+            </div>
+            <div>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--success);" id="apStatConverted">0</div>
+              <div style="font-size: 0.7rem;">Reviews received</div>
+            </div>
+            <div>
+              <div style="font-size: 2rem; font-weight: 800;" id="apStatRate">0%</div>
+              <div style="font-size: 0.7rem;">Conversion</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="fs-panel-title" style="margin-top: 20px;">
+          <i class="ti ti-history"></i> Recent Activity
+        </div>
+        <div id="apActivityList" style="max-height: 350px; overflow-y: auto;">
+          <div style="text-align: center; padding: 40px; color: var(--cream-dim);">Loading activity...</div>
+        </div>
+      </div>
+
+      <!-- Right: Settings -->
+      <div class="fs-settings-panel" style="grid-column: span 2;">
+        
+        <!-- Enable Toggle -->
+        <div class="settings-group">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="settings-label">Auto-Pilot</div>
+              <div style="font-size: 0.8rem;">Automatically send review requests after every job</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="apToggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Trigger Method Selection -->
+        <div class="settings-group">
+          <div class="settings-label">📱 How to trigger</div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="trigger-method-btn" data-method="sms" style="padding: 10px 20px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 40px; cursor: pointer;">
+              📱 Text message
+            </button>
+            <button class="trigger-method-btn" data-method="email" style="padding: 10px 20px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 40px; cursor: pointer;">
+              📧 Email forwarding
+            </button>
+          </div>
+          
+          <!-- SMS Details -->
+          <div id="smsMethodDetails" style="margin-top: 16px; padding: 16px; background: var(--surface-2); border-radius: 12px; display: none;">
+            <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Your dedicated number:</div>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <code style="background: var(--surface-3); padding: 8px 16px; border-radius: 8px; font-size: 1rem;" id="apTriggerNumber">+447846879077</code>
+              <button onclick="copyToClipboard('+447846879077')" style="background: var(--surface-3); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Copy</button>
+            </div>
+            <div style="margin-top: 12px; font-size: 0.7rem; color: var(--cream-dim);">
+              After each job, text: <code style="background: var(--surface-3); padding: 2px 6px;">07123456789 boiler repair</code>
+            </div>
+          </div>
+          
+          <!-- Email Details -->
+          <div id="emailMethodDetails" style="margin-top: 16px; padding: 16px; background: var(--surface-2); border-radius: 12px; display: none;">
+            <div style="font-size: 0.7rem; color: var(--cream-dim); margin-bottom: 8px;">Forward booking confirmations to:</div>
+            <code style="background: var(--surface-3); padding: 8px 12px; border-radius: 8px; display: inline-block;" id="apEmailAddress">auto@reviewlift.app</code>
+            <button onclick="copyToClipboard('auto@reviewlift.app')" style="background: var(--surface-3); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-left: 8px;">Copy</button>
+            <div style="margin-top: 12px; font-size: 0.7rem; color: var(--cream-dim);">Works with Fresha, Booksy, Calendly, Square, and any system that sends email confirmations.</div>
+          </div>
+        </div>
+
+        <!-- Delay Settings with Industry Recommendations -->
+        <div class="settings-group">
+          <div class="settings-label">⏰ Send delay</div>
+          <select id="apDelaySelect" style="width: 100%; padding: 12px; background: var(--surface-2); border-radius: 8px;">
+            <option value="0">Immediately - 33% conversion</option>
+            <option value="1">1 hour later - 29% conversion</option>
+            <option value="2" selected>2 hours later - 27% conversion</option>
+            <option value="4">4 hours later - 23% conversion</option>
+            <option value="12">12 hours later - 24% conversion</option>
+            <option value="24">Next day - 20% conversion</option>
+            <option value="48">2 days later - 18% conversion</option>
+          </select>
+          <div id="delayInsight" style="margin-top: 8px; padding: 10px; background: rgba(200,169,110,0.08); border-radius: 8px; font-size: 0.7rem; color: var(--accent); display: none;">
+            <i class="ti ti-bulb"></i> <span id="recommendationText"></span>
+          </div>
+        </div>
+
+        <!-- Send Method -->
+        <div class="settings-group">
+          <div class="settings-label">📨 Send via</div>
+          <select id="apActionSelect" style="width: 100%; padding: 12px; background: var(--surface-2); border-radius: 8px;">
+            <option value="sms">SMS only (best for trades)</option>
+            <option value="email">Email only</option>
+            <option value="both">SMS + Email (best conversion)</option>
+          </select>
+        </div>
+
+        <!-- Quiet Hours -->
+        <div class="settings-group">
+          <div class="settings-label">🌙 Quiet hours (don't send during)</div>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <select id="apQuietStart" style="padding: 10px; background: var(--surface-2); border-radius: 8px;">
+              <option value="21">9:00 PM</option>
+              <option value="22">10:00 PM</option>
+              <option value="23">11:00 PM</option>
+            </select>
+            <span>to</span>
+            <select id="apQuietEnd" style="padding: 10px; background: var(--surface-2); border-radius: 8px;">
+              <option value="6">6:00 AM</option>
+              <option value="7">7:00 AM</option>
+              <option value="8" selected>8:00 AM</option>
+              <option value="9">9:00 AM</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-bar">
+          <span id="apSaveStatus" class="save-status">✓ Settings saved</span>
+          <button id="apSaveBtn" class="save-btn">💾 Save changes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
       <!-- ASSETS SECTION -->
       <div id="assetsSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Assets Gallery</h2>
@@ -2516,13 +2816,57 @@
             <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Share anywhere — email, social, text</p>
             <input id="assetReviewLink" readonly style="width:100%;padding:8px;background:var(--surface-3);border-radius:6px;font-size:0.7rem;margin-bottom:10px;"><button onclick="copyAssetReviewLink()" class="btn-full" style="background:var(--accent);color:#1A1A18;padding:8px 16px;">Copy link →</button>
           </div>
-          <div class="panel">
+         <div class="panel">
   <h3>📁 Bulk Import Customers</h3>
   <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Upload a CSV file with customer details to send review requests in bulk.</p>
   <input type="file" id="csvFile" accept=".csv" style="margin-bottom:12px;">
   <button onclick="uploadCSV()" class="btn-full" style="background:var(--accent);">Upload & Send →</button>
-  <a href="/api/csv-template/your-slug" download style="display:block;margin-top:12px;font-size:0.7rem;color:var(--accent);">Download template CSV</a>
+  <a href="#" id="csvTemplateLink" download style="display:block;margin-top:12px;font-size:0.7rem;color:var(--accent);">Download template CSV</a>
   <div id="csvUploadResult" style="margin-top:12px;font-size:0.75rem;"></div>
+</div>
+
+<script>
+window.uploadCSV = async () => {
+  const file = document.getElementById('csvFile').files[0];
+  if (!file) {
+    showToast('Please select a CSV file', 'error');
+    return;
+  }
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Uploading...';
+  
+  try {
+    const res = await fetch(`/api/upload-csv/${window.slug}`, { method: 'POST', body: formData });
+    const data = await res.json();
+    
+    const resultDiv = document.getElementById('csvUploadResult');
+    if (data.success) {
+      resultDiv.innerHTML = `✅ ${data.queued} customers queued for review requests!`;
+      resultDiv.style.color = '#6A9E7F';
+    } else {
+      resultDiv.innerHTML = `❌ Error: ${data.error}`;
+      resultDiv.style.color = '#C0675A';
+    }
+    
+    if (data.errors && data.errors.length) {
+      resultDiv.innerHTML += `<div style="font-size:0.65rem; margin-top:8px;">⚠️ ${data.errors.join(', ')}</div>`;
+    }
+  } catch (e) {
+    document.getElementById('csvUploadResult').innerHTML = '❌ Upload failed. Please try again.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Upload & Send →';
+  }
+};
+
+// Set CSV template link
+document.getElementById('csvTemplateLink').href = `/api/csv-template/${window.slug}`;
+</script>
 </div>
 
 <script>
@@ -2637,6 +2981,161 @@ window.uploadCSV = async () => {
           </table>
         </div>
       </div>
+      <!-- REPORTS SECTION -->
+<div id="reportsSection" class="content-section">
+  <div class="fs-container">
+    
+    <!-- Header -->
+    <div class="fs-header">
+      <div>
+        <h2>📊 Reports</h2>
+        <p>Download performance reports for your business or clients</p>
+      </div>
+    </div>
+
+    <!-- Report Options Grid -->
+    <div class="fs-layout" style="grid-template-columns: repeat(2, 1fr);">
+      
+      <!-- Monthly Report Card -->
+      <div class="panel" style="margin-bottom: 0;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; background: rgba(200,169,110,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-calendar-month" style="font-size: 1.5rem; color: var(--accent);"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0;">Monthly Performance Report</h3>
+            <p style="font-size: 0.75rem; color: var(--cream-dim); margin: 4px 0 0;">Detailed metrics for the last 30 days</p>
+          </div>
+        </div>
+        <div style="background: var(--surface-2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Reviews collected</span>
+            <span style="font-weight: 600;" id="reportReviewsCollected">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Conversion rate</span>
+            <span style="font-weight: 600;" id="reportConversionRate">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-size: 0.7rem;">Total visits</span>
+            <span style="font-weight: 600;" id="reportTotalVisits">--</span>
+          </div>
+        </div>
+        <button onclick="downloadMonthlyReport()" class="btn-full" style="background: var(--accent); color: #1A1A18;">
+          <i class="ti ti-download"></i> Download PDF Report
+        </button>
+      </div>
+
+      <!-- Quarterly Report Card -->
+      <div class="panel" style="margin-bottom: 0;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; background: rgba(200,169,110,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-chart-bar" style="font-size: 1.5rem; color: var(--accent);"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0;">Quarterly Performance Report</h3>
+            <p style="font-size: 0.75rem; color: var(--cream-dim); margin: 4px 0 0;">90-day performance overview</p>
+          </div>
+        </div>
+        <div style="background: var(--surface-2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Total reviews</span>
+            <span style="font-weight: 600;" id="quarterlyTotalReviews">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.7rem;">Average rating</span>
+            <span style="font-weight: 600;" id="quarterlyAvgRating">--</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-size: 0.7rem;">Trend vs last quarter</span>
+            <span style="font-weight: 600;" id="quarterlyTrend">--</span>
+          </div>
+        </div>
+        <button onclick="downloadQuarterlyReport()" class="btn-full" style="background: var(--surface-2); color: var(--cream); border: 1px solid var(--border);">
+          <i class="ti ti-download"></i> Download PDF Report
+        </button>
+      </div>
+
+      <!-- Annual Report Card (Agency only) -->
+      <div class="panel" id="annualReportCard" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; background: rgba(106,158,127,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-chart-pie" style="font-size: 1.5rem; color: var(--success);"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0;">Agency Client Report</h3>
+            <p style="font-size: 0.75rem; color: var(--cream-dim); margin: 4px 0 0;">White-label report for your clients</p>
+          </div>
+        </div>
+        <select id="clientSelect" style="width: 100%; padding: 12px; background: var(--surface-2); border-radius: 8px; margin-bottom: 16px;">
+          <option value="">Select client...</option>
+        </select>
+        <button onclick="downloadClientReport()" class="btn-full" style="background: var(--success); color: #1A1A18;">
+          <i class="ti ti-download"></i> Download Client Report
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// Report download functions
+window.downloadMonthlyReport = () => {
+  window.location.href = `/report/${window.slug}?period=month`;
+};
+
+window.downloadQuarterlyReport = () => {
+  window.location.href = `/report/${window.slug}?period=quarter`;
+};
+
+window.downloadClientReport = () => {
+  const clientSlug = document.getElementById('clientSelect')?.value;
+  if (clientSlug) {
+    window.location.href = `/report/${clientSlug}?period=quarter&client=true`;
+  } else {
+    showToast('Please select a client first', 'error');
+  }
+};
+
+// Load report stats
+async function loadReportStats() {
+  try {
+    const res = await fetch(`/api/report-stats/${window.slug}`);
+    const data = await res.json();
+    
+    document.getElementById('reportReviewsCollected').innerText = data.monthly?.reviews || 0;
+    document.getElementById('reportConversionRate').innerText = `${data.monthly?.conversion_rate || 0}%`;
+    document.getElementById('reportTotalVisits').innerText = data.monthly?.visits || 0;
+    document.getElementById('quarterlyTotalReviews').innerText = data.quarterly?.reviews || 0;
+    document.getElementById('quarterlyAvgRating').innerText = data.quarterly?.avg_rating || 'N/A';
+    document.getElementById('quarterlyTrend').innerHTML = data.quarterly?.trend > 0 ? '📈 +' + data.quarterly.trend : '📉 ' + data.quarterly.trend;
+    
+    // Show agency report card if user has clients
+    if (data.isAgency && data.clients?.length) {
+      document.getElementById('annualReportCard').style.display = 'block';
+      const clientSelect = document.getElementById('clientSelect');
+      data.clients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client.slug;
+        option.textContent = client.name;
+        clientSelect.appendChild(option);
+      });
+    }
+  } catch (e) {
+    console.error('Failed to load report stats:', e);
+  }
+}
+
+// Load stats when reports section becomes active
+const reportsObserver = new MutationObserver(() => {
+  const reportsSection = document.getElementById('reportsSection');
+  if (reportsSection && reportsSection.classList.contains('active')) {
+    loadReportStats();
+  }
+});
+reportsObserver.observe(document.getElementById('reportsSection'), { attributes: true, attributeFilter: ['class'] });
+</script>
     </main>
   </div>
 
@@ -2760,52 +3259,16 @@ window.uploadCSV = async () => {
       .mobile-tab.active { opacity: 1 !important; color: var(--accent) !important; }
     }
   </style>
-<script>
-// Auto-Pilot copy functions
-window.copyTriggerNumber = () => {
-  const number = document.getElementById('apTriggerNumberDisplay')?.innerText;
-  if (number) {
-    navigator.clipboard.writeText(number);
-    showToast('Number copied!', 'success');
-  }
-};
 
-window.copyEmailAddress = () => {
-  const email = document.getElementById('apEmailAddressDisplay')?.innerText;
-  if (email) {
-    navigator.clipboard.writeText(email);
-    showToast('Email address copied!', 'success');
-  }
-};
+  <!-- Floating Setup Button -->
+<div style="position: fixed; bottom: 100px; right: 32px; z-index: 1000;">
+  <a href="https://cal.com/reviewlift/10min-setup" target="_blank" style="text-decoration: none;">
+    <button style="background: var(--accent); color: #1A1A18; border: none; padding: 14px 24px; border-radius: 60px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px;">
+      <span>🎧</span> Need setup? We'll do it
+    </button>
+  </a>
+</div>
 
-// Stripe Connect
-document.getElementById('connectStripeBtn')?.addEventListener('click', () => {
-  window.location.href = `/stripe/connect/${window.slug}`;
-});
-
-// Check if Stripe was just connected
-if (window.location.search.includes('stripe=connected')) {
-  const statusDiv = document.getElementById('stripeConnectedStatus');
-  if (statusDiv) statusDiv.style.display = 'block';
-  window.history.replaceState({}, document.title, window.location.pathname);
-}
-
-// CSV upload
-window.uploadCSV = async () => {
-  const file = document.getElementById('csvFile')?.files[0];
-  if (!file) return;
-  
-  const formData = new FormData();
-  formData.append('file', file);
-  
-  const res = await fetch(`/api/upload-csv/${window.slug}`, { method: 'POST', body: formData });
-  const data = await res.json();
-  
-  const resultDiv = document.getElementById('csvUploadResult');
-  if (resultDiv) {
-    resultDiv.innerHTML = `✅ ${data.queued || 0} customers queued for review requests!`;
-  }
-};
 </script>
    <!-- Scripts - Single bundle -->
 <script type="module" src="/js/dashboard.bundle.mjs"></script>

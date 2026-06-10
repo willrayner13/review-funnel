@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Review Score Checker — Free Tool | ReviewLift</title>
+  <meta name="description" content="Check your Google review score for free. See how you compare to competitors and get tips to improve.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>
+    /* Score Checker Additional Styles */
+    .score-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    
+    .score-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    
+    .score-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 4rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    
+    .score-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--cream-dim);
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--surface-2);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    
+    .recommendation-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    
+    .recommendation-excellent { background: rgba(106,158,127,0.15); color: #6A9E7F; }
+    .recommendation-good { background: rgba(200,169,110,0.15); color: #C8A96E; }
+    .recommendation-average { background: rgba(212,167,74,0.15); color: #D4A74A; }
+    .recommendation-needs_work { background: rgba(192,103,90,0.15); color: #C0675A; }
+    .recommendation-start { background: rgba(200,169,110,0.15); color: #C8A96E; }
+    
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .metric-label { color: var(--cream-dim); font-size: 0.85rem; }
+    .metric-value { font-weight: 600; color: var(--cream); }
+    
+    .search-result-item {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .search-result-item:hover {
+      border-color: var(--accent);
+      background: var(--surface-2);
+      transform: translateX(4px);
+    }
+    
+    .search-result-name { font-weight: 600; margin-bottom: 4px; }
+    .search-result-address { font-size: 0.7rem; color: var(--cream-dim); }
+    
+    .industry-select {
+      width: 100%;
+      padding: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      margin-top: 16px;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--surface-2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .hidden { display: none; }
+    
+    .cta-button {
+      background: var(--accent);
+      color: #1A1A18;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV - Unified Component -->
+<div id="rl-nav-placeholder"></div>
+
+<script>
+  fetch('/components/navbar.html')
+    .then(res => res.text())
+    .then(html => document.getElementById('rl-nav-placeholder').innerHTML = html)
+    .catch(err => console.error('Navbar failed to load:', err));
+</script>
+
+<!-- Hero Section -->
+<section class="hero" style="min-height: auto; padding: 140px 24px 80px;">
+  <div class="hero-badge">FREE TOOL</div>
+  <h1>What's your <em>Google Review Score?</em></h1>
+  <p class="hero-sub" style="max-width: 500px;">
+    Enter your business name. Get your score instantly. See how you compare to competitors.
+  </p>
+</section>
+
+<!-- Score Checker Form -->
+<div class="score-container" id="scoreCheckerApp">
+  
+  <!-- Step 1: Search Business -->
+  <div id="step1">
+    <div class="score-card">
+      <h3 style="margin-bottom: 16px;">🔍 Find your business</h3>
+      <input type="text" id="businessSearch" placeholder="e.g., Joe's Barbershop London" 
+             style="width:100%; padding:14px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r); color:var(--cream); margin-bottom:12px;">
+      <button id="searchBtn" class="btn-trial" style="width:100%; justify-content:center;">Search →</button>
+      <div id="searchResults" style="margin-top: 20px;"></div>
+    </div>
+  </div>
+  
+  <!-- Step 2: Select Industry & Enter Email -->
+  <div id="step2" style="display:none;">
+    <div class="score-card">
+      <h3 style="margin-bottom: 16px;">📧 Almost there</h3>
+      <div id="selectedBusinessInfo" style="background:var(--surface-2); padding:16px; border-radius:var(--r); margin-bottom:20px;"></div>
+      <select id="industrySelect" class="industry-select">
+        <option value="salon">💇 Salon / Barber</option>
+        <option value="plumber">🔧 Plumber / Trades</option>
+        <option value="dental">🦷 Dental / Medical</option>
+        <option value="gym">🏋️ Gym / Fitness</option>
+        <option value="restaurant">🍽️ Restaurant / Café</option>
+        <option value="default">📋 Other</option>
+      </select>
+      <input type="email" id="userEmail" placeholder="Your email address" 
+             style="width:100%; padding:14px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r); color:var(--cream); margin-top:16px;">
+      <button id="getScoreBtn" class="btn-trial" style="width:100%; justify-content:center; margin-top:16px;">Get my score →</button>
+    </div>
+  </div>
+  
+  <!-- Step 3: Results -->
+  <div id="step3" style="display:none;">
+    <div class="score-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 24px;">
+        <div>
+          <div class="score-label">YOUR REVIEW SCORE</div>
+          <div class="score-number" id="resultScore">0</div>
+        </div>
+        <div id="resultBadge"></div>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="scoreProgress" style="width:0%"></div>
+      </div>
+      
+      <div class="metric-row">
+        <span class="metric-label">⭐ Average rating</span>
+        <span class="metric-value" id="resultRating">0 / 5</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">📝 Total reviews</span>
+        <span class="metric-value" id="resultReviewCount">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">📈 Monthly review velocity</span>
+        <span class="metric-value" id="resultVelocity">0 per month</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">⚠️ Missing reviews vs competitors</span>
+        <span class="metric-value" id="resultMissing">0</span>
+      </div>
+      
+      <div id="resultRecommendation" style="margin-top: 24px; padding: 16px; background: var(--surface-2); border-radius: var(--r);">
+        <p style="margin: 0; font-size: 0.9rem;" id="recommendationText"></p>
+      </div>
+      
+      <a href="/admin" id="ctaLink" class="cta-button" style="display: block; text-align: center; text-decoration: none;">
+        🚀 ReviewLift can automate this →
+      </a>
+      <p style="font-size: 0.7rem; color: var(--cream-dim); text-align: center; margin-top: 16px;">
+        We'll email you a detailed report. No spam, unsubscribe anytime.
+      </p>
+    </div>
+  </div>
+  
+</div>
+
+<!-- JavaScript -->
+<script>
+let selectedPlaceId = null;
+let selectedBusinessName = null;
+
+const searchInput = document.getElementById('businessSearch');
+const searchBtn = document.getElementById('searchBtn');
+const searchResultsDiv = document.getElementById('searchResults');
+const step1 = document.getElementById('step1');
+const step2 = document.getElementById('step2');
+const step3 = document.getElementById('step3');
+
+searchBtn.addEventListener('click', async () => {
+  const query = searchInput.value.trim();
+  if (query.length < 3) {
+    searchResultsDiv.innerHTML = '<p style="color: var(--danger);">Please enter at least 3 characters</p>';
+    return;
+  }
+  
+  searchBtn.disabled = true;
+  searchBtn.innerHTML = '<span class="loading-spinner"></span> Searching...';
+  searchResultsDiv.innerHTML = '';
+  
+  try {
+    const res = await fetch(`/api/search-business?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    
+    if (data.error) {
+      searchResultsDiv.innerHTML = `<p style="color: var(--danger);">${data.error}</p>`;
+    } else if (data.businesses && data.businesses.length) {
+      searchResultsDiv.innerHTML = data.businesses.map(biz => `
+        <div class="search-result-item" data-place-id="${biz.place_id}" data-name="${biz.name.replace(/'/g, "\\'")}">
+          <div class="search-result-name">${biz.name}</div>
+          <div class="search-result-address">${biz.address || biz.vicinity}</div>
+        </div>
+      `).join('');
+      
+      document.querySelectorAll('.search-result-item').forEach(el => {
+        el.addEventListener('click', () => {
+          selectedPlaceId = el.dataset.placeId;
+          selectedBusinessName = el.dataset.name;
+          document.getElementById('selectedBusinessInfo').innerHTML = `
+            <strong>${selectedBusinessName}</strong><br>
+            <span style="font-size:0.75rem; color:var(--cream-dim);">Selected business</span>
+          `;
+          step1.style.display = 'none';
+          step2.style.display = 'block';
+        });
+      });
+    } else {
+      searchResultsDiv.innerHTML = '<p style="color: var(--danger);">No businesses found. Try a different name.</p>';
+    }
+  } catch (err) {
+    searchResultsDiv.innerHTML = '<p style="color: var(--danger);">Something went wrong. Please try again.</p>';
+  } finally {
+    searchBtn.disabled = false;
+    searchBtn.innerHTML = 'Search →';
+  }
+});
+
+document.getElementById('getScoreBtn').addEventListener('click', async () => {
+  const email = document.getElementById('userEmail').value.trim();
+  const industry = document.getElementById('industrySelect').value;
+  
+  if (!email) {
+    alert('Please enter your email address');
+    return;
+  }
+  
+  const btn = document.getElementById('getScoreBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spinner"></span> Calculating...';
+  
+  try {
+    const res = await fetch('/api/review-score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        placeId: selectedPlaceId,
+        email: email,
+        businessName: selectedBusinessName,
+        industry: industry
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (data.success) {
+      const score = data.business.score;
+      document.getElementById('resultScore').innerText = score;
+      document.getElementById('scoreProgress').style.width = `${score}%`;
+      document.getElementById('resultRating').innerHTML = `${data.business.rating} / 5`;
+      document.getElementById('resultReviewCount').innerText = data.business.review_count;
+      document.getElementById('resultVelocity').innerHTML = `${data.business.velocity} per month`;
+      document.getElementById('resultMissing').innerHTML = `${data.business.missing_reviews} needed`;
+      
+      let badgeClass = '';
+      let recommendationMsg = '';
+      switch(data.business.recommendation) {
+        case 'excellent':
+          badgeClass = 'recommendation-excellent';
+          recommendationMsg = '🌟 Excellent! Your business has great review momentum. Keep it up!';
+          break;
+        case 'good':
+          badgeClass = 'recommendation-good';
+          recommendationMsg = '👍 Good position. A few more reviews could push you ahead of competitors.';
+          break;
+        case 'average':
+          badgeClass = 'recommendation-average';
+          recommendationMsg = '📊 Average score. Many local businesses are outperforming you on reviews.';
+          break;
+        case 'needs_work':
+          badgeClass = 'recommendation-needs_work';
+          recommendationMsg = '⚠️ Your review profile needs attention. You could be losing customers.';
+          break;
+        default:
+          badgeClass = 'recommendation-start';
+          recommendationMsg = '🚀 You have very few reviews. Every new 5-star review will dramatically improve your score.';
+      }
+      
+      document.getElementById('resultBadge').innerHTML = `<span class="recommendation-badge ${badgeClass}">${recommendationMsg.split(' ')[0]}</span>`;
+      document.getElementById('recommendationText').innerHTML = recommendationMsg;
+      
+      step2.style.display = 'none';
+      step3.style.display = 'block';
+    } else {
+      alert(data.error || 'Could not fetch score');
+    }
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Get my score →';
+  }
+});
+
+// Allow Enter key to search
+searchInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') searchBtn.click();
+});
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/about">About</a>
+    <a href="/score-checker">Free Score Checker</a>
+    <a href="/login">Sign in</a>
+  </div>
+  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

@@ -86,6 +86,45 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
     }
   }
 
+  // Auto-pilot: queue review request when invoice is paid
+if (event.type === "invoice.paid") {
+  const invoice = event.data.object;
+  const customer = invoice.customer;
+  const customerEmail = invoice.customer_email;
+  const customerName = invoice.customer_name;
+
+  // Find which ReviewLift business owns this Stripe customer
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("slug, name, industry, autopilot_enabled, autopilot_delay_hours")
+    .eq("stripe_customer", customer)
+    .maybeSingle();
+
+  if (business && business.autopilot_enabled && customerEmail) {
+    const delayHours = business.autopilot_delay_hours || 2;
+    const sendAt = new Date();
+    sendAt.setHours(sendAt.getHours() + delayHours);
+
+    // Quiet hours — don't send 9pm to 8am
+    if (sendAt.getHours() >= 21 || sendAt.getHours() < 8) {
+      sendAt.setDate(sendAt.getDate() + 1);
+      sendAt.setHours(9, 0, 0, 0);
+    }
+
+    await supabase.from("review_queue").insert({
+      business_slug: business.slug,
+      customer_name: customerName || null,
+      customer_email: customerEmail,
+      service: "invoice payment",
+      trigger_source: "stripe_invoice",
+      send_at: sendAt.toISOString(),
+      status: "pending",
+    });
+
+    console.log(`✅ Review request queued for ${customerEmail} after invoice payment`);
+  }
+}
+
   // Handle subscription events
   if (event.type === "customer.subscription.trial_will_end") {
     console.log(`Trial ending soon: ${event.data.object.customer}`);
@@ -168,14 +207,15 @@ router.post('/upload-csv/:slug', upload.single('file'), async (req, res) => {
 });
 
 // Existing Stripe webhook handler
-router.post('/stripe-webhook', async (req, res) => {
+// Add this to your existing webhooks.js
+router.post('/stripe-webhook/:slug', async (req, res) => {
+  const { slug } = req.params;
   const sig = req.headers['stripe-signature'];
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   
   let event;
-  
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
     console.error(`Webhook Error: ${err.message}`);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -183,12 +223,42 @@ router.post('/stripe-webhook', async (req, res) => {
   
   // Handle invoice paid event
   if (event.type === 'invoice.paid') {
-    await handleStripeInvoice(event);
-  }
-  
-  // Handle checkout completion
-  if (event.type === 'checkout.session.completed') {
-    await handleStripeCheckout(event);
+    const invoice = event.data.object;
+    const customerEmail = invoice.customer_email;
+    const customerName = invoice.customer_name;
+    const amount = invoice.amount_paid / 100;
+    const description = invoice.lines?.data[0]?.description || 'invoice';
+    
+    if (!customerEmail) {
+      return res.status(200).send('OK');
+    }
+    
+    // Get business settings
+    const { data: business } = await supabase
+      .from('businesses')
+      .select('autopilot_enabled, autopilot_delay_hours')
+      .eq('slug', slug)
+      .single();
+    
+    if (!business?.autopilot_enabled) {
+      return res.status(200).send('OK');
+    }
+    
+    const delayHours = business.autopilot_delay_hours || 2;
+    const sendAt = new Date();
+    sendAt.setHours(sendAt.getHours() + delayHours);
+    
+    await supabase.from('review_queue').insert({
+      business_slug: slug,
+      customer_name: customerName,
+      customer_email: customerEmail,
+      service: `Invoice paid: £${amount} - ${description}`,
+      trigger_source: 'stripe',
+      send_at: sendAt.toISOString(),
+      status: 'pending'
+    });
+    
+    console.log(`💰 Stripe invoice paid for ${slug}, queued review request`);
   }
   
   res.json({ received: true });

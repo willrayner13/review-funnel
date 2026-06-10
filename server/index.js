@@ -40,6 +40,10 @@ const analyticsRoutes = require('./routes/analytics');
 const reportsRoutes = require('./routes/reports');
 const smsTriggerRoutes = require('./routes/sms-trigger');
 const autoPilotRoutes = require('./routes/auto-pilot');
+// const stripeConnectRoutes = require('./routes/stripe-connect');
+const scoreCheckerRoutes = require('./routes/score-checker');
+
+
 
 // Cron jobs
 const runReputationScores = require("./cron/reputation-scores");
@@ -70,6 +74,10 @@ app.use("/stripe-webhook", webhookRoutes);
 // THEN bodyParser for all other routes
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// app.use(stripeConnectRoutes);
+
+app.use(scoreCheckerRoutes);
 
 // Session store AFTER bodyParser
 app.use(

@@ -200,6 +200,7 @@ initAILab();
 initAssets();
 initAutoPilot(window.slug);
 
+
 startPolling();
 
     // Initialize Funnel Studio

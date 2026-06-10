@@ -12,7 +12,9 @@ const navIdMap = {
   'automations': 'automationsSection',
   'assets': 'assetsSection',
   'analytics': 'analyticsSection',
-  'settings': 'settingsSection'
+  'settings': 'settingsSection',
+    'auto-pilot': 'autoPilotSection',   // 👈 ADD THIS
+  'reports': 'reportsSection'         // 👈 ADD THIS
 };
 
 function showNavTransition() {

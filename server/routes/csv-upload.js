@@ -35,10 +35,11 @@ router.post('/api/upload-csv/:slug', upload.single('file'), async (req, res) => 
       for (let i = 0; i < customers.length; i++) {
         const customer = customers[i];
         
-        // Try different possible column names
+        // Map common column names
         const phone = customer.phone || customer.mobile || customer.tel || customer.telephone || customer.cell;
         const email = customer.email || customer.email_address;
-        const name = customer.name || customer.full_name || customer.customer_name || `${customer.first_name} ${customer.last_name}`.trim();
+        const name = customer.name || customer.full_name || customer.customer_name || 
+                     (customer.first_name && customer.last_name ? `${customer.first_name} ${customer.last_name}`.trim() : null);
         const service = customer.service || customer.job_type || customer.appointment_type;
         
         if (!phone && !email) {
