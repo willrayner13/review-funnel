@@ -1046,6 +1046,36 @@
       color: var(--cream-dim);
     }
 
+    /* Guarantee Badge */
+.guarantee-badge {
+  background: rgba(200,169,110,0.1);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 100px;
+  padding: 8px 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(4px);
+}
+
+.guarantee-icon {
+  font-size: 1rem;
+}
+
+.guarantee-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+.guarantee-small {
+  font-size: 0.7rem;
+  color: var(--cream-dim);
+  font-weight: 400;
+}
+
     /* FOOTER */
     footer {
       border-top: 1px solid var(--border);
@@ -1221,16 +1251,25 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-badge">THE REVIEW SYSTEM THAT RUNS ITSELF</div>
+  
+  <!-- 20 REVIEW GUARANTEE BADGE -->
+  <div class="guarantee-badge">
+    <span class="guarantee-icon">🎯</span>
+    <span class="guarantee-text">20 REVIEW GUARANTEE</span>
+    <span class="guarantee-small">or your money back</span>
+  </div>
+  
   <h1>Stop asking for reviews.<br><em>Make it happen automatically.</em></h1>
-<p class="hero-sub">
-  Here's how it works: happy customers get routed straight to your Google review page. 
-  Unhappy customers? Their complaint goes to a private feedback form only you see. 
-  <strong style="color:var(--cream);">The bad review never reaches Google.</strong> 
-  Connect your booking system and the whole thing runs on autopilot.
-</p>  <div class="hero-actions">
-  <a href="/admin"><button class="btn-trial">🚀 I'll set it up for you →</button></a>
-  <a href="#how"><button class="btn-demo"><span>See how it works</span></button></a>
-</div>
+  <p class="hero-sub">
+    Here's how it works: happy customers get routed straight to your Google review page. 
+    Unhappy customers? Their complaint goes to a private feedback form only you see. 
+    <strong style="color:var(--cream);">The bad review never reaches Google.</strong> 
+    Connect your booking system and the whole thing runs on autopilot.
+  </p>
+  <div class="hero-actions">
+    <a href="/admin"><button class="btn-trial">🚀 I'll set it up for you →</button></a>
+    <a href="#how"><button class="btn-demo"><span>See how it works</span></button></a>
+  </div>
   <div class="hero-trust">
     <span>✓ No card required</span>
     <span>✓ Setup in under 2 minutes</span>
@@ -1536,6 +1575,61 @@
 
 <hr class="section-divider">
 
+<!-- FREE NFC CARD SECTION -->
+<section style="padding: 80px 48px; max-width: 1000px; margin: 0 auto; text-align: center;">
+  <div class="section-eyebrow reveal" style="justify-content:center;">📱 Physical product</div>
+  <h2 class="section-heading reveal" style="max-width:100%; text-align:center; margin-left:auto; margin-right:auto;">
+    Get a <em style="color:var(--accent);">free NFC review card</em>
+  </h2>
+  <p class="reveal" style="font-size: 1rem; color: var(--cream-dim); max-width: 600px; margin: 0 auto 40px;">
+    We'll mail you a premium tap-to-review card for free. Your customers tap it with their phone and leave a Google review instantly.
+  </p>
+  
+  <div class="reveal" style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;">
+    <!-- Card mockup -->
+    <div style="width: 200px; background: #1A1A18; border-radius: 16px; padding: 12px; border: 1px solid rgba(200,169,110,0.2);">
+      <div style="background: #1C1C1A; border-radius: 12px; padding: 16px; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px;">
+          <div style="width: 6px; height: 6px; background: #C8A96E; border-radius: 50%;"></div>
+          <span style="font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; color: #EAE7DC;">ReviewLift</span>
+        </div>
+        <div style="font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800; color: #EAE7DC; margin-bottom: 8px;">TAP TO REVIEW</div>
+        <div style="width: 40px; height: 40px; margin: 0 auto; border: 1.5px solid rgba(200,169,110,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+          <span style="font-size: 20px;">📱</span>
+        </div>
+        <div style="margin-top: 12px; font-size: 8px; color: rgba(200,169,110,0.5);">Google Review</div>
+      </div>
+    </div>
+    
+    <div style="text-align: left; max-width: 300px;">
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <span style="font-size: 1.5rem;">✅</span>
+        <div><strong>Free to Pro & Agency customers</strong><br><span style="font-size: 0.8rem; color: var(--cream-dim);">One card per business, shipped free</span></div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <span style="font-size: 1.5rem;">✅</span>
+        <div><strong>Pre-encoded with your review link</strong><br><span style="font-size: 0.8rem; color: var(--cream-dim);">Works instantly when tapped</span></div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <span style="font-size: 1.5rem;">✅</span>
+        <div><strong>Premium quality, gold foil finish</strong><br><span style="font-size: 0.8rem; color: var(--cream-dim);">Makes a great impression</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <a href="/admin">
+    <button class="btn-trial" style="background: var(--accent); color: #1A1A18; padding: 16px 40px;">
+      📬 Claim your free card →
+    </button>
+  </a>
+  <p class="reveal" style="font-size: 0.7rem; color: var(--cream-dim); margin-top: 16px;">
+    Limited to one per business. UK only. Shipped within 3-5 business days.
+  </p>
+</section>
+
+<hr class="section-divider">
+
+
 <!-- PRICING -->
 <section class="pricing-section" id="pricing">
   <div class="section-eyebrow reveal" style="justify-content:center;">Pricing</div>
@@ -1557,9 +1651,9 @@
       <a href="/admin"><button class="price-cta dark">Start free trial</button></a>
     </div>
     <!-- Pro -->
-    <div class="price-card featured reveal" style="transition-delay:.1s">
-      <div class="price-badge">MOST POPULAR</div>
-      <div class="price-name">Pro</div>
+<div style="margin: -10px 0 16px 0;">
+  <span style="background: rgba(200,169,110,0.15); padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; color: var(--accent);">🎯 20 reviews or your money back</span>
+</div>
       <div class="price-amount"><sup>£</sup>24.99<span>/mo</span></div>
       <p class="price-desc">Automation, AI, and everything serious businesses need to dominate their reputation.</p>
       <p class="price-trial">14-day free trial</p>
@@ -1629,7 +1723,15 @@
 <section class="cta-section">
   <h2 class="reveal">Your first automated review request in under 10 minutes.</h2>
   <p class="reveal">Connect your booking system, customise your funnel, and let ReviewLift run on autopilot. Reviews come in while you run your business.</p>
-<a href="/admin"><button class="btn-trial reveal">🚀 I'll set it up for you →</button></a>  <p class="cta-trust reveal">No card required · Cancel anytime · Built in the UK</p>
+  <div class="reveal" style="background: rgba(200,169,110,0.06); border: 1px solid rgba(200,169,110,0.15); border-radius: 12px; padding: 16px; max-width: 400px; margin: 0 auto 24px;">
+    <p style="margin: 0; font-size: 0.85rem;">
+      <span style="color: var(--accent);">🎯 Our promise:</span> 
+      <strong>20 new Google reviews in 60 days</strong> 
+      <span style="color: var(--cream-dim);">or we refund your first 3 months.</span>
+    </p>
+  </div>
+  <a href="/admin"><button class="btn-trial reveal">🚀 I'll set it up for you →</button></a>
+  <p class="cta-trust reveal">No card required · Cancel anytime · Built in the UK</p>
 </section>
 
 <section id="contact" class="premium-contact">

@@ -3,32 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Review Score Checker — Free Tool | ReviewLift</title>
-  <meta name="description" content="Check your Google review score for free. See how you compare to competitors and get tips to improve.">
+  <title>Review Score Checker | ReviewLift</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/landing.css">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
   <style>
-    /* Score Checker Additional Styles */
+    /* Responsive Score Checker Styles */
+    * {
+      box-sizing: border-box;
+    }
+
     .score-container {
-      max-width: 800px;
+      max-width: 600px;
       margin: 0 auto;
       padding: 40px 24px;
     }
-    
+
     .score-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--r-lg);
+      border-radius: 20px;
       padding: 32px;
-      margin-bottom: 24px;
+      transition: all 0.3s ease;
     }
-    
+
+    @media (max-width: 768px) {
+      .score-container { padding: 20px 16px; }
+      .score-card { padding: 24px 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .score-card { padding: 20px 16px; }
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(200,169,110,0.1);
+    }
+
+    @media (max-width: 768px) {
+      .form-input, .form-select {
+        padding: 12px 14px;
+        font-size: 16px;
+      }
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1A1A18;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 16px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: #D4B87A;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (max-width: 768px) {
+      .btn-primary { padding: 12px 20px; }
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--surface-2);
+      border-radius: 4px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .recommendation-box {
+      background: var(--surface-2);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 480px) {
+      .recommendation-box { padding: 16px; }
+      .recommendation-box p { font-size: 0.85rem; }
+    }
+
+    .hidden { display: none; }
+
     .score-number {
       font-family: 'Syne', sans-serif;
       font-size: 4rem;
@@ -36,282 +128,528 @@
       color: var(--accent);
       line-height: 1;
     }
-    
+
+    @media (max-width: 768px) { .score-number { font-size: 3rem; } }
+    @media (max-width: 480px) { .score-number { font-size: 2.5rem; } }
+
     .score-label {
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--cream-dim);
+      margin-top: 8px;
     }
-    
-    .progress-bar {
-      height: 8px;
+
+    .blurred-score {
+      filter: blur(8px);
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.6;
+      transition: filter 0.3s;
+    }
+
+    .autocomplete-results {
       background: var(--surface-2);
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 16px 0;
+      border-radius: 12px;
+      margin-top: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10;
+      position: relative;
     }
-    
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 4px;
-      transition: width 0.5s ease;
-    }
-    
-    .recommendation-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    
-    .recommendation-excellent { background: rgba(106,158,127,0.15); color: #6A9E7F; }
-    .recommendation-good { background: rgba(200,169,110,0.15); color: #C8A96E; }
-    .recommendation-average { background: rgba(212,167,74,0.15); color: #D4A74A; }
-    .recommendation-needs_work { background: rgba(192,103,90,0.15); color: #C0675A; }
-    .recommendation-start { background: rgba(200,169,110,0.15); color: #C8A96E; }
-    
-    .metric-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .metric-label { color: var(--cream-dim); font-size: 0.85rem; }
-    .metric-value { font-weight: 600; color: var(--cream); }
-    
-    .search-result-item {
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      margin-bottom: 12px;
+
+    .autocomplete-item {
+      padding: 12px 16px;
       cursor: pointer;
-      transition: all 0.2s;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
     }
-    
-    .search-result-item:hover {
-      border-color: var(--accent);
-      background: var(--surface-2);
-      transform: translateX(4px);
+
+    .autocomplete-item:hover { background: var(--surface-3); }
+    .autocomplete-item:last-child { border-bottom: none; }
+
+    @media (max-width: 768px) {
+      .autocomplete-item { padding: 14px 16px; }
+      .autocomplete-item strong { font-size: 0.9rem; }
+      .autocomplete-item small { font-size: 0.7rem; }
     }
-    
-    .search-result-name { font-weight: 600; margin-bottom: 4px; }
-    .search-result-address { font-size: 0.7rem; color: var(--cream-dim); }
-    
-    .industry-select {
-      width: 100%;
-      padding: 14px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      color: var(--cream);
-      font-family: 'DM Sans', sans-serif;
-      margin-top: 16px;
+
+    .selected-business {
+      background: rgba(200,169,110,0.1);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      border-left: 3px solid var(--accent);
     }
-    
-    .loading-spinner {
+
+    @media (max-width: 480px) {
+      .selected-business { padding: 10px 12px; }
+      .selected-business strong { font-size: 0.9rem; }
+    }
+
+    .loader {
       display: inline-block;
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       border: 2px solid var(--surface-2);
       border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
     }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .processing-animation {
+      text-align: center;
+      padding: 40px 20px;
     }
-    
-    .hidden { display: none; }
-    
-    .cta-button {
-      background: var(--accent);
-      color: #1A1A18;
-      padding: 14px 28px;
-      border-radius: 10px;
+
+    @media (max-width: 480px) {
+      .processing-animation { padding: 30px 20px; }
+      .processing-animation h3 { font-size: 1.1rem; }
+    }
+
+    .pulse-ring {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 20px;
+      background: var(--accent-dim);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 0.3; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+
+    .unlock-instruction {
+      text-align: center;
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(200,169,110,0.08);
+      border-radius: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .unlock-instruction { padding: 12px; }
+      .unlock-instruction h3 { font-size: 1rem; }
+    }
+
+    .hero {
+      padding: 140px 24px 60px !important;
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 100px 20px 40px !important; }
+      .hero h1 { font-size: 2rem !important; }
+      .hero-sub { font-size: 0.9rem !important; }
+    }
+
+    @media (max-width: 480px) {
+      .hero { padding: 80px 16px 30px !important; }
+      .hero h1 { font-size: 1.6rem !important; }
+    }
+
+    footer {
+      padding: 40px 24px !important;
+    }
+
+    @media (max-width: 768px) {
+      footer { padding: 30px 20px !important; }
+    }
+
+    /* Score Breakdown Styles */
+    .score-breakdown {
+      margin: 24px 0;
+      padding: 16px;
+      background: var(--surface-2);
+      border-radius: 12px;
+    }
+
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breakdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .breakdown-label {
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+    }
+
+    .breakdown-value {
       font-weight: 700;
-      display: inline-block;
+      color: var(--cream);
+    }
+
+    .breakdown-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--surface-3);
+      border-radius: 2px;
+      margin: 0 12px;
+      overflow: hidden;
+    }
+
+    .breakdown-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .improvement-tip {
       margin-top: 16px;
+      padding: 12px;
+      background: rgba(200,169,110,0.08);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--cream-dim);
+      border-left: 3px solid var(--accent);
+    }
+
+    .improvement-tip strong {
+      color: var(--cream);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #stepRevealed {
+      animation: fadeIn 0.5s ease;
+    }
+
+    #searchStatus {
+      min-height: 40px;
     }
   </style>
 </head>
 <body>
 
-<!-- NAV - Unified Component -->
 <div id="rl-nav-placeholder"></div>
-
 <script>
   fetch('/components/navbar.html')
     .then(res => res.text())
     .then(html => document.getElementById('rl-nav-placeholder').innerHTML = html)
-    .catch(err => console.error('Navbar failed to load:', err));
+    .catch(err => console.error('Navbar error:', err));
 </script>
 
-<!-- Hero Section -->
-<section class="hero" style="min-height: auto; padding: 140px 24px 80px;">
+<section class="hero">
   <div class="hero-badge">FREE TOOL</div>
   <h1>What's your <em>Google Review Score?</em></h1>
-  <p class="hero-sub" style="max-width: 500px;">
-    Enter your business name. Get your score instantly. See how you compare to competitors.
-  </p>
+  <p class="hero-sub">Search for your business to get your score instantly.</p>
 </section>
 
-<!-- Score Checker Form -->
-<div class="score-container" id="scoreCheckerApp">
-  
-  <!-- Step 1: Search Business -->
-  <div id="step1">
-    <div class="score-card">
-      <h3 style="margin-bottom: 16px;">🔍 Find your business</h3>
-      <input type="text" id="businessSearch" placeholder="e.g., Joe's Barbershop London" 
-             style="width:100%; padding:14px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r); color:var(--cream); margin-bottom:12px;">
-      <button id="searchBtn" class="btn-trial" style="width:100%; justify-content:center;">Search →</button>
-      <div id="searchResults" style="margin-top: 20px;"></div>
+<div class="score-container">
+  <div class="score-card">
+    
+    <!-- Step 1: Search Business -->
+    <div id="step1">
+      <h3>🔍 Search for your business</h3>
+      <input type="text" id="businessSearch" placeholder="e.g., Costa Coffee Tunbridge Wells" class="form-input" autocomplete="off">
+      <div id="autocompleteResults" class="autocomplete-results hidden"></div>
+      <button id="searchBtn" class="btn-primary" disabled>Search →</button>
+      <div id="searchStatus" style="margin-top: 12px; font-size: 0.8rem; color: var(--cream-dim);"></div>
     </div>
-  </div>
-  
-  <!-- Step 2: Select Industry & Enter Email -->
-  <div id="step2" style="display:none;">
-    <div class="score-card">
-      <h3 style="margin-bottom: 16px;">📧 Almost there</h3>
-      <div id="selectedBusinessInfo" style="background:var(--surface-2); padding:16px; border-radius:var(--r); margin-bottom:20px;"></div>
-      <select id="industrySelect" class="industry-select">
-        <option value="salon">💇 Salon / Barber</option>
-        <option value="plumber">🔧 Plumber / Trades</option>
-        <option value="dental">🦷 Dental / Medical</option>
-        <option value="gym">🏋️ Gym / Fitness</option>
-        <option value="restaurant">🍽️ Restaurant / Café</option>
-        <option value="default">📋 Other</option>
-      </select>
-      <input type="email" id="userEmail" placeholder="Your email address" 
-             style="width:100%; padding:14px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r); color:var(--cream); margin-top:16px;">
-      <button id="getScoreBtn" class="btn-trial" style="width:100%; justify-content:center; margin-top:16px;">Get my score →</button>
-    </div>
-  </div>
-  
-  <!-- Step 3: Results -->
-  <div id="step3" style="display:none;">
-    <div class="score-card">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 24px;">
-        <div>
-          <div class="score-label">YOUR REVIEW SCORE</div>
-          <div class="score-number" id="resultScore">0</div>
-        </div>
-        <div id="resultBadge"></div>
+
+    <!-- Step 2: Processing -->
+    <div id="stepProcessing" class="hidden">
+      <div class="processing-animation">
+        <div class="pulse-ring">🔍</div>
+        <h3>Analyzing your reviews...</h3>
+        <p style="color: var(--cream-dim);">Fetching data from Google</p>
       </div>
+    </div>
+
+    <!-- Step 3: Blurred Score + Email Unlock -->
+    <div id="stepBlurred" class="hidden">
+      <div id="selectedBusinessInfo" class="selected-business"></div>
+      
+      <div class="blurred-score">
+        <div class="score-number" id="blurredScore">95</div>
+        <div class="score-label">YOUR SCORE (LOCKED)</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="blurredProgress" style="width: 95%;"></div>
+        </div>
+        <div class="recommendation-box">
+          <p id="blurredRecommendation">🌟 Excellent! Your business has great review momentum.</p>
+        </div>
+      </div>
+      
+      <div class="unlock-instruction">
+        <span style="font-size: 2rem;">🔓</span>
+        <h3 style="margin: 8px 0;">Enter your email to unlock your full score</h3>
+        <p style="font-size: 0.8rem; color: var(--cream-dim);">Get your detailed report + actionable tips</p>
+      </div>
+      
+      <input type="email" id="unlockEmail" placeholder="Your email address" class="form-input" style="margin-top: 16px;">
+      <button id="unlockBtn" class="btn-primary">Unlock my score →</button>
+    </div>
+
+    <!-- Step 4: Full Score Revealed with Breakdown -->
+    <div id="stepRevealed" class="hidden" style="text-align: center;">
+      <div class="score-number" id="finalScore">0</div>
+      <div class="score-label">OUT OF 100</div>
       
       <div class="progress-bar">
-        <div class="progress-fill" id="scoreProgress" style="width:0%"></div>
+        <div class="progress-fill" id="scoreFill"></div>
       </div>
       
-      <div class="metric-row">
-        <span class="metric-label">⭐ Average rating</span>
-        <span class="metric-value" id="resultRating">0 / 5</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">📝 Total reviews</span>
-        <span class="metric-value" id="resultReviewCount">0</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">📈 Monthly review velocity</span>
-        <span class="metric-value" id="resultVelocity">0 per month</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-label">⚠️ Missing reviews vs competitors</span>
-        <span class="metric-value" id="resultMissing">0</span>
-      </div>
-      
-      <div id="resultRecommendation" style="margin-top: 24px; padding: 16px; background: var(--surface-2); border-radius: var(--r);">
-        <p style="margin: 0; font-size: 0.9rem;" id="recommendationText"></p>
+      <!-- Detailed Score Breakdown -->
+      <div class="score-breakdown" id="scoreBreakdown">
+        <div class="breakdown-item">
+          <span class="breakdown-label">⭐ Rating Score</span>
+          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="ratingBreakdownFill" style="width: 0%;"></div></div>
+          <span class="breakdown-value" id="ratingBreakdownValue">0/50</span>
+        </div>
+        <div class="breakdown-item">
+          <span class="breakdown-label">📝 Review Count Score</span>
+          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="countBreakdownFill" style="width: 0%;"></div></div>
+          <span class="breakdown-value" id="countBreakdownValue">0/30</span>
+        </div>
+        <div class="breakdown-item">
+          <span class="breakdown-label">📈 Monthly Velocity</span>
+          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="velocityBreakdownFill" style="width: 0%;"></div></div>
+          <span class="breakdown-value" id="velocityBreakdownValue">0/20</span>
+        </div>
       </div>
       
-      <a href="/admin" id="ctaLink" class="cta-button" style="display: block; text-align: center; text-decoration: none;">
-        🚀 ReviewLift can automate this →
-      </a>
-      <p style="font-size: 0.7rem; color: var(--cream-dim); text-align: center; margin-top: 16px;">
-        We'll email you a detailed report. No spam, unsubscribe anytime.
+      <!-- Improvement Tips -->
+      <div id="improvementTips"></div>
+      
+      <div class="recommendation-box" id="recommendationMsg"></div>
+      
+      <div style="margin-top: 24px;">
+        <a href="/admin" style="color: var(--accent); text-decoration: underline; display: inline-block;">🚀 ReviewLift can automate this →</a>
+      </div>
+      
+      <p style="font-size: 0.7rem; color: var(--cream-dim); margin-top: 16px;">
+        We've sent a detailed report to your email.
       </p>
     </div>
+
   </div>
-  
 </div>
 
-<!-- JavaScript -->
+<footer style="padding: 40px; text-align: center; border-top: 1px solid var(--border); margin-top: 60px;">
+  <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
+  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
+</footer>
+
 <script>
 let selectedPlaceId = null;
 let selectedBusinessName = null;
+let selectedBusinessAddress = null;
+let cachedScore = null;
+let cachedRating = null;
+let cachedReviewCount = null;
+let searchTimeout = null;
 
+function calculateScoreBreakdown(rating, reviewCount) {
+  const ratingScore = Math.round((rating / 5) * 50);
+  
+  let countScore = 0;
+  if (reviewCount >= 200) countScore = 30;
+  else if (reviewCount >= 100) countScore = 25;
+  else if (reviewCount >= 50) countScore = 20;
+  else if (reviewCount >= 20) countScore = 15;
+  else if (reviewCount >= 10) countScore = 10;
+  else if (reviewCount >= 5) countScore = 5;
+  
+  let velocityScore = 0;
+  const velocity = Math.round(reviewCount / 2); // Rough monthly estimate
+  if (velocity >= 20) velocityScore = 20;
+  else if (velocity >= 15) velocityScore = 15;
+  else if (velocity >= 10) velocityScore = 12;
+  else if (velocity >= 5) velocityScore = 8;
+  else if (velocity >= 2) velocityScore = 4;
+  
+  const totalScore = ratingScore + countScore + velocityScore;
+  
+  return { ratingScore, countScore, velocityScore, totalScore, velocity };
+}
+
+function getRecommendation(score) {
+  if (score >= 80) return '🌟 Excellent! Your business has great review momentum. Keep it up!';
+  if (score >= 60) return '👍 Good position. A few more reviews could push you ahead of competitors.';
+  if (score >= 40) return '📊 Average score. Many local businesses are outperforming you on reviews.';
+  return '⚠️ Your review profile needs attention. You could be losing customers.';
+}
+
+function getImprovementTips(rating, reviewCount, velocity) {
+  let tips = [];
+  
+  if (rating < 4.5) {
+    tips.push({
+      icon: "⭐",
+      text: "Your rating is below the 4.5-star benchmark. Consider asking happy customers to leave reviews to balance your average.",
+      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating."
+    });
+  }
+  
+  if (reviewCount < 50) {
+    tips.push({
+      icon: "📝",
+      text: `You have only ${reviewCount} reviews. Businesses with 50+ reviews get 4x more clicks on Google.`,
+      action: "ReviewLift automates review requests after every job or appointment — no manual follow-up needed."
+    });
+  }
+  
+  if (velocity < 5) {
+    tips.push({
+      icon: "📈",
+      text: `You're getting only about ${velocity} reviews per month. Top businesses get 10+ monthly reviews.`,
+      action: "ReviewLift's automated SMS and email requests ensure every customer gets asked — dramatically increasing your velocity."
+    });
+  }
+  
+  if (tips.length === 0) {
+    tips.push({
+      icon: "🚀",
+      text: "You're doing well! To stay ahead, maintain your review momentum.",
+      action: "ReviewLift automates the process so you never have to think about asking for reviews again."
+    });
+  }
+  
+  return tips;
+}
+
+// Autocomplete search
 const searchInput = document.getElementById('businessSearch');
+const resultsDiv = document.getElementById('autocompleteResults');
 const searchBtn = document.getElementById('searchBtn');
-const searchResultsDiv = document.getElementById('searchResults');
-const step1 = document.getElementById('step1');
-const step2 = document.getElementById('step2');
-const step3 = document.getElementById('step3');
+const searchStatus = document.getElementById('searchStatus');
 
-searchBtn.addEventListener('click', async () => {
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimeout);
   const query = searchInput.value.trim();
-  if (query.length < 3) {
-    searchResultsDiv.innerHTML = '<p style="color: var(--danger);">Please enter at least 3 characters</p>';
+  
+  if (query.length < 2) {
+    resultsDiv.classList.add('hidden');
+    searchBtn.disabled = true;
     return;
   }
   
-  searchBtn.disabled = true;
-  searchBtn.innerHTML = '<span class="loading-spinner"></span> Searching...';
-  searchResultsDiv.innerHTML = '';
+  searchTimeout = setTimeout(async () => {
+    searchStatus.innerHTML = '<span class="loader"></span> Searching...';
+    try {
+      const res = await fetch(`/api/search-business?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      
+      if (data.error) {
+        searchStatus.innerHTML = data.error;
+        resultsDiv.classList.add('hidden');
+        searchBtn.disabled = true;
+      } else if (data.businesses && data.businesses.length) {
+        searchStatus.innerHTML = '';
+        resultsDiv.classList.remove('hidden');
+        resultsDiv.innerHTML = data.businesses.map(biz => `
+          <div class="autocomplete-item" data-place-id="${biz.place_id}" data-name="${biz.name.replace(/'/g, "\\'")}" data-address="${biz.address || biz.vicinity}">
+            <strong>${biz.name}</strong><br>
+            <small style="color: var(--cream-dim);">${biz.address || biz.vicinity}</small>
+          </div>
+        `).join('');
+        
+        document.querySelectorAll('.autocomplete-item').forEach(el => {
+          el.addEventListener('click', () => {
+            selectedPlaceId = el.dataset.placeId;
+            selectedBusinessName = el.dataset.name;
+            selectedBusinessAddress = el.dataset.address;
+            searchInput.value = selectedBusinessName;
+            resultsDiv.classList.add('hidden');
+            searchBtn.disabled = false;
+            searchStatus.innerHTML = `✓ Selected: ${selectedBusinessName}`;
+          });
+        });
+        searchBtn.disabled = false;
+      } else {
+        searchStatus.innerHTML = 'No businesses found. Try a different name.';
+        resultsDiv.classList.add('hidden');
+        searchBtn.disabled = true;
+      }
+    } catch (err) {
+      searchStatus.innerHTML = 'Something went wrong. Please try again.';
+      resultsDiv.classList.add('hidden');
+    }
+  }, 300);
+});
+
+// Search button - fetch business details and show blurred score
+searchBtn.addEventListener('click', async () => {
+  if (!selectedPlaceId) return;
+  
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('stepProcessing').classList.remove('hidden');
   
   try {
-    const res = await fetch(`/api/search-business?query=${encodeURIComponent(query)}`);
+    const res = await fetch('/api/review-score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ placeId: selectedPlaceId, email: 'temp@temp.com', businessName: selectedBusinessName, industry: 'default' })
+    });
     const data = await res.json();
     
-    if (data.error) {
-      searchResultsDiv.innerHTML = `<p style="color: var(--danger);">${data.error}</p>`;
-    } else if (data.businesses && data.businesses.length) {
-      searchResultsDiv.innerHTML = data.businesses.map(biz => `
-        <div class="search-result-item" data-place-id="${biz.place_id}" data-name="${biz.name.replace(/'/g, "\\'")}">
-          <div class="search-result-name">${biz.name}</div>
-          <div class="search-result-address">${biz.address || biz.vicinity}</div>
-        </div>
-      `).join('');
+    if (data.success) {
+      cachedRating = data.business.rating;
+      cachedReviewCount = data.business.review_count;
+      const breakdown = calculateScoreBreakdown(cachedRating, cachedReviewCount);
+      cachedScore = breakdown.totalScore;
       
-      document.querySelectorAll('.search-result-item').forEach(el => {
-        el.addEventListener('click', () => {
-          selectedPlaceId = el.dataset.placeId;
-          selectedBusinessName = el.dataset.name;
-          document.getElementById('selectedBusinessInfo').innerHTML = `
-            <strong>${selectedBusinessName}</strong><br>
-            <span style="font-size:0.75rem; color:var(--cream-dim);">Selected business</span>
-          `;
-          step1.style.display = 'none';
-          step2.style.display = 'block';
-        });
-      });
+      document.getElementById('selectedBusinessInfo').innerHTML = `
+        <strong>${selectedBusinessName}</strong><br>
+        <span style="font-size: 0.8rem; color: var(--cream-dim);">⭐ ${cachedRating} stars · ${cachedReviewCount} reviews</span>
+      `;
+      
+      const recommendation = getRecommendation(cachedScore);
+      document.getElementById('blurredScore').innerText = cachedScore;
+      document.getElementById('blurredProgress').style.width = `${cachedScore}%`;
+      document.getElementById('blurredRecommendation').innerHTML = recommendation;
+      
+      document.getElementById('stepProcessing').classList.add('hidden');
+      document.getElementById('stepBlurred').classList.remove('hidden');
     } else {
-      searchResultsDiv.innerHTML = '<p style="color: var(--danger);">No businesses found. Try a different name.</p>';
+      searchStatus.innerHTML = data.error || 'Could not fetch business data';
+      document.getElementById('stepProcessing').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+      searchBtn.disabled = false;
+      searchBtn.innerHTML = 'Search →';
     }
   } catch (err) {
-    searchResultsDiv.innerHTML = '<p style="color: var(--danger);">Something went wrong. Please try again.</p>';
-  } finally {
+    searchStatus.innerHTML = 'Error fetching business data. Please try again.';
+    document.getElementById('stepProcessing').classList.add('hidden');
+    document.getElementById('step1').classList.remove('hidden');
     searchBtn.disabled = false;
     searchBtn.innerHTML = 'Search →';
   }
 });
 
-document.getElementById('getScoreBtn').addEventListener('click', async () => {
-  const email = document.getElementById('userEmail').value.trim();
-  const industry = document.getElementById('industrySelect').value;
+// Unlock button - save lead and reveal full score with breakdown
+document.getElementById('unlockBtn').addEventListener('click', async () => {
+  const email = document.getElementById('unlockEmail').value.trim();
   
   if (!email) {
     alert('Please enter your email address');
     return;
   }
   
-  const btn = document.getElementById('getScoreBtn');
+  const btn = document.getElementById('unlockBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="loading-spinner"></span> Calculating...';
+  btn.innerHTML = '<span class="loader"></span> Unlocking...';
   
   try {
     const res = await fetch('/api/review-score', {
@@ -321,79 +659,65 @@ document.getElementById('getScoreBtn').addEventListener('click', async () => {
         placeId: selectedPlaceId,
         email: email,
         businessName: selectedBusinessName,
-        industry: industry
+        industry: 'default'
       })
     });
-    
     const data = await res.json();
     
     if (data.success) {
       const score = data.business.score;
-      document.getElementById('resultScore').innerText = score;
-      document.getElementById('scoreProgress').style.width = `${score}%`;
-      document.getElementById('resultRating').innerHTML = `${data.business.rating} / 5`;
-      document.getElementById('resultReviewCount').innerText = data.business.review_count;
-      document.getElementById('resultVelocity').innerHTML = `${data.business.velocity} per month`;
-      document.getElementById('resultMissing').innerHTML = `${data.business.missing_reviews} needed`;
+      const breakdown = calculateScoreBreakdown(data.business.rating, data.business.review_count);
+      const velocity = breakdown.velocity;
       
-      let badgeClass = '';
-      let recommendationMsg = '';
-      switch(data.business.recommendation) {
-        case 'excellent':
-          badgeClass = 'recommendation-excellent';
-          recommendationMsg = '🌟 Excellent! Your business has great review momentum. Keep it up!';
-          break;
-        case 'good':
-          badgeClass = 'recommendation-good';
-          recommendationMsg = '👍 Good position. A few more reviews could push you ahead of competitors.';
-          break;
-        case 'average':
-          badgeClass = 'recommendation-average';
-          recommendationMsg = '📊 Average score. Many local businesses are outperforming you on reviews.';
-          break;
-        case 'needs_work':
-          badgeClass = 'recommendation-needs_work';
-          recommendationMsg = '⚠️ Your review profile needs attention. You could be losing customers.';
-          break;
-        default:
-          badgeClass = 'recommendation-start';
-          recommendationMsg = '🚀 You have very few reviews. Every new 5-star review will dramatically improve your score.';
-      }
+      document.getElementById('finalScore').innerText = score;
+      document.getElementById('scoreFill').style.width = `${score}%`;
       
-      document.getElementById('resultBadge').innerHTML = `<span class="recommendation-badge ${badgeClass}">${recommendationMsg.split(' ')[0]}</span>`;
-      document.getElementById('recommendationText').innerHTML = recommendationMsg;
+      // Update breakdown display
+      document.getElementById('ratingBreakdownValue').innerText = `${breakdown.ratingScore}/50`;
+      document.getElementById('ratingBreakdownFill').style.width = `${(breakdown.ratingScore / 50) * 100}%`;
       
-      step2.style.display = 'none';
-      step3.style.display = 'block';
+      document.getElementById('countBreakdownValue').innerText = `${breakdown.countScore}/30`;
+      document.getElementById('countBreakdownFill').style.width = `${(breakdown.countScore / 30) * 100}%`;
+      
+      document.getElementById('velocityBreakdownValue').innerText = `${breakdown.velocityScore}/20`;
+      document.getElementById('velocityBreakdownFill').style.width = `${(breakdown.velocityScore / 20) * 100}%`;
+      
+      // Generate improvement tips
+      const tips = getImprovementTips(data.business.rating, data.business.review_count, velocity);
+      const tipsHtml = `
+        <div style="margin-top: 16px; text-align: left;">
+          <h4 style="margin-bottom: 12px; font-size: 0.9rem;">📋 How to improve your score</h4>
+          ${tips.map(tip => `
+            <div class="improvement-tip">
+              <strong>${tip.icon} ${tip.text.split('.')[0]}.</strong>
+              <p style="margin-top: 8px; font-size: 0.75rem;">${tip.action}</p>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      document.getElementById('improvementTips').innerHTML = tipsHtml;
+      document.getElementById('recommendationMsg').innerHTML = getRecommendation(score);
+      
+      document.getElementById('stepBlurred').classList.add('hidden');
+      document.getElementById('stepRevealed').classList.remove('hidden');
     } else {
-      alert(data.error || 'Could not fetch score');
+      alert(data.error || 'Could not calculate score');
     }
   } catch (err) {
     alert('Something went wrong. Please try again.');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = 'Get my score →';
+    btn.innerHTML = 'Unlock my score →';
   }
 });
 
-// Allow Enter key to search
+// Enter key to trigger search
 searchInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') searchBtn.click();
+  if (e.key === 'Enter' && searchBtn.disabled === false) {
+    searchBtn.click();
+  }
 });
 </script>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
-  <div class="footer-links">
-    <a href="/">Home</a>
-    <a href="/#pricing">Pricing</a>
-    <a href="/about">About</a>
-    <a href="/score-checker">Free Score Checker</a>
-    <a href="/login">Sign in</a>
-  </div>
-  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
-</footer>
 
 </body>
 </html>

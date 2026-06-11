@@ -2816,6 +2816,17 @@ checkStripeStatus();
             <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Share anywhere — email, social, text</p>
             <input id="assetReviewLink" readonly style="width:100%;padding:8px;background:var(--surface-3);border-radius:6px;font-size:0.7rem;margin-bottom:10px;"><button onclick="copyAssetReviewLink()" class="btn-full" style="background:var(--accent);color:#1A1A18;padding:8px 16px;">Copy link →</button>
           </div>
+          <!-- Free NFC Card Offer in Dashboard -->
+<div class="panel" id="freeNfcOffer" style="background: linear-gradient(135deg, rgba(200,169,110,0.05) 0%, var(--surface) 100%); border: 1px solid rgba(200,169,110,0.2);">
+  <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+    <div style="width: 60px; height: 60px; background: rgba(200,169,110,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">📬</div>
+    <div style="flex: 1;">
+      <h3 style="margin: 0;">Claim your free NFC review card</h3>
+      <p style="margin: 4px 0 0; font-size: 0.8rem; color: var(--cream-dim);">Premium tap-to-review card. Your customers tap → rate → leave Google review.</p>
+    </div>
+    <button onclick="openNfcModal()" class="btn-full" style="width: auto; background: var(--accent); color: #1A1A18; padding: 10px 24px;">Claim now →</button>
+  </div>
+</div>
          <div class="panel">
   <h3>📁 Bulk Import Customers</h3>
   <p style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:16px;">Upload a CSV file with customer details to send review requests in bulk.</p>
@@ -3155,18 +3166,19 @@ reportsObserver.observe(document.getElementById('reportsSection'), { attributes:
     </div>
   </div>
 
-  <div class="modal-overlay" id="nfcModal" onclick="handleModalOverlay(event, 'nfcModal')">
-    <div class="modal-box" style="max-width:500px;">
-      <button class="modal-close" onclick="closeModal('nfcModal')">✕</button>
-      <span class="modal-icon">📦</span>
-      <h3>Order your Tap-to-Review Card</h3>
-      <p style="margin-bottom:16px;">Enter your shipping address. We'll post your card within 2 business days.</p>
-      <div class="form-group"><label>Full name</label><input id="nfcFullName" type="text" placeholder="Your full name" style="width:100%;padding:10px;background:var(--surface-2);border-radius:6px;"></div>
-      <div class="form-group"><label>Shipping address</label><textarea id="nfcAddress" rows="3" placeholder="Street address, city, postcode, country" style="width:100%;min-height:80px;background:var(--surface-2);border-radius:6px;"></textarea></div>
-      <button onclick="orderNfcCard()" id="nfcOrderBtn" class="btn-full" style="background:var(--accent); color:#1A1A18;">Continue to payment (£9.99) →</button>
-      <p id="nfcModalMsg" style="font-size:0.75rem; color:#D4897C; margin-top:12px;"></p>
-    </div>
+<div class="modal-overlay" id="nfcModal" onclick="handleModalOverlay(event, 'nfcModal')">
+  <div class="modal-box" style="max-width: 500px;">
+    <button class="modal-close" onclick="closeModal('nfcModal')">✕</button>
+    <span class="modal-icon" id="nfcModalIcon">📦</span>
+    <h3 id="nfcModalTitle">Order your Tap-to-Review Card</h3>
+    <p id="nfcModalDesc" style="margin-bottom: 16px;">Free for Pro and Agency customers. £9.99 for Starter.</p>
+    <div class="form-group"><label>Full name</label><input id="nfcFullName" type="text" placeholder="Your full name"></div>
+    <div class="form-group"><label>Business name</label><input id="nfcBusinessName" type="text" placeholder="Your business name"></div>
+    <div class="form-group"><label>Shipping address</label><textarea id="nfcAddress" rows="3" placeholder="Street address, city, postcode, country"></textarea></div>
+    <button onclick="orderNfcCard()" id="nfcOrderBtn" class="btn-full">Claim free card →</button>
+    <p id="nfcModalMsg" style="font-size:0.75rem; margin-top:12px;"></p>
   </div>
+</div>
 
   <div class="modal-overlay" id="cancelModal" onclick="handleModalOverlay(event, 'cancelModal')">
     <div class="modal-box">

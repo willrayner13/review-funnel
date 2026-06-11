@@ -42,6 +42,36 @@ router.post("/create-nfc-checkout", async (req, res) => {
   }
 });
 
+// Request free NFC card
+router.post('/api/request-nfc-card', async (req, res) => {
+  if (!req.session?.slug) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+  
+  const { name, businessName, address, plan } = req.body;
+  const slug = req.session.slug;
+  
+  // Store request in database
+  await supabase.from('nfc_card_requests').insert({
+    business_slug: slug,
+    requester_name: name,
+    business_name: businessName,
+    shipping_address: address,
+    plan_type: plan,
+    status: 'pending',
+    created_at: new Date()
+  });
+  
+  // Optional: Send email notification to you
+  await fetch(process.env.SLACK_WEBHOOK || '', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: `📬 New NFC card request from ${businessName} (${plan})` })
+  });
+  
+  res.json({ success: true });
+});
+
 // NFC success page
 router.get("/nfc-success", async (req, res) => {
   const { slug } = req.query;

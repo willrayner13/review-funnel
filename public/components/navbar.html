@@ -1,4 +1,4 @@
-<!-- Premium Unified Navbar Component -->
+<!-- Premium Unified Navbar Component - Fully Responsive -->
 <!-- Include this file on any page that needs the main navigation -->
 
 <nav class="rl-nav">
@@ -18,7 +18,7 @@
       <a href="/about" class="rl-nav-link">About</a>
       <a href="/blog" class="rl-nav-link">Blog</a>
       <a href="/partner" class="rl-nav-link">Agencies</a>
-      <a href="/score-checker">Free Score Checker</a>
+      <a href="/score-checker" class="rl-nav-link">Free Score Checker</a>
     </div>
     
     <!-- Desktop CTA Buttons -->
@@ -44,6 +44,7 @@
     <a href="/about" class="rl-drawer-link" onclick="closeRlNav()">About</a>
     <a href="/blog" class="rl-drawer-link" onclick="closeRlNav()">Blog</a>
     <a href="/partner" class="rl-drawer-link" onclick="closeRlNav()">Agencies</a>
+    <a href="/score-checker" class="rl-drawer-link" onclick="closeRlNav()">Free Score Checker</a>
     <div class="rl-drawer-divider"></div>
     <a href="/login" class="rl-drawer-login" onclick="closeRlNav()">Sign in</a>
     <a href="/admin" class="rl-drawer-start" onclick="closeRlNav()">Start free trial →</a>
@@ -51,12 +52,13 @@
 </div>
 
 <style>
-/* ========== UNIFIED NAVBAR STYLES ========== */
+/* ========== UNIFIED NAVBAR STYLES - FULLY RESPONSIVE ========== */
 
 .rl-nav,
 .rl-nav * {
   box-sizing: border-box;
 }
+
 .rl-nav {
   position: fixed;
   top: 0;
@@ -81,38 +83,7 @@
   width: 100%;
 }
 
-.rl-nav-logo,
-.rl-nav-links,
-.rl-nav-link,
-.rl-nav-cta,
-.rl-nav-login,
-.rl-nav-start,
-.rl-nav-hamburger {
-  all: unset;
-  display: block;
-}
-
-.rl-nav-logo,
-.rl-nav-link,
-.rl-nav-login,
-.rl-nav-start,
-.rl-nav-hamburger,
-.rl-drawer-link,
-.rl-drawer-login,
-.rl-drawer-start {
-  cursor: pointer;
-}
-
-/* Specifically for the CTA button */
-.rl-nav-start {
-  cursor: pointer;
-}
-
-/* For the hamburger menu */
-.rl-nav-hamburger {
-  cursor: pointer;
-}
-
+/* Logo */
 .rl-nav-logo {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
@@ -123,6 +94,8 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .rl-nav-logo:hover {
@@ -134,12 +107,15 @@
   height: 7px;
   background: #C8A96E;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
+/* Desktop Navigation Links */
 .rl-nav-links {
   display: flex;
   align-items: center;
   gap: 32px;
+  flex-wrap: wrap;
 }
 
 .rl-nav-link {
@@ -147,16 +123,19 @@
   color: rgba(234, 231, 220, 0.52);
   text-decoration: none;
   transition: color 0.2s;
+  white-space: nowrap;
 }
 
 .rl-nav-link:hover {
   color: #EAE7DC;
 }
 
+/* Desktop CTA Buttons */
 .rl-nav-cta {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .rl-nav-login {
@@ -168,6 +147,8 @@
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.2s;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .rl-nav-login:hover {
@@ -184,6 +165,8 @@
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.2s;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .rl-nav-start:hover {
@@ -191,7 +174,7 @@
   transform: translateY(-1px);
 }
 
-/* Hamburger Menu */
+/* Hamburger Menu - Mobile Only */
 .rl-nav-hamburger {
   display: none;
   flex-direction: column;
@@ -204,6 +187,7 @@
   padding: 8px;
   width: 36px;
   height: 36px;
+  flex-shrink: 0;
 }
 
 .rl-nav-hamburger span {
@@ -306,7 +290,48 @@
   background: #D4B87A;
 }
 
-/* Responsive */
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+
+/* Large Desktop (1200px - 1400px) */
+@media (max-width: 1300px) {
+  .rl-nav-container {
+    padding: 0 32px;
+  }
+  .rl-nav-links {
+    gap: 24px;
+  }
+  .rl-nav-link {
+    font-size: 0.8rem;
+  }
+  .rl-nav-start {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+  .rl-nav-login {
+    padding: 7px 14px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Desktop (1024px - 1200px) */
+@media (max-width: 1100px) {
+  .rl-nav-links {
+    gap: 16px;
+  }
+  .rl-nav-link {
+    font-size: 0.75rem;
+  }
+  .rl-nav-start {
+    padding: 7px 14px;
+    font-size: 0.75rem;
+  }
+  .rl-nav-login {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Tablet (768px - 1024px) - Show hamburger, hide desktop nav */
 @media (max-width: 900px) {
   .rl-nav-container {
     padding: 0 20px;
@@ -321,10 +346,111 @@
     display: flex;
   }
 }
+
+/* Mobile (480px - 768px) */
+@media (max-width: 768px) {
+  .rl-nav {
+    height: 60px;
+  }
+  .rl-nav-container {
+    padding: 0 16px;
+    height: 60px;
+  }
+  .rl-nav-logo {
+    font-size: 18px;
+  }
+  .rl-nav-logo span {
+    font-size: 18px;
+  }
+  .rl-nav-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Small Mobile (under 480px) */
+@media (max-width: 480px) {
+  .rl-nav {
+    height: 56px;
+  }
+  .rl-nav-container {
+    padding: 0 12px;
+    height: 56px;
+  }
+  .rl-nav-logo {
+    font-size: 16px;
+  }
+  .rl-nav-logo span {
+    font-size: 16px;
+  }
+  .rl-nav-hamburger {
+    width: 32px;
+    height: 32px;
+    gap: 4px;
+  }
+  .rl-nav-hamburger span {
+    width: 18px;
+    height: 2px;
+  }
+  .rl-nav-hamburger.open span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .rl-nav-hamburger.open span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+  
+  /* Drawer adjustments for small mobile */
+  .rl-nav-drawer-inner {
+    padding: 16px 20px 24px;
+  }
+  .rl-drawer-link {
+    font-size: 0.9rem;
+    padding: 12px 0;
+  }
+  .rl-drawer-login,
+  .rl-drawer-start {
+    font-size: 0.85rem;
+    padding: 10px 0;
+  }
+}
+
+/* Extra small devices (under 360px) */
+@media (max-width: 360px) {
+  .rl-nav-logo {
+    font-size: 14px;
+  }
+  .rl-nav-logo span {
+    font-size: 14px;
+  }
+  .rl-nav-dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* Ensure drawer doesn't overflow */
+.rl-nav-drawer {
+  overflow-x: hidden;
+}
+
+/* Smooth transitions */
+.rl-nav-link,
+.rl-nav-login,
+.rl-nav-start,
+.rl-drawer-link,
+.rl-drawer-login,
+.rl-drawer-start {
+  transition: all 0.2s ease;
+}
+
+/* Prevent body scroll when drawer is open */
+body.drawer-open {
+  overflow: hidden;
+}
 </style>
 
 <script>
-// Navbar JavaScript
+// Navbar JavaScript - Enhanced for responsive behavior
 (function() {
   const hamburger = document.getElementById('rlNavHamburger');
   const drawer = document.getElementById('rlNavDrawer');
@@ -334,18 +460,25 @@
   window.toggleRlNav = function() {
     hamburger.classList.toggle('open');
     drawer.classList.toggle('open');
-    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+    if (drawer.classList.contains('open')) {
+      document.body.classList.add('drawer-open');
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.classList.remove('drawer-open');
+      document.body.style.overflow = '';
+    }
   };
   
   window.closeRlNav = function() {
     hamburger.classList.remove('open');
     drawer.classList.remove('open');
+    document.body.classList.remove('drawer-open');
     document.body.style.overflow = '';
   };
   
   hamburger.addEventListener('click', toggleRlNav);
   
-  // Close drawer when clicking outside (optional)
+  // Close drawer when clicking outside
   document.addEventListener('click', function(e) {
     if (drawer.classList.contains('open') && !drawer.contains(e.target) && !hamburger.contains(e.target)) {
       closeRlNav();
@@ -356,6 +489,20 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && drawer.classList.contains('open')) {
       closeRlNav();
+    }
+  });
+  
+  // Close drawer on window resize if open (prevents layout issues)
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    if (drawer.classList.contains('open')) {
+      // Debounce to avoid multiple calls
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function() {
+        if (window.innerWidth > 900) {
+          closeRlNav();
+        }
+      }, 250);
     }
   });
 })();

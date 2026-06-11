@@ -75,11 +75,6 @@ app.use("/stripe-webhook", webhookRoutes);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use(stripeConnectRoutes);
-
-app.use(scoreCheckerRoutes);
-
-// Session store AFTER bodyParser
 app.use(
   session({
     store: new SupabaseSessionStore(),
@@ -96,6 +91,13 @@ app.use(
   })
 );
 
+// app.use(stripeConnectRoutes);
+
+app.use(scoreCheckerRoutes);
+
+// Session store AFTER bodyParser
+
+
 // ─── ROUTES ────────────────────────────────────────────────────────────────────
 // Mount all routes AFTER middleware
 app.use(emailParserRoutes);
@@ -104,6 +106,10 @@ app.use(analyticsRoutes);
 app.use(reportsRoutes);
 app.use(smsTriggerRoutes);
 app.use(autoPilotRoutes);
+
+app.get('/score-checker', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public', 'score-checker.html'));
+});
 
 // HTML routes FIRST (for static pages)
 app.use(htmlRoutes);
@@ -229,6 +235,8 @@ app.get("/cron/weekly-digest", async (req, res) => {
   const result = await sendWeeklyDigests();
   res.json(result);
 });
+
+
 
 // ─── API WEBHOOKS ──────────────────────────────────────────────────────────────
 app.post("/api/hook/:slug", async (req, res) => {
