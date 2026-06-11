@@ -37,7 +37,7 @@
       .score-card { padding: 20px 16px; }
     }
 
-    .form-input, .form-select {
+    .form-input {
       width: 100%;
       padding: 14px 16px;
       background: var(--surface-2);
@@ -49,14 +49,14 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .form-input:focus, .form-select:focus {
+    .form-input:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(200,169,110,0.1);
     }
 
     @media (max-width: 768px) {
-      .form-input, .form-select {
+      .form-input {
         padding: 12px 14px;
         font-size: 16px;
       }
@@ -289,18 +289,22 @@
     .breakdown-label {
       font-size: 0.85rem;
       color: var(--cream-dim);
+      min-width: 100px;
+      text-align: left;
     }
 
     .breakdown-value {
       font-weight: 700;
       color: var(--cream);
+      min-width: 45px;
+      text-align: right;
     }
 
     .breakdown-bar {
       flex: 1;
-      height: 4px;
+      height: 6px;
       background: var(--surface-3);
-      border-radius: 2px;
+      border-radius: 3px;
       margin: 0 12px;
       overflow: hidden;
     }
@@ -308,7 +312,7 @@
     .breakdown-bar-fill {
       height: 100%;
       background: var(--accent);
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .improvement-tip {
@@ -402,7 +406,7 @@
     </div>
 
     <!-- Step 4: Full Score Revealed with Breakdown -->
-    <div id="stepRevealed" class="hidden" style="text-align: center;">
+    <div id="stepRevealed" class="hidden">
       <div class="score-number" id="finalScore">0</div>
       <div class="score-label">OUT OF 100</div>
       
@@ -411,7 +415,7 @@
       </div>
       
       <!-- Detailed Score Breakdown -->
-      <div class="score-breakdown" id="scoreBreakdown">
+      <div class="score-breakdown">
         <div class="breakdown-item">
           <span class="breakdown-label">⭐ Rating Score</span>
           <div class="breakdown-bar"><div class="breakdown-bar-fill" id="ratingBreakdownFill" style="width: 0%;"></div></div>
@@ -423,7 +427,7 @@
           <span class="breakdown-value" id="countBreakdownValue">0/30</span>
         </div>
         <div class="breakdown-item">
-          <span class="breakdown-label">📈 Monthly Velocity</span>
+          <span class="breakdown-label">📈 Monthly Velocity Score</span>
           <div class="breakdown-bar"><div class="breakdown-bar-fill" id="velocityBreakdownFill" style="width: 0%;"></div></div>
           <span class="breakdown-value" id="velocityBreakdownValue">0/20</span>
         </div>
@@ -461,8 +465,10 @@ let cachedReviewCount = null;
 let searchTimeout = null;
 
 function calculateScoreBreakdown(rating, reviewCount) {
+  // Rating Score (0-50 points based on stars)
   const ratingScore = Math.round((rating / 5) * 50);
   
+  // Review Count Score (0-30 points based on volume)
   let countScore = 0;
   if (reviewCount >= 200) countScore = 30;
   else if (reviewCount >= 100) countScore = 25;
@@ -471,8 +477,9 @@ function calculateScoreBreakdown(rating, reviewCount) {
   else if (reviewCount >= 10) countScore = 10;
   else if (reviewCount >= 5) countScore = 5;
   
+  // Velocity Score (0-20 points based on monthly reviews)
   let velocityScore = 0;
-  const velocity = Math.round(reviewCount / 2); // Rough monthly estimate
+  const velocity = Math.round(reviewCount / 2);
   if (velocity >= 20) velocityScore = 20;
   else if (velocity >= 15) velocityScore = 15;
   else if (velocity >= 10) velocityScore = 12;
@@ -497,8 +504,8 @@ function getImprovementTips(rating, reviewCount, velocity) {
   if (rating < 4.5) {
     tips.push({
       icon: "⭐",
-      text: "Your rating is below the 4.5-star benchmark. Consider asking happy customers to leave reviews to balance your average.",
-      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating."
+      text: `Your rating is ${rating} stars, below the 4.5-star benchmark.`,
+      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating from bad reviews."
     });
   }
   
@@ -669,28 +676,29 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       const breakdown = calculateScoreBreakdown(data.business.rating, data.business.review_count);
       const velocity = breakdown.velocity;
       
+      // Update main score display
       document.getElementById('finalScore').innerText = score;
       document.getElementById('scoreFill').style.width = `${score}%`;
       
       // Update breakdown display
-      document.getElementById('ratingBreakdownValue').innerText = `${breakdown.ratingScore}/50`;
+      document.getElementById('ratingBreakdownValue').innerHTML = `${breakdown.ratingScore}/50`;
       document.getElementById('ratingBreakdownFill').style.width = `${(breakdown.ratingScore / 50) * 100}%`;
       
-      document.getElementById('countBreakdownValue').innerText = `${breakdown.countScore}/30`;
+      document.getElementById('countBreakdownValue').innerHTML = `${breakdown.countScore}/30`;
       document.getElementById('countBreakdownFill').style.width = `${(breakdown.countScore / 30) * 100}%`;
       
-      document.getElementById('velocityBreakdownValue').innerText = `${breakdown.velocityScore}/20`;
+      document.getElementById('velocityBreakdownValue').innerHTML = `${breakdown.velocityScore}/20`;
       document.getElementById('velocityBreakdownFill').style.width = `${(breakdown.velocityScore / 20) * 100}%`;
       
       // Generate improvement tips
       const tips = getImprovementTips(data.business.rating, data.business.review_count, velocity);
       const tipsHtml = `
-        <div style="margin-top: 16px; text-align: left;">
+        <div style="margin-top: 20px; text-align: left;">
           <h4 style="margin-bottom: 12px; font-size: 0.9rem;">📋 How to improve your score</h4>
           ${tips.map(tip => `
             <div class="improvement-tip">
-              <strong>${tip.icon} ${tip.text.split('.')[0]}.</strong>
-              <p style="margin-top: 8px; font-size: 0.75rem;">${tip.action}</p>
+              <strong>${tip.icon} ${tip.text}</strong>
+              <p style="margin-top: 8px; font-size: 0.75rem;">💡 ${tip.action}</p>
             </div>
           `).join('')}
         </div>
