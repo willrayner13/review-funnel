@@ -790,6 +790,22 @@
   margin-top: 16px;
 }
 
+.loader {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--surface-2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .contact-grid {
@@ -1547,6 +1563,173 @@
 </section>
 
 <hr class="section-divider">
+
+<!-- SCORE CHECKER TEASER - Secondary Conversion Point -->
+<section style="padding: 80px 48px; max-width: 1000px; margin: 0 auto; text-align: center;">
+  <div class="section-eyebrow reveal" style="justify-content:center;">🎯 FREE TOOL</div>
+  <h2 class="section-heading reveal" style="max-width:100%; text-align:center; margin-left:auto; margin-right:auto;">
+    Not sure if you need it?<br>
+    <em style="color:var(--accent);">Check your score first.</em>
+  </h2>
+  <p class="reveal" style="font-size: 1rem; color: var(--cream-dim); max-width: 500px; margin: 0 auto 24px;">
+    Free · Takes 30 seconds · No account needed
+  </p>
+  
+  <!-- Embedded Score Checker Widget -->
+  <div class="reveal" style="background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 32px; max-width: 500px; margin: 0 auto;">
+    
+    <!-- Simple inline score checker form -->
+    <div id="inlineScoreChecker">
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <input type="text" id="inlineBusinessSearch" placeholder="Your business name" 
+               style="flex: 2; padding: 14px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; color: var(--cream); font-size: 1rem;">
+        <button id="inlineScoreBtn" class="btn-trial" style="flex-shrink: 0; white-space: nowrap;">Check my score →</button>
+      </div>
+      <div id="inlineScoreStatus" style="margin-top: 12px; font-size: 0.75rem; color: var(--cream-dim);"></div>
+    </div>
+    
+    <!-- Results (hidden initially) -->
+    <div id="inlineScoreResult" style="display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div style="font-size: 0.65rem; color: var(--cream-dim);">YOUR SCORE</div>
+          <div style="font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent);" id="inlineScoreValue">--</div>
+        </div>
+        <div style="flex: 1;">
+          <div class="progress-bar" style="height: 6px; margin: 0;">
+            <div class="progress-fill" id="inlineScoreFill" style="width: 0%; height: 100%;"></div>
+          </div>
+        </div>
+        <a href="/score-checker" style="color: var(--accent); text-decoration: underline; font-size: 0.85rem;">View full report →</a>
+      </div>
+      <p id="inlineScoreRec" style="font-size: 0.8rem; color: var(--cream-dim); margin-top: 12px;"></p>
+    </div>
+    
+  </div>
+  
+  <p class="reveal" style="font-size: 0.7rem; color: var(--cream-dim); margin-top: 16px;">
+    Enter any business name to see their Google review score
+  </p>
+</section>
+
+<script>
+// Inline Score Checker Widget
+(function() {
+  const searchInput = document.getElementById('inlineBusinessSearch');
+  const checkBtn = document.getElementById('inlineScoreBtn');
+  const statusDiv = document.getElementById('inlineScoreStatus');
+  const resultDiv = document.getElementById('inlineScoreResult');
+  const scoreValueSpan = document.getElementById('inlineScoreValue');
+  const scoreFillDiv = document.getElementById('inlineScoreFill');
+  const scoreRecP = document.getElementById('inlineScoreRec');
+  
+  let searchTimeout = null;
+  let selectedPlaceId = null;
+  let selectedBusinessName = null;
+  
+  if (!searchInput || !checkBtn) return;
+  
+  // Simple autocomplete on input
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    const query = searchInput.value.trim();
+    
+    if (query.length < 2) {
+      statusDiv.innerHTML = '';
+      return;
+    }
+    
+    searchTimeout = setTimeout(async () => {
+      statusDiv.innerHTML = '<span class="loader"></span> Searching...';
+      try {
+        const res = await fetch(`/api/search-business?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        
+        if (data.error) {
+          statusDiv.innerHTML = data.error;
+        } else if (data.businesses && data.businesses.length) {
+          statusDiv.innerHTML = `<span style="color: var(--success);">✓ Found: ${data.businesses[0].name}</span>`;
+          selectedPlaceId = data.businesses[0].place_id;
+          selectedBusinessName = data.businesses[0].name;
+          searchInput.value = data.businesses[0].name;
+          
+          // Show dropdown for multiple matches (optional)
+          if (data.businesses.length > 1) {
+            let dropdownHtml = '<div style="background: var(--surface-2); border-radius: 12px; margin-top: 8px; overflow: hidden;">';
+            data.businesses.forEach(biz => {
+              dropdownHtml += `<div class="autocomplete-item" data-place-id="${biz.place_id}" data-name="${biz.name}" style="padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--border);">
+                <strong>${biz.name}</strong><br><small>${biz.address || biz.vicinity}</small>
+              </div>`;
+            });
+            dropdownHtml += '</div>';
+            statusDiv.innerHTML = dropdownHtml;
+            
+            document.querySelectorAll('#inlineScoreStatus .autocomplete-item').forEach(el => {
+              el.addEventListener('click', () => {
+                selectedPlaceId = el.dataset.placeId;
+                selectedBusinessName = el.dataset.name;
+                searchInput.value = selectedBusinessName;
+                statusDiv.innerHTML = `<span style="color: var(--success);">✓ Selected: ${selectedBusinessName}</span>`;
+              });
+            });
+          }
+        } else {
+          statusDiv.innerHTML = 'No businesses found. Try a different name.';
+        }
+      } catch (err) {
+        statusDiv.innerHTML = 'Error searching. Please try again.';
+      }
+    }, 400);
+  });
+  
+  // Check score button
+  checkBtn.addEventListener('click', async () => {
+    if (!selectedPlaceId) {
+      statusDiv.innerHTML = 'Please select a business from the suggestions first.';
+      return;
+    }
+    
+    checkBtn.disabled = true;
+    checkBtn.innerHTML = '<span class="loader"></span> Calculating...';
+    statusDiv.innerHTML = 'Getting your score...';
+    
+    try {
+      const res = await fetch('/api/review-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ placeId: selectedPlaceId, email: 'temp@temp.com', businessName: selectedBusinessName, industry: 'default' })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        const score = data.business.score;
+        scoreValueSpan.innerText = score;
+        scoreFillDiv.style.width = `${score}%`;
+        
+        let recText = '';
+        if (score >= 80) recText = '🌟 Excellent! Keep it up!';
+        else if (score >= 60) recText = '👍 Good. A few more reviews could push you ahead.';
+        else if (score >= 40) recText = '📊 Average. Many businesses are outperforming you.';
+        else recText = '⚠️ Your review profile needs attention.';
+        scoreRecP.innerText = recText;
+        
+        resultDiv.style.display = 'block';
+        statusDiv.innerHTML = '<span style="color: var(--success);">✓ Score calculated! Enter your email on the full page for a detailed report.</span>';
+      } else {
+        statusDiv.innerHTML = data.error || 'Could not calculate score.';
+      }
+    } catch (err) {
+      statusDiv.innerHTML = 'Something went wrong. Please try again.';
+    } finally {
+      checkBtn.disabled = false;
+      checkBtn.innerHTML = 'Check my score →';
+    }
+  });
+})();
+</script>
+
+<hr class="section-divider">
+
 
 <!-- AGENCY -->
 <section class="agency-section">
