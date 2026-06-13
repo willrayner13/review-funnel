@@ -1701,21 +1701,31 @@
       });
       const data = await res.json();
       
-      if (data.success) {
-        const score = data.business.score;
-        scoreValueSpan.innerText = score;
-        scoreFillDiv.style.width = `${score}%`;
-        
-        let recText = '';
-        if (score >= 80) recText = '🌟 Excellent! Keep it up!';
-        else if (score >= 60) recText = '👍 Good. A few more reviews could push you ahead.';
-        else if (score >= 40) recText = '📊 Average. Many businesses are outperforming you.';
-        else recText = '⚠️ Your review profile needs attention.';
-        scoreRecP.innerText = recText;
-        
-        resultDiv.style.display = 'block';
-        statusDiv.innerHTML = '<span style="color: var(--success);">✓ Score calculated! Enter your email on the full page for a detailed report.</span>';
-      } else {
+// After getting the score, update the result div
+if (data.success) {
+  const score = data.business.score;
+  const placeId = selectedPlaceId;
+  const businessName = encodeURIComponent(selectedBusinessName);
+  
+  scoreValueSpan.innerText = score;
+  scoreFillDiv.style.width = `${score}%`;
+  
+  let recText = '';
+  if (score >= 80) recText = '🌟 Excellent! Keep it up!';
+  else if (score >= 60) recText = '👍 Good. A few more reviews could push you ahead.';
+  else if (score >= 40) recText = '📊 Average. Many businesses are outperforming you.';
+  else recText = '⚠️ Your review profile needs attention.';
+  scoreRecP.innerText = recText;
+  
+  // Update the "View full report" link to go to the new report page
+  const viewReportLink = document.querySelector('#inlineScoreResult a');
+  if (viewReportLink) {
+    viewReportLink.href = `/report.html?place_id=${placeId}&name=${businessName}&score=${score}`;
+  }
+  
+  resultDiv.style.display = 'block';
+  statusDiv.innerHTML = '<span style="color: var(--success);">✓ Score calculated! Click "View full report" to see your detailed breakdown.</span>';
+} else {
         statusDiv.innerHTML = data.error || 'Could not calculate score.';
       }
     } catch (err) {

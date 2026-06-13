@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Your Review Score Report | ReviewLift</title>
+  <meta name="description" content="Detailed Google review score report with personalised improvement tips.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/landing.css">
+  <style>
+    .report-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    .report-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px;
+      margin-bottom: 24px;
+    }
+
+    .score-number-large {
+      font-family: 'Syne', sans-serif;
+      font-size: 5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      text-align: center;
+    }
+
+    .score-label {
+      text-align: center;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--cream-dim);
+      margin-top: 8px;
+    }
+
+    .progress-bar-large {
+      height: 12px;
+      background: var(--surface-2);
+      border-radius: 6px;
+      margin: 24px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill-large {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #E8C98A);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 1s ease;
+    }
+
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .breakdown-stat {
+      background: var(--surface-2);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .breakdown-stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .breakdown-stat-label {
+      font-size: 0.7rem;
+      color: var(--cream-dim);
+      margin-top: 8px;
+    }
+
+    .improvement-item {
+      background: var(--surface-2);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .email-capture {
+      background: linear-gradient(135deg, rgba(200,169,110,0.08) 0%, var(--surface) 100%);
+      border: 1px solid var(--accent-dim);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .email-input-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .email-input {
+      flex: 2;
+      padding: 14px 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--cream);
+      font-size: 1rem;
+    }
+
+    .submit-btn {
+      flex: 1;
+      background: var(--accent);
+      color: #1A1A18;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: #D4B87A;
+      transform: translateY(-2px);
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--accent);
+      color: #1A1A18;
+      padding: 14px 32px;
+      border-radius: 40px;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 16px;
+      transition: all 0.2s;
+    }
+
+    .cta-button:hover {
+      background: #D4B87A;
+      transform: translateY(-2px);
+    }
+
+    .loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--surface-2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .success-message {
+      color: var(--success);
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+
+    .error-message {
+      color: var(--danger);
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 700px) {
+      .breakdown-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .report-card {
+        padding: 24px;
+      }
+      .score-number-large {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="rl-nav-placeholder"></div>
+<script>
+  fetch('/components/navbar.html')
+    .then(res => res.text())
+    .then(html => document.getElementById('rl-nav-placeholder').innerHTML = html)
+    .catch(err => console.error('Navbar error:', err));
+</script>
+
+<section class="hero" style="min-height: auto; padding: 100px 24px 60px;">
+  <div class="hero-badge">YOUR REPORT</div>
+  <h1>Your Google Review <em>Score Report</em></h1>
+  <p id="reportBusinessName" class="hero-sub">Loading your report...</p>
+</section>
+
+<div class="report-container">
+  
+  <!-- Main Score Card -->
+  <div class="report-card" id="reportContent" style="display: none;">
+    <div class="score-number-large" id="finalScore">0</div>
+    <div class="score-label">OUT OF 100</div>
+    <div class="progress-bar-large">
+      <div class="progress-fill-large" id="scoreFill"></div>
+    </div>
+    
+    <!-- Breakdown Stats -->
+    <div class="breakdown-grid">
+      <div class="breakdown-stat">
+        <div class="breakdown-stat-value" id="ratingScore">0/50</div>
+        <div class="breakdown-stat-label">⭐ Rating Score</div>
+      </div>
+      <div class="breakdown-stat">
+        <div class="breakdown-stat-value" id="countScore">0/30</div>
+        <div class="breakdown-stat-label">📝 Review Count Score</div>
+      </div>
+      <div class="breakdown-stat">
+        <div class="breakdown-stat-value" id="velocityScore">0/20</div>
+        <div class="breakdown-stat-label">📈 Monthly Velocity Score</div>
+      </div>
+    </div>
+    
+    <!-- Business Details -->
+    <div style="background: var(--surface-2); border-radius: 16px; padding: 16px; margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <span id="businessRating">⭐ 0 stars</span>
+        <span id="businessReviewCount">📝 0 reviews</span>
+        <span id="businessVelocity">📈 0 reviews/month</span>
+      </div>
+    </div>
+    
+    <!-- Improvement Tips -->
+    <h3 style="margin-bottom: 16px;">📋 How to improve your score</h3>
+    <div id="improvementTips"></div>
+    
+    <!-- Email Capture -->
+    <div class="email-capture">
+      <span style="font-size: 2rem;">📧</span>
+      <h3 style="margin: 12px 0;">Get your full report delivered</h3>
+      <p style="color: var(--cream-dim); font-size: 0.85rem;">Enter your email to receive a detailed PDF report with actionable insights.</p>
+      
+      <div class="email-input-group">
+        <input type="email" id="reportEmail" class="email-input" placeholder="Your email address">
+        <button id="sendReportBtn" class="submit-btn">Send report →</button>
+      </div>
+      <div id="emailMessage"></div>
+    </div>
+    
+    <!-- Trial CTA -->
+    <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+      <p style="color: var(--cream-dim); margin-bottom: 16px;">Want to automate this and start getting more 5-star reviews?</p>
+      <a href="/admin" class="cta-button">🚀 Start your free trial →</a>
+      <p style="font-size: 0.7rem; color: var(--cream-dim); margin-top: 16px;">No card required · Cancel anytime</p>
+    </div>
+  </div>
+  
+  <!-- Loading State -->
+  <div id="loadingState" class="report-card" style="text-align: center;">
+    <div class="pulse-ring" style="width: 60px; height: 60px; margin: 0 auto 20px; background: var(--accent-dim); border-radius: 50%; animation: pulse 1.5s ease-out infinite; display: flex; align-items: center; justify-content: center; font-size: 2rem;">🔍</div>
+    <h3>Loading your report...</h3>
+    <p style="color: var(--cream-dim);">Fetching your review data from Google</p>
+  </div>
+  
+  <!-- Error State -->
+  <div id="errorState" class="report-card" style="text-align: center; display: none;">
+    <span style="font-size: 3rem;">⚠️</span>
+    <h3>Could not load your report</h3>
+    <p style="color: var(--cream-dim);">We couldn't find your business data. Please try again from the score checker.</p>
+    <a href="/score-checker" class="cta-button" style="margin-top: 16px;">Back to Score Checker →</a>
+  </div>
+
+</div>
+
+<footer style="padding: 40px; text-align: center; border-top: 1px solid var(--border); margin-top: 60px;">
+  <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
+  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
+</footer>
+
+<script>
+// Helper functions
+function getRecommendation(score) {
+  if (score >= 80) return '🌟 Excellent! Your business has great review momentum. Keep it up!';
+  if (score >= 60) return '👍 Good position. A few more reviews could push you ahead of competitors.';
+  if (score >= 40) return '📊 Average score. Many local businesses are outperforming you on reviews.';
+  return '⚠️ Your review profile needs attention. You could be losing customers.';
+}
+
+function getImprovementTips(rating, reviewCount, velocity) {
+  let tips = [];
+  
+  if (rating < 4.5) {
+    tips.push({
+      icon: "⭐",
+      text: `Your rating is ${rating} stars, below the 4.5-star benchmark.`,
+      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating from bad reviews."
+    });
+  }
+  
+  if (reviewCount < 50) {
+    tips.push({
+      icon: "📝",
+      text: `You have only ${reviewCount} reviews. Businesses with 50+ reviews get 4x more clicks on Google.`,
+      action: "ReviewLift automates review requests after every job or appointment — no manual follow-up needed."
+    });
+  }
+  
+  if (velocity < 5) {
+    tips.push({
+      icon: "📈",
+      text: `You're getting only about ${velocity} reviews per month. Top businesses get 10+ monthly reviews.`,
+      action: "ReviewLift's automated SMS and email requests ensure every customer gets asked — dramatically increasing your velocity."
+    });
+  }
+  
+  if (tips.length === 0) {
+    tips.push({
+      icon: "🚀",
+      text: "You're doing well! To stay ahead, maintain your review momentum.",
+      action: "ReviewLift automates the process so you never have to think about asking for reviews again."
+    });
+  }
+  
+  return tips;
+}
+
+// Get URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const placeId = urlParams.get('place_id');
+const businessNameParam = urlParams.get('name');
+const preloadedScore = urlParams.get('score');
+
+let businessData = null;
+
+async function loadReport() {
+  const loadingDiv = document.getElementById('loadingState');
+  const reportDiv = document.getElementById('reportContent');
+  const errorDiv = document.getElementById('errorState');
+  const businessNameSpan = document.getElementById('reportBusinessName');
+  
+  if (!placeId) {
+    loadingDiv.style.display = 'none';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  
+  try {
+    const res = await fetch('/api/review-score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        placeId: placeId, 
+        email: 'temp@temp.com', 
+        businessName: businessNameParam || 'Business',
+        industry: 'default' 
+      })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      businessData = data.business;
+      const score = businessData.score;
+      const rating = businessData.rating;
+      const reviewCount = businessData.review_count;
+      const velocity = businessData.velocity;
+      
+      // Calculate breakdown
+      const ratingScore = Math.round((rating / 5) * 50);
+      let countScore = 0;
+      if (reviewCount >= 200) countScore = 30;
+      else if (reviewCount >= 100) countScore = 25;
+      else if (reviewCount >= 50) countScore = 20;
+      else if (reviewCount >= 20) countScore = 15;
+      else if (reviewCount >= 10) countScore = 10;
+      else if (reviewCount >= 5) countScore = 5;
+      
+      let velocityScore = 0;
+      if (velocity >= 20) velocityScore = 20;
+      else if (velocity >= 15) velocityScore = 15;
+      else if (velocity >= 10) velocityScore = 12;
+      else if (velocity >= 5) velocityScore = 8;
+      else if (velocity >= 2) velocityScore = 4;
+      
+      // Update UI
+      businessNameSpan.innerHTML = businessData.name;
+      document.getElementById('finalScore').innerText = score;
+      document.getElementById('scoreFill').style.width = `${score}%`;
+      document.getElementById('ratingScore').innerHTML = `${ratingScore}/50`;
+      document.getElementById('countScore').innerHTML = `${countScore}/30`;
+      document.getElementById('velocityScore').innerHTML = `${velocityScore}/20`;
+      document.getElementById('businessRating').innerHTML = `⭐ ${rating} stars`;
+      document.getElementById('businessReviewCount').innerHTML = `📝 ${reviewCount} reviews`;
+      document.getElementById('businessVelocity').innerHTML = `📈 ${velocity} reviews/month`;
+      
+      // Improvement tips
+      const tips = getImprovementTips(rating, reviewCount, velocity);
+      const tipsHtml = tips.map(tip => `
+        <div class="improvement-item">
+          <strong>${tip.icon} ${tip.text}</strong>
+          <p style="margin-top: 8px; font-size: 0.8rem; color: var(--cream-dim);">💡 ${tip.action}</p>
+        </div>
+      `).join('');
+      document.getElementById('improvementTips').innerHTML = tipsHtml;
+      
+      loadingDiv.style.display = 'none';
+      reportDiv.style.display = 'block';
+    } else {
+      throw new Error(data.error);
+    }
+  } catch (err) {
+    console.error('Report error:', err);
+    loadingDiv.style.display = 'none';
+    errorDiv.style.display = 'block';
+  }
+}
+
+// Send email report
+document.getElementById('sendReportBtn')?.addEventListener('click', async () => {
+  const email = document.getElementById('reportEmail').value.trim();
+  const messageDiv = document.getElementById('emailMessage');
+  
+  if (!email) {
+    messageDiv.innerHTML = '<p class="error-message">Please enter your email address</p>';
+    return;
+  }
+  
+  const btn = document.getElementById('sendReportBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span> Sending...';
+  
+  try {
+    const res = await fetch('/api/review-score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        placeId: placeId,
+        email: email,
+        businessName: businessData?.name || businessNameParam,
+        industry: 'default'
+      })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      messageDiv.innerHTML = '<p class="success-message">✓ Report sent! Check your email for the detailed PDF.</p>';
+      btn.innerHTML = '✓ Sent!';
+    } else {
+      throw new Error(data.error);
+    }
+  } catch (err) {
+    messageDiv.innerHTML = '<p class="error-message">Something went wrong. Please try again.</p>';
+    btn.disabled = false;
+    btn.innerHTML = 'Send report →';
+  }
+});
+
+// Start loading
+loadReport();
+</script>
+
+</body>
+</html>
