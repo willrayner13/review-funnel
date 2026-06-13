@@ -1589,21 +1589,22 @@
     </div>
     
     <!-- Results (hidden initially) -->
-    <div id="inlineScoreResult" style="display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-        <div>
-          <div style="font-size: 0.65rem; color: var(--cream-dim);">YOUR SCORE</div>
-          <div style="font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent);" id="inlineScoreValue">--</div>
-        </div>
-        <div style="flex: 1;">
-          <div class="progress-bar" style="height: 6px; margin: 0;">
-            <div class="progress-fill" id="inlineScoreFill" style="width: 0%; height: 100%;"></div>
-          </div>
-        </div>
-        <a href="/score-checker" style="color: var(--accent); text-decoration: underline; font-size: 0.85rem;">View full report →</a>
-      </div>
-      <p id="inlineScoreRec" style="font-size: 0.8rem; color: var(--cream-dim); margin-top: 12px;"></p>
+    <!-- Results (hidden initially) -->
+<div id="inlineScoreResult" style="display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+    <div>
+      <div style="font-size: 0.65rem; color: var(--cream-dim);">YOUR SCORE</div>
+      <div style="font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent);" id="inlineScoreValue">--</div>
     </div>
+    <div style="flex: 1;">
+      <div class="progress-bar" style="height: 6px; margin: 0;">
+        <div class="progress-fill" id="inlineScoreFill" style="width: 0%; height: 100%;"></div>
+      </div>
+    </div>
+    <a href="/score-checker" style="color: var(--accent); text-decoration: underline; font-size: 0.85rem;">View full report →</a>
+  </div>
+  <p id="inlineScoreRec" style="font-size: 0.8rem; color: var(--cream-dim); margin-top: 12px;"></p>
+</div>
     
   </div>
   
@@ -1613,6 +1614,7 @@
 </section>
 
 <script>
+// Inline Score Checker Widget
 // Inline Score Checker Widget
 (function() {
   const searchInput = document.getElementById('inlineBusinessSearch');
@@ -1653,7 +1655,7 @@
           selectedBusinessName = data.businesses[0].name;
           searchInput.value = data.businesses[0].name;
           
-          // Show dropdown for multiple matches (optional)
+          // Show dropdown for multiple matches
           if (data.businesses.length > 1) {
             let dropdownHtml = '<div style="background: var(--surface-2); border-radius: 12px; margin-top: 8px; overflow: hidden;">';
             data.businesses.forEach(biz => {
@@ -1701,31 +1703,30 @@
       });
       const data = await res.json();
       
-// After getting the score, update the result div
-if (data.success) {
-  const score = data.business.score;
-  const placeId = selectedPlaceId;
-  const businessName = encodeURIComponent(selectedBusinessName);
-  
-  scoreValueSpan.innerText = score;
-  scoreFillDiv.style.width = `${score}%`;
-  
-  let recText = '';
-  if (score >= 80) recText = '🌟 Excellent! Keep it up!';
-  else if (score >= 60) recText = '👍 Good. A few more reviews could push you ahead.';
-  else if (score >= 40) recText = '📊 Average. Many businesses are outperforming you.';
-  else recText = '⚠️ Your review profile needs attention.';
-  scoreRecP.innerText = recText;
-  
-  // Update the "View full report" link to go to the new report page
-  const viewReportLink = document.querySelector('#inlineScoreResult a');
-  if (viewReportLink) {
-    viewReportLink.href = `/report.html?place_id=${placeId}&name=${businessName}&score=${score}`;
-  }
-  
-  resultDiv.style.display = 'block';
-  statusDiv.innerHTML = '<span style="color: var(--success);">✓ Score calculated! Click "View full report" to see your detailed breakdown.</span>';
-} else {
+      if (data.success) {
+        const score = data.business.score;
+        const placeId = selectedPlaceId;
+        const businessName = encodeURIComponent(selectedBusinessName);
+        
+        scoreValueSpan.innerText = score;
+        scoreFillDiv.style.width = `${score}%`;
+        
+        let recText = '';
+        if (score >= 80) recText = '🌟 Excellent! Keep it up!';
+        else if (score >= 60) recText = '👍 Good. A few more reviews could push you ahead.';
+        else if (score >= 40) recText = '📊 Average. Many businesses are outperforming you.';
+        else recText = '⚠️ Your review profile needs attention.';
+        scoreRecP.innerText = recText;
+        
+        // Update the "View full report" link to go to the improved score-checker page
+        const viewReportLink = document.querySelector('#inlineScoreResult a');
+        if (viewReportLink) {
+          viewReportLink.href = `/score-checker?place_id=${placeId}&name=${businessName}&score=${score}`;
+        }
+        
+        resultDiv.style.display = 'block';
+        statusDiv.innerHTML = '<span style="color: var(--success);">✓ Score calculated! Click "View full report" to see your detailed breakdown.</span>';
+      } else {
         statusDiv.innerHTML = data.error || 'Could not calculate score.';
       }
     } catch (err) {
@@ -1735,8 +1736,7 @@ if (data.success) {
       checkBtn.innerHTML = 'Check my score →';
     }
   });
-})();
-</script>
+})();</script>
 
 <hr class="section-divider">
 
