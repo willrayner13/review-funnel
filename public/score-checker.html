@@ -10,13 +10,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/landing.css">
   <style>
-    /* Score Checker Styles */
     .score-container {
       max-width: 600px;
       margin: 0 auto;
       padding: 40px 24px;
     }
-
     .score-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -24,12 +22,10 @@
       padding: 32px;
       transition: all 0.3s ease;
     }
-
     @media (max-width: 768px) {
       .score-container { padding: 20px 16px; }
       .score-card { padding: 24px 20px; }
     }
-
     .form-input {
       width: 100%;
       padding: 14px 16px;
@@ -41,12 +37,10 @@
       font-size: 1rem;
       transition: border-color 0.2s;
     }
-
     .form-input:focus {
       outline: none;
       border-color: var(--accent);
     }
-
     .btn-primary {
       background: var(--accent);
       color: #1A1A18;
@@ -59,19 +53,19 @@
       margin-top: 16px;
       font-size: 1rem;
       transition: all 0.2s ease;
+      text-align: center;
+      text-decoration: none;
+      display: block;
     }
-
     .btn-primary:hover {
       background: #D4B87A;
       transform: translateY(-2px);
     }
-
     .btn-primary:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
     }
-
     .progress-bar {
       height: 8px;
       background: var(--surface-2);
@@ -79,7 +73,6 @@
       margin: 20px 0;
       overflow: hidden;
     }
-
     .progress-fill {
       height: 100%;
       background: var(--accent);
@@ -87,16 +80,13 @@
       width: 0%;
       transition: width 0.5s ease;
     }
-
     .recommendation-box {
       background: var(--surface-2);
       padding: 20px;
       border-radius: 12px;
       margin: 20px 0;
     }
-
     .hidden { display: none; }
-
     .score-number {
       font-family: 'Syne', sans-serif;
       font-size: 4rem;
@@ -104,15 +94,12 @@
       line-height: 1;
       transition: color 0.3s;
     }
-
     .score-number.excellent { color: #6A9E7F; }
     .score-number.good { color: #C8A96E; }
     .score-number.warning { color: #D4A74A; }
     .score-number.crisis { color: #C0675A; }
-
     @media (max-width: 768px) { .score-number { font-size: 3rem; } }
     @media (max-width: 480px) { .score-number { font-size: 2.5rem; } }
-
     .score-label {
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -120,8 +107,6 @@
       color: var(--cream-dim);
       margin-top: 8px;
     }
-
-    /* Dynamic Warning Card */
     .warning-card {
       background: rgba(192,103,90,0.08);
       border-left: 3px solid #C0675A;
@@ -129,17 +114,14 @@
       padding: 16px;
       margin: 20px 0;
     }
-
     .warning-card.amber {
       background: rgba(212,167,74,0.08);
       border-left-color: #D4A74A;
     }
-
     .warning-card.red {
       background: rgba(192,103,90,0.12);
       border-left-color: #C0675A;
     }
-
     .empathy-message {
       text-align: center;
       padding: 20px;
@@ -147,15 +129,6 @@
       border-radius: 16px;
       margin-bottom: 20px;
     }
-
-    .blurred-score {
-      filter: blur(6px);
-      user-select: none;
-      pointer-events: none;
-      opacity: 0.6;
-      transition: filter 0.3s;
-    }
-
     .autocomplete-results {
       background: var(--surface-2);
       border-radius: 12px;
@@ -165,17 +138,14 @@
       z-index: 10;
       position: relative;
     }
-
     .autocomplete-item {
       padding: 12px 16px;
       cursor: pointer;
       border-bottom: 1px solid var(--border);
       transition: background 0.2s;
     }
-
     .autocomplete-item:hover { background: var(--surface-3); }
     .autocomplete-item:last-child { border-bottom: none; }
-
     .selected-business {
       background: rgba(200,169,110,0.1);
       padding: 12px 16px;
@@ -183,7 +153,6 @@
       margin-bottom: 16px;
       border-left: 3px solid var(--accent);
     }
-
     .loader {
       display: inline-block;
       width: 16px;
@@ -195,14 +164,11 @@
       margin-right: 8px;
       vertical-align: middle;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .processing-animation {
       text-align: center;
       padding: 40px 20px;
     }
-
     .pulse-ring {
       width: 60px;
       height: 60px;
@@ -215,13 +181,11 @@
       justify-content: center;
       font-size: 2rem;
     }
-
     @keyframes pulse {
       0% { transform: scale(0.9); opacity: 0.7; }
       50% { transform: scale(1.1); opacity: 0.3; }
       100% { transform: scale(0.9); opacity: 0.7; }
     }
-
     .unlock-teaser {
       text-align: center;
       margin-top: 20px;
@@ -229,15 +193,12 @@
       background: rgba(200,169,110,0.08);
       border-radius: 12px;
     }
-
-    /* Score Breakdown */
     .score-breakdown {
       margin: 24px 0;
       padding: 16px;
       background: var(--surface-2);
       border-radius: 12px;
     }
-
     .breakdown-item {
       display: flex;
       justify-content: space-between;
@@ -245,22 +206,18 @@
       padding: 12px 0;
       border-bottom: 1px solid var(--border);
     }
-
     .breakdown-item:last-child { border-bottom: none; }
-
     .breakdown-label {
       font-size: 0.85rem;
       color: var(--cream-dim);
       min-width: 100px;
     }
-
     .breakdown-value {
       font-weight: 700;
       color: var(--cream);
       min-width: 45px;
       text-align: right;
     }
-
     .breakdown-bar {
       flex: 1;
       height: 6px;
@@ -269,7 +226,6 @@
       margin: 0 12px;
       overflow: hidden;
     }
-
     .breakdown-bar-fill {
       height: 100%;
       background: var(--accent);
@@ -277,18 +233,11 @@
       width: 0%;
       transition: width 0.5s ease;
     }
-
-    /* Blurred breakdown item */
     .breakdown-item.blurred .breakdown-value,
     .breakdown-item.blurred .breakdown-bar {
       filter: blur(4px);
       opacity: 0.6;
     }
-
-    .breakdown-item.blurred .breakdown-label {
-      opacity: 0.8;
-    }
-
     .protection-gap {
       margin-top: 20px;
       padding: 16px;
@@ -296,7 +245,6 @@
       border-radius: 12px;
       border-left: 3px solid var(--accent);
     }
-
     .improvement-tip {
       margin-top: 16px;
       padding: 12px;
@@ -306,16 +254,13 @@
       color: var(--cream-dim);
       border-left: 3px solid var(--accent);
     }
-
     .hero {
       padding: 140px 24px 60px !important;
     }
-
     @media (max-width: 768px) {
       .hero { padding: 100px 20px 40px !important; }
       .hero h1 { font-size: 2rem !important; }
     }
-
     footer {
       padding: 40px 24px !important;
     }
@@ -362,17 +307,14 @@
     <div id="stepScoreRevealed" class="hidden">
       <div id="selectedBusinessInfo" class="selected-business"></div>
       
-      <!-- Score Number with dynamic colour -->
       <div class="score-number" id="scoreNumber">0</div>
       <div class="score-label">OUT OF 100</div>
       <div class="progress-bar">
         <div class="progress-fill" id="scoreProgress"></div>
       </div>
       
-      <!-- Dynamic Warning Card (appears based on rating) -->
       <div id="warningCard" class="hidden"></div>
       
-      <!-- Score Breakdown (Rating + Count visible, Velocity blurred) -->
       <div class="score-breakdown">
         <div class="breakdown-item">
           <span class="breakdown-label">⭐ Rating Score</span>
@@ -391,7 +333,6 @@
         </div>
       </div>
       
-      <!-- Unlock Teaser with protection angle -->
       <div class="unlock-teaser" id="unlockTeaser">
         <span style="font-size: 1.5rem;">🔓</span>
         <p style="margin: 8px 0;"><strong>Enter your email to see your full breakdown</strong></p>
@@ -399,7 +340,7 @@
       </div>
       
       <input type="email" id="unlockEmail" placeholder="Your email address" class="form-input">
-      <button id="unlockBtn" class="btn-primary" id="unlockButton">Unlock my full report →</button>
+      <button id="unlockBtn" class="btn-primary">Unlock my full report →</button>
     </div>
 
     <!-- Step 4: Full Report Unlocked -->
@@ -428,15 +369,12 @@
         </div>
       </div>
       
-      <!-- Protection Gap Section -->
       <div id="protectionGap" class="protection-gap hidden"></div>
       
-      <!-- Improvement Tips -->
       <div id="improvementTips"></div>
       
-      <!-- Dynamic CTA Button -->
       <div style="margin-top: 24px;">
-        <a href="/admin" id="ctaButton" class="btn-primary" style="display: block; text-align: center; text-decoration: none;">🚀 Start free trial →</a>
+        <a href="/admin" id="ctaButton" class="btn-primary">🚀 Start free trial →</a>
       </div>
       
       <p style="font-size: 0.7rem; color: var(--cream-dim); text-align: center; margin-top: 16px;">
@@ -460,6 +398,30 @@ let cachedRating = null;
 let cachedReviewCount = null;
 let cachedScore = null;
 let searchTimeout = null;
+
+function calculateBreakdown(rating, reviewCount) {
+  const ratingScore = Math.round((rating / 5) * 50);
+  
+  let countScore = 0;
+  if (reviewCount >= 200) countScore = 30;
+  else if (reviewCount >= 100) countScore = 25;
+  else if (reviewCount >= 50) countScore = 20;
+  else if (reviewCount >= 20) countScore = 15;
+  else if (reviewCount >= 10) countScore = 10;
+  else if (reviewCount >= 5) countScore = 5;
+  
+  let velocityScore = 0;
+  const velocity = Math.round(reviewCount / 2);
+  if (velocity >= 20) velocityScore = 20;
+  else if (velocity >= 15) velocityScore = 15;
+  else if (velocity >= 10) velocityScore = 12;
+  else if (velocity >= 5) velocityScore = 8;
+  else if (velocity >= 2) velocityScore = 4;
+  
+  const totalScore = ratingScore + countScore + velocityScore;
+  
+  return { ratingScore, countScore, velocityScore, velocity, totalScore };
+}
 
 function getRatingBand(rating) {
   if (rating >= 4.8) return 'excellent';
@@ -501,7 +463,6 @@ function getWarningCard(rating, score) {
     `;
   }
   
-  // crisis mode
   return `
     <div class="empathy-message">
       <span style="font-size: 2rem;">💙</span>
@@ -518,44 +479,27 @@ function getCTAText(rating, score) {
   return '🚀 Get more reviews →';
 }
 
-// Fix the calculateBreakdown function - add totalScore calculation
-function calculateBreakdown(rating, reviewCount) {
-  const ratingScore = Math.round((rating / 5) * 50);
+function getProtectionGap(rating, reviewCount) {
+  const band = getRatingBand(rating);
+  if (band === 'excellent') return null;
   
-  let countScore = 0;
-  if (reviewCount >= 200) countScore = 30;
-  else if (reviewCount >= 100) countScore = 25;
-  else if (reviewCount >= 50) countScore = 20;
-  else if (reviewCount >= 20) countScore = 15;
-  else if (reviewCount >= 10) countScore = 10;
-  else if (reviewCount >= 5) countScore = 5;
+  let estimatedPercent = 0;
+  if (rating >= 4.3) estimatedPercent = 8;
+  else if (rating >= 3.5) estimatedPercent = 18;
+  else if (rating >= 2.5) estimatedPercent = 35;
+  else estimatedPercent = 50;
   
-  let velocityScore = 0;
-  const velocity = Math.round(reviewCount / 2);
-  if (velocity >= 20) velocityScore = 20;
-  else if (velocity >= 15) velocityScore = 15;
-  else if (velocity >= 10) velocityScore = 12;
-  else if (velocity >= 5) velocityScore = 8;
-  else if (velocity >= 2) velocityScore = 4;
-  
-  // Add totalScore calculation (this was missing!)
-  const totalScore = ratingScore + countScore + velocityScore;
-  
-  return { ratingScore, countScore, velocityScore, velocity, totalScore };
+  return `
+    <strong>🛡️ Your review protection gap</strong><br>
+    Based on your ${rating} star rating, an estimated <strong>${estimatedPercent}–${estimatedPercent + 10}%</strong> of your customers had a negative experience that reached Google publicly.<br><br>
+    ReviewLift's private feedback system would have intercepted most of these. Instead of 1-star reviews, you'd receive private messages — giving you a chance to fix issues before they become public.
+  `;
 }
 
-function getRecommendation(score) {
-  if (score >= 80) return '🌟 Excellent! Your business has great review momentum. Keep it up!';
-  if (score >= 60) return '👍 Good position. A few more reviews could push you ahead of competitors.';
-  if (score >= 40) return '📊 Average score. Many local businesses are outperforming you on reviews.';
-  return '⚠️ Your review profile needs attention. You could be losing customers.';
-}
-
-function getImprovementTips(rating, reviewCount, velocity, scoreBand) {
+function getImprovementTips(rating, reviewCount, velocity, ratingBand) {
   let tips = [];
   const band = getRatingBand(rating);
   
-  // For low scorers, protection comes FIRST
   if (band === 'warning' || band === 'crisis') {
     tips.push({
       icon: "🛡️",
@@ -588,8 +532,7 @@ function getImprovementTips(rating, reviewCount, velocity, scoreBand) {
     });
   }
   
-  // For high scorers, protection is last (optional)
-  if (tips.length === 0 || (band === 'excellent' || band === 'good')) {
+  if (tips.length === 0) {
     tips.push({
       icon: "🚀",
       text: "You're doing well! To stay ahead, maintain your review momentum.",
@@ -598,23 +541,6 @@ function getImprovementTips(rating, reviewCount, velocity, scoreBand) {
   }
   
   return tips;
-}
-
-function getProtectionGap(rating, reviewCount) {
-  const band = getRatingBand(rating);
-  if (band === 'excellent') return null;
-  
-  let estimatedPercent = 0;
-  if (rating >= 4.3) estimatedPercent = 8;
-  else if (rating >= 3.5) estimatedPercent = 18;
-  else if (rating >= 2.5) estimatedPercent = 35;
-  else estimatedPercent = 50;
-  
-  return `
-    <strong>🛡️ Your review protection gap</strong><br>
-    Based on your ${rating} star rating, an estimated <strong>${estimatedPercent}–${estimatedPercent + 10}%</strong> of your customers had a negative experience that reached Google publicly.<br><br>
-    ReviewLift's private feedback system would have intercepted most of these. Instead of 1-star reviews, you'd receive private messages — giving you a chance to fix issues before they become public.
-  `;
 }
 
 // Autocomplete search
@@ -692,26 +618,23 @@ searchBtn.addEventListener('click', async () => {
     });
     const data = await res.json();
     
-if (data.success) {
-  cachedRating = data.business.rating;
-  cachedReviewCount = data.business.review_count;
-  const breakdown = calculateBreakdown(cachedRating, cachedReviewCount);
-  cachedScore = breakdown.totalScore;  // Now this will have a value
+    if (data.success) {
+      cachedRating = data.business.rating;
+      cachedReviewCount = data.business.review_count;
+      const breakdown = calculateBreakdown(cachedRating, cachedReviewCount);
+      cachedScore = breakdown.totalScore;
       
       document.getElementById('selectedBusinessInfo').innerHTML = `
         <strong>${selectedBusinessName}</strong><br>
         <span style="font-size: 0.8rem;">⭐ ${cachedRating} stars · ${cachedReviewCount} reviews</span>
       `;
       
-      // Set score with colour class
-// Set score with colour class - use cachedScore or breakdown.totalScore
-const scoreColorClass = getScoreColorClass(cachedScore);
-const scoreEl = document.getElementById('scoreNumber');
-scoreEl.innerText = cachedScore;  // This should now have a value
+      const scoreColorClass = getScoreColorClass(cachedScore);
+      const scoreEl = document.getElementById('scoreNumber');
+      scoreEl.innerText = cachedScore;
       scoreEl.className = `score-number ${scoreColorClass}`;
       document.getElementById('scoreProgress').style.width = `${cachedScore}%`;
       
-      // Set breakdown values
       document.getElementById('ratingFill').style.width = `${(breakdown.ratingScore / 50) * 100}%`;
       document.getElementById('countFill').style.width = `${(breakdown.countScore / 30) * 100}%`;
       document.getElementById('velocityFill').style.width = `${(breakdown.velocityScore / 20) * 100}%`;
@@ -719,7 +642,6 @@ scoreEl.innerText = cachedScore;  // This should now have a value
       document.getElementById('countScore').innerHTML = `${breakdown.countScore}/30`;
       document.getElementById('velocityScore').innerHTML = `${breakdown.velocityScore}/20`;
       
-      // Add warning card if needed
       const warningHtml = getWarningCard(cachedRating, cachedScore);
       const warningDiv = document.getElementById('warningCard');
       if (warningHtml) {
@@ -729,7 +651,6 @@ scoreEl.innerText = cachedScore;  // This should now have a value
         warningDiv.classList.add('hidden');
       }
       
-      // Update unlock teaser text based on rating band
       const band = getRatingBand(cachedRating);
       const teaserText = document.getElementById('unlockTeaserText');
       if (band === 'warning' || band === 'crisis') {
@@ -786,7 +707,6 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       const breakdown = calculateBreakdown(data.business.rating, data.business.review_count);
       const band = getRatingBand(data.business.rating);
       
-      // Update final score
       document.getElementById('finalScore').innerText = breakdown.totalScore;
       document.getElementById('finalScoreFill').style.width = `${breakdown.totalScore}%`;
       
@@ -797,7 +717,6 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       document.getElementById('finalCountScore').innerHTML = `${breakdown.countScore}/30`;
       document.getElementById('finalVelocityScore').innerHTML = `${breakdown.velocityScore}/20`;
       
-      // Protection gap
       const protectionHtml = getProtectionGap(data.business.rating, data.business.review_count);
       const protectionDiv = document.getElementById('protectionGap');
       if (protectionHtml) {
@@ -807,7 +726,6 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
         protectionDiv.classList.add('hidden');
       }
       
-      // Improvement tips
       const tips = getImprovementTips(data.business.rating, data.business.review_count, breakdown.velocity, band);
       const tipsHtml = tips.map(tip => `
         <div class="improvement-tip">
@@ -817,7 +735,6 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       `).join('');
       document.getElementById('improvementTips').innerHTML = tipsHtml;
       
-      // Update CTA button text
       const ctaButton = document.getElementById('ctaButton');
       ctaButton.innerHTML = getCTAText(data.business.rating, breakdown.totalScore);
       
