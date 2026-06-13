@@ -9,9 +9,13 @@
     { "src": "public/blog/**", "use": "@vercel/static" },
     { "src": "public/funnel/**", "use": "@vercel/static" },
     { "src": "public/*.html", "use": "@vercel/static" },
-    { "src": "public/*.webmanifest", "use": "@vercel/static" }
+    { "src": "public/*.webmanifest", "use": "@vercel/static" },
+    { "src": "public/*.xml", "use": "@vercel/static" },
+    { "src": "public/*.txt", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/sitemap.xml", "dest": "/public/sitemap.xml" },
+    { "src": "/robots.txt", "dest": "/public/robots.txt" },
     { "src": "/css/(.*)", "dest": "/public/css/$1" },
     { "src": "/js/(.*)", "dest": "/public/js/$1" },
     { "src": "/images/(.*)", "dest": "/public/images/$1" },
