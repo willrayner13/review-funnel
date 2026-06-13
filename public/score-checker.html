@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/landing.css">
   <style>
+    * { box-sizing: border-box; }
     .score-container {
       max-width: 600px;
       margin: 0 auto;
@@ -307,7 +308,7 @@
     <div id="stepScoreRevealed" class="hidden">
       <div id="selectedBusinessInfo" class="selected-business"></div>
       
-      <div class="score-number" id="scoreNumber">0</div>
+      <div class="score-number" id="scoreNumber">--</div>
       <div class="score-label">OUT OF 100</div>
       <div class="progress-bar">
         <div class="progress-fill" id="scoreProgress"></div>
@@ -345,7 +346,7 @@
 
     <!-- Step 4: Full Report Unlocked -->
     <div id="stepFullReport" class="hidden">
-      <div class="score-number" id="finalScore">0</div>
+      <div class="score-number" id="finalScore">--</div>
       <div class="score-label">OUT OF 100</div>
       <div class="progress-bar">
         <div class="progress-fill" id="finalScoreFill"></div>
@@ -419,6 +420,8 @@ function calculateBreakdown(rating, reviewCount) {
   else if (velocity >= 2) velocityScore = 4;
   
   const totalScore = ratingScore + countScore + velocityScore;
+  
+  console.log('Calculated breakdown:', { rating, reviewCount, ratingScore, countScore, velocityScore, totalScore });
   
   return { ratingScore, countScore, velocityScore, velocity, totalScore };
 }
@@ -624,6 +627,8 @@ searchBtn.addEventListener('click', async () => {
       const breakdown = calculateBreakdown(cachedRating, cachedReviewCount);
       cachedScore = breakdown.totalScore;
       
+      console.log('Setting cachedScore to:', cachedScore);
+      
       document.getElementById('selectedBusinessInfo').innerHTML = `
         <strong>${selectedBusinessName}</strong><br>
         <span style="font-size: 0.8rem;">⭐ ${cachedRating} stars · ${cachedReviewCount} reviews</span>
@@ -631,6 +636,8 @@ searchBtn.addEventListener('click', async () => {
       
       const scoreColorClass = getScoreColorClass(cachedScore);
       const scoreEl = document.getElementById('scoreNumber');
+      console.log('Score element found:', scoreEl);
+      console.log('Setting scoreNumber innerText to:', cachedScore);
       scoreEl.innerText = cachedScore;
       scoreEl.className = `score-number ${scoreColorClass}`;
       document.getElementById('scoreProgress').style.width = `${cachedScore}%`;
@@ -669,6 +676,7 @@ searchBtn.addEventListener('click', async () => {
       searchBtn.innerHTML = 'Search →';
     }
   } catch (err) {
+    console.error('Search error:', err);
     searchStatus.innerHTML = 'Error fetching business data. Please try again.';
     document.getElementById('stepProcessing').classList.add('hidden');
     document.getElementById('step1').classList.remove('hidden');
@@ -744,6 +752,7 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       alert(data.error || 'Could not calculate score');
     }
   } catch (err) {
+    console.error('Unlock error:', err);
     alert('Something went wrong. Please try again.');
   } finally {
     btn.disabled = false;
@@ -754,6 +763,26 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
 searchInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter' && searchBtn.disabled === false) {
     searchBtn.click();
+  }
+});
+
+// Check for URL parameters on page load (for coming from landing page)
+window.addEventListener('DOMContentLoaded', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const placeIdParam = urlParams.get('place_id');
+  const businessNameParam = urlParams.get('name');
+  
+  if (placeIdParam && businessNameParam) {
+    console.log('Loading from URL params:', placeIdParam, businessNameParam);
+    selectedPlaceId = placeIdParam;
+    selectedBusinessName = decodeURIComponent(businessNameParam);
+    searchInput.value = selectedBusinessName;
+    searchBtn.disabled = false;
+    searchStatus.innerHTML = `✓ Loaded: ${selectedBusinessName}`;
+    // Auto-search after a short delay
+    setTimeout(() => {
+      searchBtn.click();
+    }, 500);
   }
 });
 </script>
