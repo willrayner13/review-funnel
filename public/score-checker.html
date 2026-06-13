@@ -518,6 +518,7 @@ function getCTAText(rating, score) {
   return '🚀 Get more reviews →';
 }
 
+// Fix the calculateBreakdown function - add totalScore calculation
 function calculateBreakdown(rating, reviewCount) {
   const ratingScore = Math.round((rating / 5) * 50);
   
@@ -537,7 +538,10 @@ function calculateBreakdown(rating, reviewCount) {
   else if (velocity >= 5) velocityScore = 8;
   else if (velocity >= 2) velocityScore = 4;
   
-  return { ratingScore, countScore, velocityScore, velocity };
+  // Add totalScore calculation (this was missing!)
+  const totalScore = ratingScore + countScore + velocityScore;
+  
+  return { ratingScore, countScore, velocityScore, velocity, totalScore };
 }
 
 function getRecommendation(score) {
@@ -688,11 +692,11 @@ searchBtn.addEventListener('click', async () => {
     });
     const data = await res.json();
     
-    if (data.success) {
-      cachedRating = data.business.rating;
-      cachedReviewCount = data.business.review_count;
-      const breakdown = calculateBreakdown(cachedRating, cachedReviewCount);
-      cachedScore = breakdown.totalScore;
+if (data.success) {
+  cachedRating = data.business.rating;
+  cachedReviewCount = data.business.review_count;
+  const breakdown = calculateBreakdown(cachedRating, cachedReviewCount);
+  cachedScore = breakdown.totalScore;  // Now this will have a value
       
       document.getElementById('selectedBusinessInfo').innerHTML = `
         <strong>${selectedBusinessName}</strong><br>
@@ -700,9 +704,10 @@ searchBtn.addEventListener('click', async () => {
       `;
       
       // Set score with colour class
-      const scoreColorClass = getScoreColorClass(cachedScore);
-      const scoreEl = document.getElementById('scoreNumber');
-      scoreEl.innerText = cachedScore;
+// Set score with colour class - use cachedScore or breakdown.totalScore
+const scoreColorClass = getScoreColorClass(cachedScore);
+const scoreEl = document.getElementById('scoreNumber');
+scoreEl.innerText = cachedScore;  // This should now have a value
       scoreEl.className = `score-number ${scoreColorClass}`;
       document.getElementById('scoreProgress').style.width = `${cachedScore}%`;
       
