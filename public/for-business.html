@@ -1955,11 +1955,7 @@
       </div>
 
             <!-- FUNNEL STUDIO SECTION - REDESIGNED -->
-<!-- ============================================================
-     FUNNEL STUDIO SECTION
-     Drop this in for-business.html replacing the existing
-     #funnelStudioSection div entirely
-============================================================ -->
+<!-- FUNNEL STUDIO SECTION - 5-LAYER REDESIGN -->
 <div id="funnelStudioSection" class="content-section">
   <div class="fs-wrap">
 
@@ -1972,105 +1968,257 @@
       <div class="fs-live-badge"><span class="fs-live-dot"></span>Live</div>
     </div>
 
-    <!-- Body: settings left, preview right -->
-    <div class="fs-body">
-
-      <!-- LEFT: Settings -->
-      <div class="fs-panel" id="fsSettingsPanel">
-
-        <!-- Templates -->
-        <div class="fs-group">
-          <div class="fs-group-label">Template</div>
-          <div class="fs-templates">
-            <button class="fs-tpl selected" data-template="classic" onclick="selectFSTemplate('classic',this)" title="Dark">
-              <div class="fs-tpl-dot" style="background:#1A1A18;"></div>
-              <span>Dark</span>
+    <!-- NEW: 5-Layer Settings Panel (Left) + Preview (Right) -->
+    <div class="fs-body-new" style="display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start;">
+      
+      <!-- ========== LEFT: 5-LAYER SETTINGS ========== -->
+      <div class="fs-panel-new" style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; position: sticky; top: 16px; max-height: calc(100vh - 120px); overflow-y: auto;">
+        
+        <!-- Layer 1: Brand Identity -->
+        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="font-size: 1rem;">🏷️</span>
+            <span style="font-weight: 600; font-size: 0.85rem;">Brand Identity</span>
+          </div>
+          
+          <!-- Logo -->
+          <div class="fs-group" style="margin-bottom: 16px;">
+            <div class="fs-group-label">Logo URL <span class="fs-optional">(optional)</span></div>
+            <input class="fs-input" id="fsLogoUrl" type="url" placeholder="https://your-site.com/logo.png" oninput="updateFSPreview()">
+            <div id="fsLogoPreview" style="display:none; margin-top:8px; text-align:center;">
+              <img id="fsLogoPreviewImg" style="max-height:32px; max-width:100%;" alt="">
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 12px;">
+              <select id="fsLogoSize" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
+                <option value="small">Small logo</option>
+                <option value="medium" selected>Medium logo</option>
+                <option value="large">Large logo</option>
+              </select>
+              <select id="fsLogoAlign" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
+                <option value="left">Left aligned</option>
+                <option value="center" selected>Center aligned</option>
+                <option value="right">Right aligned</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Business Name Display -->
+          <div class="fs-group" style="margin-bottom: 16px;">
+            <div class="fs-group-label">Business name display</div>
+            <select id="fsBizDisplay" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
+              <option value="both">Show logo + name</option>
+              <option value="logo-only">Logo only</option>
+              <option value="name-only" selected>Name only</option>
+              <option value="hide">Hide both</option>
+            </select>
+          </div>
+          
+          <!-- Typography -->
+          <div class="fs-group">
+            <div class="fs-group-label">Typography</div>
+            <select id="fsFont" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
+              <option value="dm-sans" selected>Modern — DM Sans (clean, readable)</option>
+              <option value="inter">Elegant — Inter (professional)</option>
+              <option value="syne">Premium — Syne (bold, luxury)</option>
+              <option value="playfair">Luxury — Playfair Display (serif, elegant)</option>
+              <option value="poppins">Friendly — Poppins (rounded, approachable)</option>
+              <option value="merriweather">Traditional — Merriweather (classic, trustworthy)</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Layer 2: Theme System -->
+        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="font-size: 1rem;">🎨</span>
+            <span style="font-weight: 600; font-size: 0.85rem;">Theme</span>
+          </div>
+          
+          <div class="fs-templates" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+            <button class="fs-tpl selected" data-template="classic" onclick="selectFSTemplate('classic',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#1A1A18; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Dark</span>
             </button>
-            <button class="fs-tpl" data-template="bright" onclick="selectFSTemplate('bright',this)" title="Light">
-              <div class="fs-tpl-dot" style="background:#fff; border:1px solid #ddd;"></div>
-              <span>Light</span>
+            <button class="fs-tpl" data-template="bright" onclick="selectFSTemplate('bright',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#FFFFFF; border:1px solid #ddd; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Light</span>
             </button>
-            <button class="fs-tpl" data-template="medical" onclick="selectFSTemplate('medical',this)" title="Medical">
-              <div class="fs-tpl-dot" style="background:#F0F4F8;"></div>
-              <span>Medical</span>
+            <button class="fs-tpl" data-template="luxury" onclick="selectFSTemplate('luxury',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#0A0A0A; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Luxury</span>
             </button>
-            <button class="fs-tpl" data-template="bold" onclick="selectFSTemplate('bold',this)" title="Bold">
-              <div class="fs-tpl-dot" style="background:#C8A96E;"></div>
-              <span>Bold</span>
+            <button class="fs-tpl" data-template="medical" onclick="selectFSTemplate('medical',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#F0F4F8; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Clinical</span>
             </button>
-            <button class="fs-tpl" data-template="luxury" onclick="selectFSTemplate('luxury',this)" title="Luxury">
-              <div class="fs-tpl-dot" style="background:#0A0A0A;"></div>
-              <span>Luxury</span>
+            <button class="fs-tpl" data-template="bold" onclick="selectFSTemplate('bold',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#C8A96E; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Bold</span>
+            </button>
+            <button class="fs-tpl" data-template="vibrant" onclick="selectFSTemplate('vibrant',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4); border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Vibrant</span>
+            </button>
+            <button class="fs-tpl" data-template="minimal" onclick="selectFSTemplate('minimal',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#FAFAFA; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Minimal</span>
+            </button>
+            <button class="fs-tpl" data-template="hospitality" onclick="selectFSTemplate('hospitality',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#2C1810; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Hospitality</span>
             </button>
           </div>
         </div>
-
-        <!-- Accent colour -->
-        <div class="fs-group">
-          <div class="fs-group-label">Accent colour</div>
-          <div class="fs-colours">
-            <button class="fs-colour selected" style="background:#C8A96E;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E',this)"></button>
-            <button class="fs-colour" style="background:#3B82F6;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6',this)"></button>
-            <button class="fs-colour" style="background:#10B981;" data-color="#10B981" onclick="selectFSColor('#10B981',this)"></button>
-            <button class="fs-colour" style="background:#8B5CF6;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6',this)"></button>
-            <button class="fs-colour" style="background:#EF4444;" data-color="#EF4444" onclick="selectFSColor('#EF4444',this)"></button>
-            <button class="fs-colour" style="background:#F59E0B;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B',this)"></button>
-            <input type="color" class="fs-colour-custom" value="#C8A96E" title="Custom colour"
-              oninput="selectFSColor(this.value,null)">
+        
+        <!-- Layer 3: Colour System -->
+        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="font-size: 1rem;">🎨</span>
+            <span style="font-weight: 600; font-size: 0.85rem;">Colours</span>
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Primary (button colour)</div>
+            <div class="fs-colours" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="fs-colour selected" style="background:#C8A96E; width: 32px; height: 32px;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E',this)"></button>
+              <button class="fs-colour" style="background:#3B82F6; width: 32px; height: 32px;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6',this)"></button>
+              <button class="fs-colour" style="background:#10B981; width: 32px; height: 32px;" data-color="#10B981" onclick="selectFSColor('#10B981',this)"></button>
+              <button class="fs-colour" style="background:#8B5CF6; width: 32px; height: 32px;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6',this)"></button>
+              <button class="fs-colour" style="background:#EF4444; width: 32px; height: 32px;" data-color="#EF4444" onclick="selectFSColor('#EF4444',this)"></button>
+              <button class="fs-colour" style="background:#F59E0B; width: 32px; height: 32px;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B',this)"></button>
+              <input type="color" class="fs-colour-custom" value="#C8A96E" style="width: 32px; height: 32px; border-radius: 50%;" oninput="selectFSColor(this.value,null)">
+            </div>
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Background colour <span class="fs-optional">(optional)</span></div>
+            <input type="color" id="fsBgColor" value="#1A1A18" onchange="updateFSPreview()" style="width: 100%; height: 40px; border-radius: 8px;">
+          </div>
+          
+          <div class="fs-group">
+            <div class="fs-group-label">Text colour <span class="fs-optional">(optional)</span></div>
+            <input type="color" id="fsTextColor" value="#EAE7DC" onchange="updateFSPreview()" style="width: 100%; height: 40px; border-radius: 8px;">
           </div>
         </div>
-
-        <!-- Wording -->
-        <div class="fs-group">
-          <div class="fs-group-label">Headline <span class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</span></div>
-          <input class="fs-input" id="fsHeadline" type="text" maxlength="60"
-            value="How was your experience?"
-            oninput="updateFSPreview();updateFSCharCount()">
-        </div>
-
-        <div class="fs-group">
-          <div class="fs-group-label">Happy button</div>
-          <input class="fs-input" id="fsHappyLabel" type="text"
-            value="Great experience!" oninput="updateFSPreview()">
-        </div>
-
-        <div class="fs-group">
-          <div class="fs-group-label">Unhappy button</div>
-          <input class="fs-input" id="fsSadLabel" type="text"
-            value="Could be better" oninput="updateFSPreview()">
-        </div>
-
-        <div class="fs-group">
-          <div class="fs-group-label">Thank you message</div>
-          <input class="fs-input" id="fsThankyouMsg" type="text"
-            placeholder="Thanks for your feedback!">
-        </div>
-
-        <!-- Logo -->
-        <div class="fs-group">
-          <div class="fs-group-label">Logo URL <span class="fs-optional">(optional)</span></div>
-          <input class="fs-input" id="fsLogoUrl" type="url"
-            placeholder="https://your-site.com/logo.png" oninput="updateFSPreview()">
-          <div id="fsLogoPreview" style="display:none; margin-top:8px; text-align:center;">
-            <img id="fsLogoPreviewImg" style="max-height:32px; max-width:100%;" alt="">
+        
+        <!-- Layer 4: Layout System -->
+        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="font-size: 1rem;">📐</span>
+            <span style="font-weight: 600; font-size: 0.85rem;">Layout</span>
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Button layout</div>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="setButtonLayout('stacked')" id="btnLayoutStacked" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Stacked</button>
+              <button onclick="setButtonLayout('side')" id="btnLayoutSide" style="flex:1; padding: 8px; background: var(--accent); color:#1A1A18; border-radius: 8px; cursor: pointer;">Side by side</button>
+            </div>
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Button style</div>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="setButtonStyle('rounded')" id="btnStyleRounded" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Rounded</button>
+              <button onclick="setButtonStyle('pill')" id="btnStylePill" style="flex:1; padding: 8px; background: var(--accent); color:#1A1A18; border-radius: 8px; cursor: pointer;">Pill</button>
+              <button onclick="setButtonStyle('sharp')" id="btnStyleSharp" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Sharp</button>
+            </div>
+          </div>
+          
+          <div class="fs-group">
+            <div class="fs-group-label">Card width</div>
+            <input type="range" id="fsCardWidth" min="280" max="500" value="380" step="10" oninput="updateFSPreview(); document.getElementById('cardWidthVal').innerText = this.value + 'px'">
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem;">
+              <span>Compact</span>
+              <span id="cardWidthVal">380px</span>
+              <span>Wide</span>
+            </div>
           </div>
         </div>
-
-        <!-- AI tips -->
-        <div class="fs-group">
-          <div class="fs-group-label">AI suggestions</div>
+        
+        <!-- Layer 5: Experience Design -->
+        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="font-size: 1rem;">✨</span>
+            <span style="font-weight: 600; font-size: 0.85rem;">Experience</span>
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Background effect</div>
+            <select id="fsBgEffect" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
+              <option value="none" selected>None — clean solid</option>
+              <option value="gradient">Gradient — dark to gold</option>
+              <option value="mesh">Mesh gradient — modern SaaS</option>
+              <option value="pattern">Subtle pattern</option>
+              <option value="glass">Glassmorphism — blurred glass</option>
+              <option value="grain">Luxury grain — premium texture</option>
+            </select>
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Animation level</div>
+            <select id="fsAnimation" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
+              <option value="none">None — static</option>
+              <option value="subtle">Subtle — fade in only</option>
+              <option value="standard" selected>Standard — slide + fade</option>
+              <option value="premium">Premium — float + bounce</option>
+            </select>
+          </div>
+          
+          <div class="fs-group">
+            <div class="fs-group-label">Shadow depth</div>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="setShadowDepth('none')" id="shadowNone" style="flex:1; padding: 6px; background: var(--surface-2); border-radius: 6px; cursor: pointer;">None</button>
+              <button onclick="setShadowDepth('small')" id="shadowSmall" style="flex:1; padding: 6px; background: var(--surface-2); border-radius: 6px; cursor: pointer;">Small</button>
+              <button onclick="setShadowDepth('medium')" id="shadowMedium" style="flex:1; padding: 6px; background: var(--accent); color:#1A1A18; border-radius: 6px; cursor: pointer;">Medium</button>
+              <button onclick="setShadowDepth('large')" id="shadowLarge" style="flex:1; padding: 6px; background: var(--surface-2); border-radius: 6px; cursor: pointer;">Large</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Wording Section (kept from original) -->
+        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="font-size: 1rem;">✏️</span>
+            <span style="font-weight: 600; font-size: 0.85rem;">Wording</span>
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Headline <span class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</span></div>
+            <input class="fs-input" id="fsHeadline" type="text" maxlength="60" value="How was your experience?" oninput="updateFSPreview();updateFSCharCount()">
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Happy button</div>
+            <input class="fs-input" id="fsHappyLabel" type="text" value="Great experience!" oninput="updateFSPreview()">
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Unhappy button</div>
+            <input class="fs-input" id="fsSadLabel" type="text" value="Could be better" oninput="updateFSPreview()">
+          </div>
+          
+          <div class="fs-group">
+            <div class="fs-group-label">Thank you message</div>
+            <input class="fs-input" id="fsThankyouMsg" type="text" placeholder="Thanks for your feedback!">
+          </div>
+        </div>
+        
+        <!-- AI Tips -->
+        <div class="fs-group" style="margin-bottom: 16px;">
+          <div class="fs-group-label">✨ AI suggestions</div>
           <div class="fs-ai-tip" onclick="applyAISuggestion('headline')">
             <span class="fs-ai-icon">✦</span>
-            <span>"How did we do today?" converts 18% better for service businesses</span>
+            <span>"How did we do today?" converts 18% better</span>
           </div>
           <div class="fs-ai-tip" onclick="applyAISuggestion('happy')" style="margin-top:6px;">
             <span class="fs-ai-icon">✦</span>
             <span>"Loved it! ⭐" increases click-through by 23%</span>
           </div>
         </div>
-
-        <!-- Save bar -->
-        <div class="fs-save-row">
+        
+        <!-- Save Bar -->
+        <div class="fs-save-row" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
           <span class="fs-save-status" id="fsSaveStatus">Unsaved changes</span>
           <div style="display:flex;gap:8px;">
             <button class="fs-copy-btn" onclick="copyFSLink()">Copy link</button>
@@ -2079,40 +2227,38 @@
             </button>
           </div>
         </div>
-
+        
         <!-- Funnel link -->
         <div class="fs-link-row">
           <span class="fs-link-label">Your funnel</span>
           <code class="fs-link-code" id="fsLinkDisplay">Loading...</code>
         </div>
-
-      </div><!-- end fs-panel -->
-
-      <!-- RIGHT: Preview -->
+        
+      </div><!-- end left panel -->
+      
+      <!-- ========== RIGHT: PREVIEW (kept from original but enhanced) ========== -->
       <div class="fs-preview-wrap">
-
+        
         <!-- Device toggle -->
         <div class="fs-device-bar">
           <button class="fs-dev-btn" data-device="mobile" onclick="setFSDevice('mobile')">📱 Mobile</button>
           <button class="fs-dev-btn active" data-device="split" onclick="setFSDevice('split')">⬛ Split</button>
           <button class="fs-dev-btn" data-device="desktop" onclick="setFSDevice('desktop')">💻 Desktop</button>
         </div>
-
-        <!-- Preview area -->
-        <div class="fs-previews" id="fsPreviewContainer">
-
-          <!-- Mobile mock -->
+        
+        <!-- Preview container -->
+        <div class="fs-previews" id="fsPreviewContainer" style="transition: all 0.2s;">
+          
+          <!-- Mobile preview -->
           <div class="fs-mobile" id="fsMobilePreview">
             <div class="fs-phone" id="fsPhoneMock">
               <div class="fs-phone-notch"></div>
-              <div class="fs-phone-status">
-                <span>9:41</span><span>●●● Wi-Fi</span>
-              </div>
+              <div class="fs-phone-status"><span>9:41</span><span>●●● Wi-Fi</span></div>
               <div class="fs-phone-body">
                 <img id="previewLogoImg" class="fs-preview-logo" style="display:none;" alt="">
                 <div class="fs-preview-biz" id="previewBiz">Your Business</div>
                 <div class="fs-preview-q" id="previewQuestion">How was your experience?</div>
-                <div class="fs-preview-btns">
+                <div class="fs-preview-btns" id="previewBtnsContainer">
                   <button class="fs-preview-btn fs-btn-happy" id="previewHappyBtn">😊 Great experience!</button>
                   <button class="fs-preview-btn fs-btn-sad" id="previewSadBtn">😕 Could be better</button>
                 </div>
@@ -2120,8 +2266,8 @@
               </div>
             </div>
           </div>
-
-          <!-- Desktop mock -->
+          
+          <!-- Desktop preview -->
           <div class="fs-desktop" id="fsDesktopPreview" style="display:none;">
             <div class="fs-browser">
               <div class="fs-browser-bar">
@@ -2133,11 +2279,11 @@
                 <div class="fs-browser-url">reviewlift.app/r/your-business</div>
               </div>
               <div class="fs-browser-body" id="fsBrowserBody">
-                <div class="fs-desktop-card">
+                <div class="fs-desktop-card" id="fsDesktopCard">
                   <img id="previewLogoDesktop" class="fs-preview-logo" style="display:none;" alt="">
                   <div class="fs-preview-biz" id="previewBizDesktop">Your Business</div>
                   <div class="fs-preview-q" id="previewQuestionDesktop">How was your experience?</div>
-                  <div class="fs-preview-btns fs-btns-row">
+                  <div class="fs-preview-btns fs-btns-row" id="previewBtnsDesktopContainer">
                     <button class="fs-preview-btn fs-btn-happy" id="previewHappyBtnDesktop">😊 Great experience!</button>
                     <button class="fs-preview-btn fs-btn-sad" id="previewSadBtnDesktop">😕 Could be better</button>
                   </div>
@@ -2145,17 +2291,18 @@
               </div>
             </div>
           </div>
-
-        </div><!-- end fsPreviewContainer -->
-
-        <!-- Conversion bar -->
+          
+        </div>
+        
+        <!-- Conversion prediction bar -->
         <div id="conversionPrediction" class="fs-conversion"></div>
-
-      </div><!-- end fs-preview-wrap -->
-
-    </div><!-- end fs-body -->
+        
+      </div><!-- end right panel -->
+      
+    </div><!-- end fs-body-new -->
+    
   </div><!-- end fs-wrap -->
-</div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
+</div><!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
         <div class="panel">
@@ -3108,6 +3255,89 @@ window.downloadClientReport = () => {
     showToast('Please select a client first', 'error');
   }
 };
+
+// New layout/experience controls
+let buttonLayout = 'side';
+let buttonStyle = 'pill';
+let shadowDepth = 'medium';
+
+function setButtonLayout(layout) {
+  buttonLayout = layout;
+  const stackedBtn = document.getElementById('btnLayoutStacked');
+  const sideBtn = document.getElementById('btnLayoutSide');
+  if (layout === 'stacked') {
+    stackedBtn.style.background = 'var(--accent)';
+    stackedBtn.style.color = '#1A1A18';
+    sideBtn.style.background = 'var(--surface-2)';
+    sideBtn.style.color = 'var(--cream-dim)';
+    document.querySelectorAll('.fs-preview-btns').forEach(el => {
+      el.style.flexDirection = 'column';
+      el.classList.remove('fs-btns-row');
+    });
+  } else {
+    sideBtn.style.background = 'var(--accent)';
+    sideBtn.style.color = '#1A1A18';
+    stackedBtn.style.background = 'var(--surface-2)';
+    stackedBtn.style.color = 'var(--cream-dim)';
+    document.querySelectorAll('.fs-preview-btns').forEach(el => {
+      el.style.flexDirection = 'row';
+      el.classList.add('fs-btns-row');
+    });
+  }
+  updateFSPreview();
+}
+
+function setButtonStyle(style) {
+  buttonStyle = style;
+  const rounded = document.getElementById('btnStyleRounded');
+  const pill = document.getElementById('btnStylePill');
+  const sharp = document.getElementById('btnStyleSharp');
+  
+  let borderRadius = '100px';
+  if (style === 'rounded') borderRadius = '16px';
+  if (style === 'pill') borderRadius = '100px';
+  if (style === 'sharp') borderRadius = '4px';
+  
+  document.querySelectorAll('.fs-preview-btn').forEach(btn => {
+    btn.style.borderRadius = borderRadius;
+  });
+  
+  [rounded, pill, sharp].forEach(btn => {
+    btn.style.background = 'var(--surface-2)';
+    btn.style.color = 'var(--cream-dim)';
+  });
+  if (style === 'rounded') rounded.style.background = 'var(--accent)';
+  if (style === 'pill') pill.style.background = 'var(--accent)';
+  if (style === 'sharp') sharp.style.background = 'var(--accent)';
+  
+  updateFSPreview();
+}
+
+function setShadowDepth(depth) {
+  shadowDepth = depth;
+  const btns = ['none', 'small', 'medium', 'large'];
+  btns.forEach(d => {
+    const btn = document.getElementById(`shadow${d.charAt(0).toUpperCase() + d.slice(1)}`);
+    if (btn) {
+      btn.style.background = 'var(--surface-2)';
+      btn.style.color = 'var(--cream-dim)';
+    }
+  });
+  const activeBtn = document.getElementById(`shadow${depth.charAt(0).toUpperCase() + depth.slice(1)}`);
+  if (activeBtn) {
+    activeBtn.style.background = 'var(--accent)';
+    activeBtn.style.color = '#1A1A18';
+  }
+  
+  let shadow = 'none';
+  if (depth === 'small') shadow = '0 4px 12px rgba(0,0,0,0.2)';
+  if (depth === 'medium') shadow = '0 8px 24px rgba(0,0,0,0.3)';
+  if (depth === 'large') shadow = '0 20px 40px rgba(0,0,0,0.4)';
+  
+  document.querySelectorAll('.fs-phone, .fs-desktop-card').forEach(el => {
+    el.style.boxShadow = shadow;
+  });
+}
 
 // Load report stats
 async function loadReportStats() {
