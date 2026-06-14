@@ -205,6 +205,48 @@ app.get("/r/:business", async (req, res) => {
   res.send(injectedHtml);
 });
 
+// ─── RATING AND POSITIVE EVENTS (for funnel) ────────────────────────────────────
+app.post("/rating", async (req, res) => {
+  const { slug, rating } = req.body;
+  
+  if (!slug || !rating) {
+    return res.status(400).json({ error: "Missing slug or rating" });
+  }
+  
+  try {
+    await supabase.from("events").insert({
+      business_slug: slug,
+      event_type: "rating",
+      rating: rating,
+      created_at: new Date().toISOString()
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Rating error:", err);
+    res.status(500).json({ error: "Failed to record rating" });
+  }
+});
+
+app.post("/positive", async (req, res) => {
+  const { slug } = req.body;
+  
+  if (!slug) {
+    return res.status(400).json({ error: "Missing slug" });
+  }
+  
+  try {
+    await supabase.from("events").insert({
+      business_slug: slug,
+      event_type: "positive",
+      created_at: new Date().toISOString()
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Positive event error:", err);
+    res.status(500).json({ error: "Failed to record positive event" });
+  }
+});
+
 // ─── CRON ENDPOINTS (for Vercel cron jobs) ────────────────────────────────────
 app.get("/cron/reputation-scores", async (req, res) => {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {

@@ -177,18 +177,14 @@ async function starClick(e) {
   createMiniStars(rating);
   
   // API calls
-  fetch('/rating', {
-    method: 'POST',
+ fetch(`/api/rating/${window.slug}`, { method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ slug: window.slug, rating })
   }).catch(e => console.log('Rating fetch failed:', e));
   
   if (rating >= 4) {
-    fetch('/positive', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ slug: window.slug })
-    }).catch(e => console.log('Positive fetch failed:', e));
+    fetch(`/api/positive/${window.slug}`, { method: 'POST' })
+.catch(e => console.log('Positive fetch failed:', e));
   }
 }
 
@@ -390,6 +386,26 @@ function openGoogleDirectly() {
   });
   window.open(window.reviewLink, '_blank');
 }
+
+app.post("/review-click", async (req, res) => {
+  const { slug } = req.body;
+  
+  if (!slug) {
+    return res.status(400).json({ error: "Missing slug" });
+  }
+  
+  try {
+    await supabase.from("events").insert({
+      business_slug: slug,
+      event_type: "review_click",
+      created_at: new Date().toISOString()
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Review click error:", err);
+    res.status(500).json({ error: "Failed to record review click" });
+  }
+});
 
 function leaveReview() {
   fetch('/review-click', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug }) });
