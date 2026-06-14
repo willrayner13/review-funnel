@@ -3111,49 +3111,6 @@ window.clearLogo = function() {
   showToast('Logo removed', 'info');
 };
 
-// Also update the refreshPreview function to handle logo size/alignment
-// Add this to your existing refreshPreview function:
-function updateLogoDisplay() {
-  const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
-  const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
-  const logoAlign = document.getElementById('fsLogoAlign')?.value || 'center';
-  
-  let maxHeight = '36px';
-  if (logoSize === 'small') maxHeight = '28px';
-  if (logoSize === 'medium') maxHeight = '48px';
-  if (logoSize === 'large') maxHeight = '64px';
-  
-  let textAlign = 'center';
-  if (logoAlign === 'left') textAlign = 'flex-start';
-  if (logoAlign === 'center') textAlign = 'center';
-  if (logoAlign === 'right') textAlign = 'flex-end';
-  
-  const logos = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
-  logos.forEach(img => {
-    if (logoUrl && logoUrl.trim() !== '') {
-      img.src = logoUrl;
-      img.style.display = 'block';
-      img.style.maxHeight = maxHeight;
-      if (img.parentElement) img.parentElement.style.textAlign = textAlign;
-    } else {
-      img.style.display = 'none';
-    }
-  });
-}
-
-// Hook into existing updateFSPreview function
-if (typeof window.updateFSPreview === 'function') {
-  const originalUpdate = window.updateFSPreview;
-  window.updateFSPreview = function() {
-    originalUpdate();
-    updateLogoDisplay();
-  };
-}
-
-// Also run on page load
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(updateLogoDisplay, 500);
-});
 
 
 function setShadowDepth(depth) {
