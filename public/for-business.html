@@ -1595,6 +1595,58 @@
   
   /* Action Bar */
 
+  /* Interactive Preview Styles */
+.fs-preview-interactive {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fs-preview-star {
+  cursor: pointer !important;
+}
+
+.fs-preview-star:hover {
+  transform: scale(1.15);
+}
+
+/* Preview feedback section */
+.fs-preview-feedback {
+  margin-top: 20px;
+}
+
+.fs-preview-feedback textarea {
+  width: 100%;
+  padding: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--cream);
+  font-size: 0.85rem;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.fs-preview-feedback button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--accent);
+  color: #1A1A18;
+  border: none;
+  border-radius: 100px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fs-success-screen, .fs-unhappy-screen {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
   /* Collapsible Sections */
 /* Collapsible Sections - FIXED */
 .fs-collapsible-section {
@@ -4007,8 +4059,244 @@ function toggleSection(sectionId) {
 // Apply theme pack - FIXED for desktop background
 
 
-document.querySelectorAll('.preview-star path').forEach(star => {
-  star.setAttribute('stroke', theme.primary);
-});
+
+
+// ============================================================
+// INTERACTIVE PREVIEW - SIMULATE THE FULL FUNNEL FLOW
+// ============================================================
+
+let previewState = {
+  screen: 'question', // 'question', 'success', 'unhappy'
+  rating: null
+};
+
+// Reset preview to question screen
+function resetPreviewToQuestion() {
+  previewState.screen = 'question';
+  previewState.rating = null;
+  
+  // Show/hide appropriate sections
+  const questionDiv = document.getElementById('fsPreviewQuestionDiv');
+  const successDiv = document.getElementById('fsPreviewSuccessDiv');
+  const unhappyDiv = document.getElementById('fsPreviewUnhappyDiv');
+  
+  if (questionDiv) questionDiv.style.display = 'block';
+  if (successDiv) successDiv.style.display = 'none';
+  if (unhappyDiv) unhappyDiv.style.display = 'none';
+  
+  // Reset star highlights
+  document.querySelectorAll('#previewStars .preview-star, #previewStarsDesktop .preview-star').forEach(star => {
+    star.classList.remove('filled');
+    const path = star.querySelector('path');
+    if (path) path.setAttribute('fill', 'none');
+  });
+}
+
+// Show success screen
+function showPreviewSuccess(rating) {
+  previewState.screen = 'success';
+  previewState.rating = rating;
+  
+  const questionDiv = document.getElementById('fsPreviewQuestionDiv');
+  const successDiv = document.getElementById('fsPreviewSuccessDiv');
+  const unhappyDiv = document.getElementById('fsPreviewUnhappyDiv');
+  
+  if (questionDiv) questionDiv.style.display = 'none';
+  if (successDiv) successDiv.style.display = 'block';
+  if (unhappyDiv) unhappyDiv.style.display = 'none';
+  
+  // Update success message content
+  const happyMessage = document.getElementById('fsHappyMessage')?.value || 'Thanks for your feedback! Leave us a Google review →';
+  const successMessageDiv = document.getElementById('previewSuccessMessage');
+  if (successMessageDiv) successMessageDiv.textContent = happyMessage;
+  
+  // Update stars to show selected rating
+  document.querySelectorAll('#previewStars .preview-star, #previewStarsDesktop .preview-star').forEach((star, index) => {
+    if (index < rating) {
+      star.classList.add('filled');
+      const path = star.querySelector('path');
+      if (path) path.setAttribute('fill', 'url(#starGradient)');
+    } else {
+      star.classList.remove('filled');
+      const path = star.querySelector('path');
+      if (path) path.setAttribute('fill', 'none');
+    }
+  });
+}
+
+// Show unhappy screen
+function showPreviewUnhappy(rating) {
+  previewState.screen = 'unhappy';
+  previewState.rating = rating;
+  
+  const questionDiv = document.getElementById('fsPreviewQuestionDiv');
+  const successDiv = document.getElementById('fsPreviewSuccessDiv');
+  const unhappyDiv = document.getElementById('fsPreviewUnhappyDiv');
+  
+  if (questionDiv) questionDiv.style.display = 'none';
+  if (successDiv) successDiv.style.display = 'none';
+  if (unhappyDiv) unhappyDiv.style.display = 'block';
+  
+  // Update unhappy message content
+  const unhappyMessage = document.getElementById('fsUnhappyMessage')?.value || "We're sorry to hear that. Please tell us what went wrong.";
+  const unhappyMessageDiv = document.getElementById('previewUnhappyMessage');
+  if (unhappyMessageDiv) unhappyMessageDiv.textContent = unhappyMessage;
+}
+
+// Handle star click in preview
+function handlePreviewStarClick(rating) {
+  if (rating >= 4) {
+    // Happy path (4-5 stars)
+    showPreviewSuccess(rating);
+  } else {
+    // Unhappy path (1-3 stars)
+    showPreviewUnhappy(rating);
+  }
+  
+  // Also trigger the save to show unsaved changes
+  const saveStatus = document.getElementById('fsSaveStatus');
+  if (saveStatus) {
+    saveStatus.textContent = 'Unsaved changes';
+    saveStatus.style.color = 'var(--accent)';
+  }
+}
+
+// Handle back button in preview
+function previewGoBack() {
+  resetPreviewToQuestion();
+}
+
+// Handle send feedback in unhappy preview
+function previewSendFeedback() {
+  const feedbackText = document.getElementById('previewFeedbackText')?.value;
+  if (feedbackText && feedbackText.trim()) {
+    // Show a little toast or feedback
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = '✓ Feedback sent (demo)';
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2000);
+    }
+    // Reset after a moment
+    setTimeout(() => {
+      resetPreviewToQuestion();
+    }, 1500);
+  }
+}
+
+// Update the preview HTML to include interactive elements
+function updatePreviewWithInteractive() {
+  // Check if we've already added the interactive elements
+  if (document.getElementById('fsPreviewSuccessDiv')) return;
+  
+  // Get the mobile preview container
+  const mobilePreview = document.querySelector('#fsMobilePreview .funnel-wrapper > div');
+  const desktopPreview = document.querySelector('#fsDesktopPreview .desktop-card');
+  
+  if (!mobilePreview) return;
+  
+  // Store original content
+  const originalMobileContent = mobilePreview.innerHTML;
+  const originalDesktopContent = desktopPreview ? desktopPreview.innerHTML : '';
+  
+  // Create new interactive structure for mobile
+  mobilePreview.innerHTML = `
+    <!-- Question Screen -->
+    <div id="fsPreviewQuestionDiv">
+      <img id="previewLogoImg" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
+      <div class="fs-preview-biz" id="previewBiz" style="text-align: center; margin-bottom: 20px; font-weight: 600;">Your Business</div>
+      <div class="fs-preview-q" id="previewQuestion" style="text-align: center; margin-bottom: 24px; font-size: 1.4rem; font-weight: 700;">How was your experience?</div>
+      <div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
+        <svg class="preview-star fs-preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(1)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+        <svg class="preview-star fs-preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(2)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+        <svg class="preview-star fs-preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(3)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+        <svg class="preview-star fs-preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(4)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+        <svg class="preview-star fs-preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(5)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+      </div>
+      <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
+    </div>
+    
+    <!-- Success Screen -->
+    <div id="fsPreviewSuccessDiv" style="display: none;">
+      <div style="font-size: 2.5rem; text-align: center; margin-bottom: 8px;">⭐</div>
+      <div style="font-size: 1.2rem; font-weight: 700; text-align: center; margin-bottom: 16px;">Thanks for your feedback!</div>
+      <p id="previewSuccessMessage" style="font-size: 0.9rem; text-align: center; color: var(--cream-dim); margin-bottom: 20px;">Thanks for your feedback! Leave us a Google review →</p>
+      <button onclick="previewGoBack()" style="width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 100px; color: var(--cream-dim); cursor: pointer; margin-bottom: 8px;">← Back</button>
+      <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 16px;">Powered by <strong>ReviewLift</strong></div>
+    </div>
+    
+    <!-- Unhappy Screen -->
+    <div id="fsPreviewUnhappyDiv" style="display: none;">
+      <div style="font-size: 2rem; text-align: center; margin-bottom: 8px;">😔</div>
+      <div style="font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: 12px;">We value your feedback</div>
+      <p id="previewUnhappyMessage" style="font-size: 0.85rem; text-align: center; color: var(--cream-dim); margin-bottom: 16px;">We're sorry to hear that. Please tell us what went wrong.</p>
+      <textarea id="previewFeedbackText" class="fs-preview-feedback-text" placeholder="Tell us what happened..." style="width: 100%; padding: 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; color: var(--cream); font-size: 0.85rem; resize: vertical; min-height: 80px; margin-bottom: 12px;"></textarea>
+      <button onclick="previewSendFeedback()" style="width: 100%; padding: 12px; background: var(--accent); color: #1A1A18; border: none; border-radius: 100px; font-weight: 600; cursor: pointer; margin-bottom: 8px;">Send Feedback</button>
+      <button onclick="previewGoBack()" style="width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 100px; color: var(--cream-dim); cursor: pointer;">← Back</button>
+      <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 16px;">Powered by <strong>ReviewLift</strong></div>
+    </div>
+  `;
+  
+  // Also update desktop preview if it exists
+  if (desktopPreview) {
+    desktopPreview.innerHTML = `
+      <div id="fsPreviewQuestionDivDesktop" style="width: 100%;">
+        <img id="previewLogoDesktop" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
+        <div class="fs-preview-biz" id="previewBizDesktop" style="margin-bottom: 20px; font-weight: 600;">Your Business</div>
+        <div class="fs-preview-q" id="previewQuestionDesktop" style="margin-bottom: 24px; font-size: 1.3rem; font-weight: 700;">How was your experience?</div>
+        <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
+          <svg class="preview-star fs-preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(1)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none"/></svg>
+          <svg class="preview-star fs-preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(2)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none"/></svg>
+          <svg class="preview-star fs-preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(3)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none"/></svg>
+          <svg class="preview-star fs-preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(4)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none"/></svg>
+          <svg class="preview-star fs-preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" onclick="handlePreviewStarClick(5)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none"/></svg>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Store logo URL reference
+  const logoUrl = document.getElementById('fsLogoUrl')?.value;
+  if (logoUrl) {
+    document.querySelectorAll('#previewLogoImg, #previewLogoDesktop').forEach(img => {
+      img.src = logoUrl;
+      img.style.display = 'block';
+    });
+  }
+}
+
+// Call this after the funnel studio loads
+// Call this after the funnel studio loads
+setTimeout(() => {
+  updatePreviewWithInteractive();
+}, 1000);
+
+// ============================================================
+// UPDATE PREVIEW MESSAGES IN REAL-TIME AS USER TYPES
+// ============================================================
+
+// Update happy message preview when changed
+const happyMessageInput = document.getElementById('fsHappyMessage');
+if (happyMessageInput) {
+  happyMessageInput.addEventListener('input', function() {
+    const successMessageDiv = document.getElementById('previewSuccessMessage');
+    if (successMessageDiv && previewState.screen === 'success') {
+      successMessageDiv.textContent = this.value;
+    }
+  });
+}
+
+// Update unhappy message preview when changed
+const unhappyMessageInput = document.getElementById('fsUnhappyMessage');
+if (unhappyMessageInput) {
+  unhappyMessageInput.addEventListener('input', function() {
+    const unhappyMessageDiv = document.getElementById('previewUnhappyMessage');
+    if (unhappyMessageDiv && previewState.screen === 'unhappy') {
+      unhappyMessageDiv.textContent = this.value;
+    }
+  });
+}
 </script>
 </body></html>
