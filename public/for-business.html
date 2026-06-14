@@ -79,12 +79,7 @@
 }
 
 /* ── Body: two-column (settings | preview) ───────────────── */
-.fs-body {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 20px;
-  align-items: start;
-}
+
 
 /* ── Left panel ─────────────────────────────────────────── */
 .fs-panel {
@@ -222,40 +217,14 @@
 }
 
 /* ── AI tips ────────────────────────────────────────────── */
-.fs-ai-tip {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  background: rgba(139,92,246,0.06);
-  border: 1px solid rgba(139,92,246,0.2);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 0.78rem;
-  color: var(--cream-dim);
-  cursor: pointer;
-  transition: background 0.15s;
-  line-height: 1.4;
-}
+
 
 .fs-ai-tip:hover { background: rgba(139,92,246,0.12); color: var(--cream); }
 
-.fs-ai-icon {
-  color: #A78BFA;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
+
 
 /* ── Save row ───────────────────────────────────────────── */
-.fs-save-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding-top: 4px;
-  border-top: 1px solid var(--border);
-}
+
 
 .fs-save-status {
   font-size: 0.72rem;
@@ -618,23 +587,9 @@
     background: transparent !important;
   }
 
-.fs-mobile-screen {
-  background: #1A1A18; /* Removed !important */
-  border-radius: 32px;
-  padding: 20px 16px;
-  min-height: 500px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(200, 169, 110, 0.2);
-}
+
   
-  .fs-mobile-biz {
-    text-align: center !important;
-    font-weight: 600 !important;
-    margin-bottom: 24px !important;
-    color: #C8A96E !important;
-    font-size: 0.9rem !important;
-  }
+
   
   .fs-mobile-question {
     text-align: center !important;
@@ -696,87 +651,12 @@
   }
   
   /* Desktop Preview */
-  .fs-desktop-frame {
-    width: 500px !important;
-    background: #1E1E1C !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-  }
+
   
-  .fs-desktop-chrome {
-    background: #2A2A28 !important;
-    padding: 12px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-  }
+
   
-  .fs-desktop-dots {
-    display: flex !important;
-    gap: 6px !important;
-  }
-  
-  .fs-desktop-dot {
-    width: 12px !important;
-    height: 12px !important;
-    border-radius: 50% !important;
-  }
-  
-  .fs-desktop-dot.red { background: #FF5F56 !important; }
-  .fs-desktop-dot.yellow { background: #FFBD2E !important; }
-  .fs-desktop-dot.green { background: #27C93F !important; }
-  
-  .fs-desktop-url {
-    font-size: 0.7rem !important;
-    color: rgba(234,231,220,0.5) !important;
-    background: #1E1E1C !important;
-    padding: 4px 12px !important;
-    border-radius: 6px !important;
-    flex: 1 !important;
-  }
-  
-  .fs-desktop-content {
-    padding: 40px 20px !important;
-    background: #1A1A18 !important;
-  }
-  
-  .fs-desktop-card {
-    background: #242422 !important;
-    border-radius: 24px !important;
-    padding: 40px !important;
-    max-width: 400px !important;
-    margin: 0 auto !important;
-    text-align: center !important;
-  }
-  
-  .fs-desktop-biz {
-    font-weight: 600 !important;
-    margin-bottom: 16px !important;
-    color: #C8A96E !important;
-  }
-  
-  .fs-desktop-question {
-    font-size: 1.4rem !important;
-    font-weight: 600 !important;
-    margin-bottom: 32px !important;
-    color: #EAE7DC !important;
-  }
-  
-  .fs-desktop-buttons {
-    display: flex !important;
-    gap: 16px !important;
-    justify-content: center !important;
-  }
-  
-  .fs-desktop-btn {
-    padding: 14px 28px !important;
-    border-radius: 60px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    flex: 1 !important;
-    font-size: 0.9rem !important;
-  }
-  
+
+ 
 .fs-desktop-btn.happy {
   background: #C8A96E; /* Removed !important */
   color: #1A1A18;      /* Removed !important */
@@ -868,84 +748,7 @@
   }
 }
   /* Split view layout */
-#fsSplitContainer {
-  overflow-x: auto !important;
-  padding-bottom: 16px !important;  /* space for scrollbar */
-  justify-content: flex-start !important;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(200,169,110,0.3) transparent;
-}
-  
-  .fs-mobile-frame, .fs-desktop-frame {
-    transition: transform 0.2s ease !important;
-  }
-  
-  .fs-device-btn.active {
-    background: #C8A96E !important;
-    color: #1A1A18 !important;
-  }
-  
-  .fs-save-bar {
-    margin-top: 24px !important;
-    padding-top: 20px !important;
-    border-top: 1px solid rgba(234,231,220,0.09) !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-   .fs-device-btn {
-    background: var(--surface-2) !important;
-    border: 1px solid var(--border) !important;
-    padding: 8px 16px !important;
-    border-radius: 40px !important;
-    cursor: pointer !important;
-    color: var(--cream-dim) !important;
-  }
-  
-  .fs-device-btn.active {
-    background: #C8A96E !important;
-    color: #1A1A18 !important;
-  }
-  
-  .fs-save-bar {
-    margin-top: 24px !important;
-    padding-top: 20px !important;
-    border-top: 1px solid rgba(234,231,220,0.09) !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-  
-  .fs-preview-header {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    margin-bottom: 20px !important;
-    flex-wrap: wrap !important;
-    gap: 12px !important;
-  }
-  
-  .fs-zoom-controls {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-  }
-  
-  .fs-zoom-btn {
-    background: var(--surface-2) !important;
-    border: 1px solid var(--border) !important;
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    color: var(--cream) !important;
-  }
-  
-  .fs-zoom-label {
-    font-size: 0.8rem !important;
-    min-width: 45px !important;
-    text-align: center !important;
-  }
+
 
     /* ===== ADDITIONAL FUNNEL STUDIO STYLES ===== */
   
@@ -1071,34 +874,16 @@
   }
   
   /* Color Options */
-  .fs-color-options {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
+
   
-  .fs-color-swatch {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s;
-  }
+
   
   .fs-color-swatch.selected {
     border-color: var(--cream);
     transform: scale(1.1);
   }
   
-  .fs-color-input {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 0;
-  }
+
   
   /* Inputs */
 .fs-input {
@@ -1635,26 +1420,9 @@
   }
   
   /* Action Bar */
-  .fs-action-bar {
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
+
   
-  .fs-link-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface-2);
-    padding: 8px 16px;
-    border-radius: 40px;
-    font-size: 0.8rem;
-  }
+
   
   .fs-link-info code {
     font-size: 0.7rem;
@@ -1672,12 +1440,7 @@
     font-weight: 600;
     font-size: 0.75rem;
   }
-  
-  .fs-save-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+
   
   .fs-save-info span {
     font-size: 0.75rem;
@@ -1700,35 +1463,15 @@
   }
   
   /* AI Suggestions */
-  .fs-ai-suggestion {
-    background: rgba(139,92,246,0.06);
-    border: 1px solid rgba(139,92,246,0.15);
-    border-radius: 10px;
-    padding: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+
   
   .fs-ai-suggestion:hover {
     background: rgba(139,92,246,0.12);
   }
   
-  .fs-ai-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: #A78BFA;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-  }
+
   
-  .fs-ai-text {
-    font-size: 0.75rem;
-    color: var(--cream-dim);
-    line-height: 1.4;
-  }
+
   
   /* Status Badge */
   .fs-status-badge {
@@ -1800,10 +1543,7 @@
   }
   
   /* Fix preview container heights */
-  .fs-mobile-frame {
-    min-width: 320px;
-    max-width: 380px;
-  }
+
   
   .fs-desktop-frame {
     min-width: 500px;
