@@ -1956,6 +1956,7 @@
 
             <!-- FUNNEL STUDIO SECTION - REDESIGNED -->
 <!-- FUNNEL STUDIO SECTION - 5-LAYER REDESIGN -->
+<!-- FUNNEL STUDIO SECTION - STAR-BASED FLOW -->
 <div id="funnelStudioSection" class="content-section">
   <div class="fs-wrap">
 
@@ -1968,64 +1969,52 @@
       <div class="fs-live-badge"><span class="fs-live-dot"></span>Live</div>
     </div>
 
-    <!-- NEW: 5-Layer Settings Panel (Left) + Preview (Right) -->
+    <!-- Body: settings left, preview right -->
     <div class="fs-body-new" style="display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start;">
       
-      <!-- ========== LEFT: 5-LAYER SETTINGS ========== -->
+      <!-- LEFT: Settings -->
       <div class="fs-panel-new" style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; position: sticky; top: 16px; max-height: calc(100vh - 120px); overflow-y: auto;">
         
-        <!-- Layer 1: Brand Identity -->
+        <!-- Brand Identity -->
         <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
           <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">🏷️</span>
             <span style="font-weight: 600; font-size: 0.85rem;">Brand Identity</span>
           </div>
           
-          <!-- Logo -->
-        <!-- Logo Upload - Base64 (no server needed) -->
-<div class="fs-group">
-  <div class="fs-group-label">Business logo</div>
-  
-  <!-- Upload button -->
-  <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
-    <label for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;">
-      📁 Upload image
-    </label>
-    <input type="file" id="fsLogoUpload" accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/webp" style="display: none;" onchange="uploadLogoToBase64(this)">
-    <span style="font-size: 0.7rem; color: var(--cream-dim);">PNG, JPG, SVG, WebP — max 2MB</span>
-  </div>
-  
-  <!-- Or paste URL (for advanced users) -->
-  <div style="margin-bottom: 12px;">
-    <div style="font-size: 0.65rem; color: var(--cream-dim); margin-bottom: 4px;">Or paste image URL</div>
-    <input class="fs-input" id="fsLogoUrl" type="url" placeholder="https://your-site.com/logo.png" oninput="updateFSPreview(); checkLogoUrl()">
-  </div>
-  
-  <!-- Logo preview -->
-  <div id="fsLogoPreview" style="display:none; margin-top: 12px; padding: 12px; background: var(--surface-2); border-radius: 8px; text-align: center;">
-    <img id="fsLogoPreviewImg" style="max-height: 48px; max-width: 100%;" alt="Logo preview">
-    <button onclick="clearLogo()" style="display: block; margin: 8px auto 0; background: transparent; border: none; color: #C0675A; font-size: 0.7rem; cursor: pointer;">✕ Remove logo</button>
-  </div>
-  
-  <!-- Logo size & alignment (shown when logo exists) -->
-  <div id="logoSettings" style="display: none; margin-top: 12px;">
-    <div style="display: flex; gap: 12px;">
-      <select id="fsLogoSize" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
-        <option value="small">Small logo</option>
-        <option value="medium" selected>Medium logo</option>
-        <option value="large">Large logo</option>
-      </select>
-      <select id="fsLogoAlign" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
-        <option value="left">Left aligned</option>
-        <option value="center" selected>Center aligned</option>
-        <option value="right">Right aligned</option>
-      </select>
-    </div>
-  </div>
-</div>
+          <!-- Logo Upload -->
+          <div class="fs-group">
+            <div class="fs-group-label">Business logo</div>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+              <label for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem;">
+                📁 Upload image
+              </label>
+              <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;" onchange="uploadLogoToBase64(this)">
+              <span style="font-size: 0.7rem; color: var(--cream-dim);">PNG, JPG, SVG — max 2MB</span>
+            </div>
+            <input class="fs-input" id="fsLogoUrl" type="url" placeholder="https://your-site.com/logo.png" oninput="updateFSPreview(); checkLogoUrl()">
+            <div id="fsLogoPreview" style="display:none; margin-top: 12px; padding: 12px; background: var(--surface-2); border-radius: 8px; text-align: center;">
+              <img id="fsLogoPreviewImg" style="max-height: 48px; max-width: 100%;" alt="">
+              <button onclick="clearLogo()" style="display: block; margin: 8px auto 0; background: transparent; border: none; color: #C0675A; font-size: 0.7rem; cursor: pointer;">✕ Remove logo</button>
+            </div>
+            <div id="logoSettings" style="display: none; margin-top: 12px;">
+              <div style="display: flex; gap: 12px;">
+                <select id="fsLogoSize" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
+                  <option value="small">Small logo</option>
+                  <option value="medium" selected>Medium logo</option>
+                  <option value="large">Large logo</option>
+                </select>
+                <select id="fsLogoAlign" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
+                  <option value="left">Left aligned</option>
+                  <option value="center" selected>Center aligned</option>
+                  <option value="right">Right aligned</option>
+                </select>
+              </div>
+            </div>
+          </div>
           
           <!-- Business Name Display -->
-          <div class="fs-group" style="margin-bottom: 16px;">
+          <div class="fs-group" style="margin-top: 16px;">
             <div class="fs-group-label">Business name display</div>
             <select id="fsBizDisplay" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
               <option value="both">Show logo + name</option>
@@ -2036,20 +2025,20 @@
           </div>
           
           <!-- Typography -->
-          <div class="fs-group">
+          <div class="fs-group" style="margin-top: 16px;">
             <div class="fs-group-label">Typography</div>
             <select id="fsFont" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
-              <option value="dm-sans" selected>Modern — DM Sans (clean, readable)</option>
-              <option value="inter">Elegant — Inter (professional)</option>
-              <option value="syne">Premium — Syne (bold, luxury)</option>
-              <option value="playfair">Luxury — Playfair Display (serif, elegant)</option>
-              <option value="poppins">Friendly — Poppins (rounded, approachable)</option>
-              <option value="merriweather">Traditional — Merriweather (classic, trustworthy)</option>
+              <option value="dm-sans" selected>Modern — DM Sans</option>
+              <option value="inter">Elegant — Inter</option>
+              <option value="syne">Premium — Syne</option>
+              <option value="playfair">Luxury — Playfair Display</option>
+              <option value="poppins">Friendly — Poppins</option>
+              <option value="merriweather">Traditional — Merriweather</option>
             </select>
           </div>
         </div>
         
-        <!-- Layer 2: Theme System -->
+        <!-- Theme System -->
         <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
           <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">🎨</span>
@@ -2069,30 +2058,18 @@
               <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#0A0A0A; border-radius: 8px;"></div>
               <span style="font-size: 0.7rem;">Luxury</span>
             </button>
-            <button class="fs-tpl" data-template="medical" onclick="selectFSTemplate('medical',this)" style="flex-direction: column; padding: 8px;">
-              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#F0F4F8; border-radius: 8px;"></div>
-              <span style="font-size: 0.7rem;">Clinical</span>
-            </button>
             <button class="fs-tpl" data-template="bold" onclick="selectFSTemplate('bold',this)" style="flex-direction: column; padding: 8px;">
               <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#C8A96E; border-radius: 8px;"></div>
               <span style="font-size: 0.7rem;">Bold</span>
-            </button>
-            <button class="fs-tpl" data-template="vibrant" onclick="selectFSTemplate('vibrant',this)" style="flex-direction: column; padding: 8px;">
-              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4); border-radius: 8px;"></div>
-              <span style="font-size: 0.7rem;">Vibrant</span>
             </button>
             <button class="fs-tpl" data-template="minimal" onclick="selectFSTemplate('minimal',this)" style="flex-direction: column; padding: 8px;">
               <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#FAFAFA; border-radius: 8px;"></div>
               <span style="font-size: 0.7rem;">Minimal</span>
             </button>
-            <button class="fs-tpl" data-template="hospitality" onclick="selectFSTemplate('hospitality',this)" style="flex-direction: column; padding: 8px;">
-              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#2C1810; border-radius: 8px;"></div>
-              <span style="font-size: 0.7rem;">Hospitality</span>
-            </button>
           </div>
         </div>
         
-        <!-- Layer 3: Colour System -->
+        <!-- Colours -->
         <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
           <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">🎨</span>
@@ -2100,42 +2077,33 @@
           </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Primary (button colour)</div>
+            <div class="fs-group-label">Primary colour (buttons & stars)</div>
             <div class="fs-colours" style="display: flex; gap: 8px; flex-wrap: wrap;">
               <button class="fs-colour selected" style="background:#C8A96E; width: 32px; height: 32px;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E',this)"></button>
               <button class="fs-colour" style="background:#3B82F6; width: 32px; height: 32px;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6',this)"></button>
               <button class="fs-colour" style="background:#10B981; width: 32px; height: 32px;" data-color="#10B981" onclick="selectFSColor('#10B981',this)"></button>
               <button class="fs-colour" style="background:#8B5CF6; width: 32px; height: 32px;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6',this)"></button>
               <button class="fs-colour" style="background:#EF4444; width: 32px; height: 32px;" data-color="#EF4444" onclick="selectFSColor('#EF4444',this)"></button>
-              <button class="fs-colour" style="background:#F59E0B; width: 32px; height: 32px;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B',this)"></button>
               <input type="color" class="fs-colour-custom" value="#C8A96E" style="width: 32px; height: 32px; border-radius: 50%;" oninput="selectFSColor(this.value,null)">
             </div>
           </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Background colour <span class="fs-optional">(optional)</span></div>
+            <div class="fs-group-label">Background colour</div>
             <input type="color" id="fsBgColor" value="#1A1A18" onchange="updateFSPreview()" style="width: 100%; height: 40px; border-radius: 8px;">
           </div>
           
           <div class="fs-group">
-            <div class="fs-group-label">Text colour <span class="fs-optional">(optional)</span></div>
+            <div class="fs-group-label">Text colour</div>
             <input type="color" id="fsTextColor" value="#EAE7DC" onchange="updateFSPreview()" style="width: 100%; height: 40px; border-radius: 8px;">
           </div>
         </div>
         
-        <!-- Layer 4: Layout System -->
+        <!-- Layout -->
         <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
           <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">📐</span>
             <span style="font-weight: 600; font-size: 0.85rem;">Layout</span>
-          </div>
-          
-          <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Button layout</div>
-            <div style="display: flex; gap: 8px;">
-              <button onclick="setButtonLayout('stacked')" id="btnLayoutStacked" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Stacked</button>
-              <button onclick="setButtonLayout('side')" id="btnLayoutSide" style="flex:1; padding: 8px; background: var(--accent); color:#1A1A18; border-radius: 8px; cursor: pointer;">Side by side</button>
-            </div>
           </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
@@ -2146,19 +2114,9 @@
               <button onclick="setButtonStyle('sharp')" id="btnStyleSharp" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Sharp</button>
             </div>
           </div>
-          
-          <div class="fs-group">
-            <div class="fs-group-label">Card width</div>
-            <input type="range" id="fsCardWidth" min="280" max="500" value="380" step="10" oninput="updateFSPreview(); document.getElementById('cardWidthVal').innerText = this.value + 'px'">
-            <div style="display: flex; justify-content: space-between; font-size: 0.7rem;">
-              <span>Compact</span>
-              <span id="cardWidthVal">380px</span>
-              <span>Wide</span>
-            </div>
-          </div>
         </div>
         
-        <!-- Layer 5: Experience Design -->
+        <!-- Experience -->
         <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
           <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">✨</span>
@@ -2170,20 +2128,8 @@
             <select id="fsBgEffect" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
               <option value="none" selected>None — clean solid</option>
               <option value="gradient">Gradient — dark to gold</option>
-              <option value="mesh">Mesh gradient — modern SaaS</option>
-              <option value="pattern">Subtle pattern</option>
               <option value="glass">Glassmorphism — blurred glass</option>
               <option value="grain">Luxury grain — premium texture</option>
-            </select>
-          </div>
-          
-          <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Animation level</div>
-            <select id="fsAnimation" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
-              <option value="none">None — static</option>
-              <option value="subtle">Subtle — fade in only</option>
-              <option value="standard" selected>Standard — slide + fade</option>
-              <option value="premium">Premium — float + bounce</option>
             </select>
           </div>
           
@@ -2198,7 +2144,7 @@
           </div>
         </div>
         
-        <!-- Wording Section (kept from original) -->
+        <!-- Wording -->
         <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
           <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">✏️</span>
@@ -2211,18 +2157,13 @@
           </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Happy button</div>
-            <input class="fs-input" id="fsHappyLabel" type="text" value="Great experience!" oninput="updateFSPreview()">
-          </div>
-          
-          <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Unhappy button</div>
-            <input class="fs-input" id="fsSadLabel" type="text" value="Could be better" oninput="updateFSPreview()">
+            <div class="fs-group-label">Happy message (4-5 stars)</div>
+            <input class="fs-input" id="fsHappyMessage" type="text" value="Thanks for your feedback! Leave us a Google review →" oninput="updateFSPreview()">
           </div>
           
           <div class="fs-group">
-            <div class="fs-group-label">Thank you message</div>
-            <input class="fs-input" id="fsThankyouMsg" type="text" placeholder="Thanks for your feedback!">
+            <div class="fs-group-label">Unhappy message (1-3 stars)</div>
+            <input class="fs-input" id="fsUnhappyMessage" type="text" value="We're sorry to hear that. Please tell us what went wrong." oninput="updateFSPreview()">
           </div>
         </div>
         
@@ -2231,11 +2172,11 @@
           <div class="fs-group-label">✨ AI suggestions</div>
           <div class="fs-ai-tip" onclick="applyAISuggestion('headline')">
             <span class="fs-ai-icon">✦</span>
-            <span>"How did we do today?" converts 18% better</span>
+            <span>"Rate your experience" converts 12% better</span>
           </div>
           <div class="fs-ai-tip" onclick="applyAISuggestion('happy')" style="margin-top:6px;">
             <span class="fs-ai-icon">✦</span>
-            <span>"Loved it! ⭐" increases click-through by 23%</span>
+            <span>Adding a specific ask ("Google review") increases conversion</span>
           </div>
         </div>
         
@@ -2258,7 +2199,7 @@
         
       </div><!-- end left panel -->
       
-      <!-- ========== RIGHT: PREVIEW (kept from original but enhanced) ========== -->
+      <!-- RIGHT: Preview (Stars-based) -->
       <div class="fs-preview-wrap">
         
         <!-- Device toggle -->
@@ -2269,7 +2210,7 @@
         </div>
         
         <!-- Preview container -->
-        <div class="fs-previews" id="fsPreviewContainer" style="transition: all 0.2s;">
+        <div class="fs-previews" id="fsPreviewContainer">
           
           <!-- Mobile preview -->
           <div class="fs-mobile" id="fsMobilePreview">
@@ -2280,10 +2221,16 @@
                 <img id="previewLogoImg" class="fs-preview-logo" style="display:none;" alt="">
                 <div class="fs-preview-biz" id="previewBiz">Your Business</div>
                 <div class="fs-preview-q" id="previewQuestion">How was your experience?</div>
-                <div class="fs-preview-btns" id="previewBtnsContainer">
-                  <button class="fs-preview-btn fs-btn-happy" id="previewHappyBtn">😊 Great experience!</button>
-                  <button class="fs-preview-btn fs-btn-sad" id="previewSadBtn">😕 Could be better</button>
+                
+                <!-- Star Rating Component -->
+                <div style="display: flex; gap: 8px; justify-content: center; margin: 20px 0;" id="previewStars">
+                  <span class="star" data-rating="1" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
+                  <span class="star" data-rating="2" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
+                  <span class="star" data-rating="3" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
+                  <span class="star" data-rating="4" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
+                  <span class="star" data-rating="5" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
                 </div>
+                
                 <div class="fs-preview-footer">Powered by <strong>ReviewLift</strong></div>
               </div>
             </div>
@@ -2305,9 +2252,14 @@
                   <img id="previewLogoDesktop" class="fs-preview-logo" style="display:none;" alt="">
                   <div class="fs-preview-biz" id="previewBizDesktop">Your Business</div>
                   <div class="fs-preview-q" id="previewQuestionDesktop">How was your experience?</div>
-                  <div class="fs-preview-btns fs-btns-row" id="previewBtnsDesktopContainer">
-                    <button class="fs-preview-btn fs-btn-happy" id="previewHappyBtnDesktop">😊 Great experience!</button>
-                    <button class="fs-preview-btn fs-btn-sad" id="previewSadBtnDesktop">😕 Could be better</button>
+                  
+                  <!-- Star Rating Component (Desktop) -->
+                  <div style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
+                    <span class="star" data-rating="1" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
+                    <span class="star" data-rating="2" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
+                    <span class="star" data-rating="3" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
+                    <span class="star" data-rating="4" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
+                    <span class="star" data-rating="5" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
                   </div>
                 </div>
               </div>
@@ -2317,14 +2269,28 @@
         </div>
         
         <!-- Conversion prediction bar -->
-        <div id="conversionPrediction" class="fs-conversion"></div>
+        <div id="conversionPrediction" class="fs-conversion">
+          <div class="fs-conv-row">
+            <div>
+              <div class="fs-conv-label">Predicted conversion</div>
+              <div class="fs-conv-num">34%</div>
+              <div class="fs-conv-diff" style="color:#6A9E7F">+12% vs question-first</div>
+            </div>
+            <div class="fs-conv-divider"></div>
+            <div>
+              <div class="fs-conv-label">With A/B testing</div>
+              <div class="fs-conv-num" style="color:#6A9E7F">42%</div>
+              <div class="fs-conv-diff" style="color:rgba(234,231,220,0.4)">optimised potential</div>
+            </div>
+          </div>
+        </div>
         
       </div><!-- end right panel -->
       
     </div><!-- end fs-body-new -->
     
   </div><!-- end fs-wrap -->
-</div><!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
+</div><!-- end funnelStudioSection --><!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
         <div class="panel">
