@@ -12,12 +12,42 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="stylesheet" href="/style.css">
   <style>
+    /* CSS Variables - matching landing.css */
+    :root {
+      --bg: #1A1A18;
+      --surface: #242422;
+      --surface-2: #2E2E2B;
+      --surface-3: #383835;
+      --border: rgba(234, 231, 220, 0.09);
+      --border-hi: rgba(234, 231, 220, 0.22);
+      --cream: #EAE7DC;
+      --cream-dim: rgba(234, 231, 220, 0.52);
+      --cream-faint: rgba(234, 231, 220, 0.07);
+      --accent: #C8A96E;
+      --accent-dim: rgba(200, 169, 110, 0.15);
+      --success: #6A9E7F;
+      --danger: #C0675A;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      -webkit-font-smoothing: antialiased;
+      padding-top: 80px;
+    }
+    
     .agency-page {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 80px 24px 60px;
+      padding: 0 24px 80px;
     }
     
     .agency-hero {
@@ -60,6 +90,7 @@
     .btn-cta:hover {
       background: #D4B87A;
       transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(200, 169, 110, 0.3);
     }
     
     .stats-row {
@@ -67,13 +98,13 @@
       justify-content: center;
       gap: 60px;
       flex-wrap: wrap;
-      margin: 50px 0;
+      margin: 60px 0;
       text-align: center;
     }
     
     .stat-number {
       font-family: 'Syne', sans-serif;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       font-weight: 800;
       color: var(--accent);
     }
@@ -81,20 +112,21 @@
     .stat-label {
       font-size: 0.75rem;
       color: var(--cream-dim);
+      margin-top: 6px;
     }
     
     .features-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
-      margin: 50px 0;
+      margin: 60px 0;
     }
     
     .feature-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 28px 20px;
+      padding: 32px 24px;
       text-align: center;
       transition: all 0.2s;
     }
@@ -102,18 +134,19 @@
     .feature-card:hover {
       border-color: var(--accent);
       transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
     
     .feature-icon {
-      font-size: 2rem;
-      margin-bottom: 12px;
+      font-size: 2.5rem;
+      margin-bottom: 16px;
     }
     
     .feature-card h3 {
       font-family: 'Syne', sans-serif;
       font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: var(--cream);
     }
     
@@ -124,40 +157,40 @@
     }
     
     .pricing-card {
-      background: linear-gradient(135deg, var(--surface) 0%, var(--accent-dim) 100%);
-      border: 1px solid var(--accent-dim);
-      border-radius: 24px;
-      padding: 40px 32px;
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(200, 169, 110, 0.08) 100%);
+      border: 1px solid rgba(200, 169, 110, 0.2);
+      border-radius: 28px;
+      padding: 48px 40px;
       text-align: center;
-      max-width: 500px;
-      margin: 50px auto;
+      max-width: 550px;
+      margin: 60px auto;
     }
     
     .pricing-card h2 {
       font-family: 'Syne', sans-serif;
       font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
       color: var(--cream);
     }
     
     .pricing-card .price {
       font-family: 'Syne', sans-serif;
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: 800;
       color: var(--accent);
-      margin: 15px 0;
+      margin: 20px 0;
     }
     
     .pricing-card .price span {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 400;
       color: var(--cream-dim);
     }
     
     .pricing-card ul {
       list-style: none;
-      margin: 20px 0;
+      margin: 30px 0;
       text-align: left;
       display: inline-block;
     }
@@ -165,7 +198,7 @@
     .pricing-card li {
       font-size: 0.85rem;
       color: var(--cream-dim);
-      padding: 6px 0;
+      padding: 8px 0;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -175,43 +208,46 @@
       content: '✓';
       color: var(--accent);
       font-weight: 700;
+      font-size: 1rem;
     }
     
     .faq-section {
-      max-width: 700px;
-      margin: 50px auto 0;
+      max-width: 720px;
+      margin: 60px auto 0;
     }
     
     .faq-section h2 {
       text-align: center;
       font-family: 'Syne', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 700;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       color: var(--cream);
     }
     
     .faq-item {
       margin-bottom: 20px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
+      padding-bottom: 20px;
     }
     
     .faq-question {
       font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 6px;
+      font-size: 1rem;
+      margin-bottom: 8px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: var(--cream);
+      padding: 8px 0;
     }
     
     .faq-question::after {
       content: '+';
       color: var(--accent);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
     }
     
     .faq-item.open .faq-question::after {
@@ -223,32 +259,59 @@
       color: var(--cream-dim);
       line-height: 1.6;
       display: none;
+      padding-bottom: 8px;
     }
     
     .faq-item.open .faq-answer {
       display: block;
     }
     
-    body {
-      padding-top: 64px;
-      background: var(--bg);
-    }
-    
+    /* Responsive */
     @media (max-width: 900px) {
+      body {
+        padding-top: 70px;
+      }
       .features-grid {
         grid-template-columns: 1fr;
         gap: 16px;
       }
       .stats-row {
-        gap: 30px;
-        margin: 30px 0;
+        gap: 40px;
+        margin: 40px 0;
+      }
+      .stat-number {
+        font-size: 2rem;
       }
       .pricing-card {
-        padding: 28px 20px;
-        margin: 30px auto;
+        padding: 32px 24px;
+        margin: 40px auto;
+      }
+      .pricing-card .price {
+        font-size: 2.5rem;
       }
       .agency-page {
-        padding: 40px 20px 50px;
+        padding: 0 20px 60px;
+      }
+      .faq-section h2 {
+        font-size: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding-top: 60px;
+      }
+      .stats-row {
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+      }
+      .agency-hero p {
+        font-size: 0.95rem;
+      }
+      .btn-cta {
+        padding: 12px 28px;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -292,7 +355,7 @@
     </div>
   </div>
   
-  <!-- Features - AGENCY SPECIFIC (not business features) -->
+  <!-- Features - AGENCY SPECIFIC -->
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon">🎨</div>
