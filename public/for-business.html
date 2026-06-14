@@ -1957,6 +1957,7 @@
             <!-- FUNNEL STUDIO SECTION - REDESIGNED -->
 <!-- FUNNEL STUDIO SECTION - 5-LAYER REDESIGN -->
 <!-- FUNNEL STUDIO SECTION - STAR-BASED FLOW -->
+<!-- FUNNEL STUDIO SECTION - DEMO STYLE -->
 <div id="funnelStudioSection" class="content-section">
   <div class="fs-wrap">
 
@@ -2033,7 +2034,6 @@
               <option value="syne">Premium — Syne</option>
               <option value="playfair">Luxury — Playfair Display</option>
               <option value="poppins">Friendly — Poppins</option>
-              <option value="merriweather">Traditional — Merriweather</option>
             </select>
           </div>
         </div>
@@ -2066,6 +2066,10 @@
               <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#FAFAFA; border-radius: 8px;"></div>
               <span style="font-size: 0.7rem;">Minimal</span>
             </button>
+            <button class="fs-tpl" data-template="medical" onclick="selectFSTemplate('medical',this)" style="flex-direction: column; padding: 8px;">
+              <div class="fs-tpl-dot" style="width: 24px; height: 24px; background:#F0F4F8; border-radius: 8px;"></div>
+              <span style="font-size: 0.7rem;">Medical</span>
+            </button>
           </div>
         </div>
         
@@ -2077,13 +2081,14 @@
           </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Primary colour (buttons & stars)</div>
+            <div class="fs-group-label">Primary colour (stars & buttons)</div>
             <div class="fs-colours" style="display: flex; gap: 8px; flex-wrap: wrap;">
               <button class="fs-colour selected" style="background:#C8A96E; width: 32px; height: 32px;" data-color="#C8A96E" onclick="selectFSColor('#C8A96E',this)"></button>
               <button class="fs-colour" style="background:#3B82F6; width: 32px; height: 32px;" data-color="#3B82F6" onclick="selectFSColor('#3B82F6',this)"></button>
               <button class="fs-colour" style="background:#10B981; width: 32px; height: 32px;" data-color="#10B981" onclick="selectFSColor('#10B981',this)"></button>
               <button class="fs-colour" style="background:#8B5CF6; width: 32px; height: 32px;" data-color="#8B5CF6" onclick="selectFSColor('#8B5CF6',this)"></button>
               <button class="fs-colour" style="background:#EF4444; width: 32px; height: 32px;" data-color="#EF4444" onclick="selectFSColor('#EF4444',this)"></button>
+              <button class="fs-colour" style="background:#F59E0B; width: 32px; height: 32px;" data-color="#F59E0B" onclick="selectFSColor('#F59E0B',this)"></button>
               <input type="color" class="fs-colour-custom" value="#C8A96E" style="width: 32px; height: 32px; border-radius: 50%;" oninput="selectFSColor(this.value,null)">
             </div>
           </div>
@@ -2106,7 +2111,7 @@
             <span style="font-weight: 600; font-size: 0.85rem;">Layout</span>
           </div>
           
-          <div class="fs-group" style="margin-bottom: 12px;">
+          <div class="fs-group">
             <div class="fs-group-label">Button style</div>
             <div style="display: flex; gap: 8px;">
               <button onclick="setButtonStyle('rounded')" id="btnStyleRounded" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Rounded</button>
@@ -2127,9 +2132,8 @@
             <div class="fs-group-label">Background effect</div>
             <select id="fsBgEffect" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
               <option value="none" selected>None — clean solid</option>
-              <option value="gradient">Gradient — dark to gold</option>
+              <option value="grain">Grain — premium texture</option>
               <option value="glass">Glassmorphism — blurred glass</option>
-              <option value="grain">Luxury grain — premium texture</option>
             </select>
           </div>
           
@@ -2152,12 +2156,13 @@
           </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Headline <span class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</span></div>
-            <input class="fs-input" id="fsHeadline" type="text" maxlength="60" value="How was your experience?" oninput="updateFSPreview();updateFSCharCount()">
+            <div class="fs-group-label">Headline</div>
+            <input class="fs-input" id="fsHeadline" type="text" value="How was your experience?" oninput="updateFSPreview();updateFSCharCount()">
+            <div class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</div>
           </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Happy message (4-5 stars)</div>
+            <div class="fs-group-label">Success message (4-5 stars)</div>
             <input class="fs-input" id="fsHappyMessage" type="text" value="Thanks for your feedback! Leave us a Google review →" oninput="updateFSPreview()">
           </div>
           
@@ -2199,7 +2204,7 @@
         
       </div><!-- end left panel -->
       
-      <!-- RIGHT: Preview (Stars-based) -->
+      <!-- RIGHT: Preview - DEMO STYLE -->
       <div class="fs-preview-wrap">
         
         <!-- Device toggle -->
@@ -2209,57 +2214,57 @@
           <button class="fs-dev-btn" data-device="desktop" onclick="setFSDevice('desktop')">💻 Desktop</button>
         </div>
         
-        <!-- Preview container -->
+        <!-- Preview container - DEMO STYLE iPhone mockup -->
         <div class="fs-previews" id="fsPreviewContainer">
           
-          <!-- Mobile preview -->
+          <!-- Mobile preview - iPhone style -->
           <div class="fs-mobile" id="fsMobilePreview">
-            <div class="fs-phone" id="fsPhoneMock">
-              <div class="fs-phone-notch"></div>
-              <div class="fs-phone-status"><span>9:41</span><span>●●● Wi-Fi</span></div>
-              <div class="fs-phone-body">
-                <img id="previewLogoImg" class="fs-preview-logo" style="display:none;" alt="">
-                <div class="fs-preview-biz" id="previewBiz">Your Business</div>
-                <div class="fs-preview-q" id="previewQuestion">How was your experience?</div>
-                
-                <!-- Star Rating Component -->
-                <div style="display: flex; gap: 8px; justify-content: center; margin: 20px 0;" id="previewStars">
-                  <span class="star" data-rating="1" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
-                  <span class="star" data-rating="2" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
-                  <span class="star" data-rating="3" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
-                  <span class="star" data-rating="4" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
-                  <span class="star" data-rating="5" style="font-size: 2rem; cursor: default; color: #6A9E7F;">★</span>
+            <div class="iphone-mockup" style="width: 320px; background: #000; border-radius: 44px; padding: 10px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
+              <div style="background: #1A1A18; border-radius: 34px; overflow: hidden; position: relative; min-height: 560px;">
+                <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 32px; background: #0A0A0A; border-radius: 24px; z-index: 50;"></div>
+                <div style="padding: 50px 16px 20px 16px;">
+                  <img id="previewLogoImg" class="fs-preview-logo" style="max-height: 48px; margin: 0 auto 16px; display: none;" alt="">
+                  <div class="fs-preview-biz" id="previewBiz" style="font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 600; text-align: center; margin-bottom: 20px; color: var(--accent);">Your Business</div>
+                  <div class="fs-preview-q" id="previewQuestion" style="font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 24px; line-height: 1.2;">How was your experience?</div>
+                  
+                  <!-- Star Rating Component -->
+                  <div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
+                    <span class="preview-star" data-rating="1" style="font-size: 44px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="2" style="font-size: 44px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="3" style="font-size: 44px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="4" style="font-size: 44px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="5" style="font-size: 44px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                  </div>
+                  
+                  <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; color: rgba(234,231,220,0.3); margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
                 </div>
-                
-                <div class="fs-preview-footer">Powered by <strong>ReviewLift</strong></div>
               </div>
             </div>
           </div>
           
           <!-- Desktop preview -->
           <div class="fs-desktop" id="fsDesktopPreview" style="display:none;">
-            <div class="fs-browser">
-              <div class="fs-browser-bar">
-                <div class="fs-browser-dots">
-                  <span style="background:#FF5F56;"></span>
-                  <span style="background:#FFBD2E;"></span>
-                  <span style="background:#27C93F;"></span>
+            <div class="fs-browser" style="width: 100%; max-width: 500px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 12px 40px rgba(0,0,0,0.4);">
+              <div style="background: #2A2A28; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; gap: 5px;">
+                  <span style="width: 10px; height: 10px; background: #FF5F56; border-radius: 50%;"></span>
+                  <span style="width: 10px; height: 10px; background: #FFBD2E; border-radius: 50%;"></span>
+                  <span style="width: 10px; height: 10px; background: #27C93F; border-radius: 50%;"></span>
                 </div>
-                <div class="fs-browser-url">reviewlift.app/r/your-business</div>
+                <div style="flex: 1; background: #1A1A18; border-radius: 5px; padding: 4px 10px; font-size: 0.68rem; color: rgba(234,231,220,0.4);">reviewlift.app/r/your-business</div>
               </div>
-              <div class="fs-browser-body" id="fsBrowserBody">
-                <div class="fs-desktop-card" id="fsDesktopCard">
-                  <img id="previewLogoDesktop" class="fs-preview-logo" style="display:none;" alt="">
-                  <div class="fs-preview-biz" id="previewBizDesktop">Your Business</div>
-                  <div class="fs-preview-q" id="previewQuestionDesktop">How was your experience?</div>
+              <div style="background: #1A1A18; padding: 32px 24px; display: flex; align-items: center; justify-content: center;">
+                <div style="background: #242422; border-radius: 20px; padding: 40px; max-width: 400px; margin: 0 auto; text-align: center;">
+                  <img id="previewLogoDesktop" class="fs-preview-logo" style="max-height: 48px; margin: 0 auto 16px; display: none;" alt="">
+                  <div class="fs-preview-biz" id="previewBizDesktop" style="font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 20px; color: var(--accent);">Your Business</div>
+                  <div class="fs-preview-q" id="previewQuestionDesktop" style="font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 24px;">How was your experience?</div>
                   
-                  <!-- Star Rating Component (Desktop) -->
-                  <div style="display: flex; gap: 10px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
-                    <span class="star" data-rating="1" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
-                    <span class="star" data-rating="2" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
-                    <span class="star" data-rating="3" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
-                    <span class="star" data-rating="4" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
-                    <span class="star" data-rating="5" style="font-size: 2.2rem; cursor: default; color: #6A9E7F;">★</span>
+                  <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
+                    <span class="preview-star" data-rating="1" style="font-size: 48px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="2" style="font-size: 48px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="3" style="font-size: 48px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="4" style="font-size: 48px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
+                    <span class="preview-star" data-rating="5" style="font-size: 48px; cursor: default; color: rgba(234,231,220,0.2); transition: all 0.2s;">★</span>
                   </div>
                 </div>
               </div>
@@ -2290,7 +2295,7 @@
     </div><!-- end fs-body-new -->
     
   </div><!-- end fs-wrap -->
-</div><!-- end funnelStudioSection --><!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
+</div><!-- end funnelStudioSection -->-- end funnelStudioSection --><!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
         <div class="panel">
@@ -4111,5 +4116,14 @@ setTimeout(function() {
   }, 500);
   
 }, 1000);
+
+// Add this to your updateFSPreview function to handle star colours
+function updateStarsColor() {
+  const primaryColor = document.querySelector('.fs-colour.selected')?.style.backgroundColor || '#C8A96E';
+  const stars = document.querySelectorAll('.preview-star');
+  stars.forEach(star => {
+    star.style.color = primaryColor;
+  });
+}
 </script>
 </body></html>
