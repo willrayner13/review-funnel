@@ -12,28 +12,32 @@
   <style>
     * { box-sizing: border-box; }
     
-    /* Compact hero for score checker */
+    /* Hero section - clean, responsive, no !important */
     .sc-hero {
-  padding: 50px 24px 30px !important;
-  min-height: auto !important;
-}
-
-.sc-hero .hero-badge {
-  margin-bottom: 20px;
-}
+      padding: 40px 24px 20px;
+      min-height: auto;
+      text-align: center;
+    }
+    
+    .sc-hero .hero-badge {
+      margin-bottom: 16px;
+    }
+    
     .sc-hero h1 {
-  font-size: clamp(1.8rem, 6vw, 2.8rem) !important;
-  margin-bottom: 12px;
-}
-.sc-hero .hero-sub {
-  font-size: clamp(0.85rem, 3vw, 1rem);
-}
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      margin-bottom: 8px;
+    }
+    
+    .sc-hero .hero-sub {
+      font-size: clamp(0.85rem, 3vw, 1rem);
+    }
     
     .score-container {
       max-width: 600px;
       margin: 0 auto;
-      padding: 0 24px 40px;
+      padding: 0 24px 48px;
     }
+    
     .score-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -41,9 +45,29 @@
       padding: 28px;
       transition: all 0.3s ease;
     }
+    
     @media (max-width: 768px) {
-      .score-container { padding: 0 16px 40px; }
-      .score-card { padding: 20px; }
+      .sc-hero {
+        padding: 30px 20px 16px;
+      }
+      .sc-hero h1 {
+        font-size: 1.6rem;
+      }
+      .score-container {
+        padding: 0 16px 40px;
+      }
+      .score-card {
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .sc-hero {
+        padding: 20px 16px 12px;
+      }
+      .sc-hero h1 {
+        font-size: 1.4rem;
+      }
     }
     
     .form-input {
@@ -57,10 +81,12 @@
       font-size: 1rem;
       transition: border-color 0.2s;
     }
+    
     .form-input:focus {
       outline: none;
       border-color: var(--accent);
     }
+    
     .btn-primary {
       background: var(--accent);
       color: #1A1A18;
@@ -77,15 +103,18 @@
       text-decoration: none;
       display: block;
     }
+    
     .btn-primary:hover {
       background: #D4B87A;
       transform: translateY(-2px);
     }
+    
     .btn-primary:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
     }
+    
     .progress-bar {
       height: 8px;
       background: var(--surface-2);
@@ -93,6 +122,7 @@
       margin: 20px 0;
       overflow: hidden;
     }
+    
     .progress-fill {
       height: 100%;
       background: var(--accent);
@@ -100,17 +130,21 @@
       width: 0%;
       transition: width 0.5s ease;
     }
+    
     .hidden { display: none; }
     
     .score-number {
       font-family: 'Syne', sans-serif;
-      font-size: 3.5rem;
+      font-size: 3rem;
       font-weight: 800;
       line-height: 1;
       transition: color 0.3s;
       text-align: center;
     }
-    @media (max-width: 480px) { .score-number { font-size: 2.8rem; } }
+    
+    @media (max-width: 480px) {
+      .score-number { font-size: 2.5rem; }
+    }
     
     .score-number.excellent { color: #6A9E7F; }
     .score-number.good { color: #C8A96E; }
@@ -132,15 +166,19 @@
       border-radius: 12px;
       padding: 14px;
       margin: 16px 0;
+      font-size: 0.85rem;
     }
+    
     .warning-card.amber {
       background: rgba(212,167,74,0.08);
       border-left-color: #D4A74A;
     }
+    
     .warning-card.red {
       background: rgba(192,103,90,0.12);
       border-left-color: #C0675A;
     }
+    
     .empathy-message {
       text-align: center;
       padding: 16px;
@@ -158,12 +196,14 @@
       z-index: 10;
       position: relative;
     }
+    
     .autocomplete-item {
       padding: 12px 16px;
       cursor: pointer;
       border-bottom: 1px solid var(--border);
       transition: background 0.2s;
     }
+    
     .autocomplete-item:hover { background: var(--surface-3); }
     .autocomplete-item:last-child { border-bottom: none; }
     
@@ -186,12 +226,14 @@
       margin-right: 8px;
       vertical-align: middle;
     }
+    
     @keyframes spin { to { transform: rotate(360deg); } }
     
     .processing-animation {
       text-align: center;
       padding: 30px 20px;
     }
+    
     .pulse-ring {
       width: 50px;
       height: 50px;
@@ -204,6 +246,7 @@
       justify-content: center;
       font-size: 1.6rem;
     }
+    
     @keyframes pulse {
       0% { transform: scale(0.9); opacity: 0.7; }
       50% { transform: scale(1.1); opacity: 0.3; }
@@ -224,6 +267,7 @@
       background: var(--surface-2);
       border-radius: 12px;
     }
+    
     .breakdown-item {
       display: flex;
       justify-content: space-between;
@@ -231,18 +275,22 @@
       padding: 10px 0;
       border-bottom: 1px solid var(--border);
     }
+    
     .breakdown-item:last-child { border-bottom: none; }
+    
     .breakdown-label {
       font-size: 0.85rem;
       color: var(--cream-dim);
       min-width: 100px;
     }
+    
     .breakdown-value {
       font-weight: 700;
       color: var(--cream);
       min-width: 45px;
       text-align: right;
     }
+    
     .breakdown-bar {
       flex: 1;
       height: 6px;
@@ -251,6 +299,7 @@
       margin: 0 12px;
       overflow: hidden;
     }
+    
     .breakdown-bar-fill {
       height: 100%;
       background: var(--accent);
@@ -258,6 +307,7 @@
       width: 0%;
       transition: width 0.5s ease;
     }
+    
     .breakdown-item.blurred .breakdown-value,
     .breakdown-item.blurred .breakdown-bar {
       filter: blur(4px);
@@ -270,7 +320,9 @@
       background: rgba(200,169,110,0.06);
       border-radius: 12px;
       border-left: 3px solid var(--accent);
+      font-size: 0.85rem;
     }
+    
     .improvement-tip {
       margin-top: 12px;
       padding: 12px;
@@ -289,8 +341,10 @@
     }
     
     footer {
-      padding: 30px 24px !important;
+      padding: 30px 24px;
       text-align: center;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -304,11 +358,11 @@
     .catch(err => console.error('Navbar error:', err));
 </script>
 
-<!-- Compact Hero -->
-<section class="hero sc-hero" style="padding: 50px 24px 30px !important; min-height: auto;">
-  <div class="hero-badge" style="margin-bottom: 20px;">FREE TOOL</div>
-  <h1 style="font-size: clamp(1.8rem, 6vw, 2.8rem); margin-bottom: 12px;">What's your <em>Google Review Score?</em></h1>
-  <p class="hero-sub" style="font-size: clamp(0.85rem, 3vw, 1rem);">Search for your business to get your score instantly.</p>
+<!-- Hero Section - Clean and Responsive -->
+<section class="hero sc-hero">
+  <div class="hero-badge">FREE TOOL</div>
+  <h1>What's your <em>Google Review Score?</em></h1>
+  <p class="hero-sub">Search for your business to get your score instantly.</p>
 </section>
 
 <div class="score-container">
@@ -332,7 +386,7 @@
       </div>
     </div>
 
-    <!-- Step 3: Score Revealed (No Gate) + Blurred Velocity -->
+    <!-- Step 3: Score Revealed -->
     <div id="stepScoreRevealed" class="hidden">
       <div id="selectedBusinessInfo" class="selected-business"></div>
       
@@ -372,7 +426,7 @@
       <button id="unlockBtn" class="btn-primary">Unlock my full report →</button>
     </div>
 
-    <!-- Step 4: Full Report Unlocked (Inline - stays on page) -->
+    <!-- Step 4: Full Report Unlocked -->
     <div id="stepFullReport" class="hidden">
       <div class="score-number" id="finalScore">--</div>
       <div class="score-label">OUT OF 100</div>
@@ -428,7 +482,6 @@ let cachedReviewCount = null;
 let cachedScore = null;
 let searchTimeout = null;
 
-// FIXED: Velocity calculation matches report.html (using /12)
 function calculateBreakdown(rating, reviewCount) {
   const ratingScore = Math.round((rating / 5) * 50);
   
@@ -478,7 +531,7 @@ function getWarningCard(rating, score) {
       <div class="warning-card amber">
         <strong>⚠️ Some unhappy customers are getting through</strong><br>
         Your ${rating} star rating suggests roughly 1 in 8 customers had a poor experience — and left a public review about it.<br><br>
-        ReviewLift intercepts unhappy customers before they reach Google, routing them to a private feedback form instead. Most businesses on ReviewLift see their rating climb 0.2–0.4 stars within 90 days.
+        ReviewLift intercepts unhappy customers before they reach Google, routing them to a private feedback form instead.
       </div>
     `;
   }
@@ -521,7 +574,7 @@ function getProtectionGap(rating, reviewCount) {
   return `
     <strong>🛡️ Your review protection gap</strong><br>
     Based on your ${rating} star rating, an estimated <strong>${estimatedPercent}–${estimatedPercent + 10}%</strong> of your customers had a negative experience that reached Google publicly.<br><br>
-    ReviewLift's private feedback system would have intercepted most of these. Instead of 1-star reviews, you'd receive private messages — giving you a chance to fix issues before they become public.
+    ReviewLift's private feedback system would have intercepted most of these.
   `;
 }
 
@@ -533,7 +586,7 @@ function getImprovementTips(rating, reviewCount, velocity, ratingBand) {
     tips.push({
       icon: "🛡️",
       text: "Unhappy customers are reaching Google",
-      action: "ReviewLift intercepts unhappy customers with a private feedback form. They vent to you. Google never sees a complaint. This alone could dramatically improve your rating."
+      action: "ReviewLift intercepts unhappy customers with a private feedback form. They vent to you. Google never sees a complaint."
     });
   }
   
@@ -541,23 +594,23 @@ function getImprovementTips(rating, reviewCount, velocity, ratingBand) {
     tips.push({
       icon: "⭐",
       text: `Your rating is ${rating} stars, below the 4.5-star benchmark.`,
-      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating from bad reviews."
+      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating."
     });
   }
   
   if (reviewCount < 50) {
     tips.push({
       icon: "📝",
-      text: `You have only ${reviewCount} reviews. Businesses with 50+ reviews get 4x more clicks on Google.`,
-      action: "ReviewLift automates review requests after every job or appointment — no manual follow-up needed."
+      text: `You have only ${reviewCount} reviews. Businesses with 50+ get 4x more clicks.`,
+      action: "ReviewLift automates review requests after every appointment — no manual follow-up needed."
     });
   }
   
   if (velocity < 5) {
     tips.push({
       icon: "📈",
-      text: `You're getting only about ${velocity} reviews per month. Top businesses get 10+ monthly reviews.`,
-      action: "ReviewLift's automated SMS and email requests ensure every customer gets asked — dramatically increasing your velocity."
+      text: `You're getting only about ${velocity} reviews per month.`,
+      action: "ReviewLift's automated SMS and email requests ensure every customer gets asked."
     });
   }
   
@@ -565,7 +618,7 @@ function getImprovementTips(rating, reviewCount, velocity, ratingBand) {
     tips.push({
       icon: "🚀",
       text: "You're doing well! To stay ahead, maintain your review momentum.",
-      action: "ReviewLift automates the process so you never have to think about asking for reviews again."
+      action: "ReviewLift automates the process so you never have to ask for reviews again."
     });
   }
   
@@ -707,7 +760,7 @@ searchBtn.addEventListener('click', async () => {
   }
 });
 
-// Unlock button - SHOWS INLINE FULL REPORT (does NOT redirect)
+// Unlock button
 document.getElementById('unlockBtn').addEventListener('click', async () => {
   const email = document.getElementById('unlockEmail').value.trim();
   
@@ -789,7 +842,6 @@ searchInput.addEventListener('keypress', (e) => {
   }
 });
 
-// Check for URL parameters on page load (for coming from landing page)
 window.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const placeIdParam = urlParams.get('place_id');
