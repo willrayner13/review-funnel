@@ -20,10 +20,22 @@
     }
 
     body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+  background-color: #141412 !important; /* Replace with your exact dark brand hex if different */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-wrapper, .sc-hero {
+  background: transparent !important;
+}
+
+/* Check if the navbar has an aggressive bottom shadow or background causing the line */
+#rl-nav-placeholder {
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
     
     /* FIX: Make the content area expand to absorb extra space, centering things vertically */
     .main-wrapper {
