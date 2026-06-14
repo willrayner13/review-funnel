@@ -412,16 +412,15 @@ function calculateBreakdown(rating, reviewCount) {
   else if (reviewCount >= 5) countScore = 5;
   
   let velocityScore = 0;
-  const velocity = Math.round(reviewCount / 2);
+  const velocity = Math.max(1, Math.round(reviewCount / 12));
   if (velocity >= 20) velocityScore = 20;
   else if (velocity >= 15) velocityScore = 15;
   else if (velocity >= 10) velocityScore = 12;
   else if (velocity >= 5) velocityScore = 8;
   else if (velocity >= 2) velocityScore = 4;
+  else velocityScore = 1;
   
   const totalScore = ratingScore + countScore + velocityScore;
-  
-  console.log('Calculated breakdown:', { rating, reviewCount, ratingScore, countScore, velocityScore, totalScore });
   
   return { ratingScore, countScore, velocityScore, velocity, totalScore };
 }
