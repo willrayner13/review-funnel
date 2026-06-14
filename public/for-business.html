@@ -1735,10 +1735,11 @@
           <!-- Logo Upload (no URL input) -->
           <!-- Logo Upload - Upload only (no URL input) -->
 <!-- Logo Upload - Clean UX -->
+<!-- Logo Upload - Keep size, remove alignment -->
 <div class="fs-group">
   <div class="fs-group-label">Business logo</div>
   
-  <!-- Upload button that changes to Remove after upload -->
+  <!-- Upload and Remove buttons side by side -->
   <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
     <label id="fsLogoUploadLabel" for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;">
       📁 Upload image
@@ -1747,27 +1748,20 @@
     <button id="fsRemoveLogoBtn" onclick="clearLogo()" style="display: none; background: transparent; border: 1px solid #C0675A; color: #C0675A; border-radius: 8px; padding: 10px 16px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">
       ✕ Remove logo
     </button>
-    <span id="logoStatusText" style="font-size: 0.7rem; color: var(--cream-dim); display: none;">✓ Logo uploaded</span>
+    <span id="logoStatusText" style="font-size: 0.7rem; color: #6A9E7F; display: none;">✓ Logo uploaded</span>
+  </div>
+  
+  <!-- Logo size (only size, no alignment) -->
+  <div id="logoSettings" style="display: none; margin-top: 12px;">
+    <select id="fsLogoSize" onchange="updateFSPreview()" style="width: 100%; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
+      <option value="small">Small logo</option>
+      <option value="medium" selected>Medium logo</option>
+      <option value="large">Large logo</option>
+    </select>
   </div>
   
   <!-- Hidden field for storing base64 -->
   <input type="hidden" id="fsLogoUrl">
-  
-  <!-- Logo size & alignment (shown when logo exists) -->
-  <div id="logoSettings" style="display: none; margin-top: 12px;">
-    <div style="display: flex; gap: 12px;">
-      <select id="fsLogoSize" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
-        <option value="small">Small logo</option>
-        <option value="medium" selected>Medium logo</option>
-        <option value="large">Large logo</option>
-      </select>
-      <select id="fsLogoAlign" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
-        <option value="left">Left aligned</option>
-        <option value="center" selected>Center aligned</option>
-        <option value="right">Right aligned</option>
-      </select>
-    </div>
-  </div>
 </div>
           
           <!-- Business Name Display -->
@@ -3041,18 +3035,17 @@ function setButtonStyle(style) {
 // Convert uploaded image to Base64 (no server needed)
 // Convert uploaded image to Base64 (no server needed)
 // Convert uploaded image to Base64 (no server needed)
+// Convert uploaded image to Base64
 window.uploadLogoToBase64 = function(input) {
   const file = input.files[0];
   if (!file) return;
   
-  // Check file size (max 2MB)
   if (file.size > 2 * 1024 * 1024) {
     showToast('Logo must be smaller than 2MB', 'error');
     input.value = '';
     return;
   }
   
-  // Check file type
   const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp'];
   if (!allowedTypes.includes(file.type)) {
     showToast('Please upload PNG, JPG, SVG, or WebP', 'error');
@@ -3060,64 +3053,38 @@ window.uploadLogoToBase64 = function(input) {
     return;
   }
   
-  // Change button text to "Uploading..."
   const uploadLabel = document.getElementById('fsLogoUploadLabel');
   const originalText = uploadLabel.innerHTML;
   uploadLabel.innerHTML = '⏳ Uploading...';
   uploadLabel.style.opacity = '0.7';
-  uploadLabel.style.cursor = 'wait';
   
-  // Convert to Base64
   const reader = new FileReader();
   reader.onload = function(e) {
     const base64String = e.target.result;
     
-    // Store in hidden input
     document.getElementById('fsLogoUrl').value = base64String;
     
-    // Show logo settings
-    document.getElementById('logoSettings').style.display = 'block';
-    
-    // Change upload button to "Uploaded" and show remove button
     uploadLabel.innerHTML = '✅ Uploaded';
     uploadLabel.style.opacity = '1';
-    uploadLabel.style.cursor = 'pointer';
     uploadLabel.style.background = 'rgba(106,158,127,0.15)';
     uploadLabel.style.borderColor = '#6A9E7F';
     
-    // Show remove button
-    const removeBtn = document.getElementById('fsRemoveLogoBtn');
-    removeBtn.style.display = 'inline-block';
+    document.getElementById('fsRemoveLogoBtn').style.display = 'inline-block';
+    document.getElementById('logoStatusText').style.display = 'inline';
+    document.getElementById('logoSettings').style.display = 'block';
     
-    // Show status text
-    const statusText = document.getElementById('logoStatusText');
-    statusText.style.display = 'inline';
-    
-    // IMPORTANT: Force update the preview immediately
-    setTimeout(() => {
-      if (typeof window.updateFSPreview === 'function') {
-        window.updateFSPreview();
-      }
-      // Also update stars color
-      if (typeof updateStarsColor === 'function') {
-        updateStarsColor();
-      }
-      if (typeof addStarHoverEffects === 'function') {
-        addStarHoverEffects();
-      }
-    }, 100);
+    // Force update preview immediately
+    if (typeof window.updateFSPreview === 'function') {
+      window.updateFSPreview();
+    }
     
     showToast('Logo uploaded successfully!', 'success');
   };
   
   reader.onerror = function() {
     showToast('Failed to read file. Please try again.', 'error');
-    document.getElementById('logoSettings').style.display = 'none';
     uploadLabel.innerHTML = originalText;
     uploadLabel.style.opacity = '1';
-    uploadLabel.style.cursor = 'pointer';
-    uploadLabel.style.background = '';
-    uploadLabel.style.borderColor = '';
   };
   
   reader.readAsDataURL(file);
@@ -3126,24 +3093,17 @@ window.uploadLogoToBase64 = function(input) {
 // Clear the logo
 window.clearLogo = function() {
   document.getElementById('fsLogoUrl').value = '';
-  document.getElementById('logoSettings').style.display = 'none';
   document.getElementById('fsLogoUpload').value = '';
+  document.getElementById('logoSettings').style.display = 'none';
   
-  // Reset upload button
   const uploadLabel = document.getElementById('fsLogoUploadLabel');
   uploadLabel.innerHTML = '📁 Upload image';
   uploadLabel.style.background = '';
   uploadLabel.style.borderColor = '';
   
-  // Hide remove button
-  const removeBtn = document.getElementById('fsRemoveLogoBtn');
-  removeBtn.style.display = 'none';
+  document.getElementById('fsRemoveLogoBtn').style.display = 'none';
+  document.getElementById('logoStatusText').style.display = 'none';
   
-  // Hide status text
-  const statusText = document.getElementById('logoStatusText');
-  statusText.style.display = 'none';
-  
-  // Force update preview
   if (typeof window.updateFSPreview === 'function') {
     window.updateFSPreview();
   }
@@ -3279,28 +3239,27 @@ window.updateFSPreview = function() {
   // 2. Apply ALL our new settings
   
   // ---- Logo Size & Alignment ----
-  const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
-  const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
-  const logoAlign = document.getElementById('fsLogoAlign')?.value || 'center';
-  
-  let logoMaxHeight = '36px';
-  if (logoSize === 'small') logoMaxHeight = '28px';
-  if (logoSize === 'medium') logoMaxHeight = '48px';
-  if (logoSize === 'large') logoMaxHeight = '64px';
-  
-  let logoTextAlign = 'center';
-  if (logoAlign === 'left') logoTextAlign = 'flex-start';
-  if (logoAlign === 'center') logoTextAlign = 'center';
-  if (logoAlign === 'right') logoTextAlign = 'flex-end';
-  
-  const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
-  logoImages.forEach(img => {
-    if (logoUrl && logoUrl.trim() !== '') {
-      img.style.display = 'block';
-      img.style.maxHeight = logoMaxHeight;
-      if (img.parentElement) img.parentElement.style.textAlign = logoTextAlign;
-    }
-  });
+// ---- Logo (with size, centered by default) ----
+const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
+const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
+
+let logoMaxHeight = '36px';
+if (logoSize === 'small') logoMaxHeight = '28px';
+if (logoSize === 'medium') logoMaxHeight = '48px';
+if (logoSize === 'large') logoMaxHeight = '64px';
+
+const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+logoImages.forEach(img => {
+  if (logoUrl && logoUrl.trim() !== '') {
+    img.src = logoUrl;
+    img.style.display = 'block';
+    img.style.maxHeight = logoMaxHeight;
+    img.style.width = 'auto';
+    img.style.margin = '0 auto';  // Always centered
+  } else {
+    img.style.display = 'none';
+  }
+});
 
     updateLogoDisplay();
 
@@ -3705,30 +3664,27 @@ setTimeout(function() {
     // 2. Apply ALL our new settings
     
     // Logo Size & Alignment
-    const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
-    const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
-    const logoAlign = document.getElementById('fsLogoAlign')?.value || 'center';
-    
-    let logoMaxHeight = '36px';
-    if (logoSize === 'small') logoMaxHeight = '28px';
-    if (logoSize === 'medium') logoMaxHeight = '48px';
-    if (logoSize === 'large') logoMaxHeight = '64px';
-    
-    let logoTextAlign = 'center';
-    if (logoAlign === 'left') logoTextAlign = 'flex-start';
-    if (logoAlign === 'center') logoTextAlign = 'center';
-    if (logoAlign === 'right') logoTextAlign = 'flex-end';
-    
-    const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
-    logoImages.forEach(img => {
-      if (logoUrl && logoUrl.trim() !== '') {
-        img.style.display = 'block';
-        img.style.maxHeight = logoMaxHeight;
-        if (img.parentElement) img.parentElement.style.textAlign = logoTextAlign;
-      } else {
-        img.style.display = 'none';
-      }
-    });
+ // ---- Logo (with size, centered by default) ----
+const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
+const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
+
+let logoMaxHeight = '36px';
+if (logoSize === 'small') logoMaxHeight = '28px';
+if (logoSize === 'medium') logoMaxHeight = '48px';
+if (logoSize === 'large') logoMaxHeight = '64px';
+
+const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+logoImages.forEach(img => {
+  if (logoUrl && logoUrl.trim() !== '') {
+    img.src = logoUrl;
+    img.style.display = 'block';
+    img.style.maxHeight = logoMaxHeight;
+    img.style.width = 'auto';
+    img.style.margin = '0 auto';  // Always centered
+  } else {
+    img.style.display = 'none';
+  }
+});
 
 
     
