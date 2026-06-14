@@ -1778,8 +1778,7 @@
       <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; position: sticky; top: 16px; max-height: calc(100vh - 120px); overflow-y: auto;">
         
         <!-- ===== SECTION 1: Brand Identity ===== -->
-        <div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
-<div class="fs-section-header" onclick="toggleSection('brandContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">            <div style="display: flex; align-items: center; gap: 10px;">
+<div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);"><div class="fs-section-header" onclick="toggleSection('brandContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">            <div style="display: flex; align-items: center; gap: 10px;">
               <span class="fs-section-icon" style="font-size: 1.2rem;">🏷️</span>
               <span style="font-weight: 600; font-size: 0.9rem;">Brand Identity</span>
               <span class="fs-section-status" style="font-size: 0.7rem; color: var(--cream-dim);">(Optional)</span>
@@ -1789,7 +1788,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="brandContent" style="padding-bottom: 16px; display: none;">
+  <div class="fs-section-content" id="brandContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-group">
               <div class="fs-group-label">Business logo</div>
               <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
@@ -1828,7 +1827,7 @@
         </div>
         
         <!-- ===== SECTION 2: Theme Packs ===== -->
-        <div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+<div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
 <div class="fs-section-header" onclick="toggleSection('themeContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">            <div style="display: flex; align-items: center; gap: 10px;">
               <span class="fs-section-icon" style="font-size: 1.2rem;">🎨</span>
               <span style="font-weight: 600; font-size: 0.9rem;">Theme Packs</span>
@@ -1839,7 +1838,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="themeContent" style="padding-bottom: 16px; display: none;">
+  <div class="fs-section-content" id="themeContent" style="padding-bottom: 16px; display: none;">
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
               <div class="fs-theme-option" data-theme="modern-dark" onclick="applyThemePack('modern-dark', this)" style="background: var(--surface-2); border: 2px solid var(--accent); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
                 <div style="width: 100%; height: 36px; background: #0A0A0A; border-radius: 6px; margin-bottom: 6px;"></div>
@@ -1906,7 +1905,7 @@
         </div>
         
         <!-- ===== SECTION 3: Experience ===== -->
-        <div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+<div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
   <div class="fs-section-header" onclick="toggleSection('experienceContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">            <div style="display: flex; align-items: center; gap: 10px;">
               <span class="fs-section-icon" style="font-size: 1.2rem;">✨</span>
               <span style="font-weight: 600; font-size: 0.9rem;">Experience</span>
@@ -1917,7 +1916,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="experienceContent" style="padding-bottom: 16px; display: none;">
+  <div class="fs-section-content" id="experienceContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-group">
               <div class="fs-group-label">Background effect</div>
               <select id="fsBgEffect" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
@@ -1930,7 +1929,7 @@
         </div>
         
         <!-- ===== SECTION 4: Wording ===== -->
-        <div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+<div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
 <div class="fs-section-header" onclick="toggleSection('wordingContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">            <div style="display: flex; align-items: center; gap: 10px;">
               <span class="fs-section-icon" style="font-size: 1.2rem;">✏️</span>
               <span style="font-weight: 600; font-size: 0.9rem;">Wording</span>
@@ -1941,7 +1940,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="wordingContent" style="padding-bottom: 16px; display: none;">
+  <div class="fs-section-content" id="wordingContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-group" style="margin-bottom: 12px;">
               <div class="fs-group-label">Headline</div>
               <input class="fs-input" id="fsHeadline" type="text" value="How was your experience?" oninput="updateFSPreview();updateFSCharCount()">
@@ -1959,7 +1958,7 @@
         </div>
         
         <!-- ===== SECTION 5: AI Suggestions ===== -->
-        <div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+<div class="fs-collapsible-section" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
   <div class="fs-section-header" onclick="toggleSection('aiContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">            <div style="display: flex; align-items: center; gap: 10px;">
               <span class="fs-section-icon" style="font-size: 1.2rem;">🤖</span>
               <span style="font-weight: 600; font-size: 0.9rem;">AI Suggestions</span>
@@ -1969,7 +1968,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="aiContent" style="padding-bottom: 16px; display: none;">
+  <div class="fs-section-content" id="aiContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-ai-tip" onclick="applyAISuggestion('headline')" style="background: rgba(139,92,246,0.08); border-radius: 8px; padding: 10px; margin-bottom: 8px; cursor: pointer;">
               <span>✦ "Rate your experience" converts 12% better</span>
             </div>
