@@ -239,22 +239,6 @@
       filter: blur(4px);
       opacity: 0.6;
     }
-    .protection-gap {
-      margin-top: 20px;
-      padding: 16px;
-      background: rgba(200,169,110,0.06);
-      border-radius: 12px;
-      border-left: 3px solid var(--accent);
-    }
-    .improvement-tip {
-      margin-top: 16px;
-      padding: 12px;
-      background: rgba(200,169,110,0.08);
-      border-radius: 8px;
-      font-size: 0.8rem;
-      color: var(--cream-dim);
-      border-left: 3px solid var(--accent);
-    }
     .hero {
       padding: 140px 24px 60px !important;
     }
@@ -344,45 +328,6 @@
       <button id="unlockBtn" class="btn-primary">Unlock my full report →</button>
     </div>
 
-    <!-- Step 4: Full Report Unlocked -->
-    <div id="stepFullReport" class="hidden">
-      <div class="score-number" id="finalScore">--</div>
-      <div class="score-label">OUT OF 100</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="finalScoreFill"></div>
-      </div>
-      
-      <div class="score-breakdown">
-        <div class="breakdown-item">
-          <span class="breakdown-label">⭐ Rating Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalRatingFill"></div></div>
-          <span class="breakdown-value" id="finalRatingScore">0/50</span>
-        </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">📝 Review Count Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalCountFill"></div></div>
-          <span class="breakdown-value" id="finalCountScore">0/30</span>
-        </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">📈 Monthly Velocity Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalVelocityFill"></div></div>
-          <span class="breakdown-value" id="finalVelocityScore">0/20</span>
-        </div>
-      </div>
-      
-      <div id="protectionGap" class="protection-gap hidden"></div>
-      
-      <div id="improvementTips"></div>
-      
-      <div style="margin-top: 24px;">
-        <a href="/admin" id="ctaButton" class="btn-primary">🚀 Start free trial →</a>
-      </div>
-      
-      <p style="font-size: 0.7rem; color: var(--cream-dim); text-align: center; margin-top: 16px;">
-        We've sent a detailed report to your email.
-      </p>
-    </div>
-
   </div>
 </div>
 
@@ -400,6 +345,7 @@ let cachedReviewCount = null;
 let cachedScore = null;
 let searchTimeout = null;
 
+// FIXED: Using /12 for velocity, matching report.html
 function calculateBreakdown(rating, reviewCount) {
   const ratingScore = Math.round((rating / 5) * 50);
   
@@ -421,6 +367,8 @@ function calculateBreakdown(rating, reviewCount) {
   else velocityScore = 1;
   
   const totalScore = ratingScore + countScore + velocityScore;
+  
+  console.log('Calculated breakdown:', { rating, reviewCount, ratingScore, countScore, velocityScore, velocity, totalScore });
   
   return { ratingScore, countScore, velocityScore, velocity, totalScore };
 }
@@ -472,77 +420,6 @@ function getWarningCard(rating, score) {
       <p style="font-size: 0.85rem; margin-top: 8px;">The good news: 94% of these reviews were preventable. Here's how.</p>
     </div>
   `;
-}
-
-function getCTAText(rating, score) {
-  const band = getRatingBand(rating);
-  if (band === 'crisis') return '🛡️ Protect my business on Google →';
-  if (band === 'warning') return '🛡️ Protect my reputation →';
-  return '🚀 Get more reviews →';
-}
-
-function getProtectionGap(rating, reviewCount) {
-  const band = getRatingBand(rating);
-  if (band === 'excellent') return null;
-  
-  let estimatedPercent = 0;
-  if (rating >= 4.3) estimatedPercent = 8;
-  else if (rating >= 3.5) estimatedPercent = 18;
-  else if (rating >= 2.5) estimatedPercent = 35;
-  else estimatedPercent = 50;
-  
-  return `
-    <strong>🛡️ Your review protection gap</strong><br>
-    Based on your ${rating} star rating, an estimated <strong>${estimatedPercent}–${estimatedPercent + 10}%</strong> of your customers had a negative experience that reached Google publicly.<br><br>
-    ReviewLift's private feedback system would have intercepted most of these. Instead of 1-star reviews, you'd receive private messages — giving you a chance to fix issues before they become public.
-  `;
-}
-
-function getImprovementTips(rating, reviewCount, velocity, ratingBand) {
-  let tips = [];
-  const band = getRatingBand(rating);
-  
-  if (band === 'warning' || band === 'crisis') {
-    tips.push({
-      icon: "🛡️",
-      text: "Unhappy customers are reaching Google",
-      action: "ReviewLift intercepts unhappy customers with a private feedback form. They vent to you. Google never sees a complaint. This alone could dramatically improve your rating."
-    });
-  }
-  
-  if (rating < 4.5) {
-    tips.push({
-      icon: "⭐",
-      text: `Your rating is ${rating} stars, below the 4.5-star benchmark.`,
-      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating from bad reviews."
-    });
-  }
-  
-  if (reviewCount < 50) {
-    tips.push({
-      icon: "📝",
-      text: `You have only ${reviewCount} reviews. Businesses with 50+ reviews get 4x more clicks on Google.`,
-      action: "ReviewLift automates review requests after every job or appointment — no manual follow-up needed."
-    });
-  }
-  
-  if (velocity < 5) {
-    tips.push({
-      icon: "📈",
-      text: `You're getting only about ${velocity} reviews per month. Top businesses get 10+ monthly reviews.`,
-      action: "ReviewLift's automated SMS and email requests ensure every customer gets asked — dramatically increasing your velocity."
-    });
-  }
-  
-  if (tips.length === 0) {
-    tips.push({
-      icon: "🚀",
-      text: "You're doing well! To stay ahead, maintain your review momentum.",
-      action: "ReviewLift automates the process so you never have to think about asking for reviews again."
-    });
-  }
-  
-  return tips;
 }
 
 // Autocomplete search
@@ -635,8 +512,6 @@ searchBtn.addEventListener('click', async () => {
       
       const scoreColorClass = getScoreColorClass(cachedScore);
       const scoreEl = document.getElementById('scoreNumber');
-      console.log('Score element found:', scoreEl);
-      console.log('Setting scoreNumber innerText to:', cachedScore);
       scoreEl.innerText = cachedScore;
       scoreEl.className = `score-number ${scoreColorClass}`;
       document.getElementById('scoreProgress').style.width = `${cachedScore}%`;
@@ -684,8 +559,7 @@ searchBtn.addEventListener('click', async () => {
   }
 });
 
-// Unlock button
-// Unlock button
+// Unlock button - NOW REDIRECTS TO REPORT.HTML
 document.getElementById('unlockBtn').addEventListener('click', async () => {
   const email = document.getElementById('unlockEmail').value.trim();
   
@@ -746,7 +620,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     searchInput.value = selectedBusinessName;
     searchBtn.disabled = false;
     searchStatus.innerHTML = `✓ Loaded: ${selectedBusinessName}`;
-    // Auto-search after a short delay
     setTimeout(() => {
       searchBtn.click();
     }, 500);
