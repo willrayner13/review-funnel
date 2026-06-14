@@ -3873,6 +3873,72 @@ document.addEventListener('DOMContentLoaded', function() {
 // ENHANCED FUNNEL STUDIO LIVE PREVIEW - RUNS AFTER BUNDLE
 // ============================================================
 
+// Fix the global variables
+window.buttonLayout = 'side';
+window.buttonStyle = 'pill';
+window.shadowDepth = 'medium';
+
+// Override setButtonLayout to update window.buttonLayout
+const originalSetButtonLayout = window.setButtonLayout;
+window.setButtonLayout = function(layout) {
+  window.buttonLayout = layout;
+  const stackedBtn = document.getElementById('btnLayoutStacked');
+  const sideBtn = document.getElementById('btnLayoutSide');
+  if (layout === 'stacked') {
+    stackedBtn.style.background = 'var(--accent)';
+    stackedBtn.style.color = '#1A1A18';
+    sideBtn.style.background = 'var(--surface-2)';
+    sideBtn.style.color = 'var(--cream-dim)';
+  } else {
+    sideBtn.style.background = 'var(--accent)';
+    sideBtn.style.color = '#1A1A18';
+    stackedBtn.style.background = 'var(--surface-2)';
+    stackedBtn.style.color = 'var(--cream-dim)';
+  }
+  if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
+};
+
+// Override setButtonStyle to update window.buttonStyle
+const originalSetButtonStyle = window.setButtonStyle;
+window.setButtonStyle = function(style) {
+  window.buttonStyle = style;
+  const rounded = document.getElementById('btnStyleRounded');
+  const pill = document.getElementById('btnStylePill');
+  const sharp = document.getElementById('btnStyleSharp');
+  
+  [rounded, pill, sharp].forEach(btn => {
+    if (btn) {
+      btn.style.background = 'var(--surface-2)';
+      btn.style.color = 'var(--cream-dim)';
+    }
+  });
+  if (style === 'rounded') rounded.style.background = 'var(--accent)';
+  if (style === 'pill') pill.style.background = 'var(--accent)';
+  if (style === 'sharp') sharp.style.background = 'var(--accent)';
+  
+  if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
+};
+
+// Override setShadowDepth to update window.shadowDepth
+const originalSetShadowDepth = window.setShadowDepth;
+window.setShadowDepth = function(depth) {
+  window.shadowDepth = depth;
+  const btns = ['none', 'small', 'medium', 'large'];
+  btns.forEach(d => {
+    const btn = document.getElementById(`shadow${d.charAt(0).toUpperCase() + d.slice(1)}`);
+    if (btn) {
+      btn.style.background = 'var(--surface-2)';
+      btn.style.color = 'var(--cream-dim)';
+    }
+  });
+  const activeBtn = document.getElementById(`shadow${depth.charAt(0).toUpperCase() + depth.slice(1)}`);
+  if (activeBtn) {
+    activeBtn.style.background = 'var(--accent)';
+    activeBtn.style.color = '#1A1A18';
+  }
+  if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
+};
+
 // Wait for the bundle to load first
 setTimeout(function() {
   
@@ -3910,28 +3976,31 @@ setTimeout(function() {
         img.style.display = 'block';
         img.style.maxHeight = logoMaxHeight;
         if (img.parentElement) img.parentElement.style.textAlign = logoTextAlign;
+      } else {
+        img.style.display = 'none';
       }
     });
     
-    // Business Name Display
+    // Business Name Display - FIXED: Hide both properly
     const bizDisplay = document.getElementById('fsBizDisplay')?.value || 'name-only';
     const bizName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
     const bizElements = document.querySelectorAll('#previewBiz, #previewBizDesktop');
+    const logoElements = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
     
-    bizElements.forEach(el => {
-      if (!el) return;
-      if (bizDisplay === 'logo-only') {
-        el.style.display = 'none';
-      } else if (bizDisplay === 'name-only') {
-        el.style.display = 'block';
-        el.innerText = bizName;
-      } else if (bizDisplay === 'both') {
-        el.style.display = 'block';
-        el.innerText = bizName;
-      } else if (bizDisplay === 'hide') {
-        el.style.display = 'none';
-      }
-    });
+    if (bizDisplay === 'hide') {
+      // Hide both business name AND logo
+      bizElements.forEach(el => { if (el) el.style.display = 'none'; });
+      logoElements.forEach(el => { if (el) el.style.display = 'none'; });
+    } else if (bizDisplay === 'logo-only') {
+      bizElements.forEach(el => { if (el) el.style.display = 'none'; });
+      logoElements.forEach(el => { if (el && logoUrl) el.style.display = 'block'; });
+    } else if (bizDisplay === 'name-only') {
+      bizElements.forEach(el => { if (el) { el.style.display = 'block'; el.innerText = bizName; } });
+      logoElements.forEach(el => { if (el) el.style.display = 'none'; });
+    } else if (bizDisplay === 'both') {
+      bizElements.forEach(el => { if (el) { el.style.display = 'block'; el.innerText = bizName; } });
+      logoElements.forEach(el => { if (el && logoUrl) el.style.display = 'block'; });
+    }
     
     // Typography
     const font = document.getElementById('fsFont')?.value || 'dm-sans';
@@ -3967,10 +4036,10 @@ setTimeout(function() {
       if (btn) btn.style.background = primaryColor;
     });
     
-    // Card Width
-    const cardWidth = document.getElementById('fsCardWidth')?.value || 380;
-    const mobilePhone = document.getElementById('fsPhoneMock');
-    if (mobilePhone) mobilePhone.style.width = `${cardWidth}px`;
+    // REMOVED: Card width (you said you don't want it)
+    // const cardWidth = document.getElementById('fsCardWidth')?.value || 380;
+    // const mobilePhone = document.getElementById('fsPhoneMock');
+    // if (mobilePhone) mobilePhone.style.width = `${cardWidth}px`;
     
     // Background Effect
     const bgEffect = document.getElementById('fsBgEffect')?.value || 'none';
@@ -4049,13 +4118,13 @@ setTimeout(function() {
       if (btn) btn.style.borderRadius = borderRadius;
     });
     
-    console.log('Funnel Studio preview updated');
+    console.log('Funnel Studio preview updated with all settings');
   };
   
   // Add event listeners for settings
   const settingIds = [
     'fsLogoSize', 'fsLogoAlign', 'fsBizDisplay', 'fsFont',
-    'fsBgColor', 'fsTextColor', 'fsCardWidth', 'fsBgEffect', 'fsAnimation'
+    'fsBgColor', 'fsTextColor', 'fsBgEffect', 'fsAnimation'
   ];
   
   settingIds.forEach(id => {
@@ -4075,6 +4144,6 @@ setTimeout(function() {
     if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
   }, 500);
   
-}, 1000); // Wait 1 second for bundle to load
+}, 1000);
 </script>
 </body></html>
