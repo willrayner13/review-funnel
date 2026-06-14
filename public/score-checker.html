@@ -12,74 +12,68 @@
   <style>
     * { box-sizing: border-box; }
     
-    /* Hero section - clean, responsive, no !important */
+    /* Reset body margin to ensure proper spacing */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Hero section - proper spacing from navbar */
     .sc-hero {
-      padding: 40px 24px 20px;
+      padding: 80px 24px 40px;
       min-height: auto;
       text-align: center;
     }
     
     .sc-hero .hero-badge {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     
     .sc-hero h1 {
-      font-size: clamp(1.6rem, 5vw, 2.4rem);
-      margin-bottom: 8px;
+      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      margin-bottom: 12px;
     }
     
     .sc-hero .hero-sub {
-      font-size: clamp(0.85rem, 3vw, 1rem);
+      font-size: clamp(0.9rem, 3vw, 1.05rem);
+      color: var(--cream-dim);
     }
     
-   .score-container {
-  width: 100%;
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 0 20px 64px;
-}
+    .score-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
     
     .score-card {
-  background: linear-gradient(
-    180deg,
-    rgba(46,46,43,0.95),
-    rgba(36,36,34,0.98)
-  );
-
-  border: 1px solid rgba(234,231,220,0.08);
-
-  border-radius: 24px;
-
-  padding: clamp(20px, 3vw, 36px);
-
-  box-shadow:
-    0 10px 40px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.03);
-
-  backdrop-filter: blur(20px);
-}
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      transition: all 0.3s ease;
+    }
     
     @media (max-width: 768px) {
       .sc-hero {
-        padding: 30px 20px 16px;
+        padding: 60px 20px 30px;
       }
       .sc-hero h1 {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
       }
       .score-container {
-        padding: 0 16px 40px;
+        padding: 0 16px 48px;
       }
       .score-card {
-        padding: 20px;
+        padding: 24px;
       }
     }
     
     @media (max-width: 480px) {
       .sc-hero {
-        padding: 20px 16px 12px;
+        padding: 50px 16px 24px;
       }
       .sc-hero h1 {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
       }
     }
     
@@ -148,7 +142,7 @@
     
     .score-number {
       font-family: 'Syne', sans-serif;
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 800;
       line-height: 1;
       transition: color 0.3s;
@@ -156,7 +150,7 @@
     }
     
     @media (max-width: 480px) {
-      .score-number { font-size: 2.5rem; }
+      .score-number { font-size: 2.8rem; }
     }
     
     .score-number.excellent { color: #6A9E7F; }
@@ -371,8 +365,8 @@
     .catch(err => console.error('Navbar error:', err));
 </script>
 
-<!-- Hero Section - Clean and Responsive -->
-<section class="hero sc-hero">
+<!-- Hero Section - Proper spacing -->
+<section class="sc-hero">
   <div class="hero-badge">FREE TOOL</div>
   <h1>What's your <em>Google Review Score?</em></h1>
   <p class="hero-sub">Search for your business to get your score instantly.</p>
