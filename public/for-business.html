@@ -1733,35 +1733,44 @@
           </div>
           
           <!-- Logo Upload (no URL input) -->
-          <div class="fs-group">
-            <div class="fs-group-label">Business logo</div>
-            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
-              <label for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem;">
-                📁 Upload image
-              </label>
-              <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;" onchange="uploadLogoToBase64(this)">
-              <span style="font-size: 0.7rem; color: var(--cream-dim);">PNG, JPG, SVG — max 2MB</span>
-            </div>
-            <!-- Logo preview -->
-            <div id="fsLogoPreview" style="display:none; margin-top: 12px; padding: 12px; background: var(--surface-2); border-radius: 8px; text-align: center;">
-              <img id="fsLogoPreviewImg" style="max-height: 48px; max-width: 100%;" alt="">
-              <button onclick="clearLogo()" style="display: block; margin: 8px auto 0; background: transparent; border: none; color: #C0675A; font-size: 0.7rem; cursor: pointer;">✕ Remove logo</button>
-            </div>
-            <div id="logoSettings" style="display: none; margin-top: 12px;">
-              <div style="display: flex; gap: 12px;">
-                <select id="fsLogoSize" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
-                  <option value="small">Small logo</option>
-                  <option value="medium" selected>Medium logo</option>
-                  <option value="large">Large logo</option>
-                </select>
-                <select id="fsLogoAlign" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
-                  <option value="left">Left aligned</option>
-                  <option value="center" selected>Center aligned</option>
-                  <option value="right">Right aligned</option>
-                </select>
-              </div>
-            </div>
-          </div>
+          <!-- Logo Upload - Upload only (no URL input) -->
+<div class="fs-group">
+  <div class="fs-group-label">Business logo</div>
+  
+  <!-- Upload button that changes text -->
+  <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+    <label id="fsLogoUploadLabel" for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;">
+      📁 Upload image
+    </label>
+    <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;" onchange="uploadLogoToBase64(this)">
+    <span style="font-size: 0.7rem; color: var(--cream-dim);">PNG, JPG, SVG — max 2MB</span>
+  </div>
+
+    <input type="hidden" id="fsLogoUrl">
+
+  
+  <!-- Logo preview -->
+  <div id="fsLogoPreview" style="display:none; margin-top: 12px; padding: 12px; background: var(--surface-2); border-radius: 8px; text-align: center;">
+    <img id="fsLogoPreviewImg" style="max-height: 48px; max-width: 100%;" alt="">
+    <button onclick="clearLogo()" style="display: block; margin: 8px auto 0; background: transparent; border: none; color: #C0675A; font-size: 0.7rem; cursor: pointer;">✕ Remove logo</button>
+  </div>
+  
+  <!-- Logo size & alignment (shown when logo exists) -->
+  <div id="logoSettings" style="display: none; margin-top: 12px;">
+    <div style="display: flex; gap: 12px;">
+      <select id="fsLogoSize" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
+        <option value="small">Small logo</option>
+        <option value="medium" selected>Medium logo</option>
+        <option value="large">Large logo</option>
+      </select>
+      <select id="fsLogoAlign" onchange="updateFSPreview()" style="flex:1; padding: 6px 10px; background: var(--surface-2); border-radius: 6px;">
+        <option value="left">Left aligned</option>
+        <option value="center" selected>Center aligned</option>
+        <option value="right">Right aligned</option>
+      </select>
+    </div>
+  </div>
+</div>
           
           <!-- Business Name Display -->
           <div class="fs-group" style="margin-top: 16px;">
@@ -3032,6 +3041,7 @@ function setButtonStyle(style) {
 }
 
 // Convert uploaded image to Base64 (no server needed)
+// Convert uploaded image to Base64 (no server needed)
 window.uploadLogoToBase64 = function(input) {
   const file = input.files[0];
   if (!file) return;
@@ -3051,7 +3061,14 @@ window.uploadLogoToBase64 = function(input) {
     return;
   }
   
-  // Show loading state
+  // Change button text to "Uploading..."
+  const uploadLabel = document.getElementById('fsLogoUploadLabel');
+  const originalText = uploadLabel.innerHTML;
+  uploadLabel.innerHTML = '⏳ Uploading...';
+  uploadLabel.style.opacity = '0.7';
+  uploadLabel.style.cursor = 'wait';
+  
+  // Show loading state in preview
   const previewDiv = document.getElementById('fsLogoPreview');
   const previewImg = document.getElementById('fsLogoPreviewImg');
   previewDiv.style.display = 'block';
@@ -3062,7 +3079,7 @@ window.uploadLogoToBase64 = function(input) {
   reader.onload = function(e) {
     const base64String = e.target.result;
     
-    // Store in the hidden URL input
+    // Store in the hidden URL input (still needed for saving)
     document.getElementById('fsLogoUrl').value = base64String;
     
     // Update preview
@@ -3073,16 +3090,40 @@ window.uploadLogoToBase64 = function(input) {
     // Show logo settings
     document.getElementById('logoSettings').style.display = 'block';
     
+    // Change button text to "Uploaded ✓" on success
+    uploadLabel.innerHTML = '✅ Uploaded';
+    uploadLabel.style.opacity = '1';
+    uploadLabel.style.cursor = 'pointer';
+    uploadLabel.style.background = 'rgba(106,158,127,0.2)';
+    uploadLabel.style.borderColor = '#6A9E7F';
+    
     // Update the live preview
     updateFSPreview();
     
     showToast('Logo uploaded successfully!', 'success');
+    
+    // Reset button text after 3 seconds (but keep the success style)
+    setTimeout(() => {
+      if (document.getElementById('fsLogoUrl').value) {
+        // Keep as "Uploaded" if logo still exists
+        uploadLabel.innerHTML = '✅ Uploaded';
+      } else {
+        uploadLabel.innerHTML = originalText;
+        uploadLabel.style.background = '';
+        uploadLabel.style.borderColor = '';
+      }
+    }, 3000);
   };
   
   reader.onerror = function() {
     showToast('Failed to read file. Please try again.', 'error');
     previewDiv.style.display = 'none';
     document.getElementById('logoSettings').style.display = 'none';
+    uploadLabel.innerHTML = originalText;
+    uploadLabel.style.opacity = '1';
+    uploadLabel.style.cursor = 'pointer';
+    uploadLabel.style.background = '';
+    uploadLabel.style.borderColor = '';
   };
   
   reader.readAsDataURL(file);
@@ -3106,11 +3147,19 @@ window.checkLogoUrl = function() {
 };
 
 // Clear the logo
+// Clear the logo
 window.clearLogo = function() {
   document.getElementById('fsLogoUrl').value = '';
   document.getElementById('fsLogoPreview').style.display = 'none';
   document.getElementById('logoSettings').style.display = 'none';
   document.getElementById('fsLogoUpload').value = '';
+  
+  // Reset the upload button text
+  const uploadLabel = document.getElementById('fsLogoUploadLabel');
+  uploadLabel.innerHTML = '📁 Upload image';
+  uploadLabel.style.background = '';
+  uploadLabel.style.borderColor = '';
+  
   updateFSPreview();
   showToast('Logo removed', 'info');
 };
