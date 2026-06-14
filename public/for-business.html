@@ -750,157 +750,7 @@
   }
 
 
-  /* iPhone Mockup - from demo.html */
-.iphone-mockup {
-  position: relative;
-  background: #000;
-  border-radius: 44px;
-  padding: 10px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-  width: 340px;
-  height: 620px;
-  margin: 0 auto;
-  flex-shrink: 0;
-}
-
-.iphone-screen {
-  background: #1A1A18;
-  border-radius: 34px;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.dynamic-island {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 110px;
-  height: 32px;
-  background: #0A0A0A;
-  border-radius: 24px;
-  z-index: 50;
-}
-
-.funnel-wrapper {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 50px 12px 20px;
-  overflow: hidden;
-}
-
-.mac-browser {
-  width: 100%;
-  max-width: 580px;
-  background: #1A1A18;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-}
-
-.browser-bar {
-  background: #2A2A28;
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.window-controls { display: flex; gap: 8px; }
-.window-control { width: 12px; height: 12px; border-radius: 50%; }
-.window-control.red { background: #FF5F56; }
-.window-control.yellow { background: #FFBD2E; }
-.window-control.green { background: #27C93F; }
-
-.browser-url-bar {
-  flex: 1;
-  background: #1A1A18;
-  border-radius: 8px;
-  padding: 6px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.url-icon { width: 14px; height: 14px; background: #3B82F6; border-radius: 50%; }
-.url-text { font-size: 0.7rem; color: rgba(234,231,220,0.4); font-family: monospace; }
-
-.browser-content {
-  background: #1A1A18;
-  padding: 32px 24px;
-  min-height: 480px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.desktop-card {
-  background: #242422;
-  border-radius: 20px;
-  padding: 40px 32px;
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
-  text-align: center;
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-/* Funnel card styles */
-#funnelPreviewContainer .funnel-card {
-  margin: 0 auto !important;
-  width: 100% !important;
-  padding: 40px 16px 20px 16px !important;
-  background: var(--surface) !important;
-  border-radius: 24px !important;
-  border: 1px solid rgba(234, 231, 220, 0.08) !important;
-}
-
-#funnelPreviewContainer .star-rating {
-  display: flex !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  margin: 16px 0 !important;
-}
-
-#funnelPreviewContainer .star-rating svg {
-  width: 42px !important;
-  height: 42px !important;
-  cursor: pointer !important;
-}
-
-#funnelPreviewContainer .btn-copy {
-  width: 100% !important;
-  padding: 14px !important;
-  border-radius: 40px !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-}
-
-#funnelPreviewContainer .premium-textarea {
-  width: 100% !important;
-  min-height: 90px !important;
-  padding: 12px !important;
-  background: var(--surface-2) !important;
-  border-radius: 12px !important;
-  margin-bottom: 12px !important;
-}
-
-#funnelPreviewContainer .btn-voice {
-  width: 56px !important;
-  height: 56px !important;
-  border-radius: 50% !important;
-  border: 2px solid var(--accent) !important;
-  cursor: pointer !important;
-}
+  
 
   
   .fs-mobile-question {
@@ -2129,9 +1979,11 @@
         </div>
       </div>
 
-  <!-- FUNNEL STUDIO SECTION - EXACT DEMO IPHONE MOCKUP -->
+    <!-- FUNNEL STUDIO SECTION - FIXED LAYOUT -->
 <div id="funnelStudioSection" class="content-section">
   <div class="fs-wrap">
+
+    <!-- Header -->
     <div class="fs-head">
       <div>
         <h2 class="fs-title">Funnel Studio</h2>
@@ -2143,90 +1995,273 @@
     <!-- Two-column layout -->
     <div style="display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start;">
       
-      <!-- LEFT: SETTINGS PANEL (simplified) -->
+      <!-- ========== LEFT: SETTINGS ========== -->
       <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; position: sticky; top: 16px; max-height: calc(100vh - 120px); overflow-y: auto;">
         
-        <!-- Brand Identity -->
-        <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-          <div style="font-weight: 600; margin-bottom: 12px;">🏷️ Brand Identity</div>
-          <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Business logo</div>
-            <div style="display: flex; gap: 12px;">
-              <label for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer;">📁 Upload</label>
-              <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;">
-              <button id="fsRemoveLogoBtn" style="display: none;">✕ Remove</button>
+        <!-- SECTION 1: Brand Identity -->
+        <div class="fs-collapsible-section collapsed" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <div class="fs-section-header" onclick="toggleSection('brandContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.2rem;">🏷️</span>
+              <span style="font-weight: 600; font-size: 0.9rem;">Brand Identity</span>
+              <span style="font-size: 0.7rem; color: var(--cream-dim);">(Optional)</span>
             </div>
-            <input type="hidden" id="fsLogoUrl">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="fs-complete-tick" id="brandTick" style="display: none; color: #10B981;">✓</span>
+              <span class="fs-toggle-icon">▼</span>
+            </div>
+          </div>
+          <div class="fs-section-content" id="brandContent" style="padding-bottom: 16px;">
+            <div class="fs-group">
+              <div class="fs-group-label">Business logo</div>
+              <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <label id="fsLogoUploadLabel" for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem;">
+                  📁 Upload image
+                </label>
+                <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;" onchange="uploadLogoToBase64(this)">
+                <button id="fsRemoveLogoBtn" onclick="clearLogo()" style="display: none; background: transparent; border: 1px solid #C0675A; color: #C0675A; border-radius: 8px; padding: 10px 16px; font-size: 0.8rem; cursor: pointer;">
+                  ✕ Remove
+                </button>
+              </div>
+              <input type="hidden" id="fsLogoUrl">
+            </div>
+            
+            <div class="fs-group" style="margin-top: 12px;">
+              <div class="fs-group-label">Business name display</div>
+              <select id="fsBizDisplay" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
+                <option value="both">Show logo + name</option>
+                <option value="logo-only">Logo only</option>
+                <option value="name-only" selected>Name only</option>
+                <option value="hide">Hide both</option>
+              </select>
+            </div>
+            
+            <div class="fs-group" style="margin-top: 12px;">
+              <div class="fs-group-label">Typography</div>
+              <select id="fsFont" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
+                <option value="dm-sans" selected>Modern — DM Sans</option>
+                <option value="inter">Elegant — Inter</option>
+                <option value="syne">Premium — Syne</option>
+                <option value="playfair">Luxury — Playfair Display</option>
+                <option value="poppins">Friendly — Poppins</option>
+              </select>
+            </div>
           </div>
         </div>
         
-        <!-- Wording -->
-        <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-          <div style="font-weight: 600; margin-bottom: 12px;">✏️ Wording</div>
-          <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Headline</div>
-            <input class="fs-input" id="fsHeadline" type="text" value="How was your experience?">
+        <!-- SECTION 2: Theme Packs -->
+        <div class="fs-collapsible-section collapsed" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <div class="fs-section-header" onclick="toggleSection('themeContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.2rem;">🎨</span>
+              <span style="font-weight: 600; font-size: 0.9rem;">Theme Packs</span>
+              <span style="font-size: 0.7rem; color: var(--cream-dim);">(12 themes)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="fs-complete-tick" id="themeTick" style="display: none; color: #10B981;">✓</span>
+              <span class="fs-toggle-icon">▼</span>
+            </div>
           </div>
-          <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Success message</div>
-            <input class="fs-input" id="fsHappyMessage" type="text" value="Thanks for your feedback! Leave us a Google review →">
-          </div>
-          <div class="fs-group">
-            <div class="fs-group-label">Unhappy message</div>
-            <input class="fs-input" id="fsUnhappyMessage" type="text" value="We're sorry to hear that. Please tell us what went wrong.">
+          <div class="fs-section-content" id="themeContent" style="padding-bottom: 16px;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+              <div class="fs-theme-option" data-theme="modern-dark" onclick="applyThemePack('modern-dark', this)" style="background: var(--surface-2); border: 2px solid var(--accent); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #0A0A0A; border-radius: 6px; margin-bottom: 6px;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Modern Dark</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Default</div>
+              </div>
+              <div class="fs-theme-option" data-theme="luxury-black" onclick="applyThemePack('luxury-black', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #000000; border-radius: 6px; margin-bottom: 6px; border: 1px solid #D4AF37;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Luxury Black</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Hotel/Spa</div>
+              </div>
+              <div class="fs-theme-option" data-theme="clinical" onclick="applyThemePack('clinical', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #F0F4F8; border-radius: 6px; margin-bottom: 6px;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Clinical</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Healthcare</div>
+              </div>
+              <div class="fs-theme-option" data-theme="creative" onclick="applyThemePack('creative', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: 6px; margin-bottom: 6px;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Creative</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Agency</div>
+              </div>
+              <div class="fs-theme-option" data-theme="local-business" onclick="applyThemePack('local-business', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #FEF3C7; border-radius: 6px; margin-bottom: 6px;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Local Biz</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Trades</div>
+              </div>
+              <div class="fs-theme-option" data-theme="hospitality" onclick="applyThemePack('hospitality', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #FDF8F3; border-radius: 6px; margin-bottom: 6px; border: 1px solid #D4A574;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Hospitality</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Restaurants</div>
+              </div>
+              <div class="fs-theme-option" data-theme="minimal" onclick="applyThemePack('minimal', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #FFFFFF; border-radius: 6px; margin-bottom: 6px; border: 1px solid #E5E5E5;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Minimal</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Apple-style</div>
+              </div>
+              <div class="fs-theme-option" data-theme="premium-gold" onclick="applyThemePack('premium-gold', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #1A120B; border-radius: 6px; margin-bottom: 6px; border: 1px solid #D4AF37;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Premium Gold</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Luxury services</div>
+              </div>
+              <div class="fs-theme-option" data-theme="vibrant" onclick="applyThemePack('vibrant', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4); border-radius: 6px; margin-bottom: 6px;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Vibrant</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Fitness</div>
+              </div>
+              <div class="fs-theme-option" data-theme="ecommerce" onclick="applyThemePack('ecommerce', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #0F172A; border-radius: 6px; margin-bottom: 6px; border: 1px solid #3B82F6;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">E-commerce</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Online stores</div>
+              </div>
+              <div class="fs-theme-option" data-theme="wellness" onclick="applyThemePack('wellness', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #ECFDF5; border-radius: 6px; margin-bottom: 6px; border: 1px solid #10B981;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Wellness</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">Spa/Salon</div>
+              </div>
+              <div class="fs-theme-option" data-theme="tech" onclick="applyThemePack('tech', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
+                <div style="width: 100%; height: 36px; background: #0A0A0A; border-radius: 6px; margin-bottom: 6px; border: 1px solid #00E5FF;"></div>
+                <div style="font-size: 0.7rem; font-weight: 600;">Tech</div>
+                <div style="font-size: 0.55rem; color: var(--cream-dim);">SaaS</div>
+              </div>
+            </div>
           </div>
         </div>
         
-        <!-- Colour -->
-        <div style="margin-bottom: 20px;">
-          <div style="font-weight: 600; margin-bottom: 12px;">🎨 Accent Colour</div>
-          <div class="fs-colours">
-            <div class="fs-colour selected" style="background: #C8A96E;" data-color="#C8A96E"></div>
-            <div class="fs-colour" style="background: #D4AF37;" data-color="#D4AF37"></div>
-            <div class="fs-colour" style="background: #10B981;" data-color="#10B981"></div>
-            <div class="fs-colour" style="background: #3B82F6;" data-color="#3B82F6"></div>
+
+        
+        <!-- SECTION 4: Wording -->
+        <div class="fs-collapsible-section collapsed" style="margin-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <div class="fs-section-header" onclick="toggleSection('wordingContent')" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.2rem;">✏️</span>
+              <span style="font-weight: 600; font-size: 0.9rem;">Wording</span>
+              <span style="font-size: 0.7rem; color: var(--cream-dim);">(Custom text)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="fs-complete-tick" id="wordingTick" style="display: none; color: #10B981;">✓</span>
+              <span class="fs-toggle-icon">▼</span>
+            </div>
+          </div>
+          <div class="fs-section-content" id="wordingContent" style="padding-bottom: 16px;">
+            <div class="fs-group" style="margin-bottom: 12px;">
+              <div class="fs-group-label">Headline</div>
+              <input class="fs-input" id="fsHeadline" type="text" value="How was your experience?" oninput="updateFSPreview();updateFSCharCount()">
+              <div class="fs-char-count"><span id="fsHeadlineCount">21</span>/60</div>
+            </div>
+            <div class="fs-group" style="margin-bottom: 12px;">
+              <div class="fs-group-label">Success message (4-5 stars)</div>
+              <input class="fs-input" id="fsHappyMessage" type="text" value="Thanks for your feedback! Leave us a Google review →" oninput="updateFSPreview()">
+            </div>
+            <div class="fs-group">
+              <div class="fs-group-label">Unhappy message (1-3 stars)</div>
+              <input class="fs-input" id="fsUnhappyMessage" type="text" value="We're sorry to hear that. Please tell us what went wrong." oninput="updateFSPreview()">
+            </div>
           </div>
         </div>
         
-        <!-- Save -->
-        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
-          <span id="fsSaveStatus">✓ All changes saved</span>
-          <button id="fsSaveBtn" style="background: var(--accent); color: #1A1A18; border: none; border-radius: 8px; padding: 7px 16px;">💾 Save</button>
+
+        
+        <!-- Save Bar -->
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <span class="fs-save-status" id="fsSaveStatus">✓ All changes saved</span>
+          <div style="display:flex;gap:8px;">
+            <button class="fs-copy-btn" onclick="copyFSLink()" style="background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; cursor: pointer;">Copy link</button>
+            <button class="fs-save-btn" onclick="saveFSSettings()" style="background: var(--accent); color: #1A1A18; border: none; border-radius: 8px; padding: 7px 16px; cursor: pointer;">💾 Save</button>
+          </div>
         </div>
-      </div>
+        
+        <!-- Funnel link -->
+        <div class="fs-link-row" style="margin-top: 16px; display: flex; align-items: center; gap: 8px; background: var(--surface-2); border-radius: 8px; padding: 8px 12px;">
+          <span class="fs-link-label" style="font-size: 0.7rem;">Your funnel</span>
+          <code class="fs-link-code" id="fsLinkDisplay" style="font-size: 0.72rem; color: var(--accent); word-break: break-all;">Loading...</code>
+        </div>
+        
+      </div><!-- END LEFT COLUMN -->
       
-      <!-- RIGHT: IPHONE PREVIEW - EXACTLY FROM DEMO.HTML -->
-      <div>
+      <!-- ========== RIGHT: PREVIEW ========== -->
+      <div class="fs-preview-wrap">
+        
         <!-- Device toggle -->
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-          <button id="mobileViewBtn" style="background: var(--surface-2); border: none; border-radius: 30px; padding: 8px 20px; cursor: pointer;">📱 Mobile</button>
-          <button id="desktopViewBtn" style="background: transparent; border: none; border-radius: 30px; padding: 8px 20px; cursor: pointer;">💻 Desktop</button>
+        <div class="fs-device-bar" style="display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content;">
+          <button class="fs-dev-btn" data-device="mobile" onclick="setFSDevice('mobile')" style="background: transparent; border: none; border-radius: 7px; padding: 6px 14px; cursor: pointer;">📱 Mobile</button>
+          <button class="fs-dev-btn active" data-device="split" onclick="setFSDevice('split')" style="background: var(--surface-2); border: none; border-radius: 7px; padding: 6px 14px; cursor: pointer;">⬛ Split</button>
+          <button class="fs-dev-btn" data-device="desktop" onclick="setFSDevice('desktop')" style="background: transparent; border: none; border-radius: 7px; padding: 6px 14px; cursor: pointer;">💻 Desktop</button>
         </div>
         
-        <!-- iPhone Mockup - EXACT COPY from demo.html -->
-        <div id="iphoneMockup" class="iphone-mockup">
-          <div class="iphone-screen">
-            <div class="dynamic-island"></div>
-            <div class="funnel-wrapper">
-              <div id="funnelPreviewContainer" style="width: 100%; height: 100%;"></div>
-            </div>
+        <!-- Preview container -->
+        <div class="fs-previews" id="fsPreviewContainer" style="display: flex; gap: 20px; flex-wrap: wrap;">
+          
+          <!-- Mobile preview -->
+         <!-- Mobile preview with iPhone mockup -->
+<div class="fs-mobile" id="fsMobilePreview">
+  <div class="iphone-mockup">
+    <div class="iphone-screen">
+      <div class="dynamic-island"></div>
+      <div class="funnel-wrapper">
+        <div style="width: 100%;">
+          <img id="previewLogoImg" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
+          <div class="fs-preview-biz" id="previewBiz" style="text-align: center; margin-bottom: 20px; font-weight: 600;">Your Business</div>
+          <div class="fs-preview-q" id="previewQuestion" style="text-align: center; margin-bottom: 24px; font-size: 1.4rem; font-weight: 700;">How was your experience?</div>
+          <div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
+            <svg class="preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+            <svg class="preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+            <svg class="preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+            <svg class="preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+            <svg class="preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
           </div>
-        </div>
-        
-        <!-- Desktop Mockup (hidden by default) -->
-        <div id="desktopMockup" class="mac-browser" style="display: none; width: 580px; margin: 0 auto;">
-          <div class="browser-bar">
-            <div class="window-controls"><div class="window-control red"></div><div class="window-control yellow"></div><div class="window-control green"></div></div>
-            <div class="browser-url-bar"><div class="url-icon"></div><div class="url-text">reviewlift.app/r/your-business</div></div>
-          </div>
-          <div class="browser-content">
-            <div id="desktopPreviewContainer" class="desktop-card"></div>
-          </div>
+          <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
         </div>
       </div>
-      
     </div>
   </div>
+</div>
+          
+          <!-- Desktop preview -->
+          <!-- Desktop preview -->
+<!-- Desktop preview -->
+<!-- Desktop preview with Mac browser mockup -->
+<div class="fs-desktop" id="fsDesktopPreview" style="display: none;">
+  <div class="mac-browser">
+    <div class="browser-bar">
+      <div class="window-controls">
+        <div class="window-control red"></div>
+        <div class="window-control yellow"></div>
+        <div class="window-control green"></div>
+      </div>
+      <div class="browser-url-bar">
+        <div class="url-icon"></div>
+        <div class="url-text">reviewlift.app/r/your-business</div>
+      </div>
+      <div class="browser-actions">
+        <div class="browser-action"></div>
+        <div class="browser-action"></div>
+      </div>
+    </div>
+    <div class="browser-content">
+      <div class="desktop-card">
+        <img id="previewLogoDesktop" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
+        <div class="fs-preview-biz" id="previewBizDesktop" style="margin-bottom: 20px; font-weight: 600;">Your Business</div>
+        <div class="fs-preview-q" id="previewQuestionDesktop" style="margin-bottom: 24px; font-size: 1.3rem; font-weight: 700;">How was your experience?</div>
+        <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
+          <svg class="preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+          <svg class="preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+          <svg class="preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+          <svg class="preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+          <svg class="preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        </div>
+        
+      </div><!-- END RIGHT COLUMN -->
+      
+    </div><!-- END TWO-COLUMN LAYOUT -->
+    
+  </div><!-- END FS-WRAP -->
 </div><!-- END FUNNEL STUDIO SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
@@ -4410,148 +4445,5 @@ function previewCopyAndPost() {
 setTimeout(() => {
   updatePreviewWithInteractive();
 }, 1000);
-
-// Funnel Studio Preview - Renders the exact demo.html flow
-let currentAccentColor = '#C8A96E';
-
-function getBusinessName() {
-  const bizEl = document.getElementById('sidebarBizName');
-  return bizEl ? bizEl.innerText : 'Your Business';
-}
-
-function renderFunnelPreview() {
-  const businessName = getBusinessName();
-  const headline = document.getElementById('fsHeadline')?.value || 'How was your experience?';
-  const happyMessage = document.getElementById('fsHappyMessage')?.value || 'Thanks for your feedback! Leave us a Google review →';
-  const unhappyMessage = document.getElementById('fsUnhappyMessage')?.value || "We're sorry to hear that. Please tell us what went wrong.";
-  const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
-  
-  const html = `
-    <div class="funnel-card">
-      ${logoUrl ? `<img src="${logoUrl}" style="max-height: 48px; margin: 0 auto 16px; display: block;">` : ''}
-      <h2 id="mainHeadline" style="font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 16px;">${headline}</h2>
-      
-      <div id="mainQuestion">
-        <div class="star-rating" style="display: flex; justify-content: center; gap: 10px; margin: 16px 0;">
-          ${[1,2,3,4,5].map(i => `
-            <svg data-rating="${i}" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="${currentAccentColor}" stroke-width="1.5" style="cursor: pointer;" onclick="handleStarClick(${i})">
-              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="${currentAccentColor}"/>
-            </svg>
-          `).join('')}
-        </div>
-        <div style="text-align: center; font-size: 0.55rem; color: rgba(234,231,220,0.3);">Powered by <strong>ReviewLift</strong></div>
-      </div>
-      
-      <div id="reviewSection" style="display: none;">
-        <div style="font-size: 1.8rem; text-align: center;">⭐</div>
-        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center;">Thanks for rating us 5 stars!</h2>
-        <textarea id="suggestionText" class="premium-textarea" rows="3" style="width:100%; padding:12px; background:var(--surface-2); border-radius:12px; min-height:90px; margin-bottom:12px;">I highly recommend ${businessName}! Great service, friendly team, and an overall excellent experience. 5 stars!</textarea>
-        <button class="btn-copy" style="width:100%; padding:14px; background:${currentAccentColor}; border-radius:40px; font-weight:700; cursor:pointer;" onclick="handleCopyClick()">Copy &amp; post to Google →</button>
-        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border); text-align:center;">
-          <button class="btn-voice" style="width:56px; height:56px; border-radius:50%; border:2px solid ${currentAccentColor}; cursor:pointer; margin:0 auto;" onclick="handleVoiceClick()">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${currentAccentColor}"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-          </button>
-          <p style="font-size:0.6rem; margin-top:8px;">🎙️ Voice review available in live version</p>
-        </div>
-        <button onclick="goBackToQuestion()" style="width:100%; margin-top:12px; padding:12px; background:transparent; border:1px solid var(--border); border-radius:40px; cursor:pointer;">← Back</button>
-      </div>
-      
-      <div id="feedbackBox" style="display: none;">
-        <div style="font-size: 1.8rem; text-align: center;">😔</div>
-        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center;">We're sorry to hear that</h2>
-        <p style="font-size:0.85rem; text-align:center; margin-bottom:16px;">${unhappyMessage}</p>
-        <textarea id="message" class="premium-textarea" rows="3" placeholder="What could we have done better?" style="width:100%; padding:12px; background:var(--surface-2); border-radius:12px; min-height:90px;"></textarea>
-        <button class="btn-send" style="width:100%; padding:12px; background:var(--surface-2); border-radius:40px; cursor:pointer;" onclick="handleSendClick()">Send Feedback</button>
-        <button onclick="goBackToQuestion()" style="width:100%; margin-top:12px; padding:12px; background:transparent; border:1px solid var(--border); border-radius:40px; cursor:pointer;">← Back</button>
-      </div>
-    </div>
-  `;
-  
-  const container = document.getElementById('funnelPreviewContainer');
-  if (container) container.innerHTML = html;
-  
-  const desktopContainer = document.getElementById('desktopPreviewContainer');
-  if (desktopContainer) desktopContainer.innerHTML = html;
-}
-
-function handleStarClick(rating) {
-  document.getElementById('mainQuestion').style.display = 'none';
-  if (rating >= 4) {
-    document.getElementById('reviewSection').style.display = 'block';
-    document.getElementById('feedbackBox').style.display = 'none';
-  } else {
-    document.getElementById('reviewSection').style.display = 'none';
-    document.getElementById('feedbackBox').style.display = 'block';
-  }
-}
-
-function goBackToQuestion() {
-  document.getElementById('mainQuestion').style.display = 'block';
-  document.getElementById('reviewSection').style.display = 'none';
-  document.getElementById('feedbackBox').style.display = 'none';
-}
-
-function handleCopyClick() { showDemoToast('✨ Copy & post to Google (demo preview)'); }
-function handleVoiceClick() { showDemoToast('🎙️ Voice recording (demo preview)'); }
-function handleSendClick() { showDemoToast('📨 Feedback sent (demo preview)'); setTimeout(() => goBackToQuestion(), 1000); }
-
-function showDemoToast(msg) {
-  const toast = document.getElementById('toast');
-  if (toast) { toast.textContent = msg; toast.style.display = 'block'; setTimeout(() => { toast.style.display = 'none'; }, 2000); }
-}
-
-// Logo upload
-document.getElementById('fsLogoUpload')?.addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    document.getElementById('fsLogoUrl').value = ev.target.result;
-    renderFunnelPreview();
-  };
-  reader.readAsDataURL(file);
-});
-
-// Colour selection
-document.querySelectorAll('.fs-colour').forEach(el => {
-  el.addEventListener('click', function() {
-    currentAccentColor = this.dataset.color;
-    document.querySelectorAll('.fs-colour').forEach(c => c.classList.remove('selected'));
-    this.classList.add('selected');
-    renderFunnelPreview();
-    document.getElementById('fsSaveStatus').innerHTML = 'Unsaved changes';
-  });
-});
-
-// Live preview on input
-['fsHeadline', 'fsHappyMessage', 'fsUnhappyMessage'].forEach(id => {
-  document.getElementById(id)?.addEventListener('input', () => {
-    renderFunnelPreview();
-    document.getElementById('fsSaveStatus').innerHTML = 'Unsaved changes';
-  });
-});
-
-// Device toggle
-document.getElementById('mobileViewBtn')?.addEventListener('click', () => {
-  document.getElementById('iphoneMockup').style.display = 'block';
-  document.getElementById('desktopMockup').style.display = 'none';
-  document.getElementById('mobileViewBtn').style.background = 'var(--surface-2)';
-  document.getElementById('desktopViewBtn').style.background = 'transparent';
-});
-document.getElementById('desktopViewBtn')?.addEventListener('click', () => {
-  document.getElementById('iphoneMockup').style.display = 'none';
-  document.getElementById('desktopMockup').style.display = 'block';
-  document.getElementById('desktopViewBtn').style.background = 'var(--surface-2)';
-  document.getElementById('mobileViewBtn').style.background = 'transparent';
-});
-
-// Save
-document.getElementById('fsSaveBtn')?.addEventListener('click', () => {
-  document.getElementById('fsSaveStatus').innerHTML = '✓ Saved';
-  showDemoToast('Funnel settings saved!');
-});
-
-// Initial render
-setTimeout(() => renderFunnelPreview(), 500);
 </script>
 </body></html>
