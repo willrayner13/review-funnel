@@ -1999,28 +1999,29 @@
           </div>
           
           <!-- Desktop preview -->
-          <div class="fs-desktop" id="fsDesktopPreview" style="display: none;">
-            <div class="fs-browser" style="width: 100%; max-width: 500px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
-              <div style="background: #2A2A28; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
-                <div style="display: flex; gap: 5px;"><span style="width: 10px; height: 10px; background: #FF5F56; border-radius: 50%;"></span><span style="width: 10px; height: 10px; background: #FFBD2E; border-radius: 50%;"></span><span style="width: 10px; height: 10px; background: #27C93F; border-radius: 50%;"></span></div>
-                <div style="flex: 1; background: #1A1A18; border-radius: 5px; padding: 4px 10px; font-size: 0.68rem;">reviewlift.app/r/your-business</div>
-              </div>
-              <div style="background: #1A1A18; padding: 32px 24px;">
-                <div style="background: #242422; border-radius: 16px; padding: 32px; text-align: center;">
-                  <img id="previewLogoDesktop" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
-                  <div class="fs-preview-biz" id="previewBizDesktop" style="margin-bottom: 20px; font-weight: 600;">Your Business</div>
-                  <div class="fs-preview-q" id="previewQuestionDesktop" style="margin-bottom: 24px; font-size: 1.3rem; font-weight: 700;">How was your experience?</div>
-                  <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
-                    <svg class="preview-star" data-rating="1" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-                    <svg class="preview-star" data-rating="2" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-                    <svg class="preview-star" data-rating="3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-                    <svg class="preview-star" data-rating="4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-                    <svg class="preview-star" data-rating="5" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- Desktop preview -->
+<div class="fs-desktop" id="fsDesktopPreview" style="display: none;">
+  <div class="fs-browser" style="width: 100%; max-width: 500px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
+    <div style="background: #2A2A28; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+      <div style="display: flex; gap: 5px;">
+        <span style="width: 10px; height: 10px; background: #FF5F56; border-radius: 50%;"></span>
+        <span style="width: 10px; height: 10px; background: #FFBD2E; border-radius: 50%;"></span>
+        <span style="width: 10px; height: 10px; background: #27C93F; border-radius: 50%;"></span>
+      </div>
+      <div style="flex: 1; background: #1A1A18; border-radius: 5px; padding: 4px 10px; font-size: 0.68rem;">reviewlift.app/r/your-business</div>
+    </div>
+    <div class="fs-browser-body" style="background: #1A1A18; padding: 32px 24px;">
+      <div class="fs-desktop-card" style="background: #242422; border-radius: 16px; padding: 32px; text-align: center;">
+        <img id="previewLogoDesktop" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
+        <div class="fs-preview-biz" id="previewBizDesktop" style="margin-bottom: 20px; font-weight: 600;">Your Business</div>
+        <div class="fs-preview-q" id="previewQuestionDesktop" style="margin-bottom: 24px; font-size: 1.3rem; font-weight: 700;">How was your experience?</div>
+        <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
+          <!-- stars here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
           
         </div>
         
@@ -3798,6 +3799,7 @@ function toggleSection(sectionId) {
 }
 
 // Apply theme pack
+// Apply theme pack - FIXED for desktop background
 function applyThemePack(themeId, element) {
   const theme = themePackDefinitions[themeId];
   if (!theme) return;
@@ -3810,7 +3812,7 @@ function applyThemePack(themeId, element) {
   element.style.border = '2px solid var(--accent)';
   element.classList.add('selected');
   
-  // Apply theme colours to existing colour pickers (if they exist)
+  // Apply theme colours to colour pickers
   const primaryPicker = document.getElementById('fsPrimaryColor');
   const bgPicker = document.getElementById('fsBgColor');
   const textPicker = document.getElementById('fsTextColor');
@@ -3834,43 +3836,58 @@ function applyThemePack(themeId, element) {
     window.setShadowDepth(theme.shadow);
   }
   
-  // Apply card background
-  document.querySelectorAll('.fs-desktop-card, .iphone-mockup > div').forEach(el => {
-    if (el) el.style.background = theme.cardBg;
-  });
+  // ========== FIX: Desktop preview backgrounds ==========
+  // Target the desktop browser body (the main content area)
+  const desktopBrowserBody = document.querySelector('#fsDesktopPreview .fs-browser-body');
+  if (desktopBrowserBody) {
+    desktopBrowserBody.style.background = theme.background;
+  }
   
-  // Update stars and buttons
-  const primaryColor = theme.primary;
-  document.querySelectorAll('.fs-btn-happy, .fs-preview-btn.fs-btn-happy').forEach(btn => {
-    if (btn) btn.style.background = primaryColor;
-  });
+  // Target the desktop card inside the browser
+  const desktopCard = document.querySelector('#fsDesktopPreview .fs-desktop-card');
+  if (desktopCard) {
+    desktopCard.style.background = theme.cardBg || theme.background;
+  }
   
-  document.querySelectorAll('.preview-star path').forEach(star => {
-    star.setAttribute('stroke', primaryColor);
-  });
+  // Target the entire desktop browser container
+  const desktopBrowser = document.querySelector('#fsDesktopPreview .fs-browser');
+  if (desktopBrowser) {
+    desktopBrowser.style.background = theme.background;
+  }
   
-  // ========== FIX: Update ALL background elements for both mobile AND desktop ==========
-  // Mobile preview background
-  document.querySelectorAll('.fs-phone, .iphone-mockup > div, .iphone-mockup div[style*="background"]').forEach(el => {
-    if (el && !el.classList.contains('fs-desktop-card')) {
+  // Target any nested divs in the desktop preview
+  document.querySelectorAll('#fsDesktopPreview .fs-browser-body, #fsDesktopPreview .fs-desktop-card, #fsDesktopPreview .fs-browser, #fsDesktopPreview [style*="background"]').forEach(el => {
+    if (el && !el.classList.contains('fs-btn-happy')) {
       el.style.background = theme.background;
     }
   });
   
-  // Desktop preview background - specifically target the browser body and card container
-  const desktopBrowserBody = document.querySelector('#fsDesktopPreview .fs-browser-body');
-  const desktopCard = document.querySelector('#fsDesktopPreview .fs-desktop-card');
+  // ========== Mobile preview backgrounds ==========
+  // Target mobile phone mock
+  const mobileContainer = document.querySelector('#fsMobilePreview .iphone-mockup > div');
+  if (mobileContainer) {
+    mobileContainer.style.background = theme.background;
+  }
   
-  if (desktopBrowserBody) desktopBrowserBody.style.background = theme.background;
-  if (desktopCard) desktopCard.style.background = theme.cardBg || theme.background;
-  
-  // Also target the desktop browser's inner content area
-  document.querySelectorAll('.fs-browser-body, .fs-desktop-card, .fs-browser').forEach(el => {
-    if (el) el.style.background = theme.background;
+  // Target any mobile background elements
+  document.querySelectorAll('#fsMobilePreview [style*="background"], #fsMobilePreview .iphone-mockup div').forEach(el => {
+    if (el && !el.classList.contains('fs-preview-btn')) {
+      el.style.background = theme.background;
+    }
   });
   
-  // Update text colour for both previews
-  document.querySelectorAll('.fs-preview-q, .fs-preview-biz, .fs-preview-footer, #previewBiz, #previewBizDesktop, #previewQuestion, #previewQuestionDesktop').forEach(el => {
+  // Update stars colour
+  document.querySelectorAll('.preview-star path').forEach(star => {
+    star.setAttribute('stroke', theme.primary);
+  });
+  
+  // Update button colours
+  document.querySelectorAll('.fs-btn-happy, .fs-preview-btn.fs-btn-happy').forEach(btn => {
+    if (btn) btn.style.background = theme.primary;
+  });
+  
+  // Update text colours for both previews
+  document.querySelectorAll('#previewBiz, #previewBizDesktop, #previewQuestion, #previewQuestionDesktop, .fs-preview-q, .fs-preview-biz, .fs-preview-footer').forEach(el => {
     if (el) el.style.color = theme.text;
   });
   
@@ -3882,6 +3899,5 @@ function applyThemePack(themeId, element) {
     showToast(`"${themeId.replace('-', ' ')}" theme applied`, 'success');
   }
 }
-
 </script>
 </body></html>
