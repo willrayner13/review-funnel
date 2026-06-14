@@ -3858,6 +3858,7 @@ const themePackDefinitions = {
 };
 
 // Apply theme pack
+// Apply theme pack - FIXED for desktop background with new HTML structure
 function applyThemePack(themeId, element) {
   const theme = themePackDefinitions[themeId];
   if (!theme) return;
@@ -3870,7 +3871,7 @@ function applyThemePack(themeId, element) {
   element.style.border = '2px solid var(--accent)';
   element.classList.add('selected');
   
-  // Apply theme colours to existing colour pickers (if they exist)
+  // Apply theme colours to colour pickers
   const primaryPicker = document.getElementById('fsPrimaryColor');
   const bgPicker = document.getElementById('fsBgColor');
   const textPicker = document.getElementById('fsTextColor');
@@ -3880,7 +3881,7 @@ function applyThemePack(themeId, element) {
   if (textPicker) textPicker.value = theme.text;
   
   // Apply border radius
-  document.querySelectorAll('.fs-phone, .fs-desktop-card, .fs-browser').forEach(el => {
+  document.querySelectorAll('.fs-phone, .fs-desktop-card, .fs-browser, .mac-browser').forEach(el => {
     if (el) el.style.borderRadius = theme.borderRadius;
   });
   
@@ -3894,29 +3895,53 @@ function applyThemePack(themeId, element) {
     window.setShadowDepth(theme.shadow);
   }
   
-  // Apply card background
-  document.querySelectorAll('.fs-desktop-card, .iphone-mockup > div').forEach(el => {
-    if (el) el.style.background = theme.cardBg;
-  });
+  // ========== FIX: Desktop preview backgrounds with NEW HTML structure ==========
+  // Target the desktop browser content area (where the card lives)
+  const desktopBrowserContent = document.querySelector('#fsDesktopPreview .browser-content');
+  if (desktopBrowserContent) {
+    desktopBrowserContent.style.background = theme.background;
+  }
   
-  // Update stars and buttons
-  const primaryColor = theme.primary;
-  document.querySelectorAll('.fs-btn-happy, .fs-preview-btn.fs-btn-happy').forEach(btn => {
-    if (btn) btn.style.background = primaryColor;
-  });
+  // Target the desktop card inside the browser
+  const desktopCard = document.querySelector('#fsDesktopPreview .desktop-card');
+  if (desktopCard) {
+    desktopCard.style.background = theme.cardBg || theme.background;
+  }
   
+  // Target the mac-browser container
+  const macBrowser = document.querySelector('#fsDesktopPreview .mac-browser');
+  if (macBrowser) {
+    macBrowser.style.background = theme.background;
+  }
+  
+  // Target the browser bar (keep it dark, don't change)
+  // Don't change .browser-bar background - keep it #2A2A28
+  
+  // ========== Mobile preview backgrounds ==========
+  // Target mobile phone screen
+  const iphoneScreen = document.querySelector('#fsMobilePreview .iphone-screen');
+  if (iphoneScreen) {
+    iphoneScreen.style.background = theme.background;
+  }
+  
+  // Target the funnel wrapper
+  const funnelWrapper = document.querySelector('#fsMobilePreview .funnel-wrapper');
+  if (funnelWrapper) {
+    funnelWrapper.style.background = theme.background;
+  }
+  
+  // Update stars colour
   document.querySelectorAll('.preview-star path').forEach(star => {
-    star.setAttribute('stroke', primaryColor);
+    star.setAttribute('stroke', theme.primary);
   });
   
-  // Update background and text
-  document.querySelectorAll('.fs-phone, .fs-browser-body, .iphone-mockup > div').forEach(el => {
-    if (el && !el.classList.contains('fs-desktop-card')) {
-      el.style.background = theme.background;
-    }
+  // Update button colours
+  document.querySelectorAll('.fs-btn-happy, .fs-preview-btn.fs-btn-happy').forEach(btn => {
+    if (btn) btn.style.background = theme.primary;
   });
   
-  document.querySelectorAll('.fs-preview-q, .fs-preview-biz, .fs-preview-footer').forEach(el => {
+  // Update text colours for both previews
+  document.querySelectorAll('#previewBiz, #previewBizDesktop, #previewQuestion, #previewQuestionDesktop, .fs-preview-q, .fs-preview-biz, .fs-preview-footer').forEach(el => {
     if (el) el.style.color = theme.text;
   });
   
@@ -3927,16 +3952,6 @@ function applyThemePack(themeId, element) {
   if (typeof showToast === 'function') {
     showToast(`"${themeId.replace('-', ' ')}" theme applied`, 'success');
   }
-
-  console.log(
-  'Desktop body:',
-  document.querySelector('#fsDesktopPreview .fs-browser-body')
-);
-
-console.log(
-  'Desktop card:',
-  document.querySelector('#fsDesktopPreview .fs-desktop-card')
-);
 }
 
 // Check section completion and show ticks
@@ -3990,105 +4005,7 @@ function toggleSection(sectionId) {
 
 // Apply theme pack
 // Apply theme pack - FIXED for desktop background
-function applyThemePack(themeId, element) {
-  const theme = themePackDefinitions[themeId];
-  if (!theme) return;
-  
-  // Update UI - remove selected class from all theme options
-  document.querySelectorAll('.fs-theme-option').forEach(opt => {
-    opt.style.border = '1px solid var(--border)';
-    opt.classList.remove('selected');
-  });
-  element.style.border = '2px solid var(--accent)';
-  element.classList.add('selected');
-  
-  // Apply theme colours to colour pickers
-  const primaryPicker = document.getElementById('fsPrimaryColor');
-  const bgPicker = document.getElementById('fsBgColor');
-  const textPicker = document.getElementById('fsTextColor');
-  
-  if (primaryPicker) primaryPicker.value = theme.primary;
-  if (bgPicker) bgPicker.value = theme.background;
-  if (textPicker) textPicker.value = theme.text;
-  
-  // Apply border radius
-  document.querySelectorAll('.fs-phone, .fs-desktop-card, .fs-browser').forEach(el => {
-    if (el) el.style.borderRadius = theme.borderRadius;
-  });
-  
-  // Apply button radius
-  document.querySelectorAll('.fs-preview-btn').forEach(btn => {
-    if (btn) btn.style.borderRadius = theme.buttonRadius;
-  });
-  
-  // Apply shadow
-  if (window.setShadowDepth) {
-    window.setShadowDepth(theme.shadow);
-  }
-  
-  // ========== FIX: Desktop preview backgrounds ==========
-  // Target the desktop browser body (the main content area)
-  const desktopBrowserBody = document.querySelector('#fsDesktopPreview .fs-browser-body');
-  if (desktopBrowserBody) {
-    desktopBrowserBody.style.background = theme.background;
-  }
-  
-  // Target the desktop card inside the browser
-  const desktopCard = document.querySelector('#fsDesktopPreview .fs-desktop-card');
-  if (desktopCard) {
-    desktopCard.style.background = theme.cardBg || theme.background;
-  }
-  
-  // Target the entire desktop browser container
-  const desktopBrowser = document.querySelector('#fsDesktopPreview .fs-browser');
-  if (desktopBrowser) {
-    desktopBrowser.style.background = theme.background;
-  }
-  
-  // Target any nested divs in the desktop preview
-  document.querySelectorAll('#fsDesktopPreview .fs-browser-body, #fsDesktopPreview .fs-desktop-card, #fsDesktopPreview .fs-browser, #fsDesktopPreview [style*="background"]').forEach(el => {
-    if (el && !el.classList.contains('fs-btn-happy')) {
-      el.style.background = theme.background;
-    }
-  });
-  
-  // ========== Mobile preview backgrounds ==========
-  // Target mobile phone mock
-  const mobileContainer = document.querySelector('#fsMobilePreview .iphone-mockup > div');
-  if (mobileContainer) {
-    mobileContainer.style.background = theme.background;
-  }
-  
-  // Target any mobile background elements
-  document.querySelectorAll('#fsMobilePreview [style*="background"], #fsMobilePreview .iphone-mockup div').forEach(el => {
-    if (el && !el.classList.contains('fs-preview-btn')) {
-      el.style.background = theme.background;
-    }
-  });
-  
-  // Update stars colour
-  document.querySelectorAll('.preview-star path').forEach(star => {
-    star.setAttribute('stroke', theme.primary);
-  });
-  
-  // Update button colours
-  document.querySelectorAll('.fs-btn-happy, .fs-preview-btn.fs-btn-happy').forEach(btn => {
-    if (btn) btn.style.background = theme.primary;
-  });
-  
-  // Update text colours for both previews
-  document.querySelectorAll('#previewBiz, #previewBizDesktop, #previewQuestion, #previewQuestionDesktop, .fs-preview-q, .fs-preview-biz, .fs-preview-footer').forEach(el => {
-    if (el) el.style.color = theme.text;
-  });
-  
-  // Mark theme section as complete
-  const themeTick = document.getElementById('themeTick');
-  if (themeTick) themeTick.style.display = 'inline-block';
-  
-  if (typeof showToast === 'function') {
-    showToast(`"${themeId.replace('-', ' ')}" theme applied`, 'success');
-  }
-}
+
 
 document.querySelectorAll('.preview-star path').forEach(star => {
   star.setAttribute('stroke', theme.primary);
