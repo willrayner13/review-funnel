@@ -686,6 +686,7 @@ searchBtn.addEventListener('click', async () => {
 });
 
 // Unlock button
+// Unlock button
 document.getElementById('unlockBtn').addEventListener('click', async () => {
   const email = document.getElementById('unlockEmail').value.trim();
   
@@ -712,49 +713,16 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
     const data = await res.json();
     
     if (data.success) {
-      const breakdown = calculateBreakdown(data.business.rating, data.business.review_count);
-      const band = getRatingBand(data.business.rating);
-      
-      document.getElementById('finalScore').innerText = breakdown.totalScore;
-      document.getElementById('finalScoreFill').style.width = `${breakdown.totalScore}%`;
-      
-      document.getElementById('finalRatingFill').style.width = `${(breakdown.ratingScore / 50) * 100}%`;
-      document.getElementById('finalCountFill').style.width = `${(breakdown.countScore / 30) * 100}%`;
-      document.getElementById('finalVelocityFill').style.width = `${(breakdown.velocityScore / 20) * 100}%`;
-      document.getElementById('finalRatingScore').innerHTML = `${breakdown.ratingScore}/50`;
-      document.getElementById('finalCountScore').innerHTML = `${breakdown.countScore}/30`;
-      document.getElementById('finalVelocityScore').innerHTML = `${breakdown.velocityScore}/20`;
-      
-      const protectionHtml = getProtectionGap(data.business.rating, data.business.review_count);
-      const protectionDiv = document.getElementById('protectionGap');
-      if (protectionHtml) {
-        protectionDiv.innerHTML = protectionHtml;
-        protectionDiv.classList.remove('hidden');
-      } else {
-        protectionDiv.classList.add('hidden');
-      }
-      
-      const tips = getImprovementTips(data.business.rating, data.business.review_count, breakdown.velocity, band);
-      const tipsHtml = tips.map(tip => `
-        <div class="improvement-tip">
-          <strong>${tip.icon} ${tip.text}</strong>
-          <p style="margin-top: 8px;">💡 ${tip.action}</p>
-        </div>
-      `).join('');
-      document.getElementById('improvementTips').innerHTML = tipsHtml;
-      
-      const ctaButton = document.getElementById('ctaButton');
-      ctaButton.innerHTML = getCTAText(data.business.rating, breakdown.totalScore);
-      
-      document.getElementById('stepScoreRevealed').classList.add('hidden');
-      document.getElementById('stepFullReport').classList.remove('hidden');
+      // Redirect to the beautiful report page
+      window.location.href = `/report.html?place_id=${selectedPlaceId}&name=${encodeURIComponent(selectedBusinessName)}&email=${encodeURIComponent(email)}`;
     } else {
       alert(data.error || 'Could not calculate score');
+      btn.disabled = false;
+      btn.innerHTML = 'Unlock my full report →';
     }
   } catch (err) {
     console.error('Unlock error:', err);
     alert('Something went wrong. Please try again.');
-  } finally {
     btn.disabled = false;
     btn.innerHTML = 'Unlock my full report →';
   }

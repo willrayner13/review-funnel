@@ -3,476 +3,643 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Your Review Score Report | ReviewLift</title>
-  <meta name="description" content="Detailed Google review score report with personalised improvement tips.">
+  <title>Your Google Review Report | ReviewLift</title>
+  <meta name="description" content="Your personalised Google review score report with improvement tips.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/landing.css">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/global.css">
   <style>
-    .report-container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 40px 24px;
+    body { overflow-y: auto; height: auto; }
+    .app { display: block; }
+
+    .page-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Nav */
+    .sc-nav {
+      padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(26,26,24,0.92);
+      backdrop-filter: blur(16px);
+    }
+    .sc-logo {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+      color: var(--cream); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sc-logo-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px rgba(200,169,110,0.5);
+    }
+    .nav-back {
+      font-size: 0.8rem; color: var(--cream-dim);
+      text-decoration: none; display: flex; align-items: center; gap: 6px;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--cream); }
+
+    /* Page body */
+    .report-wrap {
+      flex: 1; display: flex;
+      align-items: flex-start; justify-content: center;
+      padding: 48px 24px 64px;
+    }
+    .report-col { width: 100%; max-width: 620px; }
+
+    /* State cards */
+    .state-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 48px 36px;
+      text-align: center; margin-bottom: 20px;
+    }
+    @media (max-width: 480px) { .state-card { padding: 32px 20px; } }
+
+    /* Report header */
+    .report-header {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px 24px 0 0;
+      padding: 32px 36px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    @media (max-width: 480px) { .report-header { padding: 24px 20px 20px; } }
+
+    .report-eyebrow {
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 6px;
+    }
+    .report-biz-name {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      color: var(--cream); line-height: 1.2; margin-bottom: 4px;
+    }
+    .report-date {
+      font-size: 0.75rem; color: var(--cream-dim);
     }
 
-    .report-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 36px;
-      margin-bottom: 24px;
-    }
-
-    .score-number-large {
-      font-family: 'Syne', sans-serif;
-      font-size: 5rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-      text-align: center;
-    }
-
-    .score-label {
-      text-align: center;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--cream-dim);
-      margin-top: 8px;
-    }
-
-    .progress-bar-large {
-      height: 12px;
-      background: var(--surface-2);
-      border-radius: 6px;
-      margin: 24px 0;
-      overflow: hidden;
-    }
-
-    .progress-fill-large {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), #E8C98A);
-      border-radius: 6px;
-      width: 0%;
-      transition: width 1s ease;
-    }
-
-    .breakdown-grid {
+    /* Score section */
+    .score-section {
+      background: var(--surface); border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 32px 36px;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin: 32px 0;
+      grid-template-columns: auto 1fr;
+      gap: 32px; align-items: center;
+    }
+    @media (max-width: 540px) {
+      .score-section { grid-template-columns: 1fr; gap: 20px; padding: 24px 20px; }
     }
 
-    .breakdown-stat {
-      background: var(--surface-2);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
+    /* Dial */
+    .dial-svg-wrap { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+    @media (max-width: 540px) { .dial-svg-wrap { width: 140px; height: 140px; margin: 0 auto; } }
+    .dial-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .dial-track { fill: none; stroke: var(--surface-2); stroke-width: 10; stroke-linecap: round; }
+    .dial-fill {
+      fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round;
+      stroke-dasharray: 502; stroke-dashoffset: 502;
+      transition: stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease;
+    }
+    .dial-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .dial-score {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 2.6rem; line-height: 1;
+      color: var(--cream); letter-spacing: -0.03em;
+    }
+    @media (max-width: 540px) { .dial-score { font-size: 2.2rem; } }
+    .dial-of {
+      font-size: 0.65rem; font-weight: 500;
+      color: var(--cream-dim); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-top: 3px;
     }
 
-    .breakdown-stat-value {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--accent);
-    }
-
-    .breakdown-stat-label {
-      font-size: 0.7rem;
-      color: var(--cream-dim);
-      margin-top: 8px;
-    }
-
-    .improvement-item {
-      background: var(--surface-2);
-      border-radius: 16px;
-      padding: 20px;
+    /* Score right-side */
+    .score-right {}
+    .score-band-pill {
+      display: inline-block; border-radius: 40px;
+      padding: 5px 14px; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
       margin-bottom: 16px;
+    }
+    .pill-excellent { color: #6A9E7F; background: rgba(106,158,127,0.12); }
+    .pill-good      { color: var(--accent); background: rgba(200,169,110,0.12); }
+    .pill-warning   { color: #D4A74A; background: rgba(212,167,74,0.12); }
+    .pill-crisis    { color: #C0675A; background: rgba(192,103,90,0.12); }
+
+    /* Breakdown bars */
+    .bd-rows { display: flex; flex-direction: column; gap: 10px; }
+    .bd-row {
+      display: grid; grid-template-columns: 130px 1fr 52px;
+      align-items: center; gap: 10px;
+    }
+    @media (max-width: 380px) { .bd-row { grid-template-columns: 100px 1fr 44px; gap: 6px; } }
+    .bd-label { font-size: 0.78rem; color: var(--cream-dim); }
+    .bd-bar-track { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+    .bd-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); width: 0%; transition: width 0.9s cubic-bezier(0.4,0,0.2,1); }
+    .bd-value { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem; color: var(--cream); text-align: right; }
+
+    /* Raw stats row */
+    .raw-stats {
+      background: var(--surface); border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 0 36px 24px;
+    }
+    @media (max-width: 480px) { .raw-stats { padding: 0 20px 20px; } }
+    .raw-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 400px) { .raw-grid { grid-template-columns: 1fr; } }
+    .raw-item {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px; text-align: center;
+    }
+    .raw-val {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.3rem; color: var(--accent); margin-bottom: 3px;
+    }
+    .raw-label { font-size: 0.68rem; color: var(--cream-dim); line-height: 1.3; }
+
+    /* Section blocks */
+    .report-section {
+      background: var(--surface); border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 28px 36px;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 480px) { .report-section { padding: 22px 20px; } }
+
+    .sec-title {
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--cream-dim); margin-bottom: 16px;
+    }
+
+    /* Warning banner */
+    .warning-banner {
+      border-radius: 14px; padding: 16px 18px;
+      font-size: 0.85rem; line-height: 1.55;
+    }
+    .warning-banner strong { display: block; margin-bottom: 6px; font-size: 0.9rem; }
+    .wb-amber { background: rgba(212,167,74,0.08); border: 1px solid rgba(212,167,74,0.25); color: rgba(234,231,220,0.8); }
+    .wb-amber strong { color: #D4A74A; }
+    .wb-red   { background: rgba(192,103,90,0.08); border: 1px solid rgba(192,103,90,0.25); color: rgba(234,231,220,0.8); }
+    .wb-red strong   { color: #C0675A; }
+    .wb-crisis { background: rgba(192,103,90,0.06); border: 1px solid rgba(192,103,90,0.2); color: rgba(234,231,220,0.8); text-align: center; padding: 20px; }
+    .wb-crisis strong { color: var(--cream); font-size: 1rem; }
+
+    /* Protection section */
+    .protection-box {
+      background: rgba(192,103,90,0.05);
+      border: 1px solid rgba(192,103,90,0.18);
+      border-radius: 16px; padding: 22px;
+    }
+    .protection-box-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1rem; color: var(--cream);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+    }
+    .protection-box-sub {
+      font-size: 0.82rem; color: var(--cream-dim); line-height: 1.55; margin-bottom: 16px;
+    }
+    .funnel-wrap { display: flex; justify-content: center; margin: 4px 0 16px; }
+    .protection-highlight {
+      background: rgba(192,103,90,0.1); border-radius: 10px;
+      padding: 12px 14px; font-size: 0.82rem; color: var(--cream-dim); line-height: 1.5;
+    }
+    .protection-highlight strong { color: #E0867A; }
+
+    /* Improvement items */
+    .imp-item {
+      background: var(--surface-2); border-radius: 14px;
+      padding: 18px; margin-bottom: 10px;
       border-left: 3px solid var(--accent);
     }
+    .imp-item.crisis-border { border-left-color: #C0675A; }
+    .imp-head {
+      font-weight: 600; font-size: 0.88rem; color: var(--cream);
+      margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px;
+    }
+    .imp-points {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-left: auto; flex-shrink: 0;
+      font-size: 0.72rem; font-weight: 600; color: var(--accent);
+      background: rgba(200,169,110,0.1); padding: 2px 8px; border-radius: 40px;
+    }
+    .imp-action {
+      font-size: 0.8rem; color: var(--cream-dim); line-height: 1.55;
+      padding: 10px 12px; background: rgba(200,169,110,0.06);
+      border-radius: 8px; border-left: 2px solid rgba(200,169,110,0.3);
+    }
 
-    .email-capture {
-      background: linear-gradient(135deg, rgba(200,169,110,0.08) 0%, var(--surface) 100%);
-      border: 1px solid var(--accent-dim);
-      border-radius: 20px;
-      padding: 32px;
+    /* CTA */
+    .cta-block {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 0 0 24px 24px;
+      padding: 32px 36px;
       text-align: center;
-      margin-top: 32px;
+      border-top: 1px solid var(--border);
     }
-
-    .email-input-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 20px;
+    @media (max-width: 480px) { .cta-block { padding: 24px 20px; } }
+    .cta-eyebrow {
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 12px;
     }
-
-    .email-input {
-      flex: 2;
-      padding: 14px 16px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--cream);
-      font-size: 1rem;
+    .cta-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      color: var(--cream); line-height: 1.25; margin-bottom: 10px;
     }
-
-    .submit-btn {
-      flex: 1;
-      background: var(--accent);
-      color: #1A1A18;
-      border: none;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
+    .cta-sub {
+      font-size: 0.85rem; color: var(--cream-dim); line-height: 1.55;
+      margin-bottom: 22px; max-width: 380px; margin-left: auto; margin-right: auto;
+    }
+    .btn-cta {
+      display: inline-block; padding: 15px 36px;
+      background: var(--accent); color: #1A1A18;
+      border-radius: 40px; font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.95rem; text-decoration: none;
       transition: all 0.2s;
     }
-
-    .submit-btn:hover {
-      background: #D4B87A;
-      transform: translateY(-2px);
+    .btn-cta:hover {
+      background: #D4B87A; transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(200,169,110,0.3);
     }
+    .cta-note { font-size: 0.7rem; color: rgba(234,231,220,0.3); margin-top: 12px; }
 
-    .cta-button {
-      display: inline-block;
-      background: var(--accent);
-      color: #1A1A18;
-      padding: 14px 32px;
-      border-radius: 40px;
-      font-weight: 700;
-      text-decoration: none;
-      margin-top: 16px;
-      transition: all 0.2s;
+    /* Retry CTA */
+    .btn-retry {
+      display: inline-block; padding: 13px 28px;
+      background: var(--accent); color: #1A1A18;
+      border-radius: 40px; font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.9rem; text-decoration: none;
+      transition: all 0.2s; margin-top: 20px;
     }
+    .btn-retry:hover { background: #D4B87A; transform: translateY(-2px); }
 
-    .cta-button:hover {
-      background: #D4B87A;
-      transform: translateY(-2px);
+    /* Loading pulse */
+    @keyframes pulse {
+      0%,100% { transform: scale(0.95); opacity: 0.5; }
+      50%      { transform: scale(1.05); opacity: 1; }
     }
+    .pulse-icon { animation: pulse 1.8s ease-in-out infinite; font-size: 2.4rem; margin-bottom: 16px; }
 
-    .loader {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--surface-2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
+    /* Footer */
+    .sc-footer { padding: 24px; text-align: center; border-top: 1px solid var(--border); }
+    .sc-footer-logo {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+      color: var(--cream); margin-bottom: 6px; text-decoration: none;
     }
+    .sc-footer p { font-size: 0.72rem; color: rgba(234,231,220,0.3); }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .success-message {
-      color: var(--success);
-      margin-top: 12px;
-      font-size: 0.85rem;
-    }
-
-    .error-message {
-      color: var(--danger);
-      margin-top: 12px;
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 700px) {
-      .breakdown-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-      .report-card {
-        padding: 24px;
-      }
-      .score-number-large {
-        font-size: 3.5rem;
-      }
-    }
+    /* Colour helpers */
+    .dial-excellent { stroke: #6A9E7F; }
+    .dial-good      { stroke: var(--accent); }
+    .dial-warning   { stroke: #D4A74A; }
+    .dial-crisis    { stroke: #C0675A; }
   </style>
 </head>
 <body>
+<div class="page-wrap">
 
-<div id="rl-nav-placeholder"></div>
-<script>
-  fetch('/components/navbar.html')
-    .then(res => res.text())
-    .then(html => document.getElementById('rl-nav-placeholder').innerHTML = html)
-    .catch(err => console.error('Navbar error:', err));
-</script>
+  <!-- NAV -->
+  <nav class="sc-nav">
+    <a href="/" class="sc-logo"><span class="sc-logo-dot"></span>ReviewLift</a>
+    <a href="/score-checker" class="nav-back">← Check another business</a>
+  </nav>
 
-<section class="hero" style="min-height: auto; padding: 100px 24px 60px;">
-  <div class="hero-badge">YOUR REPORT</div>
-  <h1>Your Google Review <em>Score Report</em></h1>
-  <p id="reportBusinessName" class="hero-sub">Loading your report...</p>
-</section>
+  <div class="report-wrap">
+    <div class="report-col">
 
-<div class="report-container">
-  
-  <!-- Main Score Card -->
-  <div class="report-card" id="reportContent" style="display: none;">
-    <div class="score-number-large" id="finalScore">0</div>
-    <div class="score-label">OUT OF 100</div>
-    <div class="progress-bar-large">
-      <div class="progress-fill-large" id="scoreFill"></div>
-    </div>
-    
-    <!-- Breakdown Stats -->
-    <div class="breakdown-grid">
-      <div class="breakdown-stat">
-        <div class="breakdown-stat-value" id="ratingScore">0/50</div>
-        <div class="breakdown-stat-label">⭐ Rating Score</div>
+      <!-- LOADING STATE -->
+      <div class="state-card" id="stateLoading">
+        <div class="pulse-icon">⭐</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;margin-bottom:8px">Loading your report…</h3>
+        <p style="font-size:0.85rem;color:var(--cream-dim)">Fetching your review data from Google</p>
       </div>
-      <div class="breakdown-stat">
-        <div class="breakdown-stat-value" id="countScore">0/30</div>
-        <div class="breakdown-stat-label">📝 Review Count Score</div>
+
+      <!-- ERROR STATE -->
+      <div class="state-card" id="stateError" style="display:none">
+        <div style="font-size:2.4rem;margin-bottom:16px">⚠️</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;margin-bottom:10px">Couldn't load your report</h3>
+        <p style="font-size:0.85rem;color:var(--cream-dim);margin-bottom:4px">We couldn't find your business data.</p>
+        <a href="/score-checker" class="btn-retry">Try the score checker →</a>
       </div>
-      <div class="breakdown-stat">
-        <div class="breakdown-stat-value" id="velocityScore">0/20</div>
-        <div class="breakdown-stat-label">📈 Monthly Velocity Score</div>
-      </div>
-    </div>
-    
-    <!-- Business Details -->
-    <div style="background: var(--surface-2); border-radius: 16px; padding: 16px; margin-bottom: 24px;">
-      <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-        <span id="businessRating">⭐ 0 stars</span>
-        <span id="businessReviewCount">📝 0 reviews</span>
-        <span id="businessVelocity">📈 0 reviews/month</span>
-      </div>
-    </div>
-    
-    <!-- Improvement Tips -->
-    <h3 style="margin-bottom: 16px;">📋 How to improve your score</h3>
-    <div id="improvementTips"></div>
-    
-    <!-- Email Capture -->
-    <div class="email-capture">
-      <span style="font-size: 2rem;">📧</span>
-      <h3 style="margin: 12px 0;">Get your full report delivered</h3>
-      <p style="color: var(--cream-dim); font-size: 0.85rem;">Enter your email to receive a detailed PDF report with actionable insights.</p>
-      
-      <div class="email-input-group">
-        <input type="email" id="reportEmail" class="email-input" placeholder="Your email address">
-        <button id="sendReportBtn" class="submit-btn">Send report →</button>
-      </div>
-      <div id="emailMessage"></div>
-    </div>
-    
-    <!-- Trial CTA -->
-    <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
-      <p style="color: var(--cream-dim); margin-bottom: 16px;">Want to automate this and start getting more 5-star reviews?</p>
-      <a href="/admin" class="cta-button">🚀 Start your free trial →</a>
-      <p style="font-size: 0.7rem; color: var(--cream-dim); margin-top: 16px;">No card required · Cancel anytime</p>
+
+      <!-- REPORT (hidden until loaded) -->
+      <div id="reportContent" style="display:none">
+
+        <!-- Header -->
+        <div class="report-header">
+          <div class="report-eyebrow">Google Review Health Report</div>
+          <div class="report-biz-name" id="repBizName">Your Business</div>
+          <div class="report-date" id="repDate">—</div>
+        </div>
+
+        <!-- Score + breakdown -->
+        <div class="score-section">
+          <div class="dial-svg-wrap">
+            <svg class="dial-svg" viewBox="0 0 180 180">
+              <circle class="dial-track" cx="90" cy="90" r="80"/>
+              <circle class="dial-fill" id="repDialFill" cx="90" cy="90" r="80"/>
+            </svg>
+            <div class="dial-center">
+              <div class="dial-score" id="repDialScore">0</div>
+              <div class="dial-of">out of 100</div>
+            </div>
+          </div>
+          <div class="score-right">
+            <div class="score-band-pill" id="repBandPill">—</div>
+            <div class="bd-rows">
+              <div class="bd-row">
+                <div class="bd-label">⭐ Rating</div>
+                <div class="bd-bar-track"><div class="bd-bar-fill" id="repRatingFill"></div></div>
+                <div class="bd-value" id="repRatingVal">—</div>
+              </div>
+              <div class="bd-row">
+                <div class="bd-label">📝 Review count</div>
+                <div class="bd-bar-track"><div class="bd-bar-fill" id="repCountFill"></div></div>
+                <div class="bd-value" id="repCountVal">—</div>
+              </div>
+              <div class="bd-row">
+                <div class="bd-label">📈 Velocity</div>
+                <div class="bd-bar-track"><div class="bd-bar-fill" id="repVelocityFill"></div></div>
+                <div class="bd-value" id="repVelocityVal">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raw stats -->
+        <div class="raw-stats">
+          <div class="raw-grid">
+            <div class="raw-item">
+              <div class="raw-val" id="rawRating">—</div>
+              <div class="raw-label">Star rating<br>on Google</div>
+            </div>
+            <div class="raw-item">
+              <div class="raw-val" id="rawCount">—</div>
+              <div class="raw-label">Total reviews<br>collected</div>
+            </div>
+            <div class="raw-item">
+              <div class="raw-val" id="rawVelocity">—</div>
+              <div class="raw-label">Reviews per<br>month (est.)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warning banner (conditional) -->
+        <div class="report-section" id="warnSection" style="display:none">
+          <div id="warnContent"></div>
+        </div>
+
+        <!-- Protection gap (conditional) -->
+        <div class="report-section" id="protSection" style="display:none">
+          <div class="sec-title">Review protection gap</div>
+          <div class="protection-box">
+            <div class="protection-box-title">🛡️ How many reviews could you have stopped?</div>
+            <div class="protection-box-sub" id="protSub">—</div>
+            <div class="funnel-wrap">
+              <svg width="280" height="120" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="13" font-family="DM Sans, sans-serif" font-size="9" fill="rgba(234,231,220,0.35)" letter-spacing="0.5">WITHOUT REVIEWLIFT</text>
+                <rect x="0" y="22" width="116" height="26" rx="6" fill="rgba(200,169,110,0.06)" stroke="rgba(200,169,110,0.18)" stroke-width="1"/>
+                <text x="58" y="40" font-family="DM Sans, sans-serif" font-size="10" fill="rgba(234,231,220,0.6)" text-anchor="middle">All customers</text>
+                <path d="M20 48 L58 76 L96 48" fill="rgba(200,169,110,0.04)" stroke="rgba(200,169,110,0.12)" stroke-width="1"/>
+                <rect x="30" y="76" width="56" height="22" rx="5" fill="rgba(192,103,90,0.14)" stroke="rgba(192,103,90,0.3)" stroke-width="1"/>
+                <text x="58" y="91" font-family="DM Sans, sans-serif" font-size="9" fill="#E0867A" text-anchor="middle">Public Google</text>
+                <text x="134" y="66" font-family="DM Sans, sans-serif" font-size="16" fill="rgba(234,231,220,0.12)" text-anchor="middle">→</text>
+                <text x="152" y="13" font-family="DM Sans, sans-serif" font-size="9" fill="rgba(200,169,110,0.55)" letter-spacing="0.5">WITH REVIEWLIFT</text>
+                <rect x="152" y="22" width="128" height="26" rx="6" fill="rgba(200,169,110,0.06)" stroke="rgba(200,169,110,0.18)" stroke-width="1"/>
+                <text x="216" y="40" font-family="DM Sans, sans-serif" font-size="10" fill="rgba(234,231,220,0.6)" text-anchor="middle">All customers</text>
+                <path d="M162 48 L186 66" stroke="rgba(106,158,127,0.45)" stroke-width="1.5" stroke-dasharray="3 2"/>
+                <rect x="162" y="68" width="46" height="20" rx="5" fill="rgba(106,158,127,0.09)" stroke="rgba(106,158,127,0.3)" stroke-width="1"/>
+                <text x="185" y="82" font-family="DM Sans, sans-serif" font-size="8" fill="#6A9E7F" text-anchor="middle">Google ⭐</text>
+                <path d="M248 48 L238 66" stroke="rgba(192,103,90,0.35)" stroke-width="1.5" stroke-dasharray="3 2"/>
+                <rect x="212" y="68" width="58" height="20" rx="5" fill="rgba(192,103,90,0.07)" stroke="rgba(192,103,90,0.25)" stroke-width="1"/>
+                <text x="241" y="78" font-family="DM Sans, sans-serif" font-size="7.5" fill="#C0675A" text-anchor="middle">Private feedback</text>
+                <text x="241" y="87" font-family="DM Sans, sans-serif" font-size="7" fill="rgba(192,103,90,0.5)" text-anchor="middle">to you only</text>
+              </svg>
+            </div>
+            <div class="protection-highlight" id="protHighlight">—</div>
+          </div>
+        </div>
+
+        <!-- Improvement tips -->
+        <div class="report-section">
+          <div class="sec-title">How to improve your score</div>
+          <div id="repImprovements"></div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-block">
+          <div class="cta-eyebrow">ReviewLift · Free 14-day trial</div>
+          <div class="cta-title" id="repCtaTitle">Start automating your reviews today</div>
+          <div class="cta-sub" id="repCtaSub">Set it up in 10 minutes. Reviews come in automatically. You do nothing.</div>
+          <a href="/admin?ref=score-report" class="btn-cta" id="repCtaBtn">Start free trial →</a>
+          <div class="cta-note">No credit card · Cancel any time · £24.99/mo after trial</div>
+        </div>
+
+      </div><!-- /reportContent -->
     </div>
   </div>
-  
-  <!-- Loading State -->
-  <div id="loadingState" class="report-card" style="text-align: center;">
-    <div class="pulse-ring" style="width: 60px; height: 60px; margin: 0 auto 20px; background: var(--accent-dim); border-radius: 50%; animation: pulse 1.5s ease-out infinite; display: flex; align-items: center; justify-content: center; font-size: 2rem;">🔍</div>
-    <h3>Loading your report...</h3>
-    <p style="color: var(--cream-dim);">Fetching your review data from Google</p>
-  </div>
-  
-  <!-- Error State -->
-  <div id="errorState" class="report-card" style="text-align: center; display: none;">
-    <span style="font-size: 3rem;">⚠️</span>
-    <h3>Could not load your report</h3>
-    <p style="color: var(--cream-dim);">We couldn't find your business data. Please try again from the score checker.</p>
-    <a href="/score-checker" class="cta-button" style="margin-top: 16px;">Back to Score Checker →</a>
-  </div>
 
+  <footer class="sc-footer">
+    <a href="/" class="sc-footer-logo"><span class="sc-logo-dot"></span>ReviewLift</a>
+    <p>© 2026 ReviewLift. All rights reserved.</p>
+  </footer>
 </div>
 
-<footer style="padding: 40px; text-align: center; border-top: 1px solid var(--border); margin-top: 60px;">
-  <div class="footer-logo"><span class="nav-dot"></span>ReviewLift</div>
-  <div class="footer-copy">© 2026 ReviewLift. All rights reserved.</div>
-</footer>
-
 <script>
-// Helper functions
-function getRecommendation(score) {
-  if (score >= 80) return '🌟 Excellent! Your business has great review momentum. Keep it up!';
-  if (score >= 60) return '👍 Good position. A few more reviews could push you ahead of competitors.';
-  if (score >= 40) return '📊 Average score. Many local businesses are outperforming you on reviews.';
-  return '⚠️ Your review profile needs attention. You could be losing customers.';
+/* ── Helpers (duplicated from score-checker for standalone use) ── */
+function calculateBreakdown(rating, reviewCount) {
+  const ratingScore = Math.round((rating / 5) * 50);
+  let countScore = 0;
+  if (reviewCount >= 200)      countScore = 30;
+  else if (reviewCount >= 100) countScore = 25;
+  else if (reviewCount >= 50)  countScore = 20;
+  else if (reviewCount >= 20)  countScore = 15;
+  else if (reviewCount >= 10)  countScore = 10;
+  else if (reviewCount >= 5)   countScore = 5;
+  const velocity = Math.max(1, Math.round(reviewCount / 12));
+  let velocityScore = 0;
+  if (velocity >= 20)      velocityScore = 20;
+  else if (velocity >= 15) velocityScore = 15;
+  else if (velocity >= 10) velocityScore = 12;
+  else if (velocity >= 5)  velocityScore = 8;
+  else if (velocity >= 2)  velocityScore = 4;
+  else                     velocityScore = 1;
+  return { ratingScore, countScore, velocityScore, velocity, total: ratingScore + countScore + velocityScore };
 }
 
-function getImprovementTips(rating, reviewCount, velocity) {
-  let tips = [];
-  
-  if (rating < 4.5) {
-    tips.push({
-      icon: "⭐",
-      text: `Your rating is ${rating} stars, below the 4.5-star benchmark.`,
-      action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback — protecting your rating from bad reviews."
-    });
-  }
-  
-  if (reviewCount < 50) {
-    tips.push({
-      icon: "📝",
-      text: `You have only ${reviewCount} reviews. Businesses with 50+ reviews get 4x more clicks on Google.`,
-      action: "ReviewLift automates review requests after every job or appointment — no manual follow-up needed."
-    });
-  }
-  
-  if (velocity < 5) {
-    tips.push({
-      icon: "📈",
-      text: `You're getting only about ${velocity} reviews per month. Top businesses get 10+ monthly reviews.`,
-      action: "ReviewLift's automated SMS and email requests ensure every customer gets asked — dramatically increasing your velocity."
-    });
-  }
-  
-  if (tips.length === 0) {
-    tips.push({
-      icon: "🚀",
-      text: "You're doing well! To stay ahead, maintain your review momentum.",
-      action: "ReviewLift automates the process so you never have to think about asking for reviews again."
-    });
-  }
-  
-  return tips;
+function getRatingBand(rating) {
+  if (rating >= 4.8) return 'excellent';
+  if (rating >= 4.3) return 'good';
+  if (rating >= 3.5) return 'warning';
+  return 'crisis';
 }
 
-// Get URL parameters
-const urlParams = new URLSearchParams(window.location.search);
-const placeId = urlParams.get('place_id');
-const businessNameParam = urlParams.get('name');
-const preloadedScore = urlParams.get('score');
+function animateDial(fillEl, scoreEl, score) {
+  const circ = 2 * Math.PI * 80;
+  fillEl.style.strokeDasharray = circ;
+  fillEl.style.strokeDashoffset = circ;
+  const cls = score >= 80 ? 'dial-excellent' : score >= 60 ? 'dial-good' : score >= 40 ? 'dial-warning' : 'dial-crisis';
+  fillEl.className = 'dial-fill ' + cls;
+  setTimeout(() => {
+    fillEl.style.strokeDashoffset = circ - (score / 100) * circ;
+    let cur = 0, step = score / 60;
+    const iv = setInterval(() => {
+      cur = Math.min(cur + step, score);
+      scoreEl.textContent = Math.round(cur);
+      if (cur >= score) clearInterval(iv);
+    }, 16);
+  }, 300);
+}
 
-let businessData = null;
+function animateBar(el, pct, delay = 0) {
+  setTimeout(() => { el.style.width = pct + '%'; }, delay);
+}
 
+function buildWarningCard(rating) {
+  const band = getRatingBand(rating);
+  if (band === 'excellent') return null;
+  if (band === 'good') return { cls: 'wb-amber', head: '⚠️ Some unhappy customers are slipping through', body: `Your ${rating}★ rating suggests roughly 1 in 8 customers had a poor experience and went straight to Google. ReviewLift intercepts them before they post — routing complaints to you privately instead.` };
+  if (band === 'warning') return { cls: 'wb-red', head: '⚠️ Your rating is costing you customers', body: `At ${rating}★, you're likely losing 40–60% of potential customers who check Google before booking. Most of those negative reviews could have been intercepted privately.` };
+  return { cls: 'wb-crisis', head: 'You\'re not alone — and this is fixable', body: `The good news: 94% of these reviews were preventable. ReviewLift's private feedback system stops unhappy customers before they reach Google. Businesses at your rating typically recover to 4.2★+ within 90 days.` };
+}
+
+function buildProtectionGap(rating) {
+  const band = getRatingBand(rating);
+  if (band === 'excellent') return null;
+  if (rating >= 4.3) return {
+    sub: `Based on your ${rating}★ rating, an estimated 8–15% of customers had a negative experience that made it to Google publicly.`,
+    highlight: `ReviewLift's private feedback system would have intercepted most of these — giving you a chance to fix things before they become a 1-star review.`
+  };
+  if (rating >= 3.5) return {
+    sub: `At ${rating}★, roughly 18–28% of your customers are having experiences bad enough to leave a negative public review.`,
+    highlight: `<strong>Most of these were preventable.</strong> ReviewLift catches unhappy customers at the moment of feedback — routing complaints to you privately, and happy customers to Google.`
+  };
+  return {
+    sub: `At ${rating}★, an estimated 30–50% of your customers are leaving negative public reviews.`,
+    highlight: `<strong>This is the priority fix.</strong> Once ReviewLift's private feedback system is in place, your public-facing review stream shifts dramatically — only happy customers reach Google.`
+  };
+}
+
+function buildImprovements(rating, reviewCount, velocity) {
+  const band = getRatingBand(rating);
+  const tips = [];
+  if (band === 'warning' || band === 'crisis') tips.push({ crisis: true, icon: '🛡️', head: 'Unhappy customers are reaching Google unchecked', action: 'ReviewLift intercepts every unhappy customer with a private feedback form before they can post publicly. They vent to you — not Google. This alone could dramatically improve your rating.', pts: '+14 pts' });
+  if (rating < 4.5) tips.push({ icon: '⭐', head: `Your ${rating}★ rating is below the 4.5★ benchmark`, action: 'ReviewLift routes happy customers to Google and catches unhappy ones privately — your public rating climbs as the ratio improves.', pts: '+8 pts' });
+  if (reviewCount < 50) tips.push({ icon: '📝', head: `${reviewCount} reviews — businesses with 50+ get 4× more clicks`, action: 'ReviewLift sends automated SMS and email review requests after every appointment or payment. Reviews come in on autopilot.', pts: '+10 pts' });
+  if (velocity < 5) tips.push({ icon: '📈', head: `~${velocity} reviews/month — top businesses get 10+`, action: 'Connect your booking system or Stripe and every customer gets a review request at the optimal time. Most businesses 3× their monthly velocity within 60 days.', pts: '+6 pts' });
+  if (tips.length === 0) tips.push({ icon: '🚀', head: "You're performing well — now protect your lead", action: 'ReviewLift automates the entire process so you never have to think about reviews again — and ensures no unhappy customer slips through to Google.', pts: 'Stay ahead' });
+  return tips.map(t => `<div class="imp-item ${t.crisis ? 'crisis-border' : ''}"><div class="imp-head"><span>${t.icon}</span><span style="flex:1">${t.head}</span><span class="imp-points">${t.pts}</span></div><div class="imp-action">💡 ${t.action}</div></div>`).join('');
+}
+
+function buildCTACopy(rating) {
+  const band = getRatingBand(rating);
+  if (band === 'crisis')  return { title: 'Stop bad reviews reaching Google', sub: 'ReviewLift catches unhappy customers privately before they post publicly. Most businesses recover 0.5–0.8★ within 90 days.', btn: '🛡️ Protect my business →' };
+  if (band === 'warning') return { title: 'Protect your reputation and grow your reviews', sub: 'ReviewLift intercepts complaints privately and sends automated review requests after every visit.', btn: '🛡️ Protect my reputation →' };
+  if (band === 'good')    return { title: 'Push your score past 90 and dominate local search', sub: 'You\'re close. ReviewLift automates review requests and protects your rating — getting you above competitors and keeping you there.', btn: '🚀 Get more reviews →' };
+  return { title: 'Automate your reviews and stay ahead', sub: 'You\'re performing well. ReviewLift keeps it that way — automatically, without any manual effort.', btn: '🚀 Keep the momentum →' };
+}
+
+/* ── Load ── */
 async function loadReport() {
-  const loadingDiv = document.getElementById('loadingState');
-  const reportDiv = document.getElementById('reportContent');
-  const errorDiv = document.getElementById('errorState');
-  const businessNameSpan = document.getElementById('reportBusinessName');
-  
+  const p = new URLSearchParams(window.location.search);
+  const placeId = p.get('place_id');
+  const bizName = p.get('name');
+
   if (!placeId) {
-    loadingDiv.style.display = 'none';
-    errorDiv.style.display = 'block';
+    document.getElementById('stateLoading').style.display = 'none';
+    document.getElementById('stateError').style.display = 'block';
     return;
   }
-  
+
   try {
     const res = await fetch('/api/review-score', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        placeId: placeId, 
-        email: 'temp@temp.com', 
-        businessName: businessNameParam || 'Business',
-        industry: 'default' 
-      })
+      body: JSON.stringify({ placeId, email: 'temp@temp.com', businessName: bizName || 'Business', industry: 'default' })
     });
     const data = await res.json();
-    
-    if (data.success) {
-      businessData = data.business;
-      const score = businessData.score;
-      const rating = businessData.rating;
-      const reviewCount = businessData.review_count;
-      const velocity = businessData.velocity;
-      
-      // Calculate breakdown
-      const ratingScore = Math.round((rating / 5) * 50);
-      let countScore = 0;
-      if (reviewCount >= 200) countScore = 30;
-      else if (reviewCount >= 100) countScore = 25;
-      else if (reviewCount >= 50) countScore = 20;
-      else if (reviewCount >= 20) countScore = 15;
-      else if (reviewCount >= 10) countScore = 10;
-      else if (reviewCount >= 5) countScore = 5;
-      
-      let velocityScore = 0;
-      if (velocity >= 20) velocityScore = 20;
-      else if (velocity >= 15) velocityScore = 15;
-      else if (velocity >= 10) velocityScore = 12;
-      else if (velocity >= 5) velocityScore = 8;
-      else if (velocity >= 2) velocityScore = 4;
-      
-      // Update UI
-      businessNameSpan.innerHTML = businessData.name;
-      document.getElementById('finalScore').innerText = score;
-      document.getElementById('scoreFill').style.width = `${score}%`;
-      document.getElementById('ratingScore').innerHTML = `${ratingScore}/50`;
-      document.getElementById('countScore').innerHTML = `${countScore}/30`;
-      document.getElementById('velocityScore').innerHTML = `${velocityScore}/20`;
-      document.getElementById('businessRating').innerHTML = `⭐ ${rating} stars`;
-      document.getElementById('businessReviewCount').innerHTML = `📝 ${reviewCount} reviews`;
-      document.getElementById('businessVelocity').innerHTML = `📈 ${velocity} reviews/month`;
-      
-      // Improvement tips
-      const tips = getImprovementTips(rating, reviewCount, velocity);
-      const tipsHtml = tips.map(tip => `
-        <div class="improvement-item">
-          <strong>${tip.icon} ${tip.text}</strong>
-          <p style="margin-top: 8px; font-size: 0.8rem; color: var(--cream-dim);">💡 ${tip.action}</p>
-        </div>
-      `).join('');
-      document.getElementById('improvementTips').innerHTML = tipsHtml;
-      
-      loadingDiv.style.display = 'none';
-      reportDiv.style.display = 'block';
-    } else {
-      throw new Error(data.error);
+    if (!data.success) throw new Error(data.error);
+
+    const { rating, review_count, name } = data.business;
+    const bd = calculateBreakdown(rating, review_count);
+    const band = getRatingBand(rating);
+    const bandLabels = { excellent: 'Excellent', good: 'Good standing', warning: 'Needs attention', crisis: 'Critical' };
+    const pillCls   = { excellent: 'pill-excellent', good: 'pill-good', warning: 'pill-warning', crisis: 'pill-crisis' };
+
+    // Header
+    document.getElementById('repBizName').textContent = name || bizName || 'Your Business';
+    document.getElementById('repDate').textContent = `Report generated ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+
+    // Dial
+    animateDial(document.getElementById('repDialFill'), document.getElementById('repDialScore'), bd.total);
+    const pill = document.getElementById('repBandPill');
+    pill.className = 'score-band-pill ' + pillCls[band];
+    pill.textContent = bandLabels[band];
+
+    // Bars
+    animateBar(document.getElementById('repRatingFill'),   (bd.ratingScore   / 50) * 100, 400);
+    animateBar(document.getElementById('repCountFill'),    (bd.countScore    / 30) * 100, 550);
+    animateBar(document.getElementById('repVelocityFill'), (bd.velocityScore / 20) * 100, 700);
+    document.getElementById('repRatingVal').textContent   = `${bd.ratingScore}/50`;
+    document.getElementById('repCountVal').textContent    = `${bd.countScore}/30`;
+    document.getElementById('repVelocityVal').textContent = `${bd.velocityScore}/20`;
+
+    // Raw stats
+    document.getElementById('rawRating').textContent   = `${rating}★`;
+    document.getElementById('rawCount').textContent    = review_count;
+    document.getElementById('rawVelocity').textContent = `${bd.velocity}/mo`;
+
+    // Warning
+    const warn = buildWarningCard(rating);
+    if (warn) {
+      const isCrisis = band === 'crisis';
+      document.getElementById('warnContent').innerHTML = isCrisis
+        ? `<div class="warning-banner wb-crisis"><div style="font-size:1.8rem;margin-bottom:10px">💙</div><strong>${warn.head}</strong><p style="font-size:0.82rem;color:var(--cream-dim);margin-top:8px;line-height:1.55">${warn.body}</p></div>`
+        : `<div class="warning-banner ${warn.cls}"><strong>${warn.head}</strong>${warn.body}</div>`;
+      document.getElementById('warnSection').style.display = 'block';
     }
-  } catch (err) {
-    console.error('Report error:', err);
-    loadingDiv.style.display = 'none';
-    errorDiv.style.display = 'block';
+
+    // Protection gap
+    const pg = buildProtectionGap(rating);
+    if (pg) {
+      document.getElementById('protSub').textContent = pg.sub;
+      document.getElementById('protHighlight').innerHTML = pg.highlight;
+      document.getElementById('protSection').style.display = 'block';
+    }
+
+    // Improvements
+    document.getElementById('repImprovements').innerHTML = buildImprovements(rating, review_count, bd.velocity);
+
+    // CTA
+    const cta = buildCTACopy(rating);
+    document.getElementById('repCtaTitle').textContent = cta.title;
+    document.getElementById('repCtaSub').textContent   = cta.sub;
+    document.getElementById('repCtaBtn').textContent   = cta.btn;
+
+    // Show report
+    document.getElementById('stateLoading').style.display = 'none';
+    document.getElementById('reportContent').style.display = 'block';
+
+  } catch (e) {
+    console.error(e);
+    document.getElementById('stateLoading').style.display = 'none';
+    document.getElementById('stateError').style.display = 'block';
   }
 }
 
-// Send email report
-document.getElementById('sendReportBtn')?.addEventListener('click', async () => {
-  const email = document.getElementById('reportEmail').value.trim();
-  const messageDiv = document.getElementById('emailMessage');
-  
-  if (!email) {
-    messageDiv.innerHTML = '<p class="error-message">Please enter your email address</p>';
-    return;
-  }
-  
-  const btn = document.getElementById('sendReportBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loader"></span> Sending...';
-  
-  try {
-    const res = await fetch('/api/review-score', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        placeId: placeId,
-        email: email,
-        businessName: businessData?.name || businessNameParam,
-        industry: 'default'
-      })
-    });
-    const data = await res.json();
-    
-    if (data.success) {
-      messageDiv.innerHTML = '<p class="success-message">✓ Report sent! Check your email for the detailed PDF.</p>';
-      btn.innerHTML = '✓ Sent!';
-    } else {
-      throw new Error(data.error);
-    }
-  } catch (err) {
-    messageDiv.innerHTML = '<p class="error-message">Something went wrong. Please try again.</p>';
-    btn.disabled = false;
-    btn.innerHTML = 'Send report →';
-  }
-});
-
-// Start loading
 loadReport();
 </script>
-
 </body>
 </html>

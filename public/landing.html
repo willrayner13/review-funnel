@@ -1721,7 +1721,8 @@
         // Update the "View full report" link to go to the improved score-checker page
         const viewReportLink = document.querySelector('#inlineScoreResult a');
         if (viewReportLink) {
-          viewReportLink.href = `/score-checker?place_id=${placeId}&name=${businessName}&score=${score}`;
+          viewReportLink.href = `/report.html?place_id=${placeId}&name=${businessName}&score=${score}`;
+
         }
         
         resultDiv.style.display = 'block';
