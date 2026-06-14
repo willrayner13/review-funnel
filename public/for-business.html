@@ -1758,6 +1758,7 @@
 
        <!-- FUNNEL STUDIO SECTION - CLEANED VERSION -->
 <!-- FUNNEL STUDIO SECTION - REDESIGNED WITH COLLAPSIBLE SECTIONS -->
+<!-- FUNNEL STUDIO SECTION - WITH STARS AND COLLAPSIBLE SECTIONS -->
 <div id="funnelStudioSection" class="content-section">
   <div class="fs-wrap">
 
@@ -1782,14 +1783,14 @@
             <div style="display: flex; align-items: center; gap: 10px;">
               <span class="fs-section-icon" style="font-size: 1.2rem;">🏷️</span>
               <span style="font-weight: 600; font-size: 0.9rem;">Brand Identity</span>
-              <span class="fs-section-status" id="brandStatus" style="font-size: 0.7rem; color: var(--cream-dim);">(Optional)</span>
+              <span class="fs-section-status" style="font-size: 0.7rem; color: var(--cream-dim);">(Optional)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="fs-complete-tick" id="brandTick" style="display: none; color: #10B981;">✓</span>
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="brandContent" style="padding-bottom: 16px; display: block;">
+          <div class="fs-section-content" id="brandContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-group">
               <div class="fs-group-label">Business logo</div>
               <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
@@ -1840,7 +1841,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="themeContent" style="padding-bottom: 16px; display: block;">
+          <div class="fs-section-content" id="themeContent" style="padding-bottom: 16px; display: none;">
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
               <div class="fs-theme-option" data-theme="modern-dark" onclick="applyThemePack('modern-dark', this)" style="background: var(--surface-2); border: 2px solid var(--accent); border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;">
                 <div style="width: 100%; height: 36px; background: #0A0A0A; border-radius: 6px; margin-bottom: 6px;"></div>
@@ -1919,7 +1920,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="experienceContent" style="padding-bottom: 16px; display: block;">
+          <div class="fs-section-content" id="experienceContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-group">
               <div class="fs-group-label">Background effect</div>
               <select id="fsBgEffect" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
@@ -1944,7 +1945,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="wordingContent" style="padding-bottom: 16px; display: block;">
+          <div class="fs-section-content" id="wordingContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-group" style="margin-bottom: 12px;">
               <div class="fs-group-label">Headline</div>
               <input class="fs-input" id="fsHeadline" type="text" value="How was your experience?" oninput="updateFSPreview();updateFSCharCount()">
@@ -1973,7 +1974,7 @@
               <span class="fs-toggle-icon">▼</span>
             </div>
           </div>
-          <div class="fs-section-content" id="aiContent" style="padding-bottom: 16px; display: block;">
+          <div class="fs-section-content" id="aiContent" style="padding-bottom: 16px; display: none;">
             <div class="fs-ai-tip" onclick="applyAISuggestion('headline')" style="background: rgba(139,92,246,0.08); border-radius: 8px; padding: 10px; margin-bottom: 8px; cursor: pointer;">
               <span>✦ "Rate your experience" converts 12% better</span>
             </div>
@@ -2013,7 +2014,7 @@
         <!-- Preview container -->
         <div class="fs-previews" id="fsPreviewContainer" style="display: flex; gap: 20px; flex-wrap: wrap;">
           
-          <!-- Mobile preview -->
+          <!-- Mobile preview with stars -->
           <div class="fs-mobile" id="fsMobilePreview">
             <div class="iphone-mockup" style="width: 320px; background: #000; border-radius: 44px; padding: 10px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
               <div style="background: #1A1A18; border-radius: 34px; overflow: hidden; min-height: 560px;">
@@ -2021,13 +2022,33 @@
                   <img id="previewLogoImg" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
                   <div class="fs-preview-biz" id="previewBiz" style="text-align: center; margin-bottom: 20px; font-weight: 600;">Your Business</div>
                   <div class="fs-preview-q" id="previewQuestion" style="text-align: center; margin-bottom: 24px; font-size: 1.4rem; font-weight: 700;">How was your experience?</div>
+                  
+                  <!-- Star Rating Component -->
+                  <div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
+                    <svg class="preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                  </div>
+                  
                   <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
                 </div>
               </div>
             </div>
           </div>
           
-          <!-- Desktop preview -->
+          <!-- Desktop preview with stars -->
           <div class="fs-desktop" id="fsDesktopPreview" style="display: none;">
             <div class="fs-browser" style="width: 100%; max-width: 500px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
               <div style="background: #2A2A28; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
@@ -2043,6 +2064,25 @@
                   <img id="previewLogoDesktop" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
                   <div class="fs-preview-biz" id="previewBizDesktop" style="margin-bottom: 20px; font-weight: 600;">Your Business</div>
                   <div class="fs-preview-q" id="previewQuestionDesktop" style="margin-bottom: 24px; font-size: 1.3rem; font-weight: 700;">How was your experience?</div>
+                  
+                  <!-- Desktop Star Rating Component -->
+                  <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
+                    <svg class="preview-star" data-rating="1" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="2" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="5" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3810,6 +3850,18 @@ function checkSectionCompletion() {
 
 // Run completion check on load and after changes
 setInterval(checkSectionCompletion, 1000);
+
+// Toggle collapsible sections
+function toggleSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  const parent = section.closest('.fs-collapsible-section');
+  
+  if (parent.classList.contains('collapsed')) {
+    parent.classList.remove('collapsed');
+  } else {
+    parent.classList.add('collapsed');
+  }
+}
 
 </script>
 </body></html>
