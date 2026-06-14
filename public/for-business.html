@@ -4748,32 +4748,30 @@ function renderFunnelPreview() {
   const happyMessage = document.getElementById('fsHappyMessage')?.value || 'Thanks for your feedback! Leave us a Google review →';
   const unhappyMessage = document.getElementById('fsUnhappyMessage')?.value || "We're sorry to hear that. Please tell us what went wrong.";
   const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
-  const currentColor = '#C8A96E'; // Default accent color
+  const currentColor = '#C8A96E';
   
-  // Complete funnel HTML - MATCHING DEMO EXACTLY
   const html = `
     <div class="funnel-card">
       ${logoUrl ? `<img src="${logoUrl}" style="max-height: 48px; margin: 0 auto 16px; display: block; object-fit: contain;" alt="Logo">` : ''}
       
       <!-- Question Screen -->
-     // Question Screen
-<div id="mainQuestion" style="display: block;">
-  <h2 id="mainHeadline" style="font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 16px; line-height: 1.3;">How was your experience at ${businessName}?</h2>
-  <div class="subtitle" style="font-size: 0.75rem; text-align: center; color: var(--cream-dim); margin-bottom: 24px; letter-spacing: 0.05em;">Tap a star to get started</div>
-  <div class="star-rating" id="starRating" style="display: flex; justify-content: center; gap: 10px; margin: 16px 0;">
-    ${[1,2,3,4,5].map(i => `
-      <svg data-rating="${i}" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="${currentColor}" stroke-width="1.5" style="cursor: pointer; transition: transform 0.15s ease;" onclick="handleStarClick(${i})">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="${currentColor}"/>
-      </svg>
-    `).join('')}
-  </div>
-  <div class="powered-by" style="text-align: center; margin-top: 8px; padding-top: 6px; font-size: 0.55rem; color: rgba(234, 231, 220, 0.3); border-top: 1px solid rgba(234, 231, 220, 0.05);">Powered by <strong>ReviewLift</strong></div>
-</div>
+      <div id="mainQuestion" style="display: block;">
+        <h2 id="mainHeadline" style="font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 16px; line-height: 1.3;">How was your experience at ${businessName}?</h2>
+        <div class="subtitle" style="font-size: 0.75rem; text-align: center; color: var(--cream-dim); margin-bottom: 24px; letter-spacing: 0.05em;">Tap a star to get started</div>
+        <div class="star-rating" id="starRating" style="display: flex; justify-content: center; gap: 10px; margin: 16px 0;">
+          ${[1,2,3,4,5].map(i => `
+            <svg data-rating="${i}" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="${currentColor}" stroke-width="1.5" style="cursor: pointer; transition: transform 0.15s ease;" onclick="handleStarClick(${i})">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="${currentColor}"/>
+            </svg>
+          `).join('')}
+        </div>
+        <div class="powered-by" style="text-align: center; margin-top: 8px; padding-top: 6px; font-size: 0.55rem; color: rgba(234, 231, 220, 0.3); border-top: 1px solid rgba(234, 231, 220, 0.05);">Powered by <strong>ReviewLift</strong></div>
+      </div>
       
-      <!-- Success Screen -->
+      <!-- Success Screen (Happy Path - 4-5 stars) -->
       <div id="reviewSection" style="display: none;">
         <div style="font-size: 1.8rem; text-align: center; margin-bottom: 8px;">⭐</div>
-        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center; margin-bottom: 12px;">Thanks for rating us 5 stars!</h2>
+        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center; margin-bottom: 12px;">${happyMessage}</h2>
         <p style="font-size: 0.7rem; color: var(--cream-dim); text-align: center; margin-bottom: 16px;">Here's a suggested review — feel free to edit it:</p>
         <textarea id="suggestionText" class="premium-textarea" rows="3" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; color:var(--cream); font-size:0.9rem; line-height:1.4; resize:none; min-height:90px; margin-bottom:12px;">I highly recommend ${businessName}! Great service, friendly team, and an overall excellent experience. 5 stars!</textarea>
         <button class="btn-copy" style="width:100%; padding:14px; background:${currentColor}; color:#1A1A18; border:none; border-radius:40px; font-weight:700; font-size:0.9rem; cursor:pointer; margin-bottom:4px;" onclick="handleCopyClick()">Copy &amp; post to Google →</button>
@@ -4798,11 +4796,11 @@ function renderFunnelPreview() {
         <div class="powered-by" style="text-align: center; margin-top: 8px; padding-top: 6px; font-size: 0.55rem; color: rgba(234, 231, 220, 0.3); border-top: 1px solid rgba(234, 231, 220, 0.05);">Powered by <strong>ReviewLift</strong></div>
       </div>
       
-      <!-- Unhappy Screen -->
+      <!-- Unhappy Screen (1-3 stars) -->
       <div id="feedbackBox" style="display: none;">
         <div style="font-size: 1.8rem; text-align: center; margin-bottom: 8px;">😔</div>
-        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center; margin-bottom: 12px;">We're sorry to hear that</h2>
-        <p id="unhappyMessageText" style="font-size: 0.85rem; text-align: center; color: var(--cream-dim); margin-bottom: 16px;">${unhappyMessage}</p>
+        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center; margin-bottom: 12px;">${unhappyMessage}</h2>
+        <p style="font-size: 0.85rem; text-align: center; color: var(--cream-dim); margin-bottom: 16px;">Your feedback is private — only the business sees it.</p>
         <textarea id="message" class="premium-textarea" rows="3" placeholder="What could we have done better?" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; color:var(--cream); font-size:0.9rem; line-height:1.4; resize:none; min-height:90px; margin-bottom:12px;"></textarea>
         <button class="btn-send" style="width:100%; padding:12px; background:var(--surface-2); color:var(--cream); border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; margin:12px 0 4px;" onclick="handleSendClick()">Send Feedback</button>
         <button onclick="goBackToQuestion()" style="width:100%; padding:12px; background:transparent; border:1px solid var(--border); border-radius:40px; color:var(--cream-dim); cursor:pointer;">← Back</button>
