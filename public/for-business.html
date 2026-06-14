@@ -3059,6 +3059,7 @@ window.uploadLogoToBase64 = function(input) {
   reader.onload = function(e) {
     const base64String = e.target.result;
     
+    // Store the base64
     document.getElementById('fsLogoUrl').value = base64String;
     
     uploadLabel.innerHTML = '✅ Uploaded';
@@ -3070,10 +3071,23 @@ window.uploadLogoToBase64 = function(input) {
     document.getElementById('logoStatusText').style.display = 'inline';
     document.getElementById('logoSettings').style.display = 'block';
     
-    // Force update preview immediately
-    if (typeof window.updateFSPreview === 'function') {
-      window.updateFSPreview();
-    }
+    // Get current size setting
+    const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
+    let maxHeight = '36px';
+    if (logoSize === 'small') maxHeight = '28px';
+    if (logoSize === 'medium') maxHeight = '48px';
+    if (logoSize === 'large') maxHeight = '64px';
+    
+    // Update both preview images
+    const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+    logoImages.forEach(img => {
+      img.src = base64String;
+      img.style.display = 'block';
+      img.style.maxHeight = maxHeight;
+      img.style.width = 'auto';
+      img.style.margin = '0 auto';
+      img.style.objectFit = 'contain';
+    });
     
     showToast('Logo uploaded successfully!', 'success');
   };
@@ -3101,9 +3115,12 @@ window.clearLogo = function() {
   document.getElementById('fsRemoveLogoBtn').style.display = 'none';
   document.getElementById('logoStatusText').style.display = 'none';
   
-  if (typeof window.updateFSPreview === 'function') {
-    window.updateFSPreview();
-  }
+  // Clear both preview images
+  const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+  logoImages.forEach(img => {
+    img.src = '';
+    img.style.display = 'none';
+  });
   
   showToast('Logo removed', 'info');
 };
@@ -3178,22 +3195,57 @@ reportsObserver.observe(document.getElementById('reportsSection'), { attributes:
 // Also add event listeners to trigger preview updates when settings change
 // Also add event listeners to trigger preview updates when settings change
 document.addEventListener('DOMContentLoaded', function() {
-  const settingIds = [
-    'fsLogoSize', 'fsLogoAlign', 'fsBizDisplay', 'fsFont',
-    'fsBgColor', 'fsTextColor', 'fsBgEffect', 'fsAnimation'
-  ];
-  
-  settingIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', function() {
-        if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
-      });
-      el.addEventListener('change', function() {
-        if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
-      });
+// Add event listeners for settings
+const settingIds = [
+  'fsLogoAlign', 'fsBizDisplay', 'fsFont',
+  'fsBgColor', 'fsTextColor', 'fsBgEffect', 'fsAnimation'
+];
+
+settingIds.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', function() {
+      if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
+    });
+    el.addEventListener('change', function() {
+      if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
+    });
+  }
+});
+
+// Specifically handle logo size changes with better state management
+const logoSizeSelect = document.getElementById('fsLogoSize');
+if (logoSizeSelect) {
+  logoSizeSelect.addEventListener('change', function() {
+    // Force a complete refresh of logo display
+    const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
+    const selectedSize = this.value;
+    
+    let maxHeight = '36px';
+    if (selectedSize === 'small') maxHeight = '28px';
+    if (selectedSize === 'medium') maxHeight = '48px';
+    if (selectedSize === 'large') maxHeight = '64px';
+    
+    const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+    logoImages.forEach(img => {
+      if (logoUrl && logoUrl.trim() !== '') {
+        // Re-set the src to trigger reload
+        img.src = logoUrl;
+        img.style.display = 'block';
+        img.style.maxHeight = maxHeight;
+        img.style.width = 'auto';
+        img.style.margin = '0 auto';
+        img.style.objectFit = 'contain';
+      } else {
+        img.style.display = 'none';
+      }
+    });
+    
+    if (typeof window.updateFSPreview === 'function') {
+      window.updateFSPreview();
     }
   });
+}
   
   // Initial preview update
   setTimeout(() => {
@@ -3434,6 +3486,7 @@ setTimeout(function() {
     
     // Logo Size & Alignment
  // ---- Logo (with size, centered by default) ----
+// ---- Logo (with size, centered by default) ----
 const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
 const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
 
@@ -3443,15 +3496,20 @@ if (logoSize === 'medium') logoMaxHeight = '48px';
 if (logoSize === 'large') logoMaxHeight = '64px';
 
 const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+
 logoImages.forEach(img => {
   if (logoUrl && logoUrl.trim() !== '') {
-    img.src = logoUrl;
+    // Store the URL to ensure it doesn't get lost
+    const currentUrl = logoUrl;
+    img.src = currentUrl;
     img.style.display = 'block';
     img.style.maxHeight = logoMaxHeight;
     img.style.width = 'auto';
-    img.style.margin = '0 auto';  // Always centered
+    img.style.margin = '0 auto';
+    img.style.objectFit = 'contain';
   } else {
     img.style.display = 'none';
+    img.src = '';
   }
 });
 
