@@ -1706,10 +1706,7 @@
         </div>
       </div>
 
-            <!-- FUNNEL STUDIO SECTION - REDESIGNED -->
-<!-- FUNNEL STUDIO SECTION - 5-LAYER REDESIGN -->
-<!-- FUNNEL STUDIO SECTION - STAR-BASED FLOW -->
-<!-- FUNNEL STUDIO SECTION - DEMO STYLE -->
+       <!-- FUNNEL STUDIO SECTION - CLEANED VERSION -->
 <div id="funnelStudioSection" class="content-section">
   <div class="fs-wrap">
 
@@ -1735,7 +1732,7 @@
             <span style="font-weight: 600; font-size: 0.85rem;">Brand Identity</span>
           </div>
           
-          <!-- Logo Upload -->
+          <!-- Logo Upload (no URL input) -->
           <div class="fs-group">
             <div class="fs-group-label">Business logo</div>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
@@ -1745,7 +1742,7 @@
               <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;" onchange="uploadLogoToBase64(this)">
               <span style="font-size: 0.7rem; color: var(--cream-dim);">PNG, JPG, SVG — max 2MB</span>
             </div>
-            <input class="fs-input" id="fsLogoUrl" type="url" placeholder="https://your-site.com/logo.png" oninput="updateFSPreview(); checkLogoUrl()">
+            <!-- Logo preview -->
             <div id="fsLogoPreview" style="display:none; margin-top: 12px; padding: 12px; background: var(--surface-2); border-radius: 8px; text-align: center;">
               <img id="fsLogoPreviewImg" style="max-height: 48px; max-width: 100%;" alt="">
               <button onclick="clearLogo()" style="display: block; margin: 8px auto 0; background: transparent; border: none; color: #C0675A; font-size: 0.7rem; cursor: pointer;">✕ Remove logo</button>
@@ -1856,23 +1853,6 @@
           </div>
         </div>
         
-        <!-- Layout -->
-        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-            <span style="font-size: 1rem;">📐</span>
-            <span style="font-weight: 600; font-size: 0.85rem;">Layout</span>
-          </div>
-          
-          <div class="fs-group">
-            <div class="fs-group-label">Button style</div>
-            <div style="display: flex; gap: 8px;">
-              <button onclick="setButtonStyle('rounded')" id="btnStyleRounded" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Rounded</button>
-              <button onclick="setButtonStyle('pill')" id="btnStylePill" style="flex:1; padding: 8px; background: var(--accent); color:#1A1A18; border-radius: 8px; cursor: pointer;">Pill</button>
-              <button onclick="setButtonStyle('sharp')" id="btnStyleSharp" style="flex:1; padding: 8px; background: var(--surface-2); border-radius: 8px; cursor: pointer;">Sharp</button>
-            </div>
-          </div>
-        </div>
-        
         <!-- Experience -->
         <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
           <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
@@ -1887,16 +1867,6 @@
               <option value="grain">Grain — premium texture</option>
               <option value="glass">Glassmorphism — blurred glass</option>
             </select>
-          </div>
-          
-          <div class="fs-group">
-            <div class="fs-group-label">Shadow depth</div>
-            <div style="display: flex; gap: 8px;">
-              <button onclick="setShadowDepth('none')" id="shadowNone" style="flex:1; padding: 6px; background: var(--surface-2); border-radius: 6px; cursor: pointer;">None</button>
-              <button onclick="setShadowDepth('small')" id="shadowSmall" style="flex:1; padding: 6px; background: var(--surface-2); border-radius: 6px; cursor: pointer;">Small</button>
-              <button onclick="setShadowDepth('medium')" id="shadowMedium" style="flex:1; padding: 6px; background: var(--accent); color:#1A1A18; border-radius: 6px; cursor: pointer;">Medium</button>
-              <button onclick="setShadowDepth('large')" id="shadowLarge" style="flex:1; padding: 6px; background: var(--surface-2); border-radius: 6px; cursor: pointer;">Large</button>
-            </div>
           </div>
         </div>
         
@@ -1956,7 +1926,7 @@
         
       </div><!-- end left panel -->
       
-      <!-- RIGHT: Preview - DEMO STYLE -->
+      <!-- RIGHT: Preview (kept the same) -->
       <div class="fs-preview-wrap">
         
         <!-- Device toggle -->
@@ -1966,10 +1936,10 @@
           <button class="fs-dev-btn" data-device="desktop" onclick="setFSDevice('desktop')">💻 Desktop</button>
         </div>
         
-        <!-- Preview container - DEMO STYLE iPhone mockup -->
+        <!-- Preview container -->
         <div class="fs-previews" id="fsPreviewContainer">
           
-          <!-- Mobile preview - iPhone style -->
+          <!-- Mobile preview -->
           <div class="fs-mobile" id="fsMobilePreview">
             <div class="iphone-mockup" style="width: 320px; background: #000; border-radius: 44px; padding: 10px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
               <div style="background: #1A1A18; border-radius: 34px; overflow: hidden; position: relative; min-height: 560px;">
@@ -1979,25 +1949,24 @@
                   <div class="fs-preview-biz" id="previewBiz" style="font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 600; text-align: center; margin-bottom: 20px; color: var(--accent);">Your Business</div>
                   <div class="fs-preview-q" id="previewQuestion" style="font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 24px; line-height: 1.2;">How was your experience?</div>
                   
-                  <!-- Star Rating Component -->
-                 <!-- Star Rating Component - SVG version -->
-<div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
-  <svg class="preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-</div>
+                  <!-- Star Rating Component - SVG version -->
+                  <div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
+                    <svg class="preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                  </div>
                   
                   <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; color: rgba(234,231,220,0.3); margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
                 </div>
@@ -2023,22 +1992,22 @@
                   <div class="fs-preview-q" id="previewQuestionDesktop" style="font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 24px;">How was your experience?</div>
                   
                   <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
-  <svg class="preview-star" data-rating="1" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="2" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-  <svg class="preview-star" data-rating="5" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-  </svg>
-</div>
+                    <svg class="preview-star" data-rating="1" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="2" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                    <svg class="preview-star" data-rating="5" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2046,15 +2015,12 @@
           
         </div>
         
-        <!-- Conversion prediction bar -->
-       
-        
       </div><!-- end right panel -->
       
     </div><!-- end fs-body-new -->
     
   </div><!-- end fs-wrap -->
-</div><!-- end funnelStudioSection -->-- end funnelStudioSection <!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
+</div><!-- end funnelStudioSection -->!-- end funnelStudioSection -->-- end funnelStudioSection <!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
         <div class="panel">
