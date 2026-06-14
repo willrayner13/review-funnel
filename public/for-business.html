@@ -3399,7 +3399,7 @@ if (logoSizeSelect) {
 <script type="module" src="/js/dashboard.bundle.mjs"></script>
 <script>
 // ============================================================
-// ENHANCED FUNNEL STUDIO LIVE PREVIEW - RUNS AFTER BUNDLE
+// ENHANCED FUNNEL STUDIO LIVE PREVIEW - CLEANED UP VERSION
 // ============================================================
 
 // Fix the global variables
@@ -3408,27 +3408,25 @@ window.buttonStyle = 'pill';
 window.shadowDepth = 'medium';
 
 // Override setButtonLayout to update window.buttonLayout
-const originalSetButtonLayout = window.setButtonLayout;
 window.setButtonLayout = function(layout) {
   window.buttonLayout = layout;
   const stackedBtn = document.getElementById('btnLayoutStacked');
   const sideBtn = document.getElementById('btnLayoutSide');
   if (layout === 'stacked') {
-    stackedBtn.style.background = 'var(--accent)';
-    stackedBtn.style.color = '#1A1A18';
-    sideBtn.style.background = 'var(--surface-2)';
-    sideBtn.style.color = 'var(--cream-dim)';
+    if (stackedBtn) stackedBtn.style.background = 'var(--accent)';
+    if (stackedBtn) stackedBtn.style.color = '#1A1A18';
+    if (sideBtn) sideBtn.style.background = 'var(--surface-2)';
+    if (sideBtn) sideBtn.style.color = 'var(--cream-dim)';
   } else {
-    sideBtn.style.background = 'var(--accent)';
-    sideBtn.style.color = '#1A1A18';
-    stackedBtn.style.background = 'var(--surface-2)';
-    stackedBtn.style.color = 'var(--cream-dim)';
+    if (sideBtn) sideBtn.style.background = 'var(--accent)';
+    if (sideBtn) sideBtn.style.color = '#1A1A18';
+    if (stackedBtn) stackedBtn.style.background = 'var(--surface-2)';
+    if (stackedBtn) stackedBtn.style.color = 'var(--cream-dim)';
   }
   if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
 };
 
 // Override setButtonStyle to update window.buttonStyle
-const originalSetButtonStyle = window.setButtonStyle;
 window.setButtonStyle = function(style) {
   window.buttonStyle = style;
   const rounded = document.getElementById('btnStyleRounded');
@@ -3441,15 +3439,14 @@ window.setButtonStyle = function(style) {
       btn.style.color = 'var(--cream-dim)';
     }
   });
-  if (style === 'rounded') rounded.style.background = 'var(--accent)';
-  if (style === 'pill') pill.style.background = 'var(--accent)';
-  if (style === 'sharp') sharp.style.background = 'var(--accent)';
+  if (style === 'rounded' && rounded) rounded.style.background = 'var(--accent)';
+  if (style === 'pill' && pill) pill.style.background = 'var(--accent)';
+  if (style === 'sharp' && sharp) sharp.style.background = 'var(--accent)';
   
   if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
 };
 
 // Override setShadowDepth to update window.shadowDepth
-const originalSetShadowDepth = window.setShadowDepth;
 window.setShadowDepth = function(depth) {
   window.shadowDepth = depth;
   const btns = ['none', 'small', 'medium', 'large'];
@@ -3484,56 +3481,48 @@ setTimeout(function() {
     
     // 2. Apply ALL our new settings
     
-    // Logo Size & Alignment
- // ---- Logo (with size, centered by default) ----
-// ---- Logo (with size, centered by default) ----
-const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
-const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
+    // ---- Logo (with size, centered by default) ----
+    const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
+    const logoSize = document.getElementById('fsLogoSize')?.value || 'medium';
 
-let logoMaxHeight = '36px';
-if (logoSize === 'small') logoMaxHeight = '28px';
-if (logoSize === 'medium') logoMaxHeight = '48px';
-if (logoSize === 'large') logoMaxHeight = '64px';
+    let logoMaxHeight = '36px';
+    if (logoSize === 'small') logoMaxHeight = '28px';
+    if (logoSize === 'medium') logoMaxHeight = '48px';
+    if (logoSize === 'large') logoMaxHeight = '64px';
 
-const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+    const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
 
-logoImages.forEach(img => {
-  if (logoUrl && logoUrl.trim() !== '') {
-    // Store the URL to ensure it doesn't get lost
-    const currentUrl = logoUrl;
-    img.src = currentUrl;
-    img.style.display = 'block';
-    img.style.maxHeight = logoMaxHeight;
-    img.style.width = 'auto';
-    img.style.margin = '0 auto';
-    img.style.objectFit = 'contain';
-  } else {
-    img.style.display = 'none';
-    img.src = '';
-  }
-});
-
-
+    logoImages.forEach(img => {
+      if (logoUrl && logoUrl.trim() !== '') {
+        img.src = logoUrl;
+        img.style.display = 'block';
+        img.style.maxHeight = logoMaxHeight;
+        img.style.width = 'auto';
+        img.style.margin = '0 auto';
+        img.style.objectFit = 'contain';
+      } else {
+        img.style.display = 'none';
+        img.src = '';
+      }
+    });
     
-    // Business Name Display - FIXED: Hide both properly
+    // Business Name Display
     const bizDisplay = document.getElementById('fsBizDisplay')?.value || 'name-only';
     const bizName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
     const bizElements = document.querySelectorAll('#previewBiz, #previewBizDesktop');
-    const logoElements = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
     
     if (bizDisplay === 'hide') {
-      // Hide both business name AND logo
       bizElements.forEach(el => { if (el) el.style.display = 'none'; });
-      logoElements.forEach(el => { if (el) el.style.display = 'none'; });
+      logoImages.forEach(el => { if (el) el.style.display = 'none'; });
     } else if (bizDisplay === 'logo-only') {
       bizElements.forEach(el => { if (el) el.style.display = 'none'; });
-      logoElements.forEach(el => { if (el && logoUrl) el.style.display = 'block'; });
+      logoImages.forEach(el => { if (el && logoUrl) el.style.display = 'block'; });
     } else if (bizDisplay === 'name-only') {
       bizElements.forEach(el => { if (el) { el.style.display = 'block'; el.innerText = bizName; } });
-      logoElements.forEach(el => { if (el) el.style.display = 'none'; });
+      logoImages.forEach(el => { if (el) el.style.display = 'none'; });
     } else if (bizDisplay === 'both') {
       bizElements.forEach(el => { if (el) { el.style.display = 'block'; el.innerText = bizName; } });
-      logoElements.forEach(el => { if (el && logoUrl) el.style.display = 'block'; });
+      logoImages.forEach(el => { if (el && logoUrl) el.style.display = 'block'; });
     }
     
     // Typography
@@ -3543,7 +3532,6 @@ logoImages.forEach(img => {
     if (font === 'syne') fontFamily = "'Syne', sans-serif";
     if (font === 'playfair') fontFamily = "'Playfair Display', serif";
     if (font === 'poppins') fontFamily = "'Poppins', sans-serif";
-    if (font === 'merriweather') fontFamily = "'Merriweather', serif";
     
     document.querySelectorAll('.fs-preview-q, .fs-preview-biz, .fs-preview-btn, .fs-preview-footer').forEach(el => {
       if (el) el.style.fontFamily = fontFamily;
@@ -3556,11 +3544,9 @@ logoImages.forEach(img => {
     
     const phoneMock = document.getElementById('fsPhoneMock');
     const browserBody = document.getElementById('fsBrowserBody');
-    const desktopCard = document.getElementById('fsDesktopCard');
     
     if (phoneMock) phoneMock.style.background = bgColor;
     if (browserBody) browserBody.style.background = bgColor;
-    if (desktopCard) desktopCard.style.background = bgColor;
     
     document.querySelectorAll('.fs-preview-q, .fs-preview-biz, .fs-preview-footer').forEach(el => {
       if (el) el.style.color = textColor;
@@ -3569,11 +3555,6 @@ logoImages.forEach(img => {
     document.querySelectorAll('.fs-btn-happy, .fs-preview-btn.fs-btn-happy').forEach(btn => {
       if (btn) btn.style.background = primaryColor;
     });
-    
-    // REMOVED: Card width (you said you don't want it)
-    // const cardWidth = document.getElementById('fsCardWidth')?.value || 380;
-    // const mobilePhone = document.getElementById('fsPhoneMock');
-    // if (mobilePhone) mobilePhone.style.width = `${cardWidth}px`;
     
     // Background Effect
     const bgEffect = document.getElementById('fsBgEffect')?.value || 'none';
@@ -3586,12 +3567,6 @@ logoImages.forEach(img => {
       
       if (bgEffect === 'gradient') {
         container.style.background = `linear-gradient(135deg, ${bgColor}, #2A2A28)`;
-      } else if (bgEffect === 'mesh') {
-        container.style.background = `radial-gradient(circle at 20% 30%, ${bgColor}, #0A0A09)`;
-      } else if (bgEffect === 'pattern') {
-        container.style.backgroundImage = `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='2' fill='rgba(200,169,110,0.05)'/%3E%3C/svg%3E")`;
-        container.style.backgroundRepeat = 'repeat';
-        container.style.background = bgColor;
       } else if (bgEffect === 'glass') {
         container.style.backdropFilter = 'blur(10px)';
         container.style.background = 'rgba(26,26,24,0.6)';
@@ -3610,20 +3585,6 @@ logoImages.forEach(img => {
     document.querySelectorAll('.fs-phone, .fs-desktop-card').forEach(el => {
       if (el) el.style.boxShadow = shadow;
     });
-    
-    // Animation Level
-    const animation = document.getElementById('fsAnimation')?.value || 'standard';
-    const animatedElements = document.querySelectorAll('.fs-preview-btn, .fs-preview-logo, .fs-preview-biz, .fs-preview-q');
-    
-    if (animation === 'none') {
-      animatedElements.forEach(el => { if (el) el.style.transition = 'none'; });
-    } else if (animation === 'subtle') {
-      animatedElements.forEach(el => { if (el) el.style.transition = 'all 0.15s ease'; });
-    } else if (animation === 'standard') {
-      animatedElements.forEach(el => { if (el) el.style.transition = 'all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)'; });
-    } else if (animation === 'premium') {
-      animatedElements.forEach(el => { if (el) el.style.transition = 'all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1)'; });
-    }
     
     // Button Layout
     if (window.buttonLayout === 'stacked') {
@@ -3652,15 +3613,15 @@ logoImages.forEach(img => {
       if (btn) btn.style.borderRadius = borderRadius;
     });
 
-     updateStarsColor();
-  addStarHoverEffects();
+    updateStarsColor();
+    addStarHoverEffects();
     
     console.log('Funnel Studio preview updated with all settings');
   };
   
-  // Add event listeners for settings
+  // ONLY ONE SET OF EVENT LISTENERS - REMOVED fsLogoSize from here
   const settingIds = [
-    'fsLogoSize', 'fsLogoAlign', 'fsBizDisplay', 'fsFont',
+    'fsLogoAlign', 'fsBizDisplay', 'fsFont',
     'fsBgColor', 'fsTextColor', 'fsBgEffect', 'fsAnimation'
   ];
   
@@ -3676,14 +3637,54 @@ logoImages.forEach(img => {
     }
   });
   
+  // Handle logo size changes separately with direct update
+  const logoSizeSelect = document.getElementById('fsLogoSize');
+  if (logoSizeSelect) {
+    // Remove any existing listeners to prevent duplicates
+    const newSelect = logoSizeSelect.cloneNode(true);
+    logoSizeSelect.parentNode.replaceChild(newSelect, logoSizeSelect);
+    
+    newSelect.addEventListener('change', function() {
+      const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
+      const selectedSize = this.value;
+      
+      let maxHeight = '36px';
+      if (selectedSize === 'small') maxHeight = '28px';
+      if (selectedSize === 'medium') maxHeight = '48px';
+      if (selectedSize === 'large') maxHeight = '64px';
+      
+      const logoImages = document.querySelectorAll('#previewLogoImg, #previewLogoDesktop');
+      logoImages.forEach(img => {
+        if (logoUrl && logoUrl.trim() !== '') {
+          img.src = logoUrl;
+          img.style.display = 'block';
+          img.style.maxHeight = maxHeight;
+          img.style.width = 'auto';
+          img.style.margin = '0 auto';
+          img.style.objectFit = 'contain';
+        } else {
+          img.style.display = 'none';
+        }
+      });
+      
+      // Also update the preview function
+      if (typeof window.updateFSPreview === 'function') {
+        window.updateFSPreview();
+      }
+    });
+  }
+  
   // Initial preview update
   setTimeout(() => {
-    if (typeof window.updateFSPreview === 'function') window.updateFSPreview();
+    if (typeof window.updateFSPreview === 'function') {
+      window.updateFSPreview();
+    }
+    updateStarsColor();
+    addStarHoverEffects();
   }, 500);
   
 }, 1000);
 
-// Add this to your updateFSPreview function to handle star colours
 // Update star colours based on selected accent
 function updateStarsColor() {
   const primaryColor = document.querySelector('.fs-colour.selected')?.style.backgroundColor || '#C8A96E';
@@ -3700,7 +3701,7 @@ function updateStarsColor() {
     gradient.setAttribute("y1", "0%");
     gradient.setAttribute("x2", "100%");
     gradient.setAttribute("y2", "100%");
-    document.querySelector('svg')?.appendChild(gradient);
+    document.body.appendChild(gradient);
   }
   
   // Update gradient colours
@@ -3714,7 +3715,6 @@ function updateStarsColor() {
     const path = star.querySelector('path');
     if (path) {
       path.setAttribute('stroke', primaryColor);
-      // For filled stars (can be toggled in preview)
       if (star.classList.contains('filled')) {
         path.setAttribute('fill', `url(#${gradientId})`);
       } else {
@@ -3724,42 +3724,19 @@ function updateStarsColor() {
   });
 }
 
-// Also add hover simulation for preview
+// Add hover simulation for preview
 function addStarHoverEffects() {
   const stars = document.querySelectorAll('.preview-star');
   
   stars.forEach(star => {
-    star.addEventListener('mouseenter', function() {
-      const rating = parseInt(this.getAttribute('data-rating'));
-      const allStars = document.querySelectorAll('.preview-star');
-      allStars.forEach((s, idx) => {
-        const path = s.querySelector('path');
-        if (idx < rating) {
-          path.setAttribute('fill', 'url(#starGradient)');
-          s.style.transform = 'scale(1.15)';
-        } else {
-          path.setAttribute('fill', 'none');
-          s.style.transform = 'scale(1)';
-        }
-      });
-    });
+    // Remove existing listeners to prevent duplicates
+    star.removeEventListener('mouseenter', starMouseEnter);
+    star.removeEventListener('mouseleave', starMouseLeave);
     
-    star.addEventListener('mouseleave', function() {
-      const allStars = document.querySelectorAll('.preview-star');
-      allStars.forEach((s, idx) => {
-        const path = s.querySelector('path');
-        if (s.classList.contains('filled')) {
-          path.setAttribute('fill', 'url(#starGradient)');
-        } else {
-          path.setAttribute('fill', 'none');
-        }
-        s.style.transform = 'scale(1)';
-      });
-    });
+    star.addEventListener('mouseenter', starMouseEnter);
+    star.addEventListener('mouseleave', starMouseLeave);
   });
 }
-
-
 
 function starMouseEnter(e) {
   const rating = parseInt(e.currentTarget.getAttribute('data-rating'));
