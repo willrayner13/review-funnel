@@ -2500,24 +2500,13 @@
           
           <!-- Mobile preview -->
          <!-- Mobile preview with iPhone mockup -->
+<!-- Mobile preview with iPhone mockup - DYNAMIC -->
 <div class="fs-mobile" id="fsMobilePreview">
   <div class="iphone-mockup">
     <div class="iphone-screen">
       <div class="dynamic-island"></div>
       <div class="funnel-wrapper">
-        <div style="width: 100%;">
-          <img id="previewLogoImg" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
-          <div class="fs-preview-biz" id="previewBiz" style="text-align: center; margin-bottom: 20px; font-weight: 600;">Your Business</div>
-          <div class="fs-preview-q" id="previewQuestion" style="text-align: center; margin-bottom: 24px; font-size: 1.4rem; font-weight: 700;">How was your experience?</div>
-          <div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
-            <svg class="preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-            <svg class="preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-            <svg class="preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-            <svg class="preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-            <svg class="preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/></svg>
-          </div>
-          <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
-        </div>
+        <div id="funnelPreviewContainer" style="width: 100%; height: 100%;"></div>
       </div>
     </div>
   </div>
@@ -4751,5 +4740,177 @@ function previewCopyAndPost() {
 setTimeout(() => {
   updatePreviewWithInteractive();
 }, 1000);
+
+
+function renderFunnelPreview() {
+  const businessName = document.getElementById('sidebarBizName')?.innerText || 'Your Business';
+  const headline = document.getElementById('fsHeadline')?.value || 'How was your experience?';
+  const happyMessage = document.getElementById('fsHappyMessage')?.value || 'Thanks for your feedback! Leave us a Google review →';
+  const unhappyMessage = document.getElementById('fsUnhappyMessage')?.value || "We're sorry to hear that. Please tell us what went wrong.";
+  const logoUrl = document.getElementById('fsLogoUrl')?.value || '';
+  const currentColor = '#C8A96E'; // Default accent color
+  
+  // Complete funnel HTML - MATCHING DEMO EXACTLY
+  const html = `
+    <div class="funnel-card">
+      ${logoUrl ? `<img src="${logoUrl}" style="max-height: 48px; margin: 0 auto 16px; display: block; object-fit: contain;" alt="Logo">` : ''}
+      
+      <!-- Question Screen -->
+      <div id="mainQuestion" style="display: block;">
+        <h2 id="mainHeadline" style="font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 16px; line-height: 1.3;">How was your experience at ${businessName}?</h2>
+        <div class="star-rating" id="starRating" style="display: flex; justify-content: center; gap: 10px; margin: 16px 0;">
+          ${[1,2,3,4,5].map(i => `
+            <svg data-rating="${i}" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="${currentColor}" stroke-width="1.5" style="cursor: pointer; transition: transform 0.15s ease;" onclick="handleStarClick(${i})">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="${currentColor}"/>
+            </svg>
+          `).join('')}
+        </div>
+        <div class="powered-by" style="text-align: center; margin-top: 8px; padding-top: 6px; font-size: 0.55rem; color: rgba(234, 231, 220, 0.3); border-top: 1px solid rgba(234, 231, 220, 0.05);">Powered by <strong>ReviewLift</strong></div>
+      </div>
+      
+      <!-- Success Screen -->
+      <div id="reviewSection" style="display: none;">
+        <div style="font-size: 1.8rem; text-align: center; margin-bottom: 8px;">⭐</div>
+        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center; margin-bottom: 12px;">Thanks for rating us 5 stars!</h2>
+        <p style="font-size: 0.7rem; color: var(--cream-dim); text-align: center; margin-bottom: 16px;">Here's a suggested review — feel free to edit it:</p>
+        <textarea id="suggestionText" class="premium-textarea" rows="3" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; color:var(--cream); font-size:0.9rem; line-height:1.4; resize:none; min-height:90px; margin-bottom:12px;">I highly recommend ${businessName}! Great service, friendly team, and an overall excellent experience. 5 stars!</textarea>
+        <button class="btn-copy" style="width:100%; padding:14px; background:${currentColor}; color:#1A1A18; border:none; border-radius:40px; font-weight:700; font-size:0.9rem; cursor:pointer; margin-bottom:4px;" onclick="handleCopyClick()">Copy &amp; post to Google →</button>
+        
+        <div class="voice-section" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+          <div class="voice-button-container" style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div style="display:flex; align-items:center; gap:12px; background:var(--surface-2); padding:8px 20px; border-radius:60px; border:1px solid var(--border);">
+              <button class="btn-voice" style="width:56px; height:56px; border-radius:50%; background:var(--surface-2); border:2px solid ${currentColor}; cursor:pointer; display:flex; align-items:center; justify-content:center;" onclick="handleVoiceClick()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="${currentColor}" stroke-width="2" style="width:28px; height:28px;">
+                  <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+                  <line x1="12" y1="19" x2="12" y2="22"/>
+                </svg>
+              </button>
+              <span style="font-size:0.8rem; font-weight:500; color:var(--cream);">Record voice review</span>
+            </div>
+          </div>
+          <p class="privacy-note" style="font-size:0.6rem; text-align:center; margin-top:8px; color:var(--cream-dim);">🎙️ No typing needed — just speak. We'll transcribe it for Google.</p>
+        </div>
+        
+        <button onclick="goBackToQuestion()" style="width:100%; padding:12px; background:transparent; border:1px solid var(--border); border-radius:40px; color:var(--cream-dim); cursor:pointer; margin-top:12px;">← Back</button>
+        <div class="powered-by" style="text-align: center; margin-top: 8px; padding-top: 6px; font-size: 0.55rem; color: rgba(234, 231, 220, 0.3); border-top: 1px solid rgba(234, 231, 220, 0.05);">Powered by <strong>ReviewLift</strong></div>
+      </div>
+      
+      <!-- Unhappy Screen -->
+      <div id="feedbackBox" style="display: none;">
+        <div style="font-size: 1.8rem; text-align: center; margin-bottom: 8px;">😔</div>
+        <h2 style="font-size: 1.15rem; font-weight: 600; text-align: center; margin-bottom: 12px;">We're sorry to hear that</h2>
+        <p id="unhappyMessageText" style="font-size: 0.85rem; text-align: center; color: var(--cream-dim); margin-bottom: 16px;">${unhappyMessage}</p>
+        <textarea id="message" class="premium-textarea" rows="3" placeholder="What could we have done better?" style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; color:var(--cream); font-size:0.9rem; line-height:1.4; resize:none; min-height:90px; margin-bottom:12px;"></textarea>
+        <button class="btn-send" style="width:100%; padding:12px; background:var(--surface-2); color:var(--cream); border:1px solid var(--border); border-radius:40px; font-weight:600; cursor:pointer; margin:12px 0 4px;" onclick="handleSendClick()">Send Feedback</button>
+        <button onclick="goBackToQuestion()" style="width:100%; padding:12px; background:transparent; border:1px solid var(--border); border-radius:40px; color:var(--cream-dim); cursor:pointer;">← Back</button>
+        <div class="powered-by" style="text-align: center; margin-top: 8px; padding-top: 6px; font-size: 0.55rem; color: rgba(234, 231, 220, 0.3); border-top: 1px solid rgba(234, 231, 220, 0.05);">Powered by <strong>ReviewLift</strong></div>
+      </div>
+    </div>
+  `;
+  
+  const container = document.getElementById('funnelPreviewContainer');
+  if (container) {
+    container.innerHTML = html;
+  }
+}
+
+function handleStarClick(rating) {
+  const mainQuestion = document.getElementById('mainQuestion');
+  const reviewSection = document.getElementById('reviewSection');
+  const feedbackBox = document.getElementById('feedbackBox');
+  
+  if (mainQuestion) mainQuestion.style.display = 'none';
+  
+  if (rating >= 4) {
+    if (reviewSection) reviewSection.style.display = 'block';
+    if (feedbackBox) feedbackBox.style.display = 'none';
+  } else {
+    if (reviewSection) reviewSection.style.display = 'none';
+    if (feedbackBox) feedbackBox.style.display = 'block';
+  }
+}
+
+// Go back function
+function goBackToQuestion() {
+  const mainQuestion = document.getElementById('mainQuestion');
+  const reviewSection = document.getElementById('reviewSection');
+  const feedbackBox = document.getElementById('feedbackBox');
+  
+  if (mainQuestion) mainQuestion.style.display = 'block';
+  if (reviewSection) reviewSection.style.display = 'none';
+  if (feedbackBox) feedbackBox.style.display = 'none';
+}
+
+// Copy button handler (demo only)
+function handleCopyClick() {
+  const toast = document.getElementById('toast');
+  if (toast) {
+    toast.textContent = '✨ Copy & post to Google (demo preview)';
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2000);
+  }
+}
+
+// Voice button handler (demo only)
+function handleVoiceClick() {
+  const toast = document.getElementById('toast');
+  if (toast) {
+    toast.textContent = '🎙️ Voice recording (demo preview)';
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2000);
+  }
+}
+
+// Send feedback handler (demo only)
+function handleSendClick() {
+  const toast = document.getElementById('toast');
+  if (toast) {
+    toast.textContent = '📨 Feedback sent (demo preview)';
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2000);
+  }
+  setTimeout(() => goBackToQuestion(), 1500);
+}
+
+// Initialize preview when funnel studio becomes active
+function initFunnelStudioPreview() {
+  renderFunnelPreview();
+  
+  // Watch for business name changes
+  const observer = new MutationObserver(() => {
+    renderFunnelPreview();
+  });
+  const bizNameEl = document.getElementById('sidebarBizName');
+  if (bizNameEl) {
+    observer.observe(bizNameEl, { childList: true, characterData: true, subtree: true });
+  }
+  
+  // Watch for input changes
+  ['fsHeadline', 'fsHappyMessage', 'fsUnhappyMessage', 'fsLogoUrl'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => renderFunnelPreview());
+      el.addEventListener('change', () => renderFunnelPreview());
+    }
+  });
+}
+
+// Run when funnel studio section becomes active
+const fsObserver = new MutationObserver(() => {
+  const fsSection = document.getElementById('funnelStudioSection');
+  if (fsSection && fsSection.classList.contains('active')) {
+    initFunnelStudioPreview();
+  }
+});
+fsObserver.observe(document.getElementById('funnelStudioSection'), { attributes: true, attributeFilter: ['class'] });
+
+// Also run once on page load
+setTimeout(() => {
+  if (document.getElementById('funnelStudioSection')?.classList.contains('active')) {
+    initFunnelStudioPreview();
+  }
+}, 1000);
+
 </script>
 </body></html>
