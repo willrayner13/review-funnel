@@ -3842,25 +3842,21 @@ setInterval(checkSectionCompletion, 1000);
 // Toggle collapsible sections
 // Toggle collapsible sections - SINGLE VERSION
 function toggleSection(sectionId) {
-  // Find the content div by its ID
-  const contentDiv = document.getElementById(sectionId);
-  if (!contentDiv) {
-    console.error('Section not found:', sectionId);
-    return;
-  }
-  
-  // Find the parent collapsible section
-  const parent = contentDiv.closest('.fs-collapsible-section');
-  if (!parent) {
-    console.error('Parent section not found');
-    return;
-  }
-  
-  // Toggle the collapsed class
-  if (parent.classList.contains('collapsed')) {
-    parent.classList.remove('collapsed');
-  } else {
-    parent.classList.add('collapsed');
+  const content = document.getElementById(sectionId);
+
+  if (!content) return;
+
+  const isOpen =
+    content.style.display === 'block';
+
+  content.style.display =
+    isOpen ? 'none' : 'block';
+
+  const parent =
+    content.closest('.fs-collapsible-section');
+
+  if (parent) {
+    parent.classList.toggle('collapsed', isOpen);
   }
 }
 
