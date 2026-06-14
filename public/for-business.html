@@ -4186,7 +4186,7 @@ function previewSendFeedback() {
   }
 }
 
-// Update the preview HTML to include interactive elements
+// Update the preview HTML to include interactive elements matching the demo
 function updatePreviewWithInteractive() {
   // Check if we've already added the interactive elements
   if (document.getElementById('fsPreviewSuccessDiv')) return;
@@ -4197,11 +4197,7 @@ function updatePreviewWithInteractive() {
   
   if (!mobilePreview) return;
   
-  // Store original content
-  const originalMobileContent = mobilePreview.innerHTML;
-  const originalDesktopContent = desktopPreview ? desktopPreview.innerHTML : '';
-  
-  // Create new interactive structure for mobile
+  // Create new interactive structure for mobile - MATCHING DEMO STYLE
   mobilePreview.innerHTML = `
     <!-- Question Screen -->
     <div id="fsPreviewQuestionDiv">
@@ -4218,28 +4214,56 @@ function updatePreviewWithInteractive() {
       <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
     </div>
     
-    <!-- Success Screen -->
+    <!-- Success Screen - MATCHING DEMO STYLE -->
     <div id="fsPreviewSuccessDiv" style="display: none;">
-      <div style="font-size: 2.5rem; text-align: center; margin-bottom: 8px;">⭐</div>
-      <div style="font-size: 1.2rem; font-weight: 700; text-align: center; margin-bottom: 16px;">Thanks for your feedback!</div>
-      <p id="previewSuccessMessage" style="font-size: 0.9rem; text-align: center; color: var(--cream-dim); margin-bottom: 20px;">Thanks for your feedback! Leave us a Google review →</p>
-      <button onclick="previewGoBack()" style="width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 100px; color: var(--cream-dim); cursor: pointer; margin-bottom: 8px;">← Back</button>
+      <div style="font-size: 2rem; text-align: center; margin-bottom: 8px;">⭐</div>
+      <div style="font-size: 1.2rem; font-weight: 700; text-align: center; margin-bottom: 4px;">Thanks for rating us 5 stars!</div>
+      <p style="font-size: 0.7rem; color: var(--cream-dim); text-align: center; margin-bottom: 16px;">Here's a suggested review — feel free to edit it:</p>
+      
+      <!-- Suggestion text area with AI suggestion -->
+      <textarea id="previewSuggestionText" class="premium-textarea" rows="3" placeholder="Write your review here..." style="width:100%; padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; color:var(--cream); font-family:inherit; font-size:0.85rem; line-height:1.4; resize:vertical; min-height:80px; margin-bottom:8px;"></textarea>
+      
+      <p style="font-size:0.6rem; color:var(--cream-dim); text-align:center; margin-bottom:12px;">✏️ Edit the text above — make it your own!</p>
+      
+      <!-- Copy button -->
+      <button id="previewCopyBtn" onclick="previewCopyAndPost()" class="btn-copy" style="width:100%; padding:12px; background:var(--accent); color:#1A1A18; border:none; border-radius:100px; font-weight:700; cursor:pointer; margin-bottom:12px;">Copy &amp; post to Google →</button>
+      
+      <!-- Voice Section -->
+      <div class="voice-section" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+        <div class="voice-button-container" style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+          <div style="display:flex; align-items:center; gap:12px; background:var(--surface-2); padding:8px 20px; border-radius:60px; border:1px solid var(--border);">
+            <button id="previewVoiceBtn" class="btn-voice" style="width:48px; height:48px; border-radius:50%; background:var(--surface-2); border:2px solid var(--accent); cursor:pointer; display:flex; align-items:center; justify-content:center;" onclick="previewStartRecording()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px; height:24px; stroke:var(--accent);">
+                <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v1a7 7 0 0 1-14 0v-1"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+              </svg>
+            </button>
+            <span style="font-size:0.8rem; font-weight:500; color:var(--cream);">Record voice review</span>
+          </div>
+          <span id="previewRecordingTimer" class="recording-timer" style="display:none; font-size:0.7rem; font-weight:600; color:var(--danger);">0:00</span>
+        </div>
+        <div id="previewVoiceResult"></div>
+        <p class="privacy-note" style="font-size:0.65rem; text-align:center; margin-top:10px; color:var(--cream-dim);">🎙️ No typing needed — just speak. We'll transcribe it for Google.</p>
+      </div>
+      
+      <button onclick="previewGoBack()" style="width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 100px; color: var(--cream-dim); cursor: pointer; margin-top: 12px;">← Back</button>
       <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 16px;">Powered by <strong>ReviewLift</strong></div>
     </div>
     
     <!-- Unhappy Screen -->
     <div id="fsPreviewUnhappyDiv" style="display: none;">
       <div style="font-size: 2rem; text-align: center; margin-bottom: 8px;">😔</div>
-      <div style="font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: 12px;">We value your feedback</div>
-      <p id="previewUnhappyMessage" style="font-size: 0.85rem; text-align: center; color: var(--cream-dim); margin-bottom: 16px;">We're sorry to hear that. Please tell us what went wrong.</p>
-      <textarea id="previewFeedbackText" class="fs-preview-feedback-text" placeholder="Tell us what happened..." style="width: 100%; padding: 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; color: var(--cream); font-size: 0.85rem; resize: vertical; min-height: 80px; margin-bottom: 12px;"></textarea>
-      <button onclick="previewSendFeedback()" style="width: 100%; padding: 12px; background: var(--accent); color: #1A1A18; border: none; border-radius: 100px; font-weight: 600; cursor: pointer; margin-bottom: 8px;">Send Feedback</button>
+      <div style="font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: 12px;">We're sorry to hear that</div>
+      <p id="previewUnhappyMessage" style="font-size: 0.85rem; text-align: center; color: var(--cream-dim); margin-bottom: 16px;">Your feedback is private — only the business sees it.</p>
+      <textarea id="previewFeedbackText" class="fs-preview-feedback-text" placeholder="What could we have done better?" style="width: 100%; padding: 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; color: var(--cream); font-size: 0.85rem; resize: vertical; min-height: 100px; margin-bottom: 12px;"></textarea>
+      <button onclick="previewSendFeedback()" style="width: 100%; padding: 12px; background: var(--surface-2); color: var(--cream-dim); border: 1px solid var(--border); border-radius: 100px; font-weight: 600; cursor: pointer; margin-bottom: 8px;">Send Feedback</button>
       <button onclick="previewGoBack()" style="width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 100px; color: var(--cream-dim); cursor: pointer;">← Back</button>
       <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 16px;">Powered by <strong>ReviewLift</strong></div>
     </div>
   `;
   
-  // Also update desktop preview if it exists
+  // Also update desktop preview to match
   if (desktopPreview) {
     desktopPreview.innerHTML = `
       <div id="fsPreviewQuestionDivDesktop" style="width: 100%;">
@@ -4264,6 +4288,54 @@ function updatePreviewWithInteractive() {
       img.src = logoUrl;
       img.style.display = 'block';
     });
+  }
+  
+  // Set default AI suggestion text
+  const suggestionText = document.getElementById('previewSuggestionText');
+  if (suggestionText) {
+    const defaultSuggestion = `I highly recommend Your Business! Great service, friendly team, and an overall excellent experience. 5 stars!`;
+    suggestionText.value = defaultSuggestion;
+  }
+}
+
+// Helper functions for the preview
+function previewCopyAndPost() {
+  const textarea = document.getElementById('previewSuggestionText');
+  if (textarea) {
+    textarea.select();
+    document.execCommand('copy');
+    showToast('Review copied to clipboard!', 'success');
+  }
+}
+
+function previewStartRecording() {
+  // Demo recording - just show a toast
+  showToast('Voice recording demo — would transcribe to text in live version', 'info');
+  
+  const timer = document.getElementById('previewRecordingTimer');
+  if (timer) {
+    timer.style.display = 'inline';
+    let seconds = 0;
+    timer.textContent = '0:00';
+    const interval = setInterval(() => {
+      seconds++;
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timer.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+      if (seconds >= 5) {
+        clearInterval(interval);
+        timer.style.display = 'none';
+        const voiceResult = document.getElementById('previewVoiceResult');
+        if (voiceResult) {
+          voiceResult.innerHTML = `
+            <div style="margin-top:12px; padding:10px; background:var(--surface-2); border-radius:12px;">
+              <p style="font-size:0.8rem; margin-bottom:8px;">We heard: "Great service, very professional!"</p>
+              <button onclick="previewCopyAndPost()" class="btn-copy" style="margin:0; padding:8px;">Post as Google review →</button>
+            </div>
+          `;
+        }
+      }
+    }, 1000);
   }
 }
 
@@ -4298,5 +4370,80 @@ if (unhappyMessageInput) {
     }
   });
 }
+
+let previewRecordingSeconds = 0;
+let previewRecordingInterval = null;
+
+function previewStartRecording() {
+  const timer = document.getElementById('previewRecordingTimer');
+  const voiceBtn = document.getElementById('previewVoiceBtn');
+  
+  if (!timer) return;
+  
+  timer.style.display = 'inline';
+  previewRecordingSeconds = 0;
+  timer.textContent = '0:00';
+  
+  // Animate button
+  if (voiceBtn) voiceBtn.classList.add('recording');
+  
+  previewRecordingInterval = setInterval(() => {
+    previewRecordingSeconds++;
+    const mins = Math.floor(previewRecordingSeconds / 60);
+    const secs = previewRecordingSeconds % 60;
+    timer.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+    
+    if (previewRecordingSeconds >= 5) {
+      previewStopRecording();
+    }
+  }, 1000);
+}
+
+function previewStopRecording() {
+  if (previewRecordingInterval) {
+    clearInterval(previewRecordingInterval);
+    previewRecordingInterval = null;
+  }
+  
+  const timer = document.getElementById('previewRecordingTimer');
+  const voiceBtn = document.getElementById('previewVoiceBtn');
+  
+  if (timer) timer.style.display = 'none';
+  if (voiceBtn) voiceBtn.classList.remove('recording');
+  
+  const voiceResult = document.getElementById('previewVoiceResult');
+  if (voiceResult) {
+    voiceResult.innerHTML = `
+      <div style="margin-top:12px; padding:12px; background:var(--surface-2); border-radius:12px;">
+        <p style="font-size:0.8rem; margin-bottom:10px;">🎙️ We heard: "Great service, very professional! Highly recommend."</p>
+        <button onclick="previewCopyAndPost()" class="btn-copy" style="margin:0; padding:10px; width:100%;">Post as Google review →</button>
+      </div>
+    `;
+  }
+  
+  if (typeof showToast === 'function') {
+    showToast('Voice recorded and transcribed!', 'success');
+  } else {
+    alert('Voice recorded and transcribed!');
+  }
+}
+
+function previewCopyAndPost() {
+  const textarea = document.getElementById('previewSuggestionText');
+  if (textarea) {
+    textarea.select();
+    document.execCommand('copy');
+    if (typeof showToast === 'function') {
+      showToast('Review copied to clipboard!', 'success');
+    } else {
+      alert('Review copied to clipboard!');
+    }
+  }
+}
+
+// Call this after the funnel studio loads
+setTimeout(() => {
+  updatePreviewWithInteractive();
+}, 1000);
 </script>
 </body></html>
