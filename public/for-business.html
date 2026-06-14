@@ -1721,6 +1721,7 @@
       </div>
 
        <!-- FUNNEL STUDIO SECTION - CLEANED VERSION -->
+<!-- FUNNEL STUDIO SECTION - CORRECTED LAYOUT -->
 <div id="funnelStudioSection" class="content-section">
   <div class="fs-wrap">
 
@@ -1733,46 +1734,33 @@
       <div class="fs-live-badge"><span class="fs-live-dot"></span>Live</div>
     </div>
 
-    <!-- Body: settings left, preview right -->
-    <div class="fs-body-new" style="display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start;">
+    <!-- TWO-COLUMN LAYOUT: Settings (left) | Preview (right) -->
+    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start;">
       
-      <!-- LEFT: Settings -->
-      <div class="fs-panel-new" style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; position: sticky; top: 16px; max-height: calc(100vh - 120px); overflow-y: auto;">
+      <!-- ========== LEFT COLUMN: SETTINGS ========== -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; position: sticky; top: 16px; max-height: calc(100vh - 120px); overflow-y: auto;">
         
         <!-- Brand Identity -->
-        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">🏷️</span>
             <span style="font-weight: 600; font-size: 0.85rem;">Brand Identity</span>
           </div>
           
-          <!-- Logo Upload (no URL input) -->
-          <!-- Logo Upload - Upload only (no URL input) -->
-<!-- Logo Upload - Clean UX -->
-<!-- Logo Upload - Keep size, remove alignment -->
-<div class="fs-group">
-  <div class="fs-group-label">Business logo</div>
-  
-  <!-- Upload and Remove buttons side by side -->
-  <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-    <label id="fsLogoUploadLabel" for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;">
-      📁 Upload image
-    </label>
-    <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;" onchange="uploadLogoToBase64(this)">
-    <button id="fsRemoveLogoBtn" onclick="clearLogo()" style="display: none; background: transparent; border: 1px solid #C0675A; color: #C0675A; border-radius: 8px; padding: 10px 16px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">
-      ✕ Remove logo
-    </button>
-    <span id="logoStatusText" style="font-size: 0.7rem; color: #6A9E7F; display: none;">✓ Logo uploaded</span>
-  </div>
-  
-  <!-- Logo size (only size, no alignment) -->
-
-  
-  <!-- Hidden field for storing base64 -->
-  <input type="hidden" id="fsLogoUrl">
-</div>
+          <div class="fs-group">
+            <div class="fs-group-label">Business logo</div>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <label id="fsLogoUploadLabel" for="fsLogoUpload" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem;">
+                📁 Upload image
+              </label>
+              <input type="file" id="fsLogoUpload" accept="image/*" style="display: none;" onchange="uploadLogoToBase64(this)">
+              <button id="fsRemoveLogoBtn" onclick="clearLogo()" style="display: none; background: transparent; border: 1px solid #C0675A; color: #C0675A; border-radius: 8px; padding: 10px 16px; font-size: 0.8rem; cursor: pointer;">
+                ✕ Remove logo
+              </button>
+            </div>
+            <input type="hidden" id="fsLogoUrl">
+          </div>
           
-          <!-- Business Name Display -->
           <div class="fs-group" style="margin-top: 16px;">
             <div class="fs-group-label">Business name display</div>
             <select id="fsBizDisplay" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
@@ -1783,7 +1771,6 @@
             </select>
           </div>
           
-          <!-- Typography -->
           <div class="fs-group" style="margin-top: 16px;">
             <div class="fs-group-label">Typography</div>
             <select id="fsFont" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
@@ -1796,191 +1783,116 @@
           </div>
         </div>
         
-        <!-- Theme System -->
-        <!-- Theme Packs - Powerful Templates -->
-<div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-  <div class="fs-layer-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="font-size: 1rem;">🎨</span>
-      <span style="font-weight: 600; font-size: 0.85rem;">Theme Packs</span>
-    </div>
-    <span style="font-size: 0.65rem; color: var(--cream-dim);">12 themes</span>
-  </div>
-  
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-    <!-- Modern Dark -->
-    <button class="fs-theme-card selected" data-theme="modern-dark" onclick="selectThemePack('modern-dark', this)" style="background: var(--surface-2); border: 2px solid var(--accent); border-radius: 12px; padding: 12px 8px; cursor: pointer; transition: all 0.2s;">
-      <div style="width: 100%; height: 40px; background: #0A0A0A; border-radius: 8px; margin-bottom: 8px; border: 1px solid #2A2A2A;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Modern Dark</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Current default</div>
-    </button>
-    
-    <!-- Luxury Black -->
-    <button class="fs-theme-card" data-theme="luxury-black" onclick="selectThemePack('luxury-black', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer; transition: all 0.2s;">
-      <div style="width: 100%; height: 40px; background: #000000; border-radius: 8px; margin-bottom: 8px; border: 1px solid #C8A96E;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Luxury Black</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Hotel / spa</div>
-    </button>
-    
-    <!-- Clinical -->
-    <button class="fs-theme-card" data-theme="clinical" onclick="selectThemePack('clinical', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #F8FAFC; border-radius: 8px; margin-bottom: 8px; border: 1px solid #CBD5E1;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Clinical</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Healthcare</div>
-    </button>
-    
-    <!-- Creative -->
-    <button class="fs-theme-card" data-theme="creative" onclick="selectThemePack('creative', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: 8px; margin-bottom: 8px;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Creative</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Agency</div>
-    </button>
-    
-    <!-- Local Business -->
-    <button class="fs-theme-card" data-theme="local-business" onclick="selectThemePack('local-business', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #FEF3C7; border-radius: 8px; margin-bottom: 8px; border: 1px solid #D97706;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Local Business</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Trades</div>
-    </button>
-    
-    <!-- Hospitality -->
-    <button class="fs-theme-card" data-theme="hospitality" onclick="selectThemePack('hospitality', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #FDF8F3; border-radius: 8px; margin-bottom: 8px; border: 1px solid #D4A574;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Hospitality</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Restaurants</div>
-    </button>
-    
-    <!-- Minimal -->
-    <button class="fs-theme-card" data-theme="minimal" onclick="selectThemePack('minimal', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #FFFFFF; border-radius: 8px; margin-bottom: 8px; border: 1px solid #E5E5E5;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Minimal</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Apple-style</div>
-    </button>
-    
-    <!-- Premium Gold -->
-    <button class="fs-theme-card" data-theme="premium-gold" onclick="selectThemePack('premium-gold', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #1A120B; border-radius: 8px; margin-bottom: 8px; border: 1px solid #D4AF37;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Premium Gold</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Luxury services</div>
-    </button>
-    
-    <!-- Vibrant -->
-    <button class="fs-theme-card" data-theme="vibrant" onclick="selectThemePack('vibrant', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4); border-radius: 8px; margin-bottom: 8px;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Vibrant</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Fitness</div>
-    </button>
-    
-    <!-- E-commerce -->
-    <button class="fs-theme-card" data-theme="ecommerce" onclick="selectThemePack('ecommerce', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #0F172A; border-radius: 8px; margin-bottom: 8px; border: 1px solid #3B82F6;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">E-commerce</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Online stores</div>
-    </button>
-    
-    <!-- Wellness -->
-    <button class="fs-theme-card" data-theme="wellness" onclick="selectThemePack('wellness', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #ECFDF5; border-radius: 8px; margin-bottom: 8px; border: 1px solid #10B981;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Wellness</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">Spa / salon</div>
-    </button>
-    
-    <!-- Tech -->
-    <button class="fs-theme-card" data-theme="tech" onclick="selectThemePack('tech', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 8px; cursor: pointer;">
-      <div style="width: 100%; height: 40px; background: #0A0A0A; border-radius: 8px; margin-bottom: 8px; border: 1px solid #00E5FF;"></div>
-      <div style="font-size: 0.7rem; font-weight: 600;">Tech</div>
-      <div style="font-size: 0.6rem; color: var(--cream-dim);">SaaS / startup</div>
-    </button>
-  </div>
-</div>
+        <!-- Theme Packs -->
+        <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1rem;">🎨</span>
+              <span style="font-weight: 600; font-size: 0.85rem;">Theme Packs</span>
+            </div>
+            <span style="font-size: 0.65rem; color: var(--cream-dim);">12 themes</span>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <button class="fs-theme-card" data-theme="modern-dark" onclick="selectThemePack('modern-dark', this)" style="background: var(--surface-2); border: 2px solid var(--accent); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #0A0A0A; border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Modern Dark</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Default</div>
+            </button>
+            <button class="fs-theme-card" data-theme="luxury-black" onclick="selectThemePack('luxury-black', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #000000; border-radius: 6px; margin-bottom: 6px; border: 1px solid #D4AF37;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Luxury Black</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Hotel/Spa</div>
+            </button>
+            <button class="fs-theme-card" data-theme="clinical" onclick="selectThemePack('clinical', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #F8FAFC; border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Clinical</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Healthcare</div>
+            </button>
+            <button class="fs-theme-card" data-theme="creative" onclick="selectThemePack('creative', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Creative</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Agency</div>
+            </button>
+            <button class="fs-theme-card" data-theme="local-business" onclick="selectThemePack('local-business', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #FEF3C7; border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Local Biz</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Trades</div>
+            </button>
+            <button class="fs-theme-card" data-theme="hospitality" onclick="selectThemePack('hospitality', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #FDF8F3; border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Hospitality</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Restaurants</div>
+            </button>
+            <button class="fs-theme-card" data-theme="minimal" onclick="selectThemePack('minimal', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #FFFFFF; border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Minimal</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Apple-style</div>
+            </button>
+            <button class="fs-theme-card" data-theme="premium-gold" onclick="selectThemePack('premium-gold', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #1A120B; border-radius: 6px; margin-bottom: 6px; border: 1px solid #D4AF37;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Premium Gold</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Luxury</div>
+            </button>
+            <button class="fs-theme-card" data-theme="vibrant" onclick="selectThemePack('vibrant', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4); border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Vibrant</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Fitness</div>
+            </button>
+            <button class="fs-theme-card" data-theme="ecommerce" onclick="selectThemePack('ecommerce', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #0F172A; border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">E-commerce</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Online</div>
+            </button>
+            <button class="fs-theme-card" data-theme="wellness" onclick="selectThemePack('wellness', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #ECFDF5; border-radius: 6px; margin-bottom: 6px;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Wellness</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">Spa/Salon</div>
+            </button>
+            <button class="fs-theme-card" data-theme="tech" onclick="selectThemePack('tech', this)" style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center;">
+              <div style="width: 100%; height: 32px; background: #0A0A0A; border-radius: 6px; margin-bottom: 6px; border: 1px solid #00E5FF;"></div>
+              <div style="font-size: 0.65rem; font-weight: 600;">Tech</div>
+              <div style="font-size: 0.55rem; color: var(--cream-dim);">SaaS</div>
+            </button>
+          </div>
+        </div>
         
-        <!-- Colours -->
-        <!-- Advanced Colour System -->
-<div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-  <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-    <span style="font-size: 1rem;">🎨</span>
-    <span style="font-weight: 600; font-size: 0.85rem;">Colour System</span>
-  </div>
-  
-  <!-- Primary Colour -->
-  <div class="fs-group" style="margin-bottom: 16px;">
-    <div class="fs-group-label">Primary Colour</div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <input type="color" id="fsPrimaryColor" value="#C8A96E" onchange="updateColourSystem()" style="width: 50px; height: 40px; border-radius: 8px; cursor: pointer;">
-      <span style="font-size: 0.75rem; color: var(--cream-dim);">Main CTA, stars, buttons</span>
-    </div>
-  </div>
-  
-  <!-- Secondary Colour -->
-  <div class="fs-group" style="margin-bottom: 16px;">
-    <div class="fs-group-label">Secondary Colour</div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <input type="color" id="fsSecondaryColor" value="#FFFFFF" onchange="updateColourSystem()" style="width: 50px; height: 40px; border-radius: 8px; cursor: pointer;">
-      <span style="font-size: 0.75rem; color: var(--cream-dim);">Highlights, accents</span>
-    </div>
-  </div>
-  
-  <!-- Background Colour (Optional) -->
-  <div class="fs-group" style="margin-bottom: 16px;">
-    <div class="fs-group-label">Background Colour</div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <input type="color" id="fsBgColor" value="#1A1A18" onchange="updateColourSystem()" style="width: 50px; height: 40px; border-radius: 8px; cursor: pointer;">
-      <span style="font-size: 0.75rem; color: var(--cream-dim);">Optional override</span>
-    </div>
-  </div>
-  
-  <!-- Text Colour (Optional) -->
-  <div class="fs-group" style="margin-bottom: 8px;">
-    <div class="fs-group-label">Text Colour</div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <input type="color" id="fsTextColor" value="#EAE7DC" onchange="updateColourSystem()" style="width: 50px; height: 40px; border-radius: 8px; cursor: pointer;">
-      <span style="font-size: 0.75rem; color: var(--cream-dim);">Optional override</span>
-    </div>
-  </div>
-  
-  <!-- Auto-generated colours preview -->
-  <div style="margin-top: 16px; padding: 12px; background: var(--surface-2); border-radius: 10px;">
-    <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 8px;">Auto-generated colours</div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-      <div style="flex: 1; text-align: center;">
-        <div id="hoverColorPreview" style="width: 100%; height: 6px; background: #C8A96E; border-radius: 3px; margin-bottom: 4px;"></div>
-        <div style="font-size: 0.55rem;">Hover</div>
-      </div>
-      <div style="flex: 1; text-align: center;">
-        <div id="activeColorPreview" style="width: 100%; height: 6px; background: #B89A5A; border-radius: 3px; margin-bottom: 4px;"></div>
-        <div style="font-size: 0.55rem;">Active</div>
-      </div>
-      <div style="flex: 1; text-align: center;">
-        <div id="focusColorPreview" style="width: 100%; height: 6px; background: #E0C288; border-radius: 3px; margin-bottom: 4px;"></div>
-        <div style="font-size: 0.55rem;">Focus</div>
-      </div>
-      <div style="flex: 1; text-align: center;">
-        <div id="disabledColorPreview" style="width: 100%; height: 6px; background: rgba(200,169,110,0.4); border-radius: 3px; margin-bottom: 4px;"></div>
-        <div style="font-size: 0.55rem;">Disabled</div>
-      </div>
-    </div>
-  </div>
-</div>
+        <!-- Colour System -->
+        <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="font-size: 1rem;">🎨</span>
+            <span style="font-weight: 600; font-size: 0.85rem;">Colour System</span>
+          </div>
           
           <div class="fs-group" style="margin-bottom: 12px;">
-            <div class="fs-group-label">Background colour</div>
+            <div class="fs-group-label">Primary Colour</div>
+            <input type="color" id="fsPrimaryColor" value="#C8A96E" onchange="updateColourSystem()" style="width: 100%; height: 40px; border-radius: 8px;">
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Secondary Colour</div>
+            <input type="color" id="fsSecondaryColor" value="#FFFFFF" onchange="updateColourSystem()" style="width: 100%; height: 40px; border-radius: 8px;">
+          </div>
+          
+          <div class="fs-group" style="margin-bottom: 12px;">
+            <div class="fs-group-label">Background Colour</div>
             <input type="color" id="fsBgColor" value="#1A1A18" onchange="updateFSPreview()" style="width: 100%; height: 40px; border-radius: 8px;">
           </div>
           
           <div class="fs-group">
-            <div class="fs-group-label">Text colour</div>
+            <div class="fs-group-label">Text Colour</div>
             <input type="color" id="fsTextColor" value="#EAE7DC" onchange="updateFSPreview()" style="width: 100%; height: 40px; border-radius: 8px;">
           </div>
         </div>
         
         <!-- Experience -->
-        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">✨</span>
             <span style="font-weight: 600; font-size: 0.85rem;">Experience</span>
           </div>
           
-          <div class="fs-group" style="margin-bottom: 12px;">
+          <div class="fs-group">
             <div class="fs-group-label">Background effect</div>
             <select id="fsBgEffect" onchange="updateFSPreview()" style="width:100%; padding: 8px 12px; background: var(--surface-2); border-radius: 8px;">
               <option value="none" selected>None — clean solid</option>
@@ -1991,8 +1903,8 @@
         </div>
         
         <!-- Wording -->
-        <div class="fs-settings-layer" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-          <div class="fs-layer-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 1rem;">✏️</span>
             <span style="font-weight: 600; font-size: 0.85rem;">Wording</span>
           </div>
@@ -2017,115 +1929,74 @@
         <!-- AI Tips -->
         <div class="fs-group" style="margin-bottom: 16px;">
           <div class="fs-group-label">✨ AI suggestions</div>
-          <div class="fs-ai-tip" onclick="applyAISuggestion('headline')">
-            <span class="fs-ai-icon">✦</span>
-            <span>"Rate your experience" converts 12% better</span>
+          <div class="fs-ai-tip" onclick="applyAISuggestion('headline')" style="background: rgba(139,92,246,0.08); border-radius: 8px; padding: 10px; margin-bottom: 6px; cursor: pointer;">
+            <span>✦ "Rate your experience" converts 12% better</span>
           </div>
-          <div class="fs-ai-tip" onclick="applyAISuggestion('happy')" style="margin-top:6px;">
-            <span class="fs-ai-icon">✦</span>
-            <span>Adding a specific ask ("Google review") increases conversion</span>
+          <div class="fs-ai-tip" onclick="applyAISuggestion('happy')" style="background: rgba(139,92,246,0.08); border-radius: 8px; padding: 10px; cursor: pointer;">
+            <span>✦ Adding a specific ask increases conversion</span>
           </div>
         </div>
         
         <!-- Save Bar -->
-        <div class="fs-save-row" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <span class="fs-save-status" id="fsSaveStatus">Unsaved changes</span>
           <div style="display:flex;gap:8px;">
-            <button class="fs-copy-btn" onclick="copyFSLink()">Copy link</button>
-            <button class="fs-save-btn" id="fsSaveBtn" onclick="saveFSSettings()">
-              <i class="ti ti-device-floppy"></i> Save
-            </button>
+            <button class="fs-copy-btn" onclick="copyFSLink()" style="background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; cursor: pointer;">Copy link</button>
+            <button class="fs-save-btn" onclick="saveFSSettings()" style="background: var(--accent); color: #1A1A18; border: none; border-radius: 8px; padding: 7px 16px; cursor: pointer;">💾 Save</button>
           </div>
         </div>
         
         <!-- Funnel link -->
-        <div class="fs-link-row">
-          <span class="fs-link-label">Your funnel</span>
-          <code class="fs-link-code" id="fsLinkDisplay">Loading...</code>
+        <div class="fs-link-row" style="margin-top: 16px; display: flex; align-items: center; gap: 8px; background: var(--surface-2); border-radius: 8px; padding: 8px 12px;">
+          <span class="fs-link-label" style="font-size: 0.7rem;">Your funnel</span>
+          <code class="fs-link-code" id="fsLinkDisplay" style="font-size: 0.72rem; color: var(--accent); word-break: break-all;">Loading...</code>
         </div>
         
-      </div><!-- end left panel -->
+      </div><!-- END LEFT COLUMN -->
       
-      <!-- RIGHT: Preview (kept the same) -->
+      <!-- ========== RIGHT COLUMN: PREVIEW ========== -->
       <div class="fs-preview-wrap">
         
         <!-- Device toggle -->
-        <div class="fs-device-bar">
-          <button class="fs-dev-btn" data-device="mobile" onclick="setFSDevice('mobile')">📱 Mobile</button>
-          <button class="fs-dev-btn active" data-device="split" onclick="setFSDevice('split')">⬛ Split</button>
-          <button class="fs-dev-btn" data-device="desktop" onclick="setFSDevice('desktop')">💻 Desktop</button>
+        <div class="fs-device-bar" style="display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content;">
+          <button class="fs-dev-btn" data-device="mobile" onclick="setFSDevice('mobile')" style="background: transparent; border: none; border-radius: 7px; padding: 6px 14px; cursor: pointer;">📱 Mobile</button>
+          <button class="fs-dev-btn active" data-device="split" onclick="setFSDevice('split')" style="background: var(--surface-2); border: none; border-radius: 7px; padding: 6px 14px; cursor: pointer;">⬛ Split</button>
+          <button class="fs-dev-btn" data-device="desktop" onclick="setFSDevice('desktop')" style="background: transparent; border: none; border-radius: 7px; padding: 6px 14px; cursor: pointer;">💻 Desktop</button>
         </div>
         
         <!-- Preview container -->
-        <div class="fs-previews" id="fsPreviewContainer">
+        <div class="fs-previews" id="fsPreviewContainer" style="display: flex; gap: 20px; flex-wrap: wrap;">
           
           <!-- Mobile preview -->
           <div class="fs-mobile" id="fsMobilePreview">
             <div class="iphone-mockup" style="width: 320px; background: #000; border-radius: 44px; padding: 10px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
-              <div style="background: #1A1A18; border-radius: 34px; overflow: hidden; position: relative; min-height: 560px;">
-                <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 32px; background: #0A0A0A; border-radius: 24px; z-index: 50;"></div>
+              <div style="background: #1A1A18; border-radius: 34px; overflow: hidden; min-height: 560px;">
                 <div style="padding: 50px 16px 20px 16px;">
-<img id="previewLogoImg" class="fs-preview-logo" style="margin: 0 auto 16px; display: none;" alt="">                  <div class="fs-preview-biz" id="previewBiz" style="font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 600; text-align: center; margin-bottom: 20px; color: var(--accent);">Your Business</div>
-                  <div class="fs-preview-q" id="previewQuestion" style="font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 24px; line-height: 1.2;">How was your experience?</div>
-                  
-                  <!-- Star Rating Component - SVG version -->
-                  <div style="display: flex; gap: 12px; justify-content: center; margin: 20px 0;" id="previewStars">
-                    <svg class="preview-star" data-rating="1" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="2" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="3" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="4" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="5" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                  </div>
-                  
-                  <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; color: rgba(234,231,220,0.3); margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
+                  <img id="previewLogoImg" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
+                  <div class="fs-preview-biz" id="previewBiz" style="text-align: center; margin-bottom: 20px; font-weight: 600;">Your Business</div>
+                  <div class="fs-preview-q" id="previewQuestion" style="text-align: center; margin-bottom: 24px; font-size: 1.4rem; font-weight: 700;">How was your experience?</div>
+                  <div class="fs-preview-footer" style="text-align: center; font-size: 0.6rem; margin-top: 24px;">Powered by <strong>ReviewLift</strong></div>
                 </div>
               </div>
             </div>
           </div>
           
           <!-- Desktop preview -->
-          <div class="fs-desktop" id="fsDesktopPreview" style="display:none;">
-            <div class="fs-browser" style="width: 100%; max-width: 500px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 12px 40px rgba(0,0,0,0.4);">
+          <div class="fs-desktop" id="fsDesktopPreview" style="display: none;">
+            <div class="fs-browser" style="width: 100%; max-width: 500px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
               <div style="background: #2A2A28; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
                 <div style="display: flex; gap: 5px;">
                   <span style="width: 10px; height: 10px; background: #FF5F56; border-radius: 50%;"></span>
                   <span style="width: 10px; height: 10px; background: #FFBD2E; border-radius: 50%;"></span>
                   <span style="width: 10px; height: 10px; background: #27C93F; border-radius: 50%;"></span>
                 </div>
-                <div style="flex: 1; background: #1A1A18; border-radius: 5px; padding: 4px 10px; font-size: 0.68rem; color: rgba(234,231,220,0.4);">reviewlift.app/r/your-business</div>
+                <div style="flex: 1; background: #1A1A18; border-radius: 5px; padding: 4px 10px; font-size: 0.68rem;">reviewlift.app/r/your-business</div>
               </div>
-              <div style="background: #1A1A18; padding: 32px 24px; display: flex; align-items: center; justify-content: center;">
-                <div style="background: #242422; border-radius: 20px; padding: 40px; max-width: 400px; margin: 0 auto; text-align: center;">
-<img id="previewLogoDesktop" class="fs-preview-logo" style="margin: 0 auto 16px; display: none;" alt="">                  <div class="fs-preview-biz" id="previewBizDesktop" style="font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 20px; color: var(--accent);">Your Business</div>
-                  <div class="fs-preview-q" id="previewQuestionDesktop" style="font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 24px;">How was your experience?</div>
-                  
-                  <div style="display: flex; gap: 16px; justify-content: center; margin: 20px 0;" id="previewStarsDesktop">
-                    <svg class="preview-star" data-rating="1" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="2" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="3" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                    <svg class="preview-star" data-rating="5" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="cursor: default; transition: all 0.2s ease;">
-                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" fill="none" stroke="rgba(234,231,220,0.2)"/>
-                    </svg>
-                  </div>
+              <div style="background: #1A1A18; padding: 32px 24px;">
+                <div style="background: #242422; border-radius: 16px; padding: 32px; text-align: center;">
+                  <img id="previewLogoDesktop" class="fs-preview-logo" style="margin: 0 auto 16px; display: none; max-height: 48px;" alt="">
+                  <div class="fs-preview-biz" id="previewBizDesktop" style="margin-bottom: 20px; font-weight: 600;">Your Business</div>
+                  <div class="fs-preview-q" id="previewQuestionDesktop" style="margin-bottom: 24px; font-size: 1.3rem; font-weight: 700;">How was your experience?</div>
                 </div>
               </div>
             </div>
@@ -2133,12 +2004,12 @@
           
         </div>
         
-      </div><!-- end right panel -->
+      </div><!-- END RIGHT COLUMN -->
       
-    </div><!-- end fs-body-new -->
+    </div><!-- END TWO-COLUMN LAYOUT -->
     
-  </div><!-- end fs-wrap -->
-</div><!-- end funnelStudioSection -->!-- end funnelStudioSection -->-- end funnelStudioSection <!-- end funnelStudioSection --></div><!-- end funnelStudioSection -->    <!-- CUSTOMERS SECTION -->
+  </div><!-- END FS-WRAP -->
+</div><!-- END FUNNEL STUDIO SECTION -->
       <div id="customersSection" class="content-section">
         <h2 style="margin-bottom: 20px;">Customer Feedback</h2>
         <div class="panel">
