@@ -173,6 +173,7 @@ router.post("/predict-channel/:slug", async (req, res) => {
 });
 
 // Suggest review (AI-generated review text)
+// Suggest review (AI-generated review text)
 router.post("/suggest-review/:slug", async (req, res) => {
   const { rating, service } = req.body;
   const slug = req.params.slug;
@@ -185,12 +186,28 @@ router.post("/suggest-review/:slug", async (req, res) => {
 
   if (!business) return res.status(404).json({ error: "Business not found" });
 
+  // Mock suggestions for fallback (when AI fails)
+  const mockSuggestions = [
+    `Really happy with the service from ${business.name}. Professional, on time, and great value. Would definitely recommend. ⭐⭐⭐⭐⭐`,
+    `Excellent experience with ${business.name}. They were thorough, explained everything clearly, and did a fantastic job. 5 stars!`,
+    `Great service from ${business.name}. Friendly team, fair pricing, and they got the job done properly. Will use again.`,
+    `Top quality work from ${business.name}. Very happy with the result - exactly what I needed. Highly recommend!`,
+    `${business.name} were brilliant from start to finish. Communication was great and the work was spot on. Thanks!`
+  ];
+
   try {
     const suggestion = await aiService.generateSuggestedReview(rating, business.name, business.industry, service);
+    // If AI returns an empty or too-short suggestion, use mock
+    if (!suggestion || suggestion.length < 30) {
+      const randomIndex = Math.floor(Math.random() * mockSuggestions.length);
+      return res.json({ suggestion: mockSuggestions[randomIndex] });
+    }
     res.json({ suggestion });
   } catch (err) {
     console.error("Review suggestion error:", err.message);
-    res.status(500).json({ error: "Could not generate suggestion." });
+    // Return a mock suggestion instead of error
+    const randomIndex = Math.floor(Math.random() * mockSuggestions.length);
+    res.json({ suggestion: mockSuggestions[randomIndex] });
   }
 });
 
