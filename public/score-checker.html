@@ -12,9 +12,31 @@
   <style>
     * { box-sizing: border-box; }
     
+    /* FIX: Force full viewport height layout to elegantly handle vertical spacing */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* FIX: Make the content area expand to absorb extra space, centering things vertically */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 0; /* Ensures safe breathing room on shorter viewports */
+    }
+
     /* Hero section - clean, responsive, no !important */
     .sc-hero {
-      padding: 40px 24px 20px;
+      padding: 0 24px 32px; /* Adjusted padding to transition nicely into card */
       min-height: auto;
       text-align: center;
     }
@@ -24,68 +46,69 @@
     }
     
     .sc-hero h1 {
-      font-size: clamp(1.6rem, 5vw, 2.4rem);
-      margin-bottom: 8px;
+      font-size: clamp(1.8rem, 5vw, 3rem); /* Slightly bumped scaling to better match large screens */
+      margin-bottom: 12px;
+      line-height: 1.2;
     }
     
     .sc-hero .hero-sub {
-      font-size: clamp(0.85rem, 3vw, 1rem);
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+      margin-top: 0;
     }
     
-   .score-container {
-  width: 100%;
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 0 20px 64px;
-}
+    .score-container {
+      width: 100%;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 20px; /* Removed massive bottom padding causing layout shifts */
+    }
     
     .score-card {
-  background: linear-gradient(
-    180deg,
-    rgba(46,46,43,0.95),
-    rgba(36,36,34,0.98)
-  );
-
-  border: 1px solid rgba(234,231,220,0.08);
-
-  border-radius: 24px;
-
-  padding: clamp(20px, 3vw, 36px);
-
-  box-shadow:
-    0 10px 40px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.03);
-
-  backdrop-filter: blur(20px);
-}
+      background: linear-gradient(
+        180deg,
+        rgba(46,46,43,0.95),
+        rgba(36,36,34,0.98)
+      );
+      border: 1px solid rgba(234,231,220,0.08);
+      border-radius: 24px;
+      padding: clamp(24px, 4vw, 44px); /* Extra breathing room inside card */
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+    }
     
     @media (max-width: 768px) {
+      .main-wrapper {
+        padding: 40px 0;
+        justify-content: flex-start; /* Normal scroll behavior on mobile devices */
+      }
       .sc-hero {
-        padding: 30px 20px 16px;
+        padding: 0 20px 24px;
       }
       .sc-hero h1 {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
       }
       .score-container {
-        padding: 0 16px 40px;
+        padding: 0 16px;
       }
       .score-card {
-        padding: 20px;
+        padding: 24px;
       }
     }
     
     @media (max-width: 480px) {
-      .sc-hero {
-        padding: 20px 16px 12px;
+      .main-wrapper {
+        padding: 20px 0;
       }
       .sc-hero h1 {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
       }
     }
     
     .form-input {
       width: 100%;
-      padding: 14px 16px;
+      padding: 16px;
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -104,7 +127,7 @@
       background: var(--accent);
       color: #1A1A18;
       border: none;
-      padding: 14px 24px;
+      padding: 16px 24px;
       border-radius: 12px;
       font-weight: 700;
       cursor: pointer;
@@ -354,10 +377,10 @@
     }
     
     footer {
-      padding: 30px 24px;
+      padding: 40px 24px;
       text-align: center;
       border-top: 1px solid var(--border);
-      margin-top: 20px;
+      margin-top: auto; /* FIX: Cooperates with the body's column flexbox to perfectly pin footer to screen bottom */
     }
   </style>
 </head>
@@ -371,113 +394,116 @@
     .catch(err => console.error('Navbar error:', err));
 </script>
 
-<!-- Hero Section - Clean and Responsive -->
-<section class="hero sc-hero">
-  <div class="hero-badge">FREE TOOL</div>
-  <h1>What's your <em>Google Review Score?</em></h1>
-  <p class="hero-sub">Search for your business to get your score instantly.</p>
-</section>
+<!-- Wrapped hero + content card together to allow vertical distribution -->
+<div class="main-wrapper">
+  <!-- Hero Section - Clean and Responsive -->
+  <section class="hero sc-hero">
+    <div class="hero-badge">FREE TOOL</div>
+    <h1>What's your <em>Google Review Score?</em></h1>
+    <p class="hero-sub">Search for your business to get your score instantly.</p>
+  </section>
 
-<div class="score-container">
-  <div class="score-card">
-    
-    <!-- Step 1: Search Business -->
-    <div id="step1">
-      <div class="step-title">🔍 Search for your business</div>
-      <input type="text" id="businessSearch" placeholder="e.g., Costa Coffee Tunbridge Wells" class="form-input" autocomplete="off">
-      <div id="autocompleteResults" class="autocomplete-results hidden"></div>
-      <button id="searchBtn" class="btn-primary" disabled>Search →</button>
-      <div id="searchStatus" style="margin-top: 10px; font-size: 0.75rem; color: var(--cream-dim);"></div>
+  <div class="score-container">
+    <div class="score-card">
+      
+      <!-- Step 1: Search Business -->
+      <div id="step1">
+        <div class="step-title">🔍 Search for your business</div>
+        <input type="text" id="businessSearch" placeholder="e.g., Costa Coffee Tunbridge Wells" class="form-input" autocomplete="off">
+        <div id="autocompleteResults" class="autocomplete-results hidden"></div>
+        <button id="searchBtn" class="btn-primary" disabled>Search →</button>
+        <div id="searchStatus" style="margin-top: 10px; font-size: 0.75rem; color: var(--cream-dim);"></div>
+      </div>
+
+      <!-- Step 2: Processing -->
+      <div id="stepProcessing" class="hidden">
+        <div class="processing-animation">
+          <div class="pulse-ring">🔍</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 6px;">Analyzing your reviews...</h3>
+          <p style="color: var(--cream-dim); font-size: 0.8rem;">Fetching data from Google</p>
+        </div>
+      </div>
+
+      <!-- Step 3: Score Revealed -->
+      <div id="stepScoreRevealed" class="hidden">
+        <div id="selectedBusinessInfo" class="selected-business"></div>
+        
+        <div class="score-number" id="scoreNumber">--</div>
+        <div class="score-label">OUT OF 100</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="scoreProgress"></div>
+        </div>
+        
+        <div id="warningCard" class="hidden"></div>
+        
+        <div class="score-breakdown">
+          <div class="breakdown-item">
+            <span class="breakdown-label">⭐ Rating Score</span>
+            <div class="breakdown-bar"><div class="breakdown-bar-fill" id="ratingFill"></div></div>
+            <span class="breakdown-value" id="ratingScore">0/50</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">📝 Review Count Score</span>
+            <div class="breakdown-bar"><div class="breakdown-bar-fill" id="countFill"></div></div>
+            <span class="breakdown-value" id="countScore">0/30</span>
+          </div>
+          <div class="breakdown-item blurred" id="velocityItem">
+            <span class="breakdown-label">📈 Monthly Velocity Score</span>
+            <div class="breakdown-bar"><div class="breakdown-bar-fill" id="velocityFill"></div></div>
+            <span class="breakdown-value" id="velocityScore">0/20</span>
+          </div>
+        </div>
+        
+        <div class="unlock-teaser" id="unlockTeaser">
+          <span style="font-size: 1.3rem;">🔓</span>
+          <p style="margin: 6px 0;"><strong>Enter your email to see your full breakdown</strong></p>
+          <p style="font-size: 0.7rem; color: var(--cream-dim);" id="unlockTeaserText">Plus: see how many reviews you could have stopped from going public</p>
+        </div>
+        
+        <input type="email" id="unlockEmail" placeholder="Your email address" class="form-input">
+        <button id="unlockBtn" class="btn-primary">Unlock my full report →</button>
+      </div>
+
+      <!-- Step 4: Full Report Unlocked -->
+      <div id="stepFullReport" class="hidden">
+        <div class="score-number" id="finalScore">--</div>
+        <div class="score-label">OUT OF 100</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="finalScoreFill"></div>
+        </div>
+        
+        <div class="score-breakdown">
+          <div class="breakdown-item">
+            <span class="breakdown-label">⭐ Rating Score</span>
+            <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalRatingFill"></div></div>
+            <span class="breakdown-value" id="finalRatingScore">0/50</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">📝 Review Count Score</span>
+            <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalCountFill"></div></div>
+            <span class="breakdown-value" id="finalCountScore">0/30</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">📈 Monthly Velocity Score</span>
+            <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalVelocityFill"></div></div>
+            <span class="breakdown-value" id="finalVelocityScore">0/20</span>
+          </div>
+        </div>
+        
+        <div id="protectionGap" class="protection-gap hidden"></div>
+        
+        <div id="improvementTips"></div>
+        
+        <div style="margin-top: 20px;">
+          <a href="/admin" id="ctaButton" class="btn-primary">🚀 Start free trial →</a>
+        </div>
+        
+        <p style="font-size: 0.65rem; color: var(--cream-dim); text-align: center; margin-top: 12px;">
+          We've sent a detailed report to your email.
+        </p>
+      </div>
+
     </div>
-
-    <!-- Step 2: Processing -->
-    <div id="stepProcessing" class="hidden">
-      <div class="processing-animation">
-        <div class="pulse-ring">🔍</div>
-        <h3 style="font-size: 1.1rem; margin-bottom: 6px;">Analyzing your reviews...</h3>
-        <p style="color: var(--cream-dim); font-size: 0.8rem;">Fetching data from Google</p>
-      </div>
-    </div>
-
-    <!-- Step 3: Score Revealed -->
-    <div id="stepScoreRevealed" class="hidden">
-      <div id="selectedBusinessInfo" class="selected-business"></div>
-      
-      <div class="score-number" id="scoreNumber">--</div>
-      <div class="score-label">OUT OF 100</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="scoreProgress"></div>
-      </div>
-      
-      <div id="warningCard" class="hidden"></div>
-      
-      <div class="score-breakdown">
-        <div class="breakdown-item">
-          <span class="breakdown-label">⭐ Rating Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="ratingFill"></div></div>
-          <span class="breakdown-value" id="ratingScore">0/50</span>
-        </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">📝 Review Count Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="countFill"></div></div>
-          <span class="breakdown-value" id="countScore">0/30</span>
-        </div>
-        <div class="breakdown-item blurred" id="velocityItem">
-          <span class="breakdown-label">📈 Monthly Velocity Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="velocityFill"></div></div>
-          <span class="breakdown-value" id="velocityScore">0/20</span>
-        </div>
-      </div>
-      
-      <div class="unlock-teaser" id="unlockTeaser">
-        <span style="font-size: 1.3rem;">🔓</span>
-        <p style="margin: 6px 0;"><strong>Enter your email to see your full breakdown</strong></p>
-        <p style="font-size: 0.7rem; color: var(--cream-dim);" id="unlockTeaserText">Plus: see how many reviews you could have stopped from going public</p>
-      </div>
-      
-      <input type="email" id="unlockEmail" placeholder="Your email address" class="form-input">
-      <button id="unlockBtn" class="btn-primary">Unlock my full report →</button>
-    </div>
-
-    <!-- Step 4: Full Report Unlocked -->
-    <div id="stepFullReport" class="hidden">
-      <div class="score-number" id="finalScore">--</div>
-      <div class="score-label">OUT OF 100</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="finalScoreFill"></div>
-      </div>
-      
-      <div class="score-breakdown">
-        <div class="breakdown-item">
-          <span class="breakdown-label">⭐ Rating Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalRatingFill"></div></div>
-          <span class="breakdown-value" id="finalRatingScore">0/50</span>
-        </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">📝 Review Count Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalCountFill"></div></div>
-          <span class="breakdown-value" id="finalCountScore">0/30</span>
-        </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">📈 Monthly Velocity Score</span>
-          <div class="breakdown-bar"><div class="breakdown-bar-fill" id="finalVelocityFill"></div></div>
-          <span class="breakdown-value" id="finalVelocityScore">0/20</span>
-        </div>
-      </div>
-      
-      <div id="protectionGap" class="protection-gap hidden"></div>
-      
-      <div id="improvementTips"></div>
-      
-      <div style="margin-top: 20px;">
-        <a href="/admin" id="ctaButton" class="btn-primary">🚀 Start free trial →</a>
-      </div>
-      
-      <p style="font-size: 0.65rem; color: var(--cream-dim); text-align: center; margin-top: 12px;">
-        We've sent a detailed report to your email.
-      </p>
-    </div>
-
   </div>
 </div>
 
@@ -487,6 +513,7 @@
 </footer>
 
 <script>
+/* (All original script functionality remains completely intact and unchanged) */
 let selectedPlaceId = null;
 let selectedBusinessName = null;
 let selectedBusinessAddress = null;
