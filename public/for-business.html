@@ -3747,6 +3747,16 @@ function applyThemePack(themeId, element) {
   if (typeof showToast === 'function') {
     showToast(`"${themeId.replace('-', ' ')}" theme applied`, 'success');
   }
+
+  console.log(
+  'Desktop body:',
+  document.querySelector('#fsDesktopPreview .fs-browser-body')
+);
+
+console.log(
+  'Desktop card:',
+  document.querySelector('#fsDesktopPreview .fs-desktop-card')
+);
 }
 
 // Check section completion and show ticks
