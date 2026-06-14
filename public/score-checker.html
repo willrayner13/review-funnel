@@ -10,16 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/landing.css">
   <style>
+    /* Reset and base - matching landing.css */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     html, body {
       margin: 0;
       padding: 0;
-      background: #0F0F0E;
+      background: var(--bg, #1A1A18);
     }
 
     body {
-      background: radial-gradient(ellipse at 20% 30%, #1A1A18 0%, #0A0A09 100%);
+      background: var(--bg, #1A1A18);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
@@ -27,7 +28,7 @@
     }
 
     #rl-nav-placeholder {
-      background: transparent !important;
+      background: transparent;
     }
 
     .main-wrapper {
@@ -36,28 +37,42 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 24px 60px;
+      padding: 80px 24px 60px;
     }
 
     .score-container {
       width: 100%;
-      max-width: 800px;
+      max-width: 680px;
       margin: 0 auto;
     }
 
-    /* Premium Card Base */
+    /* Responsive padding */
+    @media (max-width: 768px) {
+      .main-wrapper {
+        padding: 60px 20px 40px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-wrapper {
+        padding: 40px 16px 30px;
+      }
+    }
+
+    /* Premium Card Base - matching website style */
     .premium-card {
-      background: rgba(18, 18, 16, 0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(200, 169, 110, 0.12);
-      border-radius: 48px;
-      padding: 44px;
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      background: var(--surface, #242422);
+      border: 1px solid var(--border, rgba(234, 231, 220, 0.09));
+      border-radius: 24px;
+      padding: 40px;
+      transition: all 0.3s ease;
     }
 
     @media (max-width: 640px) {
-      .premium-card { padding: 28px; border-radius: 32px; }
-      .main-wrapper { padding: 20px 16px 40px; }
+      .premium-card {
+        padding: 28px;
+        border-radius: 20px;
+      }
     }
 
     /* Step 1 - Search Card */
@@ -67,32 +82,37 @@
     
     .hero-badge {
       display: inline-block;
-      background: rgba(200, 169, 110, 0.1);
+      background: var(--accent-dim, rgba(200, 169, 110, 0.1));
       border: 1px solid rgba(200, 169, 110, 0.2);
       border-radius: 100px;
       padding: 6px 16px;
       font-size: 0.7rem;
       font-weight: 600;
       letter-spacing: 1px;
-      color: #C8A96E;
+      color: var(--accent, #C8A96E);
       margin-bottom: 24px;
     }
     
     .search-card h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(2rem, 6vw, 3rem);
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
       font-weight: 800;
       letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #EAE7DC 0%, #C8A96E 80%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--cream, #EAE7DC);
       margin-bottom: 12px;
     }
     
+    .search-card h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent, #C8A96E) 0%, #E8C98A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
     .search-card .hero-sub {
-      font-size: clamp(0.9rem, 3vw, 1rem);
-      color: rgba(234, 231, 220, 0.5);
+      font-size: clamp(0.85rem, 3vw, 1rem);
+      color: var(--cream-dim, rgba(234, 231, 220, 0.52));
       margin-bottom: 40px;
     }
     
@@ -100,19 +120,19 @@
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #C8A96E;
+      letter-spacing: 1.5px;
+      color: var(--accent, #C8A96E);
       margin-bottom: 12px;
       text-align: left;
     }
     
     .form-input {
       width: 100%;
-      padding: 16px 20px;
-      background: rgba(30, 30, 28, 0.9);
-      border: 1px solid rgba(200, 169, 110, 0.15);
-      border-radius: 24px;
-      color: #EAE7DC;
+      padding: 14px 16px;
+      background: var(--surface-2, #2E2E2B);
+      border: 1px solid var(--border, rgba(234, 231, 220, 0.09));
+      border-radius: 12px;
+      color: var(--cream, #EAE7DC);
       font-family: inherit;
       font-size: 1rem;
       transition: all 0.2s ease;
@@ -120,27 +140,28 @@
     
     .form-input:focus {
       outline: none;
-      border-color: #C8A96E;
+      border-color: var(--accent, #C8A96E);
       box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.1);
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, #C8A96E 0%, #D4B87A 100%);
+      background: var(--accent, #C8A96E);
       color: #1A1A18;
       border: none;
-      padding: 16px 28px;
-      border-radius: 40px;
+      padding: 14px 24px;
+      border-radius: 12px;
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
       width: 100%;
-      margin-top: 20px;
+      margin-top: 16px;
       transition: all 0.2s ease;
     }
     
     .btn-primary:hover {
+      background: #D4B87A;
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px -5px rgba(200, 169, 110, 0.4);
+      box-shadow: 0 8px 28px rgba(200, 169, 110, 0.3);
     }
     
     .btn-primary:disabled {
@@ -155,58 +176,70 @@
     }
     
     .pulse-ring {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 24px;
-      background: rgba(200, 169, 110, 0.08);
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 20px;
+      background: var(--accent-dim, rgba(200, 169, 110, 0.15));
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
-      animation: pulseRing 1.5s ease-out infinite;
+      font-size: 2rem;
+      animation: pulse 1.5s ease-out infinite;
     }
     
-    @keyframes pulseRing {
-      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(200, 169, 110, 0.3); }
-      70% { transform: scale(1.1); box-shadow: 0 0 0 25px rgba(200, 169, 110, 0); }
-      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(200, 169, 110, 0); }
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      70% { transform: scale(1.1); opacity: 0.3; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+    
+    .loading-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--cream, #EAE7DC);
+    }
+    
+    .loading-card p {
+      color: var(--cream-dim, rgba(234, 231, 220, 0.52));
+      font-size: 0.8rem;
     }
 
     /* ========== PREVIEW CARD (Step 3) ========== */
     .preview-card {
-      background: rgba(18, 18, 16, 0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(200, 169, 110, 0.12);
-      border-radius: 48px;
-      padding: 36px;
+      background: var(--surface, #242422);
+      border: 1px solid var(--border, rgba(234, 231, 220, 0.09));
+      border-radius: 24px;
+      padding: 32px;
     }
     
     .business-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
       padding-bottom: 20px;
       margin-bottom: 20px;
-      border-bottom: 1px solid rgba(200, 169, 110, 0.1);
+      border-bottom: 1px solid var(--border, rgba(234, 231, 220, 0.09));
     }
     
     .business-name {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
-      font-size: 1.2rem;
-      color: #EAE7DC;
+      font-size: 1.1rem;
+      color: var(--cream, #EAE7DC);
     }
     
     .rating-badge {
-      background: rgba(200, 169, 110, 0.1);
-      padding: 6px 12px;
+      background: var(--surface-2, #2E2E2B);
+      padding: 5px 12px;
       border-radius: 40px;
-      font-size: 0.75rem;
-      color: #C8A96E;
+      font-size: 0.7rem;
+      color: var(--accent, #C8A96E);
     }
     
-    /* Score Dial */
     .score-dial {
       text-align: center;
       margin: 20px 0;
@@ -214,43 +247,43 @@
     
     .score-number {
       font-family: 'Syne', sans-serif;
-      font-size: 5rem;
+      font-size: 4rem;
       font-weight: 800;
       line-height: 1;
       animation: scorePop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
     }
     
     @keyframes scorePop {
-      0% { transform: scale(0.8) rotate(-3deg); opacity: 0; }
+      0% { transform: scale(0.8); opacity: 0; }
       60% { transform: scale(1.05); }
       100% { transform: scale(1); opacity: 1; }
     }
     
-    .score-number.excellent { color: #6A9E7F; text-shadow: 0 0 30px rgba(106,158,127,0.3); }
-    .score-number.good { color: #C8A96E; text-shadow: 0 0 30px rgba(200,169,110,0.3); }
-    .score-number.warning { color: #D4A74A; text-shadow: 0 0 25px rgba(212,167,74,0.3); }
-    .score-number.crisis { color: #C0675A; text-shadow: 0 0 25px rgba(192,103,90,0.3); }
+    .score-number.excellent { color: #6A9E7F; }
+    .score-number.good { color: #C8A96E; }
+    .score-number.warning { color: #D4A74A; }
+    .score-number.crisis { color: #C0675A; }
     
     .score-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 4px;
-      color: rgba(234, 231, 220, 0.35);
+      letter-spacing: 3px;
+      color: var(--cream-dim, rgba(234, 231, 220, 0.52));
       margin-top: 6px;
     }
     
     .progress-bar {
       height: 6px;
-      background: rgba(46, 46, 43, 0.8);
-      border-radius: 10px;
-      margin: 24px 0;
+      background: var(--surface-2, #2E2E2B);
+      border-radius: 4px;
+      margin: 20px 0;
       overflow: hidden;
     }
     
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #C8A96E, #E8C98A);
-      border-radius: 10px;
+      background: var(--accent, #C8A96E);
+      border-radius: 4px;
       width: 0%;
       transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -259,27 +292,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(234, 231, 220, 0.05);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border, rgba(234, 231, 220, 0.05));
     }
     
     .metric-label {
-      font-size: 0.85rem;
-      color: rgba(234, 231, 220, 0.5);
+      font-size: 0.8rem;
+      color: var(--cream-dim, rgba(234, 231, 220, 0.52));
+      min-width: 100px;
     }
     
     .metric-bar {
       flex: 1;
       height: 4px;
-      background: rgba(46, 46, 43, 0.8);
+      background: var(--surface-2, #2E2E2B);
       border-radius: 4px;
-      margin: 0 16px;
+      margin: 0 12px;
       overflow: hidden;
     }
     
     .metric-fill {
       height: 100%;
-      background: #C8A96E;
+      background: var(--accent, #C8A96E);
       border-radius: 4px;
       width: 0%;
       transition: width 0.8s ease;
@@ -288,8 +322,8 @@
     .metric-value {
       font-family: 'Syne', sans-serif;
       font-weight: 600;
-      font-size: 0.85rem;
-      color: #EAE7DC;
+      font-size: 0.8rem;
+      color: var(--cream, #EAE7DC);
       min-width: 45px;
       text-align: right;
     }
@@ -297,83 +331,84 @@
     .metric-row.blurred .metric-value,
     .metric-row.blurred .metric-bar {
       filter: blur(4px);
-      opacity: 0.4;
+      opacity: 0.5;
     }
     
     .warning-chip {
-      background: rgba(192, 103, 90, 0.1);
+      background: rgba(192, 103, 90, 0.08);
       border-left: 3px solid #C0675A;
       border-radius: 12px;
-      padding: 14px 16px;
+      padding: 12px 16px;
       margin: 20px 0;
       font-size: 0.8rem;
       line-height: 1.5;
-      color: rgba(234, 231, 220, 0.7);
+      color: var(--cream-dim, rgba(234, 231, 220, 0.7));
     }
     
     .unlock-section {
       text-align: center;
       margin-top: 24px;
       padding: 20px;
-      background: linear-gradient(135deg, rgba(200, 169, 110, 0.05) 0%, transparent 100%);
-      border-radius: 28px;
+      background: var(--accent-dim, rgba(200, 169, 110, 0.06));
+      border-radius: 20px;
     }
     
     /* ========== REPORT CARD (Step 4) ========== */
     .report-card {
-      background: linear-gradient(135deg, rgba(20, 20, 18, 0.95) 0%, rgba(15, 15, 13, 0.98) 100%);
-      border: 1px solid rgba(200, 169, 110, 0.2);
-      border-radius: 48px;
-      padding: 40px;
+      background: var(--surface, #242422);
+      border: 1px solid var(--border, rgba(234, 231, 220, 0.09));
+      border-radius: 24px;
+      padding: 36px;
     }
     
     .report-header {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
     
     .report-header h2 {
       font-family: 'Syne', sans-serif;
-      font-size: 1rem;
+      font-size: 0.8rem;
       font-weight: 600;
       letter-spacing: 2px;
-      color: #C8A96E;
+      color: var(--accent, #C8A96E);
       text-transform: uppercase;
       margin-bottom: 8px;
     }
     
     .report-header .report-score {
       font-family: 'Syne', sans-serif;
-      font-size: 4.5rem;
+      font-size: 3.5rem;
       font-weight: 800;
       margin-top: 8px;
+      color: var(--cream, #EAE7DC);
     }
     
     /* Diagnostic Grid */
     .diagnostic-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin: 28px 0;
+      gap: 12px;
+      margin: 24px 0;
     }
     
     .diagnostic-item {
-      background: rgba(46, 46, 43, 0.4);
-      border-radius: 20px;
-      padding: 18px;
+      background: var(--surface-2, #2E2E2B);
+      border-radius: 16px;
+      padding: 16px;
       text-align: center;
     }
     
     .diagnostic-value {
       font-family: 'Syne', sans-serif;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 800;
-      color: #C8A96E;
+      color: var(--accent, #C8A96E);
     }
     
     .diagnostic-label {
-      font-size: 0.7rem;
-      color: rgba(234, 231, 220, 0.5);
+      font-size: 0.65rem;
+      color: var(--cream-dim, rgba(234, 231, 220, 0.52));
       margin-top: 6px;
     }
     
@@ -382,11 +417,11 @@
       .report-card { padding: 24px; }
     }
     
-    /* Protection Funnel */
+    /* Protection Funnel - Highlights ReviewLift's value */
     .protection-funnel {
-      background: rgba(200, 169, 110, 0.04);
-      border: 1px solid rgba(200, 169, 110, 0.1);
-      border-radius: 28px;
+      background: var(--surface-2, #2E2E2B);
+      border: 1px solid rgba(200, 169, 110, 0.15);
+      border-radius: 20px;
       padding: 24px;
       margin: 24px 0;
     }
@@ -395,7 +430,7 @@
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       font-size: 0.9rem;
-      color: #EAE7DC;
+      color: var(--accent, #C8A96E);
       margin-bottom: 16px;
     }
     
@@ -405,29 +440,42 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 8px;
+      margin-bottom: 16px;
     }
     
     .funnel-node {
       flex: 1;
       text-align: center;
-      padding: 12px;
-      background: rgba(46, 46, 43, 0.5);
-      border-radius: 16px;
-      font-size: 0.75rem;
+      padding: 10px;
+      background: var(--surface, #242422);
+      border-radius: 12px;
+      font-size: 0.7rem;
+      color: var(--cream-dim, rgba(234, 231, 220, 0.7));
     }
     
     .funnel-arrow {
-      font-size: 1.2rem;
-      color: rgba(200, 169, 110, 0.4);
+      font-size: 1rem;
+      color: var(--accent-dim, rgba(200, 169, 110, 0.4));
     }
     
     .funnel-warning {
-      background: rgba(192, 103, 90, 0.1);
+      background: rgba(192, 103, 90, 0.08);
       border-left: 3px solid #C0675A;
-      padding: 12px 16px;
+      padding: 12px 14px;
       border-radius: 12px;
-      margin-top: 16px;
-      font-size: 0.8rem;
+      margin-top: 12px;
+      font-size: 0.75rem;
+    }
+    
+    .highlight-badge {
+      display: inline-block;
+      background: var(--accent-dim, rgba(200, 169, 110, 0.15));
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--accent, #C8A96E);
+      margin-bottom: 12px;
     }
     
     .improvement-list {
@@ -435,77 +483,104 @@
     }
     
     .improvement-item {
-      background: rgba(46, 46, 43, 0.3);
-      border-radius: 20px;
-      padding: 18px;
+      background: var(--surface-2, #2E2E2B);
+      border-radius: 16px;
+      padding: 16px;
       margin-bottom: 12px;
       transition: all 0.2s ease;
+      border-left: 3px solid var(--accent, #C8A96E);
     }
     
     .improvement-item:hover {
-      background: rgba(46, 46, 43, 0.5);
+      background: var(--surface-3, #383835);
       transform: translateX(4px);
     }
     
     .improvement-icon {
-      font-size: 1.3rem;
-      margin-right: 12px;
+      font-size: 1.2rem;
+      margin-right: 10px;
+    }
+    
+    .improvement-item strong {
+      color: var(--cream, #EAE7DC);
+      font-size: 0.85rem;
+    }
+    
+    .improvement-item p {
+      font-size: 0.75rem;
+      margin-top: 6px;
+      color: var(--cream-dim, rgba(234, 231, 220, 0.6));
+      line-height: 1.5;
     }
     
     .cta-gold {
-      background: linear-gradient(135deg, #C8A96E 0%, #D4B87A 100%);
+      background: var(--accent, #C8A96E);
       color: #1A1A18;
       text-align: center;
-      padding: 16px;
-      border-radius: 40px;
+      padding: 14px 24px;
+      border-radius: 12px;
       font-weight: 700;
       text-decoration: none;
       display: block;
-      margin-top: 28px;
+      margin-top: 24px;
       transition: all 0.2s;
     }
     
     .cta-gold:hover {
+      background: #D4B87A;
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px -5px rgba(200, 169, 110, 0.4);
+      box-shadow: 0 8px 28px rgba(200, 169, 110, 0.3);
     }
     
     .autocomplete-results {
-      background: #2E2E2B;
-      border-radius: 20px;
+      background: var(--surface-2, #2E2E2B);
+      border-radius: 12px;
       margin-top: 8px;
       max-height: 200px;
       overflow-y: auto;
-      border: 1px solid rgba(200, 169, 110, 0.2);
+      border: 1px solid var(--border, rgba(234, 231, 220, 0.09));
     }
     
     .autocomplete-item {
-      padding: 12px 16px;
+      padding: 10px 16px;
       cursor: pointer;
-      border-bottom: 1px solid rgba(234, 231, 220, 0.05);
+      border-bottom: 1px solid var(--border, rgba(234, 231, 220, 0.05));
+      transition: all 0.2s;
     }
     
     .autocomplete-item:hover {
-      background: rgba(200, 169, 110, 0.1);
+      background: rgba(200, 169, 110, 0.08);
+      padding-left: 20px;
+    }
+    
+    .autocomplete-item strong {
+      color: var(--cream, #EAE7DC);
+      font-size: 0.85rem;
+    }
+    
+    .autocomplete-item small {
+      color: var(--cream-dim, rgba(234, 231, 220, 0.5));
+      font-size: 0.7rem;
     }
     
     .selected-business {
       background: rgba(200, 169, 110, 0.08);
       padding: 12px 16px;
-      border-radius: 20px;
+      border-radius: 16px;
       margin-bottom: 20px;
       border: 1px solid rgba(200, 169, 110, 0.15);
     }
     
     .loader {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border: 2px solid rgba(26, 26, 24, 0.3);
       border-top-color: #1A1A18;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
       margin-right: 8px;
+      vertical-align: middle;
     }
     
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -515,7 +590,7 @@
     footer {
       text-align: center;
       padding: 30px 24px;
-      border-top: 1px solid rgba(200, 169, 110, 0.06);
+      border-top: 1px solid var(--border, rgba(234, 231, 220, 0.09));
       margin-top: auto;
     }
     
@@ -523,7 +598,7 @@
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       font-size: 0.85rem;
-      color: rgba(234, 231, 220, 0.3);
+      color: var(--cream-dim, rgba(234, 231, 220, 0.3));
     }
   </style>
 </head>
@@ -542,24 +617,24 @@
     
     <!-- STEP 1: Search -->
     <div id="step1" class="premium-card search-card">
-      <div class="hero-badge">FREE TOOL</div>
+      <div class="hero-badge">🎯 FREE TOOL</div>
       <h1>What's your <em>Google Review Score?</em></h1>
       <p class="hero-sub">Search for your business to get your score instantly.</p>
       <div class="step-title">🔍 Business name</div>
       <input type="text" id="businessSearch" placeholder="e.g., Eaton Park Golf Course" class="form-input" autocomplete="off">
       <div id="autocompleteResults" class="autocomplete-results hidden"></div>
       <button id="searchBtn" class="btn-primary" disabled>Check my score →</button>
-      <div id="searchStatus" style="margin-top: 12px; font-size: 0.7rem; color: rgba(234,231,220,0.4); text-align: center;"></div>
+      <div id="searchStatus" style="margin-top: 12px; font-size: 0.7rem; color: var(--cream-dim); text-align: center;"></div>
     </div>
 
     <!-- STEP 2: Loading -->
     <div id="stepProcessing" class="premium-card loading-card hidden">
       <div class="pulse-ring">📊</div>
-      <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Analyzing your reviews</h3>
-      <p style="color: rgba(234,231,220,0.5);">Fetching real-time data from Google Places</p>
+      <h3>Analyzing your reviews</h3>
+      <p>Fetching real-time data from Google Places</p>
     </div>
 
-    <!-- STEP 3: Preview (Quick scan, email gate) -->
+    <!-- STEP 3: Preview -->
     <div id="stepScoreRevealed" class="preview-card hidden">
       <div class="business-header">
         <span class="business-name" id="previewBizName">Your Business</span>
@@ -591,16 +666,16 @@
       </div>
       
       <div class="unlock-section">
-        <div style="font-size: 1.8rem; margin-bottom: 6px;">🔓</div>
+        <div style="font-size: 1.6rem; margin-bottom: 6px;">🔓</div>
         <p style="font-weight: 600; margin-bottom: 4px;">Enter your email to unlock full report</p>
-        <p style="font-size: 0.7rem; color: rgba(234,231,220,0.5);" id="unlockTeaserText">See your protection gap + personalised action plan</p>
+        <p style="font-size: 0.7rem; color: var(--cream-dim);" id="unlockTeaserText">See your protection gap + personalised action plan</p>
       </div>
       
       <input type="email" id="unlockEmail" placeholder="your@email.com" class="form-input">
       <button id="unlockBtn" class="btn-primary">Unlock full report →</button>
     </div>
 
-    <!-- STEP 4: Full Report (Premium diagnostic) -->
+    <!-- STEP 4: Full Report -->
     <div id="stepFullReport" class="report-card hidden">
       <div class="report-header">
         <h2>REPUTATION DIAGNOSTIC</h2>
@@ -624,29 +699,42 @@
         </div>
       </div>
       
+      <!-- Protection Funnel - Highlights bad review filtering -->
       <div id="protectionFunnel" class="protection-funnel hidden">
-        <div class="funnel-title">🛡️ Review Protection Gap Analysis</div>
+        <div class="funnel-title">🛡️ How ReviewLift protects your reputation</div>
         <div class="funnel-flow">
           <div class="funnel-node">All customers</div>
           <span class="funnel-arrow">→</span>
-          <div class="funnel-node" id="funnelHappy">Happy → Google ⭐</div>
+          <div class="funnel-node">😊 Happy → Google ⭐</div>
           <span class="funnel-arrow">→</span>
-          <div class="funnel-node" id="funnelUnhappy">Unhappy → Private 📧</div>
+          <div class="funnel-node">😞 Unhappy → Private feedback 📧</div>
         </div>
         <div id="funnelMessage" class="funnel-warning"></div>
+      </div>
+      
+      <!-- Value Props -->
+      <div style="display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap;">
+        <div style="background: rgba(106, 158, 127, 0.08); border-radius: 12px; padding: 10px 14px; flex: 1; text-align: center;">
+          <span style="font-size: 1.2rem;">🚫</span>
+          <span style="font-size: 0.7rem; display: block; color: var(--cream-dim);">Bad reviews never reach Google</span>
+        </div>
+        <div style="background: rgba(200, 169, 110, 0.08); border-radius: 12px; padding: 10px 14px; flex: 1; text-align: center;">
+          <span style="font-size: 1.2rem;">🤖</span>
+          <span style="font-size: 0.7rem; display: block; color: var(--cream-dim);">AI sends personalised requests</span>
+        </div>
       </div>
       
       <div class="improvement-list" id="improvementList"></div>
       
       <a href="/admin" id="ctaButton" class="cta-gold">🚀 Start free trial →</a>
-      <p style="font-size: 0.65rem; color: rgba(234,231,220,0.25); text-align: center; margin-top: 16px;">Detailed report sent to your email</p>
+      <p style="font-size: 0.65rem; color: var(--cream-dim); text-align: center; margin-top: 16px; opacity: 0.5;">We've sent a detailed report to your email</p>
     </div>
 
   </div>
 </div>
 
 <footer>
-  <div class="footer-logo">✧ ReviewLift</div>
+  <div class="footer-logo">✦ ReviewLift</div>
 </footer>
 
 <script>
@@ -852,30 +940,27 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       document.getElementById('finalCountVal').innerHTML = `${breakdown.countScore}/30`;
       document.getElementById('finalVelocityVal').innerHTML = `${breakdown.velocityScore}/20`;
       
-      // Protection funnel
+      // Protection funnel message
       const estPercent = data.business.rating >= 4.3 ? 8 : data.business.rating >= 3.5 ? 18 : 35;
-      document.getElementById('funnelMessage').innerHTML = `⚠️ Based on your ${data.business.rating}★ rating, an estimated ${estPercent}–${estPercent + 10}% of unhappy customers reached Google. ReviewLift would have intercepted them.`;
+      document.getElementById('funnelMessage').innerHTML = `⚠️ Based on your ${data.business.rating}★ rating, an estimated ${estPercent}–${estPercent + 10}% of unhappy customers reached Google. ReviewLift would have intercepted them — complaints go to your private inbox, not your public profile.`;
       document.getElementById('protectionFunnel').classList.remove('hidden');
       
-      // Improvement tips
+      // Improvement tips - highlighting automation and protection
       let tips = [];
+      tips.push({ icon: "🛡️", text: "Bad reviews never reach Google", action: "ReviewLift catches unhappy customers before they can post. They leave private feedback that only you see. Your public rating stays protected." });
+      tips.push({ icon: "🤖", text: "AI sends personalised review requests", action: "After every appointment, ReviewLift automatically sends a message written by AI — it knows the customer's name, the service they had, and who served them." });
+      
       if (band === 'warning' || band === 'crisis') {
-        tips.push({ icon: "🛡️", text: "Unhappy customers are reaching Google", action: "ReviewLift intercepts them with a private feedback form before they can post publicly." });
-      }
-      if (data.business.rating < 4.5) {
-        tips.push({ icon: "⭐", text: `Your rating is ${data.business.rating} stars`, action: "ReviewLift routes happy customers to Google and unhappy ones to private feedback." });
+        tips.push({ icon: "📱", text: "Instant SMS alerts for complaints", action: "When someone leaves negative feedback, you get a text message within seconds. Reply, call them, or fix the issue — before it ever becomes a public review." });
       }
       if (data.business.review_count < 50) {
-        tips.push({ icon: "📝", text: `${data.business.review_count} reviews`, action: "ReviewLift automates review requests after every appointment." });
+        tips.push({ icon: "📈", text: `Automated review collection`, action: `You have ${data.business.review_count} reviews. ReviewLift will automatically request a review after every customer interaction — no manual follow-up needed.` });
       }
-      if (breakdown.velocity < 5) {
-        tips.push({ icon: "📈", text: `~${breakdown.velocity} reviews/month`, action: "Automated SMS and email requests will 3x your monthly reviews." });
-      }
-      if (tips.length === 0) {
-        tips.push({ icon: "🚀", text: "You're doing well!", action: "ReviewLift keeps your momentum going automatically." });
+      if (tips.length < 3) {
+        tips.push({ icon: "⏱️", text: "2-minute setup, then it runs forever", action: "Connect your booking system once. ReviewLift handles everything automatically from there. Reviews come in while you run your business." });
       }
       
-      document.getElementById('improvementList').innerHTML = tips.map(tip => `<div class="improvement-item"><span class="improvement-icon">${tip.icon}</span> <strong>${tip.text}</strong><p style="margin-top: 6px; font-size: 0.8rem; color: rgba(234,231,220,0.6);">💡 ${tip.action}</p></div>`).join('');
+      document.getElementById('improvementList').innerHTML = tips.map(tip => `<div class="improvement-item"><span class="improvement-icon">${tip.icon}</span> <strong>${tip.text}</strong><p>💡 ${tip.action}</p></div>`).join('');
       document.getElementById('ctaButton').innerHTML = getCTAText(data.business.rating);
       
       document.getElementById('stepScoreRevealed').classList.add('hidden');
